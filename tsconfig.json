@@ -9,7 +9,11 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./apps/vione_app_fe/src/*"]
+      "@/*": ["./apps/vione_app_fe/src/*"],
+      "@vibe/db": ["./packages/db/index.ts"],
+      "@vibe/db/*": ["./packages/db/*"],
+      "@vibe/shared": ["./packages/shared/index.ts"],
+      "@vibe/shared/*": ["./packages/shared/*"]
     }
   },
   "include": ["apps/vione_app_fe/src/**/*"]
