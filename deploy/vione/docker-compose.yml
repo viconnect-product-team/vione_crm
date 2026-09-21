@@ -65,4 +65,4 @@ volumes:
 networks:
   vione-standalone-network:
     name: vione-standalone-network
-    driver: bridge
+    external: true
