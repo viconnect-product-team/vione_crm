@@ -244,2730 +244,5054 @@ import { Route as ApiPublicCardSlugContactRouteImport } from './routes/api/publi
 import { Route as ApiPublicAvatarOwnerFileRouteImport } from './routes/api/public/avatar.$owner.$file'
 
 const VotingRoute = VotingRouteImport.update({
-            id: '/voting',path: '/voting',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/voting',
+  path: '/voting',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VioneAppRoute = VioneAppRouteImport.update({
-            id: '/vione-app',path: '/vione-app',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/vione-app',
+  path: '/vione-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerifyRoute = VerifyRouteImport.update({
-            id: '/verify',path: '/verify',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/verify',
+  path: '/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SponsorsRoute = SponsorsRouteImport.update({
-            id: '/sponsors',path: '/sponsors',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/sponsors',
+  path: '/sponsors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SponsorReportRoute = SponsorReportRouteImport.update({
-            id: '/sponsor-report',path: '/sponsor-report',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/sponsor-report',
+  path: '/sponsor-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SponsorPackagesRoute = SponsorPackagesRouteImport.update({
-            id: '/sponsor-packages',path: '/sponsor-packages',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/sponsor-packages',
+  path: '/sponsor-packages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-            id: '/sitemap.xml',path: '/sitemap.xml',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
-            id: '/settings',path: '/settings',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SegmentsRoute = SegmentsRouteImport.update({
-            id: '/segments',path: '/segments',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/segments',
+  path: '/segments',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
-            id: '/reset-password',path: '/reset-password',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RenewalRoute = RenewalRouteImport.update({
-            id: '/renewal',path: '/renewal',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/renewal',
+  path: '/renewal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
-            id: '/register',path: '/register',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
-            id: '/profile',path: '/profile',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerksRoute = PerksRouteImport.update({
-            id: '/perks',path: '/perks',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/perks',
+  path: '/perks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesRoute = OpportunitiesRouteImport.update({
-            id: '/opportunities',path: '/opportunities',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NotificationsRoute = NotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
-            id: '/news',path: '/news',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NetworkRoute = NetworkRouteImport.update({
-            id: '/network',path: '/network',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/network',
+  path: '/network',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MyPermissionsRoute = MyPermissionsRouteImport.update({
-            id: '/my-permissions',path: '/my-permissions',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/my-permissions',
+  path: '/my-permissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeetingsRoute = MeetingsRouteImport.update({
-            id: '/meetings',path: '/meetings',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
-            id: '/marketplace',path: '/marketplace',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MRoute = MRouteImport.update({
-            id: '/m',path: '/m',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/m',
+  path: '/m',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LandingRoute = LandingRouteImport.update({
-            id: '/landing',path: '/landing',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/landing',
+  path: '/landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InstallRoute = InstallRouteImport.update({
-            id: '/install',path: '/install',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/install',
+  path: '/install',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IncomeRoute = IncomeRouteImport.update({
-            id: '/income',path: '/income',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/income',
+  path: '/income',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-            id: '/forgot-password',path: '/forgot-password',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FinanceReportRoute = FinanceReportRouteImport.update({
-            id: '/finance-report',path: '/finance-report',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/finance-report',
+  path: '/finance-report',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeesRoute = FeesRouteImport.update({
-            id: '/fees',path: '/fees',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/fees',
+  path: '/fees',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExpensesRoute = ExpensesRouteImport.update({
-            id: '/expenses',path: '/expenses',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsOverviewRoute = EventsOverviewRouteImport.update({
-            id: '/events-overview',path: '/events-overview',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/events-overview',
+  path: '/events-overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventsRoute = EventsRouteImport.update({
-            id: '/events',path: '/events',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EventRegistrationsRoute = EventRegistrationsRouteImport.update({
-            id: '/event-registrations',path: '/event-registrations',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/event-registrations',
+  path: '/event-registrations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmailMarketingRoute = EmailMarketingRouteImport.update({
-            id: '/email-marketing',path: '/email-marketing',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/email-marketing',
+  path: '/email-marketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocumentsRoute = DocumentsRouteImport.update({
-            id: '/documents',path: '/documents',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoRoute = DemoRouteImport.update({
-            id: '/demo',path: '/demo',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/demo',
+  path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConnectAppRoute = ConnectAppRouteImport.update({
-            id: '/connect-app',path: '/connect-app',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/connect-app',
+  path: '/connect-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConnectRoute = ConnectRouteImport.update({
-            id: '/connect',path: '/connect',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/connect',
+  path: '/connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CompaniesRoute = CompaniesRouteImport.update({
-            id: '/companies',path: '/companies',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckinQrRoute = CheckinQrRouteImport.update({
-            id: '/checkin-qr',path: '/checkin-qr',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/checkin-qr',
+  path: '/checkin-qr',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckinRoute = CheckinRouteImport.update({
-            id: '/checkin',path: '/checkin',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/checkin',
+  path: '/checkin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BusinessConnectRoute = BusinessConnectRouteImport.update({
-            id: '/business-connect',path: '/business-connect',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/business-connect',
+  path: '/business-connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BusinessCardsRoute = BusinessCardsRouteImport.update({
-            id: '/business-cards',path: '/business-cards',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/business-cards',
+  path: '/business-cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BenefitsRoute = BenefitsRouteImport.update({
-            id: '/benefits',path: '/benefits',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/benefits',
+  path: '/benefits',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
-            id: '/auth',path: '/auth',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssociationRoute = AssociationRouteImport.update({
-            id: '/association',path: '/association',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/association',
+  path: '/association',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AiRoute = AiRouteImport.update({
-            id: '/ai',path: '/ai',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ActivityRoute = ActivityRouteImport.update({
-            id: '/activity',path: '/activity',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountSettingsRoute = AccountSettingsRouteImport.update({
-            id: '/account-settings',path: '/account-settings',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/account-settings',
+  path: '/account-settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlatformIndexRoute = PlatformIndexRouteImport.update({
-            id: '/platform/',path: '/platform/',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/platform/',
+  path: '/platform/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => OpportunitiesRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => OpportunitiesRoute,
+} as any)
 const MembersIndexRoute = MembersIndexRouteImport.update({
-            id: '/members/',path: '/members/',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/members/',
+  path: '/members/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketplaceIndexRoute = MarketplaceIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => MarketplaceRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const MIndexRoute = MIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => MRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => MRoute,
+} as any)
 const LandingIndexRoute = LandingIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => LandingRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => LandingRoute,
+} as any)
 const FeesIndexRoute = FeesIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => FeesRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => FeesRoute,
+} as any)
 const EventsIndexRoute = EventsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => EventsRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => EventsRoute,
+} as any)
 const DocumentsIndexRoute = DocumentsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => DocumentsRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => DocumentsRoute,
+} as any)
 const ConnectAppIndexRoute = ConnectAppIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const CompaniesIndexRoute = CompaniesIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => CompaniesRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => CompaniesRoute,
+} as any)
 const BusinessConnectIndexRoute = BusinessConnectIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const AssociationIndexRoute = AssociationIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-            id: '/admin/',path: '/admin/',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountSettingsIndexRoute = AccountSettingsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => AccountSettingsRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => AccountSettingsRoute,
+} as any)
 const VioneLoginRoute = VioneLoginRouteImport.update({
-            id: '/vione/login',path: '/vione/login',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/vione/login',
+  path: '/vione/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlatformRenewalAuditRoute = PlatformRenewalAuditRouteImport.update({
-            id: '/platform/renewal-audit',path: '/platform/renewal-audit',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/platform/renewal-audit',
+  path: '/platform/renewal-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlatformPermissionsRoute = PlatformPermissionsRouteImport.update({
-            id: '/platform/permissions',path: '/platform/permissions',getParentRoute: () => rootRouteImport
-          }as any)
-const PlatformIntroductionOperationsRoute = PlatformIntroductionOperationsRouteImport.update({
-            id: '/platform/introduction-operations',path: '/platform/introduction-operations',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/platform/permissions',
+  path: '/platform/permissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlatformIntroductionOperationsRoute =
+  PlatformIntroductionOperationsRouteImport.update({
+    id: '/platform/introduction-operations',
+    path: '/platform/introduction-operations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PlatformAuditRoute = PlatformAuditRouteImport.update({
-            id: '/platform/audit',path: '/platform/audit',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/platform/audit',
+  path: '/platform/audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlatformAiAuditRoute = PlatformAiAuditRouteImport.update({
-            id: '/platform/ai-audit',path: '/platform/ai-audit',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/platform/ai-audit',
+  path: '/platform/ai-audit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlatformAdminsRoute = PlatformAdminsRouteImport.update({
-            id: '/platform/admins',path: '/platform/admins',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/platform/admins',
+  path: '/platform/admins',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
-            id: '/$id',path: '/$id',getParentRoute: () => OpportunitiesRoute
-          }as any)
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => OpportunitiesRoute,
+} as any)
 const MembersMemberIdRoute = MembersMemberIdRouteImport.update({
-            id: '/members/$memberId',path: '/members/$memberId',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/members/$memberId',
+  path: '/members/$memberId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketplaceWorkspaceRoute = MarketplaceWorkspaceRouteImport.update({
-            id: '/workspace',path: '/workspace',getParentRoute: () => MarketplaceRoute
-          }as any)
+  id: '/workspace',
+  path: '/workspace',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const MarketplaceMyQuotesRoute = MarketplaceMyQuotesRouteImport.update({
-            id: '/my-quotes',path: '/my-quotes',getParentRoute: () => MarketplaceRoute
-          }as any)
+  id: '/my-quotes',
+  path: '/my-quotes',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const MarketplaceProductIdRoute = MarketplaceProductIdRouteImport.update({
-            id: '/$productId',path: '/$productId',getParentRoute: () => MarketplaceRoute
-          }as any)
+  id: '/$productId',
+  path: '/$productId',
+  getParentRoute: () => MarketplaceRoute,
+} as any)
 const MRenewRoute = MRenewRouteImport.update({
-            id: '/renew',path: '/renew',getParentRoute: () => MRoute
-          }as any)
+  id: '/renew',
+  path: '/renew',
+  getParentRoute: () => MRoute,
+} as any)
 const MProfileRoute = MProfileRouteImport.update({
-            id: '/profile',path: '/profile',getParentRoute: () => MRoute
-          }as any)
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => MRoute,
+} as any)
 const MProductsRoute = MProductsRouteImport.update({
-            id: '/products',path: '/products',getParentRoute: () => MRoute
-          }as any)
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => MRoute,
+} as any)
 const MPerksRoute = MPerksRouteImport.update({
-            id: '/perks',path: '/perks',getParentRoute: () => MRoute
-          }as any)
+  id: '/perks',
+  path: '/perks',
+  getParentRoute: () => MRoute,
+} as any)
 const MOpportunitiesRoute = MOpportunitiesRouteImport.update({
-            id: '/opportunities',path: '/opportunities',getParentRoute: () => MRoute
-          }as any)
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => MRoute,
+} as any)
 const MNotificationsRoute = MNotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => MRoute
-          }as any)
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => MRoute,
+} as any)
 const MNewsRoute = MNewsRouteImport.update({
-            id: '/news',path: '/news',getParentRoute: () => MRoute
-          }as any)
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => MRoute,
+} as any)
 const MMessagesRoute = MMessagesRouteImport.update({
-            id: '/messages',path: '/messages',getParentRoute: () => MRoute
-          }as any)
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => MRoute,
+} as any)
 const MMembersRoute = MMembersRouteImport.update({
-            id: '/members',path: '/members',getParentRoute: () => MRoute
-          }as any)
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => MRoute,
+} as any)
 const MLibraryRoute = MLibraryRouteImport.update({
-            id: '/library',path: '/library',getParentRoute: () => MRoute
-          }as any)
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => MRoute,
+} as any)
 const MHistoryRoute = MHistoryRouteImport.update({
-            id: '/history',path: '/history',getParentRoute: () => MRoute
-          }as any)
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => MRoute,
+} as any)
 const MEventsRoute = MEventsRouteImport.update({
-            id: '/events',path: '/events',getParentRoute: () => MRoute
-          }as any)
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => MRoute,
+} as any)
 const MCheckinRoute = MCheckinRouteImport.update({
-            id: '/checkin',path: '/checkin',getParentRoute: () => MRoute
-          }as any)
+  id: '/checkin',
+  path: '/checkin',
+  getParentRoute: () => MRoute,
+} as any)
 const MCardRoute = MCardRouteImport.update({
-            id: '/card',path: '/card',getParentRoute: () => MRoute
-          }as any)
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => MRoute,
+} as any)
 const MBusinessCardsRoute = MBusinessCardsRouteImport.update({
-            id: '/business-cards',path: '/business-cards',getParentRoute: () => MRoute
-          }as any)
+  id: '/business-cards',
+  path: '/business-cards',
+  getParentRoute: () => MRoute,
+} as any)
 const LandingVioneRoute = LandingVioneRouteImport.update({
-            id: '/vione',path: '/vione',getParentRoute: () => LandingRoute
-          }as any)
+  id: '/vione',
+  path: '/vione',
+  getParentRoute: () => LandingRoute,
+} as any)
 const LandingCeo1983Route = LandingCeo1983RouteImport.update({
-            id: '/ceo1983',path: '/ceo1983',getParentRoute: () => LandingRoute
-          }as any)
+  id: '/ceo1983',
+  path: '/ceo1983',
+  getParentRoute: () => LandingRoute,
+} as any)
 const LandingBussinessConnectRoute = LandingBussinessConnectRouteImport.update({
-            id: '/bussiness-connect',path: '/bussiness-connect',getParentRoute: () => LandingRoute
-          }as any)
+  id: '/bussiness-connect',
+  path: '/bussiness-connect',
+  getParentRoute: () => LandingRoute,
+} as any)
 const LandingBusinessConnectRoute = LandingBusinessConnectRouteImport.update({
-            id: '/business-connect',path: '/business-connect',getParentRoute: () => LandingRoute
-          }as any)
+  id: '/business-connect',
+  path: '/business-connect',
+  getParentRoute: () => LandingRoute,
+} as any)
 const HSlugRoute = HSlugRouteImport.update({
-            id: '/h/$slug',path: '/h/$slug',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/h/$slug',
+  path: '/h/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeesInvoiceIdRoute = FeesInvoiceIdRouteImport.update({
-            id: '/$invoiceId',path: '/$invoiceId',getParentRoute: () => FeesRoute
-          }as any)
+  id: '/$invoiceId',
+  path: '/$invoiceId',
+  getParentRoute: () => FeesRoute,
+} as any)
 const EventsEventIdRoute = EventsEventIdRouteImport.update({
-            id: '/$eventId',path: '/$eventId',getParentRoute: () => EventsRoute
-          }as any)
+  id: '/$eventId',
+  path: '/$eventId',
+  getParentRoute: () => EventsRoute,
+} as any)
 const DocumentsDocIdRoute = DocumentsDocIdRouteImport.update({
-            id: '/$docId',path: '/$docId',getParentRoute: () => DocumentsRoute
-          }as any)
+  id: '/$docId',
+  path: '/$docId',
+  getParentRoute: () => DocumentsRoute,
+} as any)
 const ConnectSavedCardsRoute = ConnectSavedCardsRouteImport.update({
-            id: '/saved-cards',path: '/saved-cards',getParentRoute: () => ConnectRoute
-          }as any)
+  id: '/saved-cards',
+  path: '/saved-cards',
+  getParentRoute: () => ConnectRoute,
+} as any)
 const ConnectNetworkRoute = ConnectNetworkRouteImport.update({
-            id: '/network',path: '/network',getParentRoute: () => ConnectRoute
-          }as any)
+  id: '/network',
+  path: '/network',
+  getParentRoute: () => ConnectRoute,
+} as any)
 const ConnectMeetingsRoute = ConnectMeetingsRouteImport.update({
-            id: '/meetings',path: '/meetings',getParentRoute: () => ConnectRoute
-          }as any)
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => ConnectRoute,
+} as any)
 const ConnectConnectionsRoute = ConnectConnectionsRouteImport.update({
-            id: '/connections',path: '/connections',getParentRoute: () => ConnectRoute
-          }as any)
+  id: '/connections',
+  path: '/connections',
+  getParentRoute: () => ConnectRoute,
+} as any)
 const ConnectCalendarSettingsRoute = ConnectCalendarSettingsRouteImport.update({
-            id: '/calendar-settings',path: '/calendar-settings',getParentRoute: () => ConnectRoute
-          }as any)
+  id: '/calendar-settings',
+  path: '/calendar-settings',
+  getParentRoute: () => ConnectRoute,
+} as any)
 const ConnectAppNotificationsRoute = ConnectAppNotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppNfcTagsRoute = ConnectAppNfcTagsRouteImport.update({
-            id: '/nfc-tags',path: '/nfc-tags',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/nfc-tags',
+  path: '/nfc-tags',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppNetworkRoute = ConnectAppNetworkRouteImport.update({
-            id: '/network',path: '/network',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/network',
+  path: '/network',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppMomentRoute = ConnectAppMomentRouteImport.update({
-            id: '/moment',path: '/moment',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/moment',
+  path: '/moment',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppMeRoute = ConnectAppMeRouteImport.update({
-            id: '/me',path: '/me',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppInboxRoute = ConnectAppInboxRouteImport.update({
-            id: '/inbox',path: '/inbox',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppCommunityRoute = ConnectAppCommunityRouteImport.update({
-            id: '/community',path: '/community',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppCardScanRoute = ConnectAppCardScanRouteImport.update({
-            id: '/card-scan',path: '/card-scan',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/card-scan',
+  path: '/card-scan',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppCalendarRoute = ConnectAppCalendarRouteImport.update({
-            id: '/calendar',path: '/calendar',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppActivateRoute = ConnectAppActivateRouteImport.update({
-            id: '/activate',path: '/activate',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/activate',
+  path: '/activate',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const CompanySlugRoute = CompanySlugRouteImport.update({
-            id: '/company/$slug',path: '/company/$slug',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/company/$slug',
+  path: '/company/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CompaniesCompanyIdRoute = CompaniesCompanyIdRouteImport.update({
-            id: '/$companyId',path: '/$companyId',getParentRoute: () => CompaniesRoute
-          }as any)
+  id: '/$companyId',
+  path: '/$companyId',
+  getParentRoute: () => CompaniesRoute,
+} as any)
 const CardCodeRoute = CardCodeRouteImport.update({
-            id: '/card/$code',path: '/card/$code',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/card/$code',
+  path: '/card/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CTokenRoute = CTokenRouteImport.update({
-            id: '/c/$token',path: '/c/$token',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/c/$token',
+  path: '/c/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BusinessConnectV8Route = BusinessConnectV8RouteImport.update({
-            id: '/v8',path: '/v8',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v8',
+  path: '/v8',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV7Route = BusinessConnectV7RouteImport.update({
-            id: '/v7',path: '/v7',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v7',
+  path: '/v7',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV6Route = BusinessConnectV6RouteImport.update({
-            id: '/v6',path: '/v6',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v6',
+  path: '/v6',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV5Route = BusinessConnectV5RouteImport.update({
-            id: '/v5',path: '/v5',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v5',
+  path: '/v5',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV4Route = BusinessConnectV4RouteImport.update({
-            id: '/v4',path: '/v4',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v4',
+  path: '/v4',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV3Route = BusinessConnectV3RouteImport.update({
-            id: '/v3',path: '/v3',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v3',
+  path: '/v3',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV2Route = BusinessConnectV2RouteImport.update({
-            id: '/v2',path: '/v2',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v2',
+  path: '/v2',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectV1Route = BusinessConnectV1RouteImport.update({
-            id: '/v1',path: '/v1',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectSavedCardsRoute = BusinessConnectSavedCardsRouteImport.update({
-            id: '/saved-cards',path: '/saved-cards',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectRelationshipTimelineRoute = BusinessConnectRelationshipTimelineRouteImport.update({
-            id: '/relationship-timeline',path: '/relationship-timeline',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectNotificationsRoute = BusinessConnectNotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/v1',
+  path: '/v1',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
+const BusinessConnectSavedCardsRoute =
+  BusinessConnectSavedCardsRouteImport.update({
+    id: '/saved-cards',
+    path: '/saved-cards',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectRelationshipTimelineRoute =
+  BusinessConnectRelationshipTimelineRouteImport.update({
+    id: '/relationship-timeline',
+    path: '/relationship-timeline',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectNotificationsRoute =
+  BusinessConnectNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
 const BusinessConnectMyCardRoute = BusinessConnectMyCardRouteImport.update({
-            id: '/my-card',path: '/my-card',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/my-card',
+  path: '/my-card',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectMemoryRoute = BusinessConnectMemoryRouteImport.update({
-            id: '/memory',path: '/memory',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/memory',
+  path: '/memory',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
 const BusinessConnectMeetingsRoute = BusinessConnectMeetingsRouteImport.update({
-            id: '/meetings',path: '/meetings',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectConnectionsRoute = BusinessConnectConnectionsRouteImport.update({
-            id: '/connections',path: '/connections',getParentRoute: () => BusinessConnectRoute
-          }as any)
+  id: '/meetings',
+  path: '/meetings',
+  getParentRoute: () => BusinessConnectRoute,
+} as any)
+const BusinessConnectConnectionsRoute =
+  BusinessConnectConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
 const BSlugRoute = BSlugRouteImport.update({
-            id: '/b/$slug',path: '/b/$slug',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/b/$slug',
+  path: '/b/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AssociationSettingsRoute = AssociationSettingsRouteImport.update({
-            id: '/settings',path: '/settings',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationRenewRoute = AssociationRenewRouteImport.update({
-            id: '/renew',path: '/renew',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/renew',
+  path: '/renew',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationProfileRoute = AssociationProfileRouteImport.update({
-            id: '/profile',path: '/profile',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationProductsRoute = AssociationProductsRouteImport.update({
-            id: '/products',path: '/products',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationPerksRoute = AssociationPerksRouteImport.update({
-            id: '/perks',path: '/perks',getParentRoute: () => AssociationRoute
-          }as any)
-const AssociationOpportunitiesRoute = AssociationOpportunitiesRouteImport.update({
-            id: '/opportunities',path: '/opportunities',getParentRoute: () => AssociationRoute
-          }as any)
-const AssociationNotificationsRoute = AssociationNotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/perks',
+  path: '/perks',
+  getParentRoute: () => AssociationRoute,
+} as any)
+const AssociationOpportunitiesRoute =
+  AssociationOpportunitiesRouteImport.update({
+    id: '/opportunities',
+    path: '/opportunities',
+    getParentRoute: () => AssociationRoute,
+  } as any)
+const AssociationNotificationsRoute =
+  AssociationNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AssociationRoute,
+  } as any)
 const AssociationNewsRoute = AssociationNewsRouteImport.update({
-            id: '/news',path: '/news',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationMessagesRoute = AssociationMessagesRouteImport.update({
-            id: '/messages',path: '/messages',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationMembersRoute = AssociationMembersRouteImport.update({
-            id: '/members',path: '/members',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationLoginRoute = AssociationLoginRouteImport.update({
-            id: '/login',path: '/login',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationLibraryRoute = AssociationLibraryRouteImport.update({
-            id: '/library',path: '/library',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationHistoryRoute = AssociationHistoryRouteImport.update({
-            id: '/history',path: '/history',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationEventsRoute = AssociationEventsRouteImport.update({
-            id: '/events',path: '/events',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationCheckinRoute = AssociationCheckinRouteImport.update({
-            id: '/checkin',path: '/checkin',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/checkin',
+  path: '/checkin',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AssociationCardRoute = AssociationCardRouteImport.update({
-            id: '/card',path: '/card',getParentRoute: () => AssociationRoute
-          }as any)
-const AssociationBusinessCardsRoute = AssociationBusinessCardsRouteImport.update({
-            id: '/business-cards',path: '/business-cards',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => AssociationRoute,
+} as any)
+const AssociationBusinessCardsRoute =
+  AssociationBusinessCardsRouteImport.update({
+    id: '/business-cards',
+    path: '/business-cards',
+    getParentRoute: () => AssociationRoute,
+  } as any)
 const AssociationBenefitsRoute = AssociationBenefitsRouteImport.update({
-            id: '/benefits',path: '/benefits',getParentRoute: () => AssociationRoute
-          }as any)
+  id: '/benefits',
+  path: '/benefits',
+  getParentRoute: () => AssociationRoute,
+} as any)
 const AdminLandingTemplatesRoute = AdminLandingTemplatesRouteImport.update({
-            id: '/admin/landing-templates',path: '/admin/landing-templates',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/admin/landing-templates',
+  path: '/admin/landing-templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDemoLeadsRoute = AdminDemoLeadsRouteImport.update({
-            id: '/admin/demo-leads',path: '/admin/demo-leads',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/admin/demo-leads',
+  path: '/admin/demo-leads',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCtaAnalyticsRoute = AdminCtaAnalyticsRouteImport.update({
-            id: '/admin/cta-analytics',path: '/admin/cta-analytics',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/admin/cta-analytics',
+  path: '/admin/cta-analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBusinessCardsRoute = AdminBusinessCardsRouteImport.update({
-            id: '/admin/business-cards',path: '/admin/business-cards',getParentRoute: () => rootRouteImport
-          }as any)
-const AccountSettingsNotificationsRoute = AccountSettingsNotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => AccountSettingsRoute
-          }as any)
+  id: '/admin/business-cards',
+  path: '/admin/business-cards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountSettingsNotificationsRoute =
+  AccountSettingsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AccountSettingsRoute,
+  } as any)
 const MRenewIndexRoute = MRenewIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => MRenewRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => MRenewRoute,
+} as any)
 const MPerksIndexRoute = MPerksIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => MPerksRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => MPerksRoute,
+} as any)
 const ConnectNetworkIndexRoute = ConnectNetworkIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectNetworkRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectNetworkRoute,
+} as any)
 const ConnectMeetingsIndexRoute = ConnectMeetingsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectMeetingsRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectMeetingsRoute,
+} as any)
 const ConnectCardsIndexRoute = ConnectCardsIndexRouteImport.update({
-            id: '/cards/',path: '/cards/',getParentRoute: () => ConnectRoute
-          }as any)
+  id: '/cards/',
+  path: '/cards/',
+  getParentRoute: () => ConnectRoute,
+} as any)
 const ConnectAppNetworkIndexRoute = ConnectAppNetworkIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppNetworkRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectAppNetworkRoute,
+} as any)
 const ConnectAppMomentIndexRoute = ConnectAppMomentIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppMomentRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectAppMomentRoute,
+} as any)
 const ConnectAppMeIndexRoute = ConnectAppMeIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppMeRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectAppMeRoute,
+} as any)
 const ConnectAppInboxIndexRoute = ConnectAppInboxIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppInboxRoute
-          }as any)
-const ConnectAppCommunityIndexRoute = ConnectAppCommunityIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppCommunityRoute
-          }as any)
-const BusinessConnectMeetingsIndexRoute = BusinessConnectMeetingsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => BusinessConnectMeetingsRoute
-          }as any)
-const BusinessConnectConnectionsIndexRoute = BusinessConnectConnectionsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => BusinessConnectConnectionsRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConnectAppInboxRoute,
+} as any)
+const ConnectAppCommunityIndexRoute =
+  ConnectAppCommunityIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ConnectAppCommunityRoute,
+  } as any)
+const BusinessConnectMeetingsIndexRoute =
+  BusinessConnectMeetingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => BusinessConnectMeetingsRoute,
+  } as any)
+const BusinessConnectConnectionsIndexRoute =
+  BusinessConnectConnectionsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => BusinessConnectConnectionsRoute,
+  } as any)
 const AssociationRenewIndexRoute = AssociationRenewIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => AssociationRenewRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => AssociationRenewRoute,
+} as any)
 const AssociationPerksIndexRoute = AssociationPerksIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => AssociationPerksRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => AssociationPerksRoute,
+} as any)
 const AdminBusinessCardsIndexRoute = AdminBusinessCardsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => AdminBusinessCardsRoute
-          }as any)
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminBusinessCardsRoute,
+} as any)
 const OpportunitiesIdEditRoute = OpportunitiesIdEditRouteImport.update({
-            id: '/edit',path: '/edit',getParentRoute: () => OpportunitiesIdRoute
-          }as any)
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => OpportunitiesIdRoute,
+} as any)
 const MRenewResultRoute = MRenewResultRouteImport.update({
-            id: '/result',path: '/result',getParentRoute: () => MRenewRoute
-          }as any)
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => MRenewRoute,
+} as any)
 const MRenewPayRoute = MRenewPayRouteImport.update({
-            id: '/pay',path: '/pay',getParentRoute: () => MRenewRoute
-          }as any)
+  id: '/pay',
+  path: '/pay',
+  getParentRoute: () => MRenewRoute,
+} as any)
 const MRenewHistoryRoute = MRenewHistoryRouteImport.update({
-            id: '/history',path: '/history',getParentRoute: () => MRenewRoute
-          }as any)
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => MRenewRoute,
+} as any)
 const MRenewAuditRoute = MRenewAuditRouteImport.update({
-            id: '/audit',path: '/audit',getParentRoute: () => MRenewRoute
-          }as any)
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => MRenewRoute,
+} as any)
 const MPerksIdRoute = MPerksIdRouteImport.update({
-            id: '/$id',path: '/$id',getParentRoute: () => MPerksRoute
-          }as any)
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => MPerksRoute,
+} as any)
 const LandingCeo1983CinematicRoute = LandingCeo1983CinematicRouteImport.update({
-            id: '/cinematic',path: '/cinematic',getParentRoute: () => LandingCeo1983Route
-          }as any)
+  id: '/cinematic',
+  path: '/cinematic',
+  getParentRoute: () => LandingCeo1983Route,
+} as any)
 const LandingCeoV1Route = LandingCeoV1RouteImport.update({
-            id: '/ceo/v1',path: '/ceo/v1',getParentRoute: () => LandingRoute
-          }as any)
-const ConnectNetworkNotificationsRoute = ConnectNetworkNotificationsRouteImport.update({
-            id: '/notifications',path: '/notifications',getParentRoute: () => ConnectNetworkRoute
-          }as any)
-const ConnectNetworkConnectionsRoute = ConnectNetworkConnectionsRouteImport.update({
-            id: '/connections',path: '/connections',getParentRoute: () => ConnectNetworkRoute
-          }as any)
+  id: '/ceo/v1',
+  path: '/ceo/v1',
+  getParentRoute: () => LandingRoute,
+} as any)
+const ConnectNetworkNotificationsRoute =
+  ConnectNetworkNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => ConnectNetworkRoute,
+  } as any)
+const ConnectNetworkConnectionsRoute =
+  ConnectNetworkConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => ConnectNetworkRoute,
+  } as any)
 const ConnectMeetingsSectionRoute = ConnectMeetingsSectionRouteImport.update({
-            id: '/$section',path: '/$section',getParentRoute: () => ConnectMeetingsRoute
-          }as any)
-const ConnectAppNetworkRequestsRoute = ConnectAppNetworkRequestsRouteImport.update({
-            id: '/requests',path: '/requests',getParentRoute: () => ConnectAppNetworkRoute
-          }as any)
-const ConnectAppNetworkPersonIdRoute = ConnectAppNetworkPersonIdRouteImport.update({
-            id: '/$personId',path: '/$personId',getParentRoute: () => ConnectAppNetworkRoute
-          }as any)
-const ConnectAppMomentPersonIdRoute = ConnectAppMomentPersonIdRouteImport.update({
-            id: '/$personId',path: '/$personId',getParentRoute: () => ConnectAppMomentRoute
-          }as any)
+  id: '/$section',
+  path: '/$section',
+  getParentRoute: () => ConnectMeetingsRoute,
+} as any)
+const ConnectAppNetworkRequestsRoute =
+  ConnectAppNetworkRequestsRouteImport.update({
+    id: '/requests',
+    path: '/requests',
+    getParentRoute: () => ConnectAppNetworkRoute,
+  } as any)
+const ConnectAppNetworkPersonIdRoute =
+  ConnectAppNetworkPersonIdRouteImport.update({
+    id: '/$personId',
+    path: '/$personId',
+    getParentRoute: () => ConnectAppNetworkRoute,
+  } as any)
+const ConnectAppMomentPersonIdRoute =
+  ConnectAppMomentPersonIdRouteImport.update({
+    id: '/$personId',
+    path: '/$personId',
+    getParentRoute: () => ConnectAppMomentRoute,
+  } as any)
 const ConnectAppMeSessionsRoute = ConnectAppMeSessionsRouteImport.update({
-            id: '/sessions',path: '/sessions',getParentRoute: () => ConnectAppMeRoute
-          }as any)
+  id: '/sessions',
+  path: '/sessions',
+  getParentRoute: () => ConnectAppMeRoute,
+} as any)
 const ConnectAppMeSecurityRoute = ConnectAppMeSecurityRouteImport.update({
-            id: '/security',path: '/security',getParentRoute: () => ConnectAppMeRoute
-          }as any)
-const ConnectAppMeIntelSettingsRoute = ConnectAppMeIntelSettingsRouteImport.update({
-            id: '/intel-settings',path: '/intel-settings',getParentRoute: () => ConnectAppMeRoute
-          }as any)
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => ConnectAppMeRoute,
+} as any)
+const ConnectAppMeIntelSettingsRoute =
+  ConnectAppMeIntelSettingsRouteImport.update({
+    id: '/intel-settings',
+    path: '/intel-settings',
+    getParentRoute: () => ConnectAppMeRoute,
+  } as any)
 const ConnectAppMeEditRoute = ConnectAppMeEditRouteImport.update({
-            id: '/edit',path: '/edit',getParentRoute: () => ConnectAppMeRoute
-          }as any)
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => ConnectAppMeRoute,
+} as any)
 const ConnectAppMeCardsRoute = ConnectAppMeCardsRouteImport.update({
-            id: '/cards',path: '/cards',getParentRoute: () => ConnectAppMeRoute
-          }as any)
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => ConnectAppMeRoute,
+} as any)
 const ConnectAppMeCardRoute = ConnectAppMeCardRouteImport.update({
-            id: '/card',path: '/card',getParentRoute: () => ConnectAppMeRoute
-          }as any)
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => ConnectAppMeRoute,
+} as any)
 const ConnectAppInviteTokenRoute = ConnectAppInviteTokenRouteImport.update({
-            id: '/invite/$token',path: '/invite/$token',getParentRoute: () => ConnectAppRoute
-          }as any)
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => ConnectAppRoute,
+} as any)
 const ConnectAppInboxThreadIdRoute = ConnectAppInboxThreadIdRouteImport.update({
-            id: '/$threadId',path: '/$threadId',getParentRoute: () => ConnectAppInboxRoute
-          }as any)
-const ConnectAppCommunityRequestsRoute = ConnectAppCommunityRequestsRouteImport.update({
-            id: '/requests',path: '/requests',getParentRoute: () => ConnectAppCommunityRoute
-          }as any)
-const ConnectAppCommunityCommunityIdRoute = ConnectAppCommunityCommunityIdRouteImport.update({
-            id: '/$communityId',path: '/$communityId',getParentRoute: () => ConnectAppCommunityRoute
-          }as any)
-const BusinessConnectMeetingsMeetingIdRoute = BusinessConnectMeetingsMeetingIdRouteImport.update({
-            id: '/$meetingId',path: '/$meetingId',getParentRoute: () => BusinessConnectMeetingsRoute
-          }as any)
-const BusinessConnectIntroductionsRequestsRoute = BusinessConnectIntroductionsRequestsRouteImport.update({
-            id: '/introductions/requests',path: '/introductions/requests',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectIntroductionsOutcomesRoute = BusinessConnectIntroductionsOutcomesRouteImport.update({
-            id: '/introductions/outcomes',path: '/introductions/outcomes',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectIntroductionsInboxRoute = BusinessConnectIntroductionsInboxRouteImport.update({
-            id: '/introductions/inbox',path: '/introductions/inbox',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectIntroductionsDeliveriesRoute = BusinessConnectIntroductionsDeliveriesRouteImport.update({
-            id: '/introductions/deliveries',path: '/introductions/deliveries',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectIntroductionsAnalyticsRoute = BusinessConnectIntroductionsAnalyticsRouteImport.update({
-            id: '/introductions/analytics',path: '/introductions/analytics',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectIntroductionsTargetPersonNodeIdRoute = BusinessConnectIntroductionsTargetPersonNodeIdRouteImport.update({
-            id: '/introductions/$targetPersonNodeId',path: '/introductions/$targetPersonNodeId',getParentRoute: () => BusinessConnectRoute
-          }as any)
-const BusinessConnectConnectionsPersonNodeIdRoute = BusinessConnectConnectionsPersonNodeIdRouteImport.update({
-            id: '/$personNodeId',path: '/$personNodeId',getParentRoute: () => BusinessConnectConnectionsRoute
-          }as any)
+  id: '/$threadId',
+  path: '/$threadId',
+  getParentRoute: () => ConnectAppInboxRoute,
+} as any)
+const ConnectAppCommunityRequestsRoute =
+  ConnectAppCommunityRequestsRouteImport.update({
+    id: '/requests',
+    path: '/requests',
+    getParentRoute: () => ConnectAppCommunityRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdRoute =
+  ConnectAppCommunityCommunityIdRouteImport.update({
+    id: '/$communityId',
+    path: '/$communityId',
+    getParentRoute: () => ConnectAppCommunityRoute,
+  } as any)
+const BusinessConnectMeetingsMeetingIdRoute =
+  BusinessConnectMeetingsMeetingIdRouteImport.update({
+    id: '/$meetingId',
+    path: '/$meetingId',
+    getParentRoute: () => BusinessConnectMeetingsRoute,
+  } as any)
+const BusinessConnectIntroductionsRequestsRoute =
+  BusinessConnectIntroductionsRequestsRouteImport.update({
+    id: '/introductions/requests',
+    path: '/introductions/requests',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectIntroductionsOutcomesRoute =
+  BusinessConnectIntroductionsOutcomesRouteImport.update({
+    id: '/introductions/outcomes',
+    path: '/introductions/outcomes',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectIntroductionsInboxRoute =
+  BusinessConnectIntroductionsInboxRouteImport.update({
+    id: '/introductions/inbox',
+    path: '/introductions/inbox',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectIntroductionsDeliveriesRoute =
+  BusinessConnectIntroductionsDeliveriesRouteImport.update({
+    id: '/introductions/deliveries',
+    path: '/introductions/deliveries',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectIntroductionsAnalyticsRoute =
+  BusinessConnectIntroductionsAnalyticsRouteImport.update({
+    id: '/introductions/analytics',
+    path: '/introductions/analytics',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectIntroductionsTargetPersonNodeIdRoute =
+  BusinessConnectIntroductionsTargetPersonNodeIdRouteImport.update({
+    id: '/introductions/$targetPersonNodeId',
+    path: '/introductions/$targetPersonNodeId',
+    getParentRoute: () => BusinessConnectRoute,
+  } as any)
+const BusinessConnectConnectionsPersonNodeIdRoute =
+  BusinessConnectConnectionsPersonNodeIdRouteImport.update({
+    id: '/$personNodeId',
+    path: '/$personNodeId',
+    getParentRoute: () => BusinessConnectConnectionsRoute,
+  } as any)
 const AssociationRenewResultRoute = AssociationRenewResultRouteImport.update({
-            id: '/result',path: '/result',getParentRoute: () => AssociationRenewRoute
-          }as any)
+  id: '/result',
+  path: '/result',
+  getParentRoute: () => AssociationRenewRoute,
+} as any)
 const AssociationRenewPayRoute = AssociationRenewPayRouteImport.update({
-            id: '/pay',path: '/pay',getParentRoute: () => AssociationRenewRoute
-          }as any)
+  id: '/pay',
+  path: '/pay',
+  getParentRoute: () => AssociationRenewRoute,
+} as any)
 const AssociationRenewHistoryRoute = AssociationRenewHistoryRouteImport.update({
-            id: '/history',path: '/history',getParentRoute: () => AssociationRenewRoute
-          }as any)
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => AssociationRenewRoute,
+} as any)
 const AssociationRenewAuditRoute = AssociationRenewAuditRouteImport.update({
-            id: '/audit',path: '/audit',getParentRoute: () => AssociationRenewRoute
-          }as any)
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AssociationRenewRoute,
+} as any)
 const AssociationPerksIdRoute = AssociationPerksIdRouteImport.update({
-            id: '/$id',path: '/$id',getParentRoute: () => AssociationPerksRoute
-          }as any)
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AssociationPerksRoute,
+} as any)
 const AdminBusinessCardsAuditRoute = AdminBusinessCardsAuditRouteImport.update({
-            id: '/audit',path: '/audit',getParentRoute: () => AdminBusinessCardsRoute
-          }as any)
-const ConnectAppCommunityCommunityIdIndexRoute = ConnectAppCommunityCommunityIdIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppCommunityCommunityIdRoute
-          }as any)
-const ConnectNetworkRequestsSentRoute = ConnectNetworkRequestsSentRouteImport.update({
-            id: '/requests/sent',path: '/requests/sent',getParentRoute: () => ConnectNetworkRoute
-          }as any)
-const ConnectNetworkRequestsIncomingRoute = ConnectNetworkRequestsIncomingRouteImport.update({
-            id: '/requests/incoming',path: '/requests/incoming',getParentRoute: () => ConnectNetworkRoute
-          }as any)
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminBusinessCardsRoute,
+} as any)
+const ConnectAppCommunityCommunityIdIndexRoute =
+  ConnectAppCommunityCommunityIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ConnectAppCommunityCommunityIdRoute,
+  } as any)
+const ConnectNetworkRequestsSentRoute =
+  ConnectNetworkRequestsSentRouteImport.update({
+    id: '/requests/sent',
+    path: '/requests/sent',
+    getParentRoute: () => ConnectNetworkRoute,
+  } as any)
+const ConnectNetworkRequestsIncomingRoute =
+  ConnectNetworkRequestsIncomingRouteImport.update({
+    id: '/requests/incoming',
+    path: '/requests/incoming',
+    getParentRoute: () => ConnectNetworkRoute,
+  } as any)
 const ConnectCardsCardIdEditRoute = ConnectCardsCardIdEditRouteImport.update({
-            id: '/cards/$cardId/edit',path: '/cards/$cardId/edit',getParentRoute: () => ConnectRoute
-          }as any)
-const ConnectAppCommunityCommunityIdOpportunitiesRoute = ConnectAppCommunityCommunityIdOpportunitiesRouteImport.update({
-            id: '/opportunities',path: '/opportunities',getParentRoute: () => ConnectAppCommunityCommunityIdRoute
-          }as any)
-const ConnectAppCommunityCommunityIdNewsRoute = ConnectAppCommunityCommunityIdNewsRouteImport.update({
-            id: '/news',path: '/news',getParentRoute: () => ConnectAppCommunityCommunityIdRoute
-          }as any)
-const ConnectAppCommunityCommunityIdMembersRoute = ConnectAppCommunityCommunityIdMembersRouteImport.update({
-            id: '/members',path: '/members',getParentRoute: () => ConnectAppCommunityCommunityIdRoute
-          }as any)
-const ConnectAppCommunityCommunityIdEventsRoute = ConnectAppCommunityCommunityIdEventsRouteImport.update({
-            id: '/events',path: '/events',getParentRoute: () => ConnectAppCommunityCommunityIdRoute
-          }as any)
-const ApiPublicHooksTimelineProjectionRoute = ApiPublicHooksTimelineProjectionRouteImport.update({
-            id: '/api/public/hooks/timeline-projection',path: '/api/public/hooks/timeline-projection',getParentRoute: () => rootRouteImport
-          }as any)
-const ApiPublicHooksOutcomeConsumerRoute = ApiPublicHooksOutcomeConsumerRouteImport.update({
-            id: '/api/public/hooks/outcome-consumer',path: '/api/public/hooks/outcome-consumer',getParentRoute: () => rootRouteImport
-          }as any)
-const ApiPublicHooksNotificationRuntimeRoute = ApiPublicHooksNotificationRuntimeRouteImport.update({
-            id: '/api/public/hooks/notification-runtime',path: '/api/public/hooks/notification-runtime',getParentRoute: () => rootRouteImport
-          }as any)
-const ApiPublicCardChar123slugChar125DotvcfRoute = ApiPublicCardChar123slugChar125DotvcfRouteImport.update({
-            id: '/api/public/card/{$slug}.vcf',path: '/api/public/card/{$slug}.vcf',getParentRoute: () => rootRouteImport
-          }as any)
-const ConnectAppCommunityCommunityIdOpportunitiesIndexRoute = ConnectAppCommunityCommunityIdOpportunitiesIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppCommunityCommunityIdOpportunitiesRoute
-          }as any)
-const ConnectAppCommunityCommunityIdNewsIndexRoute = ConnectAppCommunityCommunityIdNewsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppCommunityCommunityIdNewsRoute
-          }as any)
-const ConnectAppCommunityCommunityIdMembersIndexRoute = ConnectAppCommunityCommunityIdMembersIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppCommunityCommunityIdMembersRoute
-          }as any)
-const ConnectAppCommunityCommunityIdEventsIndexRoute = ConnectAppCommunityCommunityIdEventsIndexRouteImport.update({
-            id: '/',path: '/',getParentRoute: () => ConnectAppCommunityCommunityIdEventsRoute
-          }as any)
-const ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute = ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRouteImport.update({
-            id: '/$opportunityRef',path: '/$opportunityRef',getParentRoute: () => ConnectAppCommunityCommunityIdOpportunitiesRoute
-          }as any)
-const ConnectAppCommunityCommunityIdNewsNewsRefRoute = ConnectAppCommunityCommunityIdNewsNewsRefRouteImport.update({
-            id: '/$newsRef',path: '/$newsRef',getParentRoute: () => ConnectAppCommunityCommunityIdNewsRoute
-          }as any)
-const ConnectAppCommunityCommunityIdMembersMemberRefRoute = ConnectAppCommunityCommunityIdMembersMemberRefRouteImport.update({
-            id: '/$memberRef',path: '/$memberRef',getParentRoute: () => ConnectAppCommunityCommunityIdMembersRoute
-          }as any)
-const ConnectAppCommunityCommunityIdEventsEventRefRoute = ConnectAppCommunityCommunityIdEventsEventRefRouteImport.update({
-            id: '/$eventRef',path: '/$eventRef',getParentRoute: () => ConnectAppCommunityCommunityIdEventsRoute
-          }as any)
-const ApiPublicIdentityTokenContactRoute = ApiPublicIdentityTokenContactRouteImport.update({
-            id: '/api/public/identity/$token/contact',path: '/api/public/identity/$token/contact',getParentRoute: () => rootRouteImport
-          }as any)
-const ApiPublicCardSlugContactRoute = ApiPublicCardSlugContactRouteImport.update({
-            id: '/api/public/card/$slug/contact',path: '/api/public/card/$slug/contact',getParentRoute: () => rootRouteImport
-          }as any)
-const ApiPublicAvatarOwnerFileRoute = ApiPublicAvatarOwnerFileRouteImport.update({
-            id: '/api/public/avatar/$owner/$file',path: '/api/public/avatar/$owner/$file',getParentRoute: () => rootRouteImport
-          }as any)
+  id: '/cards/$cardId/edit',
+  path: '/cards/$cardId/edit',
+  getParentRoute: () => ConnectRoute,
+} as any)
+const ConnectAppCommunityCommunityIdOpportunitiesRoute =
+  ConnectAppCommunityCommunityIdOpportunitiesRouteImport.update({
+    id: '/opportunities',
+    path: '/opportunities',
+    getParentRoute: () => ConnectAppCommunityCommunityIdRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdNewsRoute =
+  ConnectAppCommunityCommunityIdNewsRouteImport.update({
+    id: '/news',
+    path: '/news',
+    getParentRoute: () => ConnectAppCommunityCommunityIdRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdMembersRoute =
+  ConnectAppCommunityCommunityIdMembersRouteImport.update({
+    id: '/members',
+    path: '/members',
+    getParentRoute: () => ConnectAppCommunityCommunityIdRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdEventsRoute =
+  ConnectAppCommunityCommunityIdEventsRouteImport.update({
+    id: '/events',
+    path: '/events',
+    getParentRoute: () => ConnectAppCommunityCommunityIdRoute,
+  } as any)
+const ApiPublicHooksTimelineProjectionRoute =
+  ApiPublicHooksTimelineProjectionRouteImport.update({
+    id: '/api/public/hooks/timeline-projection',
+    path: '/api/public/hooks/timeline-projection',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksOutcomeConsumerRoute =
+  ApiPublicHooksOutcomeConsumerRouteImport.update({
+    id: '/api/public/hooks/outcome-consumer',
+    path: '/api/public/hooks/outcome-consumer',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksNotificationRuntimeRoute =
+  ApiPublicHooksNotificationRuntimeRouteImport.update({
+    id: '/api/public/hooks/notification-runtime',
+    path: '/api/public/hooks/notification-runtime',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCardChar123slugChar125DotvcfRoute =
+  ApiPublicCardChar123slugChar125DotvcfRouteImport.update({
+    id: '/api/public/card/{$slug}.vcf',
+    path: '/api/public/card/{$slug}.vcf',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ConnectAppCommunityCommunityIdOpportunitiesIndexRoute =
+  ConnectAppCommunityCommunityIdOpportunitiesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ConnectAppCommunityCommunityIdOpportunitiesRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdNewsIndexRoute =
+  ConnectAppCommunityCommunityIdNewsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ConnectAppCommunityCommunityIdNewsRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdMembersIndexRoute =
+  ConnectAppCommunityCommunityIdMembersIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ConnectAppCommunityCommunityIdMembersRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdEventsIndexRoute =
+  ConnectAppCommunityCommunityIdEventsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => ConnectAppCommunityCommunityIdEventsRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute =
+  ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRouteImport.update({
+    id: '/$opportunityRef',
+    path: '/$opportunityRef',
+    getParentRoute: () => ConnectAppCommunityCommunityIdOpportunitiesRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdNewsNewsRefRoute =
+  ConnectAppCommunityCommunityIdNewsNewsRefRouteImport.update({
+    id: '/$newsRef',
+    path: '/$newsRef',
+    getParentRoute: () => ConnectAppCommunityCommunityIdNewsRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdMembersMemberRefRoute =
+  ConnectAppCommunityCommunityIdMembersMemberRefRouteImport.update({
+    id: '/$memberRef',
+    path: '/$memberRef',
+    getParentRoute: () => ConnectAppCommunityCommunityIdMembersRoute,
+  } as any)
+const ConnectAppCommunityCommunityIdEventsEventRefRoute =
+  ConnectAppCommunityCommunityIdEventsEventRefRouteImport.update({
+    id: '/$eventRef',
+    path: '/$eventRef',
+    getParentRoute: () => ConnectAppCommunityCommunityIdEventsRoute,
+  } as any)
+const ApiPublicIdentityTokenContactRoute =
+  ApiPublicIdentityTokenContactRouteImport.update({
+    id: '/api/public/identity/$token/contact',
+    path: '/api/public/identity/$token/contact',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCardSlugContactRoute =
+  ApiPublicCardSlugContactRouteImport.update({
+    id: '/api/public/card/$slug/contact',
+    path: '/api/public/card/$slug/contact',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicAvatarOwnerFileRoute =
+  ApiPublicAvatarOwnerFileRouteImport.update({
+    id: '/api/public/avatar/$owner/$file',
+    path: '/api/public/avatar/$owner/$file',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-'/': typeof IndexRoute,'/account-settings': typeof AccountSettingsRouteWithChildren,'/activity': typeof ActivityRoute,'/ai': typeof AiRoute,'/association': typeof AssociationRouteWithChildren,'/auth': typeof AuthRoute,'/benefits': typeof BenefitsRoute,'/business-cards': typeof BusinessCardsRoute,'/business-connect': typeof BusinessConnectRouteWithChildren,'/checkin': typeof CheckinRoute,'/checkin-qr': typeof CheckinQrRoute,'/companies': typeof CompaniesRouteWithChildren,'/connect': typeof ConnectRouteWithChildren,'/connect-app': typeof ConnectAppRouteWithChildren,'/demo': typeof DemoRoute,'/documents': typeof DocumentsRouteWithChildren,'/email-marketing': typeof EmailMarketingRoute,'/event-registrations': typeof EventRegistrationsRoute,'/events': typeof EventsRouteWithChildren,'/events-overview': typeof EventsOverviewRoute,'/expenses': typeof ExpensesRoute,'/fees': typeof FeesRouteWithChildren,'/finance-report': typeof FinanceReportRoute,'/forgot-password': typeof ForgotPasswordRoute,'/income': typeof IncomeRoute,'/install': typeof InstallRoute,'/landing': typeof LandingRouteWithChildren,'/m': typeof MRouteWithChildren,'/marketplace': typeof MarketplaceRouteWithChildren,'/meetings': typeof MeetingsRoute,'/my-permissions': typeof MyPermissionsRoute,'/network': typeof NetworkRoute,'/news': typeof NewsRoute,'/notifications': typeof NotificationsRoute,'/opportunities': typeof OpportunitiesRouteWithChildren,'/perks': typeof PerksRoute,'/profile': typeof ProfileRoute,'/register': typeof RegisterRoute,'/renewal': typeof RenewalRoute,'/reset-password': typeof ResetPasswordRoute,'/segments': typeof SegmentsRoute,'/settings': typeof SettingsRoute,'/sitemap.xml': typeof SitemapDotxmlRoute,'/sponsor-packages': typeof SponsorPackagesRoute,'/sponsor-report': typeof SponsorReportRoute,'/sponsors': typeof SponsorsRoute,'/verify': typeof VerifyRoute,'/vione-app': typeof VioneAppRoute,'/voting': typeof VotingRoute,'/account-settings/notifications': typeof AccountSettingsNotificationsRoute,'/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren,'/admin/cta-analytics': typeof AdminCtaAnalyticsRoute,'/admin/demo-leads': typeof AdminDemoLeadsRoute,'/admin/landing-templates': typeof AdminLandingTemplatesRoute,'/association/benefits': typeof AssociationBenefitsRoute,'/association/business-cards': typeof AssociationBusinessCardsRoute,'/association/card': typeof AssociationCardRoute,'/association/checkin': typeof AssociationCheckinRoute,'/association/events': typeof AssociationEventsRoute,'/association/history': typeof AssociationHistoryRoute,'/association/library': typeof AssociationLibraryRoute,'/association/login': typeof AssociationLoginRoute,'/association/members': typeof AssociationMembersRoute,'/association/messages': typeof AssociationMessagesRoute,'/association/news': typeof AssociationNewsRoute,'/association/notifications': typeof AssociationNotificationsRoute,'/association/opportunities': typeof AssociationOpportunitiesRoute,'/association/perks': typeof AssociationPerksRouteWithChildren,'/association/products': typeof AssociationProductsRoute,'/association/profile': typeof AssociationProfileRoute,'/association/renew': typeof AssociationRenewRouteWithChildren,'/association/settings': typeof AssociationSettingsRoute,'/b/$slug': typeof BSlugRoute,'/business-connect/connections': typeof BusinessConnectConnectionsRouteWithChildren,'/business-connect/meetings': typeof BusinessConnectMeetingsRouteWithChildren,'/business-connect/memory': typeof BusinessConnectMemoryRoute,'/business-connect/my-card': typeof BusinessConnectMyCardRoute,'/business-connect/notifications': typeof BusinessConnectNotificationsRoute,'/business-connect/relationship-timeline': typeof BusinessConnectRelationshipTimelineRoute,'/business-connect/saved-cards': typeof BusinessConnectSavedCardsRoute,'/business-connect/v1': typeof BusinessConnectV1Route,'/business-connect/v2': typeof BusinessConnectV2Route,'/business-connect/v3': typeof BusinessConnectV3Route,'/business-connect/v4': typeof BusinessConnectV4Route,'/business-connect/v5': typeof BusinessConnectV5Route,'/business-connect/v6': typeof BusinessConnectV6Route,'/business-connect/v7': typeof BusinessConnectV7Route,'/business-connect/v8': typeof BusinessConnectV8Route,'/c/$token': typeof CTokenRoute,'/card/$code': typeof CardCodeRoute,'/companies/$companyId': typeof CompaniesCompanyIdRoute,'/company/$slug': typeof CompanySlugRoute,'/connect-app/activate': typeof ConnectAppActivateRoute,'/connect-app/calendar': typeof ConnectAppCalendarRoute,'/connect-app/card-scan': typeof ConnectAppCardScanRoute,'/connect-app/community': typeof ConnectAppCommunityRouteWithChildren,'/connect-app/inbox': typeof ConnectAppInboxRouteWithChildren,'/connect-app/me': typeof ConnectAppMeRouteWithChildren,'/connect-app/moment': typeof ConnectAppMomentRouteWithChildren,'/connect-app/network': typeof ConnectAppNetworkRouteWithChildren,'/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute,'/connect-app/notifications': typeof ConnectAppNotificationsRoute,'/connect/calendar-settings': typeof ConnectCalendarSettingsRoute,'/connect/connections': typeof ConnectConnectionsRoute,'/connect/meetings': typeof ConnectMeetingsRouteWithChildren,'/connect/network': typeof ConnectNetworkRouteWithChildren,'/connect/saved-cards': typeof ConnectSavedCardsRoute,'/documents/$docId': typeof DocumentsDocIdRoute,'/events/$eventId': typeof EventsEventIdRoute,'/fees/$invoiceId': typeof FeesInvoiceIdRoute,'/h/$slug': typeof HSlugRoute,'/landing/business-connect': typeof LandingBusinessConnectRoute,'/landing/bussiness-connect': typeof LandingBussinessConnectRoute,'/landing/ceo1983': typeof LandingCeo1983RouteWithChildren,'/landing/vione': typeof LandingVioneRoute,'/m/business-cards': typeof MBusinessCardsRoute,'/m/card': typeof MCardRoute,'/m/checkin': typeof MCheckinRoute,'/m/events': typeof MEventsRoute,'/m/history': typeof MHistoryRoute,'/m/library': typeof MLibraryRoute,'/m/members': typeof MMembersRoute,'/m/messages': typeof MMessagesRoute,'/m/news': typeof MNewsRoute,'/m/notifications': typeof MNotificationsRoute,'/m/opportunities': typeof MOpportunitiesRoute,'/m/perks': typeof MPerksRouteWithChildren,'/m/products': typeof MProductsRoute,'/m/profile': typeof MProfileRoute,'/m/renew': typeof MRenewRouteWithChildren,'/marketplace/$productId': typeof MarketplaceProductIdRoute,'/marketplace/my-quotes': typeof MarketplaceMyQuotesRoute,'/marketplace/workspace': typeof MarketplaceWorkspaceRoute,'/members/$memberId': typeof MembersMemberIdRoute,'/opportunities/$id': typeof OpportunitiesIdRouteWithChildren,'/platform/admins': typeof PlatformAdminsRoute,'/platform/ai-audit': typeof PlatformAiAuditRoute,'/platform/audit': typeof PlatformAuditRoute,'/platform/introduction-operations': typeof PlatformIntroductionOperationsRoute,'/platform/permissions': typeof PlatformPermissionsRoute,'/platform/renewal-audit': typeof PlatformRenewalAuditRoute,'/vione/login': typeof VioneLoginRoute,'/account-settings/': typeof AccountSettingsIndexRoute,'/admin/': typeof AdminIndexRoute,'/association/': typeof AssociationIndexRoute,'/business-connect/': typeof BusinessConnectIndexRoute,'/companies/': typeof CompaniesIndexRoute,'/connect-app/': typeof ConnectAppIndexRoute,'/documents/': typeof DocumentsIndexRoute,'/events/': typeof EventsIndexRoute,'/fees/': typeof FeesIndexRoute,'/landing/': typeof LandingIndexRoute,'/m/': typeof MIndexRoute,'/marketplace/': typeof MarketplaceIndexRoute,'/members/': typeof MembersIndexRoute,'/opportunities/': typeof OpportunitiesIndexRoute,'/platform/': typeof PlatformIndexRoute,'/admin/business-cards/audit': typeof AdminBusinessCardsAuditRoute,'/association/perks/$id': typeof AssociationPerksIdRoute,'/association/renew/audit': typeof AssociationRenewAuditRoute,'/association/renew/history': typeof AssociationRenewHistoryRoute,'/association/renew/pay': typeof AssociationRenewPayRoute,'/association/renew/result': typeof AssociationRenewResultRoute,'/business-connect/connections/$personNodeId': typeof BusinessConnectConnectionsPersonNodeIdRoute,'/business-connect/introductions/$targetPersonNodeId': typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute,'/business-connect/introductions/analytics': typeof BusinessConnectIntroductionsAnalyticsRoute,'/business-connect/introductions/deliveries': typeof BusinessConnectIntroductionsDeliveriesRoute,'/business-connect/introductions/inbox': typeof BusinessConnectIntroductionsInboxRoute,'/business-connect/introductions/outcomes': typeof BusinessConnectIntroductionsOutcomesRoute,'/business-connect/introductions/requests': typeof BusinessConnectIntroductionsRequestsRoute,'/business-connect/meetings/$meetingId': typeof BusinessConnectMeetingsMeetingIdRoute,'/connect-app/community/$communityId': typeof ConnectAppCommunityCommunityIdRouteWithChildren,'/connect-app/community/requests': typeof ConnectAppCommunityRequestsRoute,'/connect-app/inbox/$threadId': typeof ConnectAppInboxThreadIdRoute,'/connect-app/invite/$token': typeof ConnectAppInviteTokenRoute,'/connect-app/me/card': typeof ConnectAppMeCardRoute,'/connect-app/me/cards': typeof ConnectAppMeCardsRoute,'/connect-app/me/edit': typeof ConnectAppMeEditRoute,'/connect-app/me/intel-settings': typeof ConnectAppMeIntelSettingsRoute,'/connect-app/me/security': typeof ConnectAppMeSecurityRoute,'/connect-app/me/sessions': typeof ConnectAppMeSessionsRoute,'/connect-app/moment/$personId': typeof ConnectAppMomentPersonIdRoute,'/connect-app/network/$personId': typeof ConnectAppNetworkPersonIdRoute,'/connect-app/network/requests': typeof ConnectAppNetworkRequestsRoute,'/connect/meetings/$section': typeof ConnectMeetingsSectionRoute,'/connect/network/connections': typeof ConnectNetworkConnectionsRoute,'/connect/network/notifications': typeof ConnectNetworkNotificationsRoute,'/landing/ceo/v1': typeof LandingCeoV1Route,'/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute,'/m/perks/$id': typeof MPerksIdRoute,'/m/renew/audit': typeof MRenewAuditRoute,'/m/renew/history': typeof MRenewHistoryRoute,'/m/renew/pay': typeof MRenewPayRoute,'/m/renew/result': typeof MRenewResultRoute,'/opportunities/$id/edit': typeof OpportunitiesIdEditRoute,'/admin/business-cards/': typeof AdminBusinessCardsIndexRoute,'/association/perks/': typeof AssociationPerksIndexRoute,'/association/renew/': typeof AssociationRenewIndexRoute,'/business-connect/connections/': typeof BusinessConnectConnectionsIndexRoute,'/business-connect/meetings/': typeof BusinessConnectMeetingsIndexRoute,'/connect-app/community/': typeof ConnectAppCommunityIndexRoute,'/connect-app/inbox/': typeof ConnectAppInboxIndexRoute,'/connect-app/me/': typeof ConnectAppMeIndexRoute,'/connect-app/moment/': typeof ConnectAppMomentIndexRoute,'/connect-app/network/': typeof ConnectAppNetworkIndexRoute,'/connect/cards/': typeof ConnectCardsIndexRoute,'/connect/meetings/': typeof ConnectMeetingsIndexRoute,'/connect/network/': typeof ConnectNetworkIndexRoute,'/m/perks/': typeof MPerksIndexRoute,'/m/renew/': typeof MRenewIndexRoute,'/api/public/card/{$slug}.vcf': typeof ApiPublicCardChar123slugChar125DotvcfRoute,'/api/public/hooks/notification-runtime': typeof ApiPublicHooksNotificationRuntimeRoute,'/api/public/hooks/outcome-consumer': typeof ApiPublicHooksOutcomeConsumerRoute,'/api/public/hooks/timeline-projection': typeof ApiPublicHooksTimelineProjectionRoute,'/connect-app/community/$communityId/events': typeof ConnectAppCommunityCommunityIdEventsRouteWithChildren,'/connect-app/community/$communityId/members': typeof ConnectAppCommunityCommunityIdMembersRouteWithChildren,'/connect-app/community/$communityId/news': typeof ConnectAppCommunityCommunityIdNewsRouteWithChildren,'/connect-app/community/$communityId/opportunities': typeof ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren,'/connect/cards/$cardId/edit': typeof ConnectCardsCardIdEditRoute,'/connect/network/requests/incoming': typeof ConnectNetworkRequestsIncomingRoute,'/connect/network/requests/sent': typeof ConnectNetworkRequestsSentRoute,'/connect-app/community/$communityId/': typeof ConnectAppCommunityCommunityIdIndexRoute,'/api/public/avatar/$owner/$file': typeof ApiPublicAvatarOwnerFileRoute,'/api/public/card/$slug/contact': typeof ApiPublicCardSlugContactRoute,'/api/public/identity/$token/contact': typeof ApiPublicIdentityTokenContactRoute,'/connect-app/community/$communityId/events/$eventRef': typeof ConnectAppCommunityCommunityIdEventsEventRefRoute,'/connect-app/community/$communityId/members/$memberRef': typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute,'/connect-app/community/$communityId/news/$newsRef': typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute,'/connect-app/community/$communityId/opportunities/$opportunityRef': typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute,'/connect-app/community/$communityId/events/': typeof ConnectAppCommunityCommunityIdEventsIndexRoute,'/connect-app/community/$communityId/members/': typeof ConnectAppCommunityCommunityIdMembersIndexRoute,'/connect-app/community/$communityId/news/': typeof ConnectAppCommunityCommunityIdNewsIndexRoute,'/connect-app/community/$communityId/opportunities/': typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
+  '/': typeof IndexRoute
+  '/account-settings': typeof AccountSettingsRouteWithChildren
+  '/activity': typeof ActivityRoute
+  '/ai': typeof AiRoute
+  '/association': typeof AssociationRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/benefits': typeof BenefitsRoute
+  '/business-cards': typeof BusinessCardsRoute
+  '/business-connect': typeof BusinessConnectRouteWithChildren
+  '/checkin': typeof CheckinRoute
+  '/checkin-qr': typeof CheckinQrRoute
+  '/companies': typeof CompaniesRouteWithChildren
+  '/connect': typeof ConnectRouteWithChildren
+  '/connect-app': typeof ConnectAppRouteWithChildren
+  '/demo': typeof DemoRoute
+  '/documents': typeof DocumentsRouteWithChildren
+  '/email-marketing': typeof EmailMarketingRoute
+  '/event-registrations': typeof EventRegistrationsRoute
+  '/events': typeof EventsRouteWithChildren
+  '/events-overview': typeof EventsOverviewRoute
+  '/expenses': typeof ExpensesRoute
+  '/fees': typeof FeesRouteWithChildren
+  '/finance-report': typeof FinanceReportRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/income': typeof IncomeRoute
+  '/install': typeof InstallRoute
+  '/landing': typeof LandingRouteWithChildren
+  '/m': typeof MRouteWithChildren
+  '/marketplace': typeof MarketplaceRouteWithChildren
+  '/meetings': typeof MeetingsRoute
+  '/my-permissions': typeof MyPermissionsRoute
+  '/network': typeof NetworkRoute
+  '/news': typeof NewsRoute
+  '/notifications': typeof NotificationsRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/perks': typeof PerksRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/renewal': typeof RenewalRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/segments': typeof SegmentsRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsor-packages': typeof SponsorPackagesRoute
+  '/sponsor-report': typeof SponsorReportRoute
+  '/sponsors': typeof SponsorsRoute
+  '/verify': typeof VerifyRoute
+  '/vione-app': typeof VioneAppRoute
+  '/voting': typeof VotingRoute
+  '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
+  '/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren
+  '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
+  '/admin/demo-leads': typeof AdminDemoLeadsRoute
+  '/admin/landing-templates': typeof AdminLandingTemplatesRoute
+  '/association/benefits': typeof AssociationBenefitsRoute
+  '/association/business-cards': typeof AssociationBusinessCardsRoute
+  '/association/card': typeof AssociationCardRoute
+  '/association/checkin': typeof AssociationCheckinRoute
+  '/association/events': typeof AssociationEventsRoute
+  '/association/history': typeof AssociationHistoryRoute
+  '/association/library': typeof AssociationLibraryRoute
+  '/association/login': typeof AssociationLoginRoute
+  '/association/members': typeof AssociationMembersRoute
+  '/association/messages': typeof AssociationMessagesRoute
+  '/association/news': typeof AssociationNewsRoute
+  '/association/notifications': typeof AssociationNotificationsRoute
+  '/association/opportunities': typeof AssociationOpportunitiesRoute
+  '/association/perks': typeof AssociationPerksRouteWithChildren
+  '/association/products': typeof AssociationProductsRoute
+  '/association/profile': typeof AssociationProfileRoute
+  '/association/renew': typeof AssociationRenewRouteWithChildren
+  '/association/settings': typeof AssociationSettingsRoute
+  '/b/$slug': typeof BSlugRoute
+  '/business-connect/connections': typeof BusinessConnectConnectionsRouteWithChildren
+  '/business-connect/meetings': typeof BusinessConnectMeetingsRouteWithChildren
+  '/business-connect/memory': typeof BusinessConnectMemoryRoute
+  '/business-connect/my-card': typeof BusinessConnectMyCardRoute
+  '/business-connect/notifications': typeof BusinessConnectNotificationsRoute
+  '/business-connect/relationship-timeline': typeof BusinessConnectRelationshipTimelineRoute
+  '/business-connect/saved-cards': typeof BusinessConnectSavedCardsRoute
+  '/business-connect/v1': typeof BusinessConnectV1Route
+  '/business-connect/v2': typeof BusinessConnectV2Route
+  '/business-connect/v3': typeof BusinessConnectV3Route
+  '/business-connect/v4': typeof BusinessConnectV4Route
+  '/business-connect/v5': typeof BusinessConnectV5Route
+  '/business-connect/v6': typeof BusinessConnectV6Route
+  '/business-connect/v7': typeof BusinessConnectV7Route
+  '/business-connect/v8': typeof BusinessConnectV8Route
+  '/c/$token': typeof CTokenRoute
+  '/card/$code': typeof CardCodeRoute
+  '/companies/$companyId': typeof CompaniesCompanyIdRoute
+  '/company/$slug': typeof CompanySlugRoute
+  '/connect-app/activate': typeof ConnectAppActivateRoute
+  '/connect-app/calendar': typeof ConnectAppCalendarRoute
+  '/connect-app/card-scan': typeof ConnectAppCardScanRoute
+  '/connect-app/community': typeof ConnectAppCommunityRouteWithChildren
+  '/connect-app/inbox': typeof ConnectAppInboxRouteWithChildren
+  '/connect-app/me': typeof ConnectAppMeRouteWithChildren
+  '/connect-app/moment': typeof ConnectAppMomentRouteWithChildren
+  '/connect-app/network': typeof ConnectAppNetworkRouteWithChildren
+  '/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute
+  '/connect-app/notifications': typeof ConnectAppNotificationsRoute
+  '/connect/calendar-settings': typeof ConnectCalendarSettingsRoute
+  '/connect/connections': typeof ConnectConnectionsRoute
+  '/connect/meetings': typeof ConnectMeetingsRouteWithChildren
+  '/connect/network': typeof ConnectNetworkRouteWithChildren
+  '/connect/saved-cards': typeof ConnectSavedCardsRoute
+  '/documents/$docId': typeof DocumentsDocIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/fees/$invoiceId': typeof FeesInvoiceIdRoute
+  '/h/$slug': typeof HSlugRoute
+  '/landing/business-connect': typeof LandingBusinessConnectRoute
+  '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
+  '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
+  '/landing/vione': typeof LandingVioneRoute
+  '/m/business-cards': typeof MBusinessCardsRoute
+  '/m/card': typeof MCardRoute
+  '/m/checkin': typeof MCheckinRoute
+  '/m/events': typeof MEventsRoute
+  '/m/history': typeof MHistoryRoute
+  '/m/library': typeof MLibraryRoute
+  '/m/members': typeof MMembersRoute
+  '/m/messages': typeof MMessagesRoute
+  '/m/news': typeof MNewsRoute
+  '/m/notifications': typeof MNotificationsRoute
+  '/m/opportunities': typeof MOpportunitiesRoute
+  '/m/perks': typeof MPerksRouteWithChildren
+  '/m/products': typeof MProductsRoute
+  '/m/profile': typeof MProfileRoute
+  '/m/renew': typeof MRenewRouteWithChildren
+  '/marketplace/$productId': typeof MarketplaceProductIdRoute
+  '/marketplace/my-quotes': typeof MarketplaceMyQuotesRoute
+  '/marketplace/workspace': typeof MarketplaceWorkspaceRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
+  '/opportunities/$id': typeof OpportunitiesIdRouteWithChildren
+  '/platform/admins': typeof PlatformAdminsRoute
+  '/platform/ai-audit': typeof PlatformAiAuditRoute
+  '/platform/audit': typeof PlatformAuditRoute
+  '/platform/introduction-operations': typeof PlatformIntroductionOperationsRoute
+  '/platform/permissions': typeof PlatformPermissionsRoute
+  '/platform/renewal-audit': typeof PlatformRenewalAuditRoute
+  '/vione/login': typeof VioneLoginRoute
+  '/account-settings/': typeof AccountSettingsIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/association/': typeof AssociationIndexRoute
+  '/business-connect/': typeof BusinessConnectIndexRoute
+  '/companies/': typeof CompaniesIndexRoute
+  '/connect-app/': typeof ConnectAppIndexRoute
+  '/documents/': typeof DocumentsIndexRoute
+  '/events/': typeof EventsIndexRoute
+  '/fees/': typeof FeesIndexRoute
+  '/landing/': typeof LandingIndexRoute
+  '/m/': typeof MIndexRoute
+  '/marketplace/': typeof MarketplaceIndexRoute
+  '/members/': typeof MembersIndexRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
+  '/platform/': typeof PlatformIndexRoute
+  '/admin/business-cards/audit': typeof AdminBusinessCardsAuditRoute
+  '/association/perks/$id': typeof AssociationPerksIdRoute
+  '/association/renew/audit': typeof AssociationRenewAuditRoute
+  '/association/renew/history': typeof AssociationRenewHistoryRoute
+  '/association/renew/pay': typeof AssociationRenewPayRoute
+  '/association/renew/result': typeof AssociationRenewResultRoute
+  '/business-connect/connections/$personNodeId': typeof BusinessConnectConnectionsPersonNodeIdRoute
+  '/business-connect/introductions/$targetPersonNodeId': typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute
+  '/business-connect/introductions/analytics': typeof BusinessConnectIntroductionsAnalyticsRoute
+  '/business-connect/introductions/deliveries': typeof BusinessConnectIntroductionsDeliveriesRoute
+  '/business-connect/introductions/inbox': typeof BusinessConnectIntroductionsInboxRoute
+  '/business-connect/introductions/outcomes': typeof BusinessConnectIntroductionsOutcomesRoute
+  '/business-connect/introductions/requests': typeof BusinessConnectIntroductionsRequestsRoute
+  '/business-connect/meetings/$meetingId': typeof BusinessConnectMeetingsMeetingIdRoute
+  '/connect-app/community/$communityId': typeof ConnectAppCommunityCommunityIdRouteWithChildren
+  '/connect-app/community/requests': typeof ConnectAppCommunityRequestsRoute
+  '/connect-app/inbox/$threadId': typeof ConnectAppInboxThreadIdRoute
+  '/connect-app/invite/$token': typeof ConnectAppInviteTokenRoute
+  '/connect-app/me/card': typeof ConnectAppMeCardRoute
+  '/connect-app/me/cards': typeof ConnectAppMeCardsRoute
+  '/connect-app/me/edit': typeof ConnectAppMeEditRoute
+  '/connect-app/me/intel-settings': typeof ConnectAppMeIntelSettingsRoute
+  '/connect-app/me/security': typeof ConnectAppMeSecurityRoute
+  '/connect-app/me/sessions': typeof ConnectAppMeSessionsRoute
+  '/connect-app/moment/$personId': typeof ConnectAppMomentPersonIdRoute
+  '/connect-app/network/$personId': typeof ConnectAppNetworkPersonIdRoute
+  '/connect-app/network/requests': typeof ConnectAppNetworkRequestsRoute
+  '/connect/meetings/$section': typeof ConnectMeetingsSectionRoute
+  '/connect/network/connections': typeof ConnectNetworkConnectionsRoute
+  '/connect/network/notifications': typeof ConnectNetworkNotificationsRoute
+  '/landing/ceo/v1': typeof LandingCeoV1Route
+  '/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute
+  '/m/perks/$id': typeof MPerksIdRoute
+  '/m/renew/audit': typeof MRenewAuditRoute
+  '/m/renew/history': typeof MRenewHistoryRoute
+  '/m/renew/pay': typeof MRenewPayRoute
+  '/m/renew/result': typeof MRenewResultRoute
+  '/opportunities/$id/edit': typeof OpportunitiesIdEditRoute
+  '/admin/business-cards/': typeof AdminBusinessCardsIndexRoute
+  '/association/perks/': typeof AssociationPerksIndexRoute
+  '/association/renew/': typeof AssociationRenewIndexRoute
+  '/business-connect/connections/': typeof BusinessConnectConnectionsIndexRoute
+  '/business-connect/meetings/': typeof BusinessConnectMeetingsIndexRoute
+  '/connect-app/community/': typeof ConnectAppCommunityIndexRoute
+  '/connect-app/inbox/': typeof ConnectAppInboxIndexRoute
+  '/connect-app/me/': typeof ConnectAppMeIndexRoute
+  '/connect-app/moment/': typeof ConnectAppMomentIndexRoute
+  '/connect-app/network/': typeof ConnectAppNetworkIndexRoute
+  '/connect/cards/': typeof ConnectCardsIndexRoute
+  '/connect/meetings/': typeof ConnectMeetingsIndexRoute
+  '/connect/network/': typeof ConnectNetworkIndexRoute
+  '/m/perks/': typeof MPerksIndexRoute
+  '/m/renew/': typeof MRenewIndexRoute
+  '/api/public/card/{$slug}.vcf': typeof ApiPublicCardChar123slugChar125DotvcfRoute
+  '/api/public/hooks/notification-runtime': typeof ApiPublicHooksNotificationRuntimeRoute
+  '/api/public/hooks/outcome-consumer': typeof ApiPublicHooksOutcomeConsumerRoute
+  '/api/public/hooks/timeline-projection': typeof ApiPublicHooksTimelineProjectionRoute
+  '/connect-app/community/$communityId/events': typeof ConnectAppCommunityCommunityIdEventsRouteWithChildren
+  '/connect-app/community/$communityId/members': typeof ConnectAppCommunityCommunityIdMembersRouteWithChildren
+  '/connect-app/community/$communityId/news': typeof ConnectAppCommunityCommunityIdNewsRouteWithChildren
+  '/connect-app/community/$communityId/opportunities': typeof ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren
+  '/connect/cards/$cardId/edit': typeof ConnectCardsCardIdEditRoute
+  '/connect/network/requests/incoming': typeof ConnectNetworkRequestsIncomingRoute
+  '/connect/network/requests/sent': typeof ConnectNetworkRequestsSentRoute
+  '/connect-app/community/$communityId/': typeof ConnectAppCommunityCommunityIdIndexRoute
+  '/api/public/avatar/$owner/$file': typeof ApiPublicAvatarOwnerFileRoute
+  '/api/public/card/$slug/contact': typeof ApiPublicCardSlugContactRoute
+  '/api/public/identity/$token/contact': typeof ApiPublicIdentityTokenContactRoute
+  '/connect-app/community/$communityId/events/$eventRef': typeof ConnectAppCommunityCommunityIdEventsEventRefRoute
+  '/connect-app/community/$communityId/members/$memberRef': typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute
+  '/connect-app/community/$communityId/news/$newsRef': typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute
+  '/connect-app/community/$communityId/opportunities/$opportunityRef': typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute
+  '/connect-app/community/$communityId/events/': typeof ConnectAppCommunityCommunityIdEventsIndexRoute
+  '/connect-app/community/$communityId/members/': typeof ConnectAppCommunityCommunityIdMembersIndexRoute
+  '/connect-app/community/$communityId/news/': typeof ConnectAppCommunityCommunityIdNewsIndexRoute
+  '/connect-app/community/$communityId/opportunities/': typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
 }
 export interface FileRoutesByTo {
-'/': typeof IndexRoute,'/activity': typeof ActivityRoute,'/ai': typeof AiRoute,'/auth': typeof AuthRoute,'/benefits': typeof BenefitsRoute,'/business-cards': typeof BusinessCardsRoute,'/checkin': typeof CheckinRoute,'/checkin-qr': typeof CheckinQrRoute,'/connect': typeof ConnectRouteWithChildren,'/demo': typeof DemoRoute,'/email-marketing': typeof EmailMarketingRoute,'/event-registrations': typeof EventRegistrationsRoute,'/events-overview': typeof EventsOverviewRoute,'/expenses': typeof ExpensesRoute,'/finance-report': typeof FinanceReportRoute,'/forgot-password': typeof ForgotPasswordRoute,'/income': typeof IncomeRoute,'/install': typeof InstallRoute,'/meetings': typeof MeetingsRoute,'/my-permissions': typeof MyPermissionsRoute,'/network': typeof NetworkRoute,'/news': typeof NewsRoute,'/notifications': typeof NotificationsRoute,'/perks': typeof PerksRoute,'/profile': typeof ProfileRoute,'/register': typeof RegisterRoute,'/renewal': typeof RenewalRoute,'/reset-password': typeof ResetPasswordRoute,'/segments': typeof SegmentsRoute,'/settings': typeof SettingsRoute,'/sitemap.xml': typeof SitemapDotxmlRoute,'/sponsor-packages': typeof SponsorPackagesRoute,'/sponsor-report': typeof SponsorReportRoute,'/sponsors': typeof SponsorsRoute,'/verify': typeof VerifyRoute,'/vione-app': typeof VioneAppRoute,'/voting': typeof VotingRoute,'/account-settings/notifications': typeof AccountSettingsNotificationsRoute,'/admin/cta-analytics': typeof AdminCtaAnalyticsRoute,'/admin/demo-leads': typeof AdminDemoLeadsRoute,'/admin/landing-templates': typeof AdminLandingTemplatesRoute,'/association/benefits': typeof AssociationBenefitsRoute,'/association/business-cards': typeof AssociationBusinessCardsRoute,'/association/card': typeof AssociationCardRoute,'/association/checkin': typeof AssociationCheckinRoute,'/association/events': typeof AssociationEventsRoute,'/association/history': typeof AssociationHistoryRoute,'/association/library': typeof AssociationLibraryRoute,'/association/login': typeof AssociationLoginRoute,'/association/members': typeof AssociationMembersRoute,'/association/messages': typeof AssociationMessagesRoute,'/association/news': typeof AssociationNewsRoute,'/association/notifications': typeof AssociationNotificationsRoute,'/association/opportunities': typeof AssociationOpportunitiesRoute,'/association/products': typeof AssociationProductsRoute,'/association/profile': typeof AssociationProfileRoute,'/association/settings': typeof AssociationSettingsRoute,'/b/$slug': typeof BSlugRoute,'/business-connect/memory': typeof BusinessConnectMemoryRoute,'/business-connect/my-card': typeof BusinessConnectMyCardRoute,'/business-connect/notifications': typeof BusinessConnectNotificationsRoute,'/business-connect/relationship-timeline': typeof BusinessConnectRelationshipTimelineRoute,'/business-connect/saved-cards': typeof BusinessConnectSavedCardsRoute,'/business-connect/v1': typeof BusinessConnectV1Route,'/business-connect/v2': typeof BusinessConnectV2Route,'/business-connect/v3': typeof BusinessConnectV3Route,'/business-connect/v4': typeof BusinessConnectV4Route,'/business-connect/v5': typeof BusinessConnectV5Route,'/business-connect/v6': typeof BusinessConnectV6Route,'/business-connect/v7': typeof BusinessConnectV7Route,'/business-connect/v8': typeof BusinessConnectV8Route,'/c/$token': typeof CTokenRoute,'/card/$code': typeof CardCodeRoute,'/companies/$companyId': typeof CompaniesCompanyIdRoute,'/company/$slug': typeof CompanySlugRoute,'/connect-app/activate': typeof ConnectAppActivateRoute,'/connect-app/calendar': typeof ConnectAppCalendarRoute,'/connect-app/card-scan': typeof ConnectAppCardScanRoute,'/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute,'/connect-app/notifications': typeof ConnectAppNotificationsRoute,'/connect/calendar-settings': typeof ConnectCalendarSettingsRoute,'/connect/connections': typeof ConnectConnectionsRoute,'/connect/saved-cards': typeof ConnectSavedCardsRoute,'/documents/$docId': typeof DocumentsDocIdRoute,'/events/$eventId': typeof EventsEventIdRoute,'/fees/$invoiceId': typeof FeesInvoiceIdRoute,'/h/$slug': typeof HSlugRoute,'/landing/business-connect': typeof LandingBusinessConnectRoute,'/landing/bussiness-connect': typeof LandingBussinessConnectRoute,'/landing/ceo1983': typeof LandingCeo1983RouteWithChildren,'/landing/vione': typeof LandingVioneRoute,'/m/business-cards': typeof MBusinessCardsRoute,'/m/card': typeof MCardRoute,'/m/checkin': typeof MCheckinRoute,'/m/events': typeof MEventsRoute,'/m/history': typeof MHistoryRoute,'/m/library': typeof MLibraryRoute,'/m/members': typeof MMembersRoute,'/m/messages': typeof MMessagesRoute,'/m/news': typeof MNewsRoute,'/m/notifications': typeof MNotificationsRoute,'/m/opportunities': typeof MOpportunitiesRoute,'/m/products': typeof MProductsRoute,'/m/profile': typeof MProfileRoute,'/marketplace/$productId': typeof MarketplaceProductIdRoute,'/marketplace/my-quotes': typeof MarketplaceMyQuotesRoute,'/marketplace/workspace': typeof MarketplaceWorkspaceRoute,'/members/$memberId': typeof MembersMemberIdRoute,'/opportunities/$id': typeof OpportunitiesIdRouteWithChildren,'/platform/admins': typeof PlatformAdminsRoute,'/platform/ai-audit': typeof PlatformAiAuditRoute,'/platform/audit': typeof PlatformAuditRoute,'/platform/introduction-operations': typeof PlatformIntroductionOperationsRoute,'/platform/permissions': typeof PlatformPermissionsRoute,'/platform/renewal-audit': typeof PlatformRenewalAuditRoute,'/vione/login': typeof VioneLoginRoute,'/account-settings': typeof AccountSettingsIndexRoute,'/admin': typeof AdminIndexRoute,'/association': typeof AssociationIndexRoute,'/business-connect': typeof BusinessConnectIndexRoute,'/companies': typeof CompaniesIndexRoute,'/connect-app': typeof ConnectAppIndexRoute,'/documents': typeof DocumentsIndexRoute,'/events': typeof EventsIndexRoute,'/fees': typeof FeesIndexRoute,'/landing': typeof LandingIndexRoute,'/m': typeof MIndexRoute,'/marketplace': typeof MarketplaceIndexRoute,'/members': typeof MembersIndexRoute,'/opportunities': typeof OpportunitiesIndexRoute,'/platform': typeof PlatformIndexRoute,'/admin/business-cards/audit': typeof AdminBusinessCardsAuditRoute,'/association/perks/$id': typeof AssociationPerksIdRoute,'/association/renew/audit': typeof AssociationRenewAuditRoute,'/association/renew/history': typeof AssociationRenewHistoryRoute,'/association/renew/pay': typeof AssociationRenewPayRoute,'/association/renew/result': typeof AssociationRenewResultRoute,'/business-connect/connections/$personNodeId': typeof BusinessConnectConnectionsPersonNodeIdRoute,'/business-connect/introductions/$targetPersonNodeId': typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute,'/business-connect/introductions/analytics': typeof BusinessConnectIntroductionsAnalyticsRoute,'/business-connect/introductions/deliveries': typeof BusinessConnectIntroductionsDeliveriesRoute,'/business-connect/introductions/inbox': typeof BusinessConnectIntroductionsInboxRoute,'/business-connect/introductions/outcomes': typeof BusinessConnectIntroductionsOutcomesRoute,'/business-connect/introductions/requests': typeof BusinessConnectIntroductionsRequestsRoute,'/business-connect/meetings/$meetingId': typeof BusinessConnectMeetingsMeetingIdRoute,'/connect-app/community/requests': typeof ConnectAppCommunityRequestsRoute,'/connect-app/inbox/$threadId': typeof ConnectAppInboxThreadIdRoute,'/connect-app/invite/$token': typeof ConnectAppInviteTokenRoute,'/connect-app/me/card': typeof ConnectAppMeCardRoute,'/connect-app/me/cards': typeof ConnectAppMeCardsRoute,'/connect-app/me/edit': typeof ConnectAppMeEditRoute,'/connect-app/me/intel-settings': typeof ConnectAppMeIntelSettingsRoute,'/connect-app/me/security': typeof ConnectAppMeSecurityRoute,'/connect-app/me/sessions': typeof ConnectAppMeSessionsRoute,'/connect-app/moment/$personId': typeof ConnectAppMomentPersonIdRoute,'/connect-app/network/$personId': typeof ConnectAppNetworkPersonIdRoute,'/connect-app/network/requests': typeof ConnectAppNetworkRequestsRoute,'/connect/meetings/$section': typeof ConnectMeetingsSectionRoute,'/connect/network/connections': typeof ConnectNetworkConnectionsRoute,'/connect/network/notifications': typeof ConnectNetworkNotificationsRoute,'/landing/ceo/v1': typeof LandingCeoV1Route,'/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute,'/m/perks/$id': typeof MPerksIdRoute,'/m/renew/audit': typeof MRenewAuditRoute,'/m/renew/history': typeof MRenewHistoryRoute,'/m/renew/pay': typeof MRenewPayRoute,'/m/renew/result': typeof MRenewResultRoute,'/opportunities/$id/edit': typeof OpportunitiesIdEditRoute,'/admin/business-cards': typeof AdminBusinessCardsIndexRoute,'/association/perks': typeof AssociationPerksIndexRoute,'/association/renew': typeof AssociationRenewIndexRoute,'/business-connect/connections': typeof BusinessConnectConnectionsIndexRoute,'/business-connect/meetings': typeof BusinessConnectMeetingsIndexRoute,'/connect-app/community': typeof ConnectAppCommunityIndexRoute,'/connect-app/inbox': typeof ConnectAppInboxIndexRoute,'/connect-app/me': typeof ConnectAppMeIndexRoute,'/connect-app/moment': typeof ConnectAppMomentIndexRoute,'/connect-app/network': typeof ConnectAppNetworkIndexRoute,'/connect/cards': typeof ConnectCardsIndexRoute,'/connect/meetings': typeof ConnectMeetingsIndexRoute,'/connect/network': typeof ConnectNetworkIndexRoute,'/m/perks': typeof MPerksIndexRoute,'/m/renew': typeof MRenewIndexRoute,'/api/public/card/{$slug}.vcf': typeof ApiPublicCardChar123slugChar125DotvcfRoute,'/api/public/hooks/notification-runtime': typeof ApiPublicHooksNotificationRuntimeRoute,'/api/public/hooks/outcome-consumer': typeof ApiPublicHooksOutcomeConsumerRoute,'/api/public/hooks/timeline-projection': typeof ApiPublicHooksTimelineProjectionRoute,'/connect/cards/$cardId/edit': typeof ConnectCardsCardIdEditRoute,'/connect/network/requests/incoming': typeof ConnectNetworkRequestsIncomingRoute,'/connect/network/requests/sent': typeof ConnectNetworkRequestsSentRoute,'/connect-app/community/$communityId': typeof ConnectAppCommunityCommunityIdIndexRoute,'/api/public/avatar/$owner/$file': typeof ApiPublicAvatarOwnerFileRoute,'/api/public/card/$slug/contact': typeof ApiPublicCardSlugContactRoute,'/api/public/identity/$token/contact': typeof ApiPublicIdentityTokenContactRoute,'/connect-app/community/$communityId/events/$eventRef': typeof ConnectAppCommunityCommunityIdEventsEventRefRoute,'/connect-app/community/$communityId/members/$memberRef': typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute,'/connect-app/community/$communityId/news/$newsRef': typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute,'/connect-app/community/$communityId/opportunities/$opportunityRef': typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute,'/connect-app/community/$communityId/events': typeof ConnectAppCommunityCommunityIdEventsIndexRoute,'/connect-app/community/$communityId/members': typeof ConnectAppCommunityCommunityIdMembersIndexRoute,'/connect-app/community/$communityId/news': typeof ConnectAppCommunityCommunityIdNewsIndexRoute,'/connect-app/community/$communityId/opportunities': typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
+  '/': typeof IndexRoute
+  '/activity': typeof ActivityRoute
+  '/ai': typeof AiRoute
+  '/auth': typeof AuthRoute
+  '/benefits': typeof BenefitsRoute
+  '/business-cards': typeof BusinessCardsRoute
+  '/checkin': typeof CheckinRoute
+  '/checkin-qr': typeof CheckinQrRoute
+  '/connect': typeof ConnectRouteWithChildren
+  '/demo': typeof DemoRoute
+  '/email-marketing': typeof EmailMarketingRoute
+  '/event-registrations': typeof EventRegistrationsRoute
+  '/events-overview': typeof EventsOverviewRoute
+  '/expenses': typeof ExpensesRoute
+  '/finance-report': typeof FinanceReportRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/income': typeof IncomeRoute
+  '/install': typeof InstallRoute
+  '/meetings': typeof MeetingsRoute
+  '/my-permissions': typeof MyPermissionsRoute
+  '/network': typeof NetworkRoute
+  '/news': typeof NewsRoute
+  '/notifications': typeof NotificationsRoute
+  '/perks': typeof PerksRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/renewal': typeof RenewalRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/segments': typeof SegmentsRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsor-packages': typeof SponsorPackagesRoute
+  '/sponsor-report': typeof SponsorReportRoute
+  '/sponsors': typeof SponsorsRoute
+  '/verify': typeof VerifyRoute
+  '/vione-app': typeof VioneAppRoute
+  '/voting': typeof VotingRoute
+  '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
+  '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
+  '/admin/demo-leads': typeof AdminDemoLeadsRoute
+  '/admin/landing-templates': typeof AdminLandingTemplatesRoute
+  '/association/benefits': typeof AssociationBenefitsRoute
+  '/association/business-cards': typeof AssociationBusinessCardsRoute
+  '/association/card': typeof AssociationCardRoute
+  '/association/checkin': typeof AssociationCheckinRoute
+  '/association/events': typeof AssociationEventsRoute
+  '/association/history': typeof AssociationHistoryRoute
+  '/association/library': typeof AssociationLibraryRoute
+  '/association/login': typeof AssociationLoginRoute
+  '/association/members': typeof AssociationMembersRoute
+  '/association/messages': typeof AssociationMessagesRoute
+  '/association/news': typeof AssociationNewsRoute
+  '/association/notifications': typeof AssociationNotificationsRoute
+  '/association/opportunities': typeof AssociationOpportunitiesRoute
+  '/association/products': typeof AssociationProductsRoute
+  '/association/profile': typeof AssociationProfileRoute
+  '/association/settings': typeof AssociationSettingsRoute
+  '/b/$slug': typeof BSlugRoute
+  '/business-connect/memory': typeof BusinessConnectMemoryRoute
+  '/business-connect/my-card': typeof BusinessConnectMyCardRoute
+  '/business-connect/notifications': typeof BusinessConnectNotificationsRoute
+  '/business-connect/relationship-timeline': typeof BusinessConnectRelationshipTimelineRoute
+  '/business-connect/saved-cards': typeof BusinessConnectSavedCardsRoute
+  '/business-connect/v1': typeof BusinessConnectV1Route
+  '/business-connect/v2': typeof BusinessConnectV2Route
+  '/business-connect/v3': typeof BusinessConnectV3Route
+  '/business-connect/v4': typeof BusinessConnectV4Route
+  '/business-connect/v5': typeof BusinessConnectV5Route
+  '/business-connect/v6': typeof BusinessConnectV6Route
+  '/business-connect/v7': typeof BusinessConnectV7Route
+  '/business-connect/v8': typeof BusinessConnectV8Route
+  '/c/$token': typeof CTokenRoute
+  '/card/$code': typeof CardCodeRoute
+  '/companies/$companyId': typeof CompaniesCompanyIdRoute
+  '/company/$slug': typeof CompanySlugRoute
+  '/connect-app/activate': typeof ConnectAppActivateRoute
+  '/connect-app/calendar': typeof ConnectAppCalendarRoute
+  '/connect-app/card-scan': typeof ConnectAppCardScanRoute
+  '/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute
+  '/connect-app/notifications': typeof ConnectAppNotificationsRoute
+  '/connect/calendar-settings': typeof ConnectCalendarSettingsRoute
+  '/connect/connections': typeof ConnectConnectionsRoute
+  '/connect/saved-cards': typeof ConnectSavedCardsRoute
+  '/documents/$docId': typeof DocumentsDocIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/fees/$invoiceId': typeof FeesInvoiceIdRoute
+  '/h/$slug': typeof HSlugRoute
+  '/landing/business-connect': typeof LandingBusinessConnectRoute
+  '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
+  '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
+  '/landing/vione': typeof LandingVioneRoute
+  '/m/business-cards': typeof MBusinessCardsRoute
+  '/m/card': typeof MCardRoute
+  '/m/checkin': typeof MCheckinRoute
+  '/m/events': typeof MEventsRoute
+  '/m/history': typeof MHistoryRoute
+  '/m/library': typeof MLibraryRoute
+  '/m/members': typeof MMembersRoute
+  '/m/messages': typeof MMessagesRoute
+  '/m/news': typeof MNewsRoute
+  '/m/notifications': typeof MNotificationsRoute
+  '/m/opportunities': typeof MOpportunitiesRoute
+  '/m/products': typeof MProductsRoute
+  '/m/profile': typeof MProfileRoute
+  '/marketplace/$productId': typeof MarketplaceProductIdRoute
+  '/marketplace/my-quotes': typeof MarketplaceMyQuotesRoute
+  '/marketplace/workspace': typeof MarketplaceWorkspaceRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
+  '/opportunities/$id': typeof OpportunitiesIdRouteWithChildren
+  '/platform/admins': typeof PlatformAdminsRoute
+  '/platform/ai-audit': typeof PlatformAiAuditRoute
+  '/platform/audit': typeof PlatformAuditRoute
+  '/platform/introduction-operations': typeof PlatformIntroductionOperationsRoute
+  '/platform/permissions': typeof PlatformPermissionsRoute
+  '/platform/renewal-audit': typeof PlatformRenewalAuditRoute
+  '/vione/login': typeof VioneLoginRoute
+  '/account-settings': typeof AccountSettingsIndexRoute
+  '/admin': typeof AdminIndexRoute
+  '/association': typeof AssociationIndexRoute
+  '/business-connect': typeof BusinessConnectIndexRoute
+  '/companies': typeof CompaniesIndexRoute
+  '/connect-app': typeof ConnectAppIndexRoute
+  '/documents': typeof DocumentsIndexRoute
+  '/events': typeof EventsIndexRoute
+  '/fees': typeof FeesIndexRoute
+  '/landing': typeof LandingIndexRoute
+  '/m': typeof MIndexRoute
+  '/marketplace': typeof MarketplaceIndexRoute
+  '/members': typeof MembersIndexRoute
+  '/opportunities': typeof OpportunitiesIndexRoute
+  '/platform': typeof PlatformIndexRoute
+  '/admin/business-cards/audit': typeof AdminBusinessCardsAuditRoute
+  '/association/perks/$id': typeof AssociationPerksIdRoute
+  '/association/renew/audit': typeof AssociationRenewAuditRoute
+  '/association/renew/history': typeof AssociationRenewHistoryRoute
+  '/association/renew/pay': typeof AssociationRenewPayRoute
+  '/association/renew/result': typeof AssociationRenewResultRoute
+  '/business-connect/connections/$personNodeId': typeof BusinessConnectConnectionsPersonNodeIdRoute
+  '/business-connect/introductions/$targetPersonNodeId': typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute
+  '/business-connect/introductions/analytics': typeof BusinessConnectIntroductionsAnalyticsRoute
+  '/business-connect/introductions/deliveries': typeof BusinessConnectIntroductionsDeliveriesRoute
+  '/business-connect/introductions/inbox': typeof BusinessConnectIntroductionsInboxRoute
+  '/business-connect/introductions/outcomes': typeof BusinessConnectIntroductionsOutcomesRoute
+  '/business-connect/introductions/requests': typeof BusinessConnectIntroductionsRequestsRoute
+  '/business-connect/meetings/$meetingId': typeof BusinessConnectMeetingsMeetingIdRoute
+  '/connect-app/community/requests': typeof ConnectAppCommunityRequestsRoute
+  '/connect-app/inbox/$threadId': typeof ConnectAppInboxThreadIdRoute
+  '/connect-app/invite/$token': typeof ConnectAppInviteTokenRoute
+  '/connect-app/me/card': typeof ConnectAppMeCardRoute
+  '/connect-app/me/cards': typeof ConnectAppMeCardsRoute
+  '/connect-app/me/edit': typeof ConnectAppMeEditRoute
+  '/connect-app/me/intel-settings': typeof ConnectAppMeIntelSettingsRoute
+  '/connect-app/me/security': typeof ConnectAppMeSecurityRoute
+  '/connect-app/me/sessions': typeof ConnectAppMeSessionsRoute
+  '/connect-app/moment/$personId': typeof ConnectAppMomentPersonIdRoute
+  '/connect-app/network/$personId': typeof ConnectAppNetworkPersonIdRoute
+  '/connect-app/network/requests': typeof ConnectAppNetworkRequestsRoute
+  '/connect/meetings/$section': typeof ConnectMeetingsSectionRoute
+  '/connect/network/connections': typeof ConnectNetworkConnectionsRoute
+  '/connect/network/notifications': typeof ConnectNetworkNotificationsRoute
+  '/landing/ceo/v1': typeof LandingCeoV1Route
+  '/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute
+  '/m/perks/$id': typeof MPerksIdRoute
+  '/m/renew/audit': typeof MRenewAuditRoute
+  '/m/renew/history': typeof MRenewHistoryRoute
+  '/m/renew/pay': typeof MRenewPayRoute
+  '/m/renew/result': typeof MRenewResultRoute
+  '/opportunities/$id/edit': typeof OpportunitiesIdEditRoute
+  '/admin/business-cards': typeof AdminBusinessCardsIndexRoute
+  '/association/perks': typeof AssociationPerksIndexRoute
+  '/association/renew': typeof AssociationRenewIndexRoute
+  '/business-connect/connections': typeof BusinessConnectConnectionsIndexRoute
+  '/business-connect/meetings': typeof BusinessConnectMeetingsIndexRoute
+  '/connect-app/community': typeof ConnectAppCommunityIndexRoute
+  '/connect-app/inbox': typeof ConnectAppInboxIndexRoute
+  '/connect-app/me': typeof ConnectAppMeIndexRoute
+  '/connect-app/moment': typeof ConnectAppMomentIndexRoute
+  '/connect-app/network': typeof ConnectAppNetworkIndexRoute
+  '/connect/cards': typeof ConnectCardsIndexRoute
+  '/connect/meetings': typeof ConnectMeetingsIndexRoute
+  '/connect/network': typeof ConnectNetworkIndexRoute
+  '/m/perks': typeof MPerksIndexRoute
+  '/m/renew': typeof MRenewIndexRoute
+  '/api/public/card/{$slug}.vcf': typeof ApiPublicCardChar123slugChar125DotvcfRoute
+  '/api/public/hooks/notification-runtime': typeof ApiPublicHooksNotificationRuntimeRoute
+  '/api/public/hooks/outcome-consumer': typeof ApiPublicHooksOutcomeConsumerRoute
+  '/api/public/hooks/timeline-projection': typeof ApiPublicHooksTimelineProjectionRoute
+  '/connect/cards/$cardId/edit': typeof ConnectCardsCardIdEditRoute
+  '/connect/network/requests/incoming': typeof ConnectNetworkRequestsIncomingRoute
+  '/connect/network/requests/sent': typeof ConnectNetworkRequestsSentRoute
+  '/connect-app/community/$communityId': typeof ConnectAppCommunityCommunityIdIndexRoute
+  '/api/public/avatar/$owner/$file': typeof ApiPublicAvatarOwnerFileRoute
+  '/api/public/card/$slug/contact': typeof ApiPublicCardSlugContactRoute
+  '/api/public/identity/$token/contact': typeof ApiPublicIdentityTokenContactRoute
+  '/connect-app/community/$communityId/events/$eventRef': typeof ConnectAppCommunityCommunityIdEventsEventRefRoute
+  '/connect-app/community/$communityId/members/$memberRef': typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute
+  '/connect-app/community/$communityId/news/$newsRef': typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute
+  '/connect-app/community/$communityId/opportunities/$opportunityRef': typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute
+  '/connect-app/community/$communityId/events': typeof ConnectAppCommunityCommunityIdEventsIndexRoute
+  '/connect-app/community/$communityId/members': typeof ConnectAppCommunityCommunityIdMembersIndexRoute
+  '/connect-app/community/$communityId/news': typeof ConnectAppCommunityCommunityIdNewsIndexRoute
+  '/connect-app/community/$communityId/opportunities': typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
 }
 export interface FileRoutesById {
-'__root__': typeof rootRouteImport,
-'/': typeof IndexRoute,'/account-settings': typeof AccountSettingsRouteWithChildren,'/activity': typeof ActivityRoute,'/ai': typeof AiRoute,'/association': typeof AssociationRouteWithChildren,'/auth': typeof AuthRoute,'/benefits': typeof BenefitsRoute,'/business-cards': typeof BusinessCardsRoute,'/business-connect': typeof BusinessConnectRouteWithChildren,'/checkin': typeof CheckinRoute,'/checkin-qr': typeof CheckinQrRoute,'/companies': typeof CompaniesRouteWithChildren,'/connect': typeof ConnectRouteWithChildren,'/connect-app': typeof ConnectAppRouteWithChildren,'/demo': typeof DemoRoute,'/documents': typeof DocumentsRouteWithChildren,'/email-marketing': typeof EmailMarketingRoute,'/event-registrations': typeof EventRegistrationsRoute,'/events': typeof EventsRouteWithChildren,'/events-overview': typeof EventsOverviewRoute,'/expenses': typeof ExpensesRoute,'/fees': typeof FeesRouteWithChildren,'/finance-report': typeof FinanceReportRoute,'/forgot-password': typeof ForgotPasswordRoute,'/income': typeof IncomeRoute,'/install': typeof InstallRoute,'/landing': typeof LandingRouteWithChildren,'/m': typeof MRouteWithChildren,'/marketplace': typeof MarketplaceRouteWithChildren,'/meetings': typeof MeetingsRoute,'/my-permissions': typeof MyPermissionsRoute,'/network': typeof NetworkRoute,'/news': typeof NewsRoute,'/notifications': typeof NotificationsRoute,'/opportunities': typeof OpportunitiesRouteWithChildren,'/perks': typeof PerksRoute,'/profile': typeof ProfileRoute,'/register': typeof RegisterRoute,'/renewal': typeof RenewalRoute,'/reset-password': typeof ResetPasswordRoute,'/segments': typeof SegmentsRoute,'/settings': typeof SettingsRoute,'/sitemap.xml': typeof SitemapDotxmlRoute,'/sponsor-packages': typeof SponsorPackagesRoute,'/sponsor-report': typeof SponsorReportRoute,'/sponsors': typeof SponsorsRoute,'/verify': typeof VerifyRoute,'/vione-app': typeof VioneAppRoute,'/voting': typeof VotingRoute,'/account-settings/notifications': typeof AccountSettingsNotificationsRoute,'/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren,'/admin/cta-analytics': typeof AdminCtaAnalyticsRoute,'/admin/demo-leads': typeof AdminDemoLeadsRoute,'/admin/landing-templates': typeof AdminLandingTemplatesRoute,'/association/benefits': typeof AssociationBenefitsRoute,'/association/business-cards': typeof AssociationBusinessCardsRoute,'/association/card': typeof AssociationCardRoute,'/association/checkin': typeof AssociationCheckinRoute,'/association/events': typeof AssociationEventsRoute,'/association/history': typeof AssociationHistoryRoute,'/association/library': typeof AssociationLibraryRoute,'/association/login': typeof AssociationLoginRoute,'/association/members': typeof AssociationMembersRoute,'/association/messages': typeof AssociationMessagesRoute,'/association/news': typeof AssociationNewsRoute,'/association/notifications': typeof AssociationNotificationsRoute,'/association/opportunities': typeof AssociationOpportunitiesRoute,'/association/perks': typeof AssociationPerksRouteWithChildren,'/association/products': typeof AssociationProductsRoute,'/association/profile': typeof AssociationProfileRoute,'/association/renew': typeof AssociationRenewRouteWithChildren,'/association/settings': typeof AssociationSettingsRoute,'/b/$slug': typeof BSlugRoute,'/business-connect/connections': typeof BusinessConnectConnectionsRouteWithChildren,'/business-connect/meetings': typeof BusinessConnectMeetingsRouteWithChildren,'/business-connect/memory': typeof BusinessConnectMemoryRoute,'/business-connect/my-card': typeof BusinessConnectMyCardRoute,'/business-connect/notifications': typeof BusinessConnectNotificationsRoute,'/business-connect/relationship-timeline': typeof BusinessConnectRelationshipTimelineRoute,'/business-connect/saved-cards': typeof BusinessConnectSavedCardsRoute,'/business-connect/v1': typeof BusinessConnectV1Route,'/business-connect/v2': typeof BusinessConnectV2Route,'/business-connect/v3': typeof BusinessConnectV3Route,'/business-connect/v4': typeof BusinessConnectV4Route,'/business-connect/v5': typeof BusinessConnectV5Route,'/business-connect/v6': typeof BusinessConnectV6Route,'/business-connect/v7': typeof BusinessConnectV7Route,'/business-connect/v8': typeof BusinessConnectV8Route,'/c/$token': typeof CTokenRoute,'/card/$code': typeof CardCodeRoute,'/companies/$companyId': typeof CompaniesCompanyIdRoute,'/company/$slug': typeof CompanySlugRoute,'/connect-app/activate': typeof ConnectAppActivateRoute,'/connect-app/calendar': typeof ConnectAppCalendarRoute,'/connect-app/card-scan': typeof ConnectAppCardScanRoute,'/connect-app/community': typeof ConnectAppCommunityRouteWithChildren,'/connect-app/inbox': typeof ConnectAppInboxRouteWithChildren,'/connect-app/me': typeof ConnectAppMeRouteWithChildren,'/connect-app/moment': typeof ConnectAppMomentRouteWithChildren,'/connect-app/network': typeof ConnectAppNetworkRouteWithChildren,'/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute,'/connect-app/notifications': typeof ConnectAppNotificationsRoute,'/connect/calendar-settings': typeof ConnectCalendarSettingsRoute,'/connect/connections': typeof ConnectConnectionsRoute,'/connect/meetings': typeof ConnectMeetingsRouteWithChildren,'/connect/network': typeof ConnectNetworkRouteWithChildren,'/connect/saved-cards': typeof ConnectSavedCardsRoute,'/documents/$docId': typeof DocumentsDocIdRoute,'/events/$eventId': typeof EventsEventIdRoute,'/fees/$invoiceId': typeof FeesInvoiceIdRoute,'/h/$slug': typeof HSlugRoute,'/landing/business-connect': typeof LandingBusinessConnectRoute,'/landing/bussiness-connect': typeof LandingBussinessConnectRoute,'/landing/ceo1983': typeof LandingCeo1983RouteWithChildren,'/landing/vione': typeof LandingVioneRoute,'/m/business-cards': typeof MBusinessCardsRoute,'/m/card': typeof MCardRoute,'/m/checkin': typeof MCheckinRoute,'/m/events': typeof MEventsRoute,'/m/history': typeof MHistoryRoute,'/m/library': typeof MLibraryRoute,'/m/members': typeof MMembersRoute,'/m/messages': typeof MMessagesRoute,'/m/news': typeof MNewsRoute,'/m/notifications': typeof MNotificationsRoute,'/m/opportunities': typeof MOpportunitiesRoute,'/m/perks': typeof MPerksRouteWithChildren,'/m/products': typeof MProductsRoute,'/m/profile': typeof MProfileRoute,'/m/renew': typeof MRenewRouteWithChildren,'/marketplace/$productId': typeof MarketplaceProductIdRoute,'/marketplace/my-quotes': typeof MarketplaceMyQuotesRoute,'/marketplace/workspace': typeof MarketplaceWorkspaceRoute,'/members/$memberId': typeof MembersMemberIdRoute,'/opportunities/$id': typeof OpportunitiesIdRouteWithChildren,'/platform/admins': typeof PlatformAdminsRoute,'/platform/ai-audit': typeof PlatformAiAuditRoute,'/platform/audit': typeof PlatformAuditRoute,'/platform/introduction-operations': typeof PlatformIntroductionOperationsRoute,'/platform/permissions': typeof PlatformPermissionsRoute,'/platform/renewal-audit': typeof PlatformRenewalAuditRoute,'/vione/login': typeof VioneLoginRoute,'/account-settings/': typeof AccountSettingsIndexRoute,'/admin/': typeof AdminIndexRoute,'/association/': typeof AssociationIndexRoute,'/business-connect/': typeof BusinessConnectIndexRoute,'/companies/': typeof CompaniesIndexRoute,'/connect-app/': typeof ConnectAppIndexRoute,'/documents/': typeof DocumentsIndexRoute,'/events/': typeof EventsIndexRoute,'/fees/': typeof FeesIndexRoute,'/landing/': typeof LandingIndexRoute,'/m/': typeof MIndexRoute,'/marketplace/': typeof MarketplaceIndexRoute,'/members/': typeof MembersIndexRoute,'/opportunities/': typeof OpportunitiesIndexRoute,'/platform/': typeof PlatformIndexRoute,'/admin/business-cards/audit': typeof AdminBusinessCardsAuditRoute,'/association/perks/$id': typeof AssociationPerksIdRoute,'/association/renew/audit': typeof AssociationRenewAuditRoute,'/association/renew/history': typeof AssociationRenewHistoryRoute,'/association/renew/pay': typeof AssociationRenewPayRoute,'/association/renew/result': typeof AssociationRenewResultRoute,'/business-connect/connections/$personNodeId': typeof BusinessConnectConnectionsPersonNodeIdRoute,'/business-connect/introductions/$targetPersonNodeId': typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute,'/business-connect/introductions/analytics': typeof BusinessConnectIntroductionsAnalyticsRoute,'/business-connect/introductions/deliveries': typeof BusinessConnectIntroductionsDeliveriesRoute,'/business-connect/introductions/inbox': typeof BusinessConnectIntroductionsInboxRoute,'/business-connect/introductions/outcomes': typeof BusinessConnectIntroductionsOutcomesRoute,'/business-connect/introductions/requests': typeof BusinessConnectIntroductionsRequestsRoute,'/business-connect/meetings/$meetingId': typeof BusinessConnectMeetingsMeetingIdRoute,'/connect-app/community/$communityId': typeof ConnectAppCommunityCommunityIdRouteWithChildren,'/connect-app/community/requests': typeof ConnectAppCommunityRequestsRoute,'/connect-app/inbox/$threadId': typeof ConnectAppInboxThreadIdRoute,'/connect-app/invite/$token': typeof ConnectAppInviteTokenRoute,'/connect-app/me/card': typeof ConnectAppMeCardRoute,'/connect-app/me/cards': typeof ConnectAppMeCardsRoute,'/connect-app/me/edit': typeof ConnectAppMeEditRoute,'/connect-app/me/intel-settings': typeof ConnectAppMeIntelSettingsRoute,'/connect-app/me/security': typeof ConnectAppMeSecurityRoute,'/connect-app/me/sessions': typeof ConnectAppMeSessionsRoute,'/connect-app/moment/$personId': typeof ConnectAppMomentPersonIdRoute,'/connect-app/network/$personId': typeof ConnectAppNetworkPersonIdRoute,'/connect-app/network/requests': typeof ConnectAppNetworkRequestsRoute,'/connect/meetings/$section': typeof ConnectMeetingsSectionRoute,'/connect/network/connections': typeof ConnectNetworkConnectionsRoute,'/connect/network/notifications': typeof ConnectNetworkNotificationsRoute,'/landing/ceo/v1': typeof LandingCeoV1Route,'/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute,'/m/perks/$id': typeof MPerksIdRoute,'/m/renew/audit': typeof MRenewAuditRoute,'/m/renew/history': typeof MRenewHistoryRoute,'/m/renew/pay': typeof MRenewPayRoute,'/m/renew/result': typeof MRenewResultRoute,'/opportunities/$id/edit': typeof OpportunitiesIdEditRoute,'/admin/business-cards/': typeof AdminBusinessCardsIndexRoute,'/association/perks/': typeof AssociationPerksIndexRoute,'/association/renew/': typeof AssociationRenewIndexRoute,'/business-connect/connections/': typeof BusinessConnectConnectionsIndexRoute,'/business-connect/meetings/': typeof BusinessConnectMeetingsIndexRoute,'/connect-app/community/': typeof ConnectAppCommunityIndexRoute,'/connect-app/inbox/': typeof ConnectAppInboxIndexRoute,'/connect-app/me/': typeof ConnectAppMeIndexRoute,'/connect-app/moment/': typeof ConnectAppMomentIndexRoute,'/connect-app/network/': typeof ConnectAppNetworkIndexRoute,'/connect/cards/': typeof ConnectCardsIndexRoute,'/connect/meetings/': typeof ConnectMeetingsIndexRoute,'/connect/network/': typeof ConnectNetworkIndexRoute,'/m/perks/': typeof MPerksIndexRoute,'/m/renew/': typeof MRenewIndexRoute,'/api/public/card/{$slug}.vcf': typeof ApiPublicCardChar123slugChar125DotvcfRoute,'/api/public/hooks/notification-runtime': typeof ApiPublicHooksNotificationRuntimeRoute,'/api/public/hooks/outcome-consumer': typeof ApiPublicHooksOutcomeConsumerRoute,'/api/public/hooks/timeline-projection': typeof ApiPublicHooksTimelineProjectionRoute,'/connect-app/community/$communityId/events': typeof ConnectAppCommunityCommunityIdEventsRouteWithChildren,'/connect-app/community/$communityId/members': typeof ConnectAppCommunityCommunityIdMembersRouteWithChildren,'/connect-app/community/$communityId/news': typeof ConnectAppCommunityCommunityIdNewsRouteWithChildren,'/connect-app/community/$communityId/opportunities': typeof ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren,'/connect/cards/$cardId/edit': typeof ConnectCardsCardIdEditRoute,'/connect/network/requests/incoming': typeof ConnectNetworkRequestsIncomingRoute,'/connect/network/requests/sent': typeof ConnectNetworkRequestsSentRoute,'/connect-app/community/$communityId/': typeof ConnectAppCommunityCommunityIdIndexRoute,'/api/public/avatar/$owner/$file': typeof ApiPublicAvatarOwnerFileRoute,'/api/public/card/$slug/contact': typeof ApiPublicCardSlugContactRoute,'/api/public/identity/$token/contact': typeof ApiPublicIdentityTokenContactRoute,'/connect-app/community/$communityId/events/$eventRef': typeof ConnectAppCommunityCommunityIdEventsEventRefRoute,'/connect-app/community/$communityId/members/$memberRef': typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute,'/connect-app/community/$communityId/news/$newsRef': typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute,'/connect-app/community/$communityId/opportunities/$opportunityRef': typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute,'/connect-app/community/$communityId/events/': typeof ConnectAppCommunityCommunityIdEventsIndexRoute,'/connect-app/community/$communityId/members/': typeof ConnectAppCommunityCommunityIdMembersIndexRoute,'/connect-app/community/$communityId/news/': typeof ConnectAppCommunityCommunityIdNewsIndexRoute,'/connect-app/community/$communityId/opportunities/': typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/account-settings': typeof AccountSettingsRouteWithChildren
+  '/activity': typeof ActivityRoute
+  '/ai': typeof AiRoute
+  '/association': typeof AssociationRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/benefits': typeof BenefitsRoute
+  '/business-cards': typeof BusinessCardsRoute
+  '/business-connect': typeof BusinessConnectRouteWithChildren
+  '/checkin': typeof CheckinRoute
+  '/checkin-qr': typeof CheckinQrRoute
+  '/companies': typeof CompaniesRouteWithChildren
+  '/connect': typeof ConnectRouteWithChildren
+  '/connect-app': typeof ConnectAppRouteWithChildren
+  '/demo': typeof DemoRoute
+  '/documents': typeof DocumentsRouteWithChildren
+  '/email-marketing': typeof EmailMarketingRoute
+  '/event-registrations': typeof EventRegistrationsRoute
+  '/events': typeof EventsRouteWithChildren
+  '/events-overview': typeof EventsOverviewRoute
+  '/expenses': typeof ExpensesRoute
+  '/fees': typeof FeesRouteWithChildren
+  '/finance-report': typeof FinanceReportRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/income': typeof IncomeRoute
+  '/install': typeof InstallRoute
+  '/landing': typeof LandingRouteWithChildren
+  '/m': typeof MRouteWithChildren
+  '/marketplace': typeof MarketplaceRouteWithChildren
+  '/meetings': typeof MeetingsRoute
+  '/my-permissions': typeof MyPermissionsRoute
+  '/network': typeof NetworkRoute
+  '/news': typeof NewsRoute
+  '/notifications': typeof NotificationsRoute
+  '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/perks': typeof PerksRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
+  '/renewal': typeof RenewalRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/segments': typeof SegmentsRoute
+  '/settings': typeof SettingsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/sponsor-packages': typeof SponsorPackagesRoute
+  '/sponsor-report': typeof SponsorReportRoute
+  '/sponsors': typeof SponsorsRoute
+  '/verify': typeof VerifyRoute
+  '/vione-app': typeof VioneAppRoute
+  '/voting': typeof VotingRoute
+  '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
+  '/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren
+  '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
+  '/admin/demo-leads': typeof AdminDemoLeadsRoute
+  '/admin/landing-templates': typeof AdminLandingTemplatesRoute
+  '/association/benefits': typeof AssociationBenefitsRoute
+  '/association/business-cards': typeof AssociationBusinessCardsRoute
+  '/association/card': typeof AssociationCardRoute
+  '/association/checkin': typeof AssociationCheckinRoute
+  '/association/events': typeof AssociationEventsRoute
+  '/association/history': typeof AssociationHistoryRoute
+  '/association/library': typeof AssociationLibraryRoute
+  '/association/login': typeof AssociationLoginRoute
+  '/association/members': typeof AssociationMembersRoute
+  '/association/messages': typeof AssociationMessagesRoute
+  '/association/news': typeof AssociationNewsRoute
+  '/association/notifications': typeof AssociationNotificationsRoute
+  '/association/opportunities': typeof AssociationOpportunitiesRoute
+  '/association/perks': typeof AssociationPerksRouteWithChildren
+  '/association/products': typeof AssociationProductsRoute
+  '/association/profile': typeof AssociationProfileRoute
+  '/association/renew': typeof AssociationRenewRouteWithChildren
+  '/association/settings': typeof AssociationSettingsRoute
+  '/b/$slug': typeof BSlugRoute
+  '/business-connect/connections': typeof BusinessConnectConnectionsRouteWithChildren
+  '/business-connect/meetings': typeof BusinessConnectMeetingsRouteWithChildren
+  '/business-connect/memory': typeof BusinessConnectMemoryRoute
+  '/business-connect/my-card': typeof BusinessConnectMyCardRoute
+  '/business-connect/notifications': typeof BusinessConnectNotificationsRoute
+  '/business-connect/relationship-timeline': typeof BusinessConnectRelationshipTimelineRoute
+  '/business-connect/saved-cards': typeof BusinessConnectSavedCardsRoute
+  '/business-connect/v1': typeof BusinessConnectV1Route
+  '/business-connect/v2': typeof BusinessConnectV2Route
+  '/business-connect/v3': typeof BusinessConnectV3Route
+  '/business-connect/v4': typeof BusinessConnectV4Route
+  '/business-connect/v5': typeof BusinessConnectV5Route
+  '/business-connect/v6': typeof BusinessConnectV6Route
+  '/business-connect/v7': typeof BusinessConnectV7Route
+  '/business-connect/v8': typeof BusinessConnectV8Route
+  '/c/$token': typeof CTokenRoute
+  '/card/$code': typeof CardCodeRoute
+  '/companies/$companyId': typeof CompaniesCompanyIdRoute
+  '/company/$slug': typeof CompanySlugRoute
+  '/connect-app/activate': typeof ConnectAppActivateRoute
+  '/connect-app/calendar': typeof ConnectAppCalendarRoute
+  '/connect-app/card-scan': typeof ConnectAppCardScanRoute
+  '/connect-app/community': typeof ConnectAppCommunityRouteWithChildren
+  '/connect-app/inbox': typeof ConnectAppInboxRouteWithChildren
+  '/connect-app/me': typeof ConnectAppMeRouteWithChildren
+  '/connect-app/moment': typeof ConnectAppMomentRouteWithChildren
+  '/connect-app/network': typeof ConnectAppNetworkRouteWithChildren
+  '/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute
+  '/connect-app/notifications': typeof ConnectAppNotificationsRoute
+  '/connect/calendar-settings': typeof ConnectCalendarSettingsRoute
+  '/connect/connections': typeof ConnectConnectionsRoute
+  '/connect/meetings': typeof ConnectMeetingsRouteWithChildren
+  '/connect/network': typeof ConnectNetworkRouteWithChildren
+  '/connect/saved-cards': typeof ConnectSavedCardsRoute
+  '/documents/$docId': typeof DocumentsDocIdRoute
+  '/events/$eventId': typeof EventsEventIdRoute
+  '/fees/$invoiceId': typeof FeesInvoiceIdRoute
+  '/h/$slug': typeof HSlugRoute
+  '/landing/business-connect': typeof LandingBusinessConnectRoute
+  '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
+  '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
+  '/landing/vione': typeof LandingVioneRoute
+  '/m/business-cards': typeof MBusinessCardsRoute
+  '/m/card': typeof MCardRoute
+  '/m/checkin': typeof MCheckinRoute
+  '/m/events': typeof MEventsRoute
+  '/m/history': typeof MHistoryRoute
+  '/m/library': typeof MLibraryRoute
+  '/m/members': typeof MMembersRoute
+  '/m/messages': typeof MMessagesRoute
+  '/m/news': typeof MNewsRoute
+  '/m/notifications': typeof MNotificationsRoute
+  '/m/opportunities': typeof MOpportunitiesRoute
+  '/m/perks': typeof MPerksRouteWithChildren
+  '/m/products': typeof MProductsRoute
+  '/m/profile': typeof MProfileRoute
+  '/m/renew': typeof MRenewRouteWithChildren
+  '/marketplace/$productId': typeof MarketplaceProductIdRoute
+  '/marketplace/my-quotes': typeof MarketplaceMyQuotesRoute
+  '/marketplace/workspace': typeof MarketplaceWorkspaceRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
+  '/opportunities/$id': typeof OpportunitiesIdRouteWithChildren
+  '/platform/admins': typeof PlatformAdminsRoute
+  '/platform/ai-audit': typeof PlatformAiAuditRoute
+  '/platform/audit': typeof PlatformAuditRoute
+  '/platform/introduction-operations': typeof PlatformIntroductionOperationsRoute
+  '/platform/permissions': typeof PlatformPermissionsRoute
+  '/platform/renewal-audit': typeof PlatformRenewalAuditRoute
+  '/vione/login': typeof VioneLoginRoute
+  '/account-settings/': typeof AccountSettingsIndexRoute
+  '/admin/': typeof AdminIndexRoute
+  '/association/': typeof AssociationIndexRoute
+  '/business-connect/': typeof BusinessConnectIndexRoute
+  '/companies/': typeof CompaniesIndexRoute
+  '/connect-app/': typeof ConnectAppIndexRoute
+  '/documents/': typeof DocumentsIndexRoute
+  '/events/': typeof EventsIndexRoute
+  '/fees/': typeof FeesIndexRoute
+  '/landing/': typeof LandingIndexRoute
+  '/m/': typeof MIndexRoute
+  '/marketplace/': typeof MarketplaceIndexRoute
+  '/members/': typeof MembersIndexRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
+  '/platform/': typeof PlatformIndexRoute
+  '/admin/business-cards/audit': typeof AdminBusinessCardsAuditRoute
+  '/association/perks/$id': typeof AssociationPerksIdRoute
+  '/association/renew/audit': typeof AssociationRenewAuditRoute
+  '/association/renew/history': typeof AssociationRenewHistoryRoute
+  '/association/renew/pay': typeof AssociationRenewPayRoute
+  '/association/renew/result': typeof AssociationRenewResultRoute
+  '/business-connect/connections/$personNodeId': typeof BusinessConnectConnectionsPersonNodeIdRoute
+  '/business-connect/introductions/$targetPersonNodeId': typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute
+  '/business-connect/introductions/analytics': typeof BusinessConnectIntroductionsAnalyticsRoute
+  '/business-connect/introductions/deliveries': typeof BusinessConnectIntroductionsDeliveriesRoute
+  '/business-connect/introductions/inbox': typeof BusinessConnectIntroductionsInboxRoute
+  '/business-connect/introductions/outcomes': typeof BusinessConnectIntroductionsOutcomesRoute
+  '/business-connect/introductions/requests': typeof BusinessConnectIntroductionsRequestsRoute
+  '/business-connect/meetings/$meetingId': typeof BusinessConnectMeetingsMeetingIdRoute
+  '/connect-app/community/$communityId': typeof ConnectAppCommunityCommunityIdRouteWithChildren
+  '/connect-app/community/requests': typeof ConnectAppCommunityRequestsRoute
+  '/connect-app/inbox/$threadId': typeof ConnectAppInboxThreadIdRoute
+  '/connect-app/invite/$token': typeof ConnectAppInviteTokenRoute
+  '/connect-app/me/card': typeof ConnectAppMeCardRoute
+  '/connect-app/me/cards': typeof ConnectAppMeCardsRoute
+  '/connect-app/me/edit': typeof ConnectAppMeEditRoute
+  '/connect-app/me/intel-settings': typeof ConnectAppMeIntelSettingsRoute
+  '/connect-app/me/security': typeof ConnectAppMeSecurityRoute
+  '/connect-app/me/sessions': typeof ConnectAppMeSessionsRoute
+  '/connect-app/moment/$personId': typeof ConnectAppMomentPersonIdRoute
+  '/connect-app/network/$personId': typeof ConnectAppNetworkPersonIdRoute
+  '/connect-app/network/requests': typeof ConnectAppNetworkRequestsRoute
+  '/connect/meetings/$section': typeof ConnectMeetingsSectionRoute
+  '/connect/network/connections': typeof ConnectNetworkConnectionsRoute
+  '/connect/network/notifications': typeof ConnectNetworkNotificationsRoute
+  '/landing/ceo/v1': typeof LandingCeoV1Route
+  '/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute
+  '/m/perks/$id': typeof MPerksIdRoute
+  '/m/renew/audit': typeof MRenewAuditRoute
+  '/m/renew/history': typeof MRenewHistoryRoute
+  '/m/renew/pay': typeof MRenewPayRoute
+  '/m/renew/result': typeof MRenewResultRoute
+  '/opportunities/$id/edit': typeof OpportunitiesIdEditRoute
+  '/admin/business-cards/': typeof AdminBusinessCardsIndexRoute
+  '/association/perks/': typeof AssociationPerksIndexRoute
+  '/association/renew/': typeof AssociationRenewIndexRoute
+  '/business-connect/connections/': typeof BusinessConnectConnectionsIndexRoute
+  '/business-connect/meetings/': typeof BusinessConnectMeetingsIndexRoute
+  '/connect-app/community/': typeof ConnectAppCommunityIndexRoute
+  '/connect-app/inbox/': typeof ConnectAppInboxIndexRoute
+  '/connect-app/me/': typeof ConnectAppMeIndexRoute
+  '/connect-app/moment/': typeof ConnectAppMomentIndexRoute
+  '/connect-app/network/': typeof ConnectAppNetworkIndexRoute
+  '/connect/cards/': typeof ConnectCardsIndexRoute
+  '/connect/meetings/': typeof ConnectMeetingsIndexRoute
+  '/connect/network/': typeof ConnectNetworkIndexRoute
+  '/m/perks/': typeof MPerksIndexRoute
+  '/m/renew/': typeof MRenewIndexRoute
+  '/api/public/card/{$slug}.vcf': typeof ApiPublicCardChar123slugChar125DotvcfRoute
+  '/api/public/hooks/notification-runtime': typeof ApiPublicHooksNotificationRuntimeRoute
+  '/api/public/hooks/outcome-consumer': typeof ApiPublicHooksOutcomeConsumerRoute
+  '/api/public/hooks/timeline-projection': typeof ApiPublicHooksTimelineProjectionRoute
+  '/connect-app/community/$communityId/events': typeof ConnectAppCommunityCommunityIdEventsRouteWithChildren
+  '/connect-app/community/$communityId/members': typeof ConnectAppCommunityCommunityIdMembersRouteWithChildren
+  '/connect-app/community/$communityId/news': typeof ConnectAppCommunityCommunityIdNewsRouteWithChildren
+  '/connect-app/community/$communityId/opportunities': typeof ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren
+  '/connect/cards/$cardId/edit': typeof ConnectCardsCardIdEditRoute
+  '/connect/network/requests/incoming': typeof ConnectNetworkRequestsIncomingRoute
+  '/connect/network/requests/sent': typeof ConnectNetworkRequestsSentRoute
+  '/connect-app/community/$communityId/': typeof ConnectAppCommunityCommunityIdIndexRoute
+  '/api/public/avatar/$owner/$file': typeof ApiPublicAvatarOwnerFileRoute
+  '/api/public/card/$slug/contact': typeof ApiPublicCardSlugContactRoute
+  '/api/public/identity/$token/contact': typeof ApiPublicIdentityTokenContactRoute
+  '/connect-app/community/$communityId/events/$eventRef': typeof ConnectAppCommunityCommunityIdEventsEventRefRoute
+  '/connect-app/community/$communityId/members/$memberRef': typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute
+  '/connect-app/community/$communityId/news/$newsRef': typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute
+  '/connect-app/community/$communityId/opportunities/$opportunityRef': typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute
+  '/connect-app/community/$communityId/events/': typeof ConnectAppCommunityCommunityIdEventsIndexRoute
+  '/connect-app/community/$communityId/members/': typeof ConnectAppCommunityCommunityIdMembersIndexRoute
+  '/connect-app/community/$communityId/news/': typeof ConnectAppCommunityCommunityIdNewsIndexRoute
+  '/connect-app/community/$communityId/opportunities/': typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
 }
 export interface FileRouteTypes {
-fileRoutesByFullPath: FileRoutesByFullPath
-fullPaths: '/'|'/account-settings'|'/activity'|'/ai'|'/association'|'/auth'|'/benefits'|'/business-cards'|'/business-connect'|'/checkin'|'/checkin-qr'|'/companies'|'/connect'|'/connect-app'|'/demo'|'/documents'|'/email-marketing'|'/event-registrations'|'/events'|'/events-overview'|'/expenses'|'/fees'|'/finance-report'|'/forgot-password'|'/income'|'/install'|'/landing'|'/m'|'/marketplace'|'/meetings'|'/my-permissions'|'/network'|'/news'|'/notifications'|'/opportunities'|'/perks'|'/profile'|'/register'|'/renewal'|'/reset-password'|'/segments'|'/settings'|'/sitemap.xml'|'/sponsor-packages'|'/sponsor-report'|'/sponsors'|'/verify'|'/vione-app'|'/voting'|'/account-settings/notifications'|'/admin/business-cards'|'/admin/cta-analytics'|'/admin/demo-leads'|'/admin/landing-templates'|'/association/benefits'|'/association/business-cards'|'/association/card'|'/association/checkin'|'/association/events'|'/association/history'|'/association/library'|'/association/login'|'/association/members'|'/association/messages'|'/association/news'|'/association/notifications'|'/association/opportunities'|'/association/perks'|'/association/products'|'/association/profile'|'/association/renew'|'/association/settings'|'/b/$slug'|'/business-connect/connections'|'/business-connect/meetings'|'/business-connect/memory'|'/business-connect/my-card'|'/business-connect/notifications'|'/business-connect/relationship-timeline'|'/business-connect/saved-cards'|'/business-connect/v1'|'/business-connect/v2'|'/business-connect/v3'|'/business-connect/v4'|'/business-connect/v5'|'/business-connect/v6'|'/business-connect/v7'|'/business-connect/v8'|'/c/$token'|'/card/$code'|'/companies/$companyId'|'/company/$slug'|'/connect-app/activate'|'/connect-app/calendar'|'/connect-app/card-scan'|'/connect-app/community'|'/connect-app/inbox'|'/connect-app/me'|'/connect-app/moment'|'/connect-app/network'|'/connect-app/nfc-tags'|'/connect-app/notifications'|'/connect/calendar-settings'|'/connect/connections'|'/connect/meetings'|'/connect/network'|'/connect/saved-cards'|'/documents/$docId'|'/events/$eventId'|'/fees/$invoiceId'|'/h/$slug'|'/landing/business-connect'|'/landing/bussiness-connect'|'/landing/ceo1983'|'/landing/vione'|'/m/business-cards'|'/m/card'|'/m/checkin'|'/m/events'|'/m/history'|'/m/library'|'/m/members'|'/m/messages'|'/m/news'|'/m/notifications'|'/m/opportunities'|'/m/perks'|'/m/products'|'/m/profile'|'/m/renew'|'/marketplace/$productId'|'/marketplace/my-quotes'|'/marketplace/workspace'|'/members/$memberId'|'/opportunities/$id'|'/platform/admins'|'/platform/ai-audit'|'/platform/audit'|'/platform/introduction-operations'|'/platform/permissions'|'/platform/renewal-audit'|'/vione/login'|'/account-settings/'|'/admin/'|'/association/'|'/business-connect/'|'/companies/'|'/connect-app/'|'/documents/'|'/events/'|'/fees/'|'/landing/'|'/m/'|'/marketplace/'|'/members/'|'/opportunities/'|'/platform/'|'/admin/business-cards/audit'|'/association/perks/$id'|'/association/renew/audit'|'/association/renew/history'|'/association/renew/pay'|'/association/renew/result'|'/business-connect/connections/$personNodeId'|'/business-connect/introductions/$targetPersonNodeId'|'/business-connect/introductions/analytics'|'/business-connect/introductions/deliveries'|'/business-connect/introductions/inbox'|'/business-connect/introductions/outcomes'|'/business-connect/introductions/requests'|'/business-connect/meetings/$meetingId'|'/connect-app/community/$communityId'|'/connect-app/community/requests'|'/connect-app/inbox/$threadId'|'/connect-app/invite/$token'|'/connect-app/me/card'|'/connect-app/me/cards'|'/connect-app/me/edit'|'/connect-app/me/intel-settings'|'/connect-app/me/security'|'/connect-app/me/sessions'|'/connect-app/moment/$personId'|'/connect-app/network/$personId'|'/connect-app/network/requests'|'/connect/meetings/$section'|'/connect/network/connections'|'/connect/network/notifications'|'/landing/ceo/v1'|'/landing/ceo1983/cinematic'|'/m/perks/$id'|'/m/renew/audit'|'/m/renew/history'|'/m/renew/pay'|'/m/renew/result'|'/opportunities/$id/edit'|'/admin/business-cards/'|'/association/perks/'|'/association/renew/'|'/business-connect/connections/'|'/business-connect/meetings/'|'/connect-app/community/'|'/connect-app/inbox/'|'/connect-app/me/'|'/connect-app/moment/'|'/connect-app/network/'|'/connect/cards/'|'/connect/meetings/'|'/connect/network/'|'/m/perks/'|'/m/renew/'|'/api/public/card/{$slug}.vcf'|'/api/public/hooks/notification-runtime'|'/api/public/hooks/outcome-consumer'|'/api/public/hooks/timeline-projection'|'/connect-app/community/$communityId/events'|'/connect-app/community/$communityId/members'|'/connect-app/community/$communityId/news'|'/connect-app/community/$communityId/opportunities'|'/connect/cards/$cardId/edit'|'/connect/network/requests/incoming'|'/connect/network/requests/sent'|'/connect-app/community/$communityId/'|'/api/public/avatar/$owner/$file'|'/api/public/card/$slug/contact'|'/api/public/identity/$token/contact'|'/connect-app/community/$communityId/events/$eventRef'|'/connect-app/community/$communityId/members/$memberRef'|'/connect-app/community/$communityId/news/$newsRef'|'/connect-app/community/$communityId/opportunities/$opportunityRef'|'/connect-app/community/$communityId/events/'|'/connect-app/community/$communityId/members/'|'/connect-app/community/$communityId/news/'|'/connect-app/community/$communityId/opportunities/'
-fileRoutesByTo: FileRoutesByTo
-to: '/'|'/activity'|'/ai'|'/auth'|'/benefits'|'/business-cards'|'/checkin'|'/checkin-qr'|'/connect'|'/demo'|'/email-marketing'|'/event-registrations'|'/events-overview'|'/expenses'|'/finance-report'|'/forgot-password'|'/income'|'/install'|'/meetings'|'/my-permissions'|'/network'|'/news'|'/notifications'|'/perks'|'/profile'|'/register'|'/renewal'|'/reset-password'|'/segments'|'/settings'|'/sitemap.xml'|'/sponsor-packages'|'/sponsor-report'|'/sponsors'|'/verify'|'/vione-app'|'/voting'|'/account-settings/notifications'|'/admin/cta-analytics'|'/admin/demo-leads'|'/admin/landing-templates'|'/association/benefits'|'/association/business-cards'|'/association/card'|'/association/checkin'|'/association/events'|'/association/history'|'/association/library'|'/association/login'|'/association/members'|'/association/messages'|'/association/news'|'/association/notifications'|'/association/opportunities'|'/association/products'|'/association/profile'|'/association/settings'|'/b/$slug'|'/business-connect/memory'|'/business-connect/my-card'|'/business-connect/notifications'|'/business-connect/relationship-timeline'|'/business-connect/saved-cards'|'/business-connect/v1'|'/business-connect/v2'|'/business-connect/v3'|'/business-connect/v4'|'/business-connect/v5'|'/business-connect/v6'|'/business-connect/v7'|'/business-connect/v8'|'/c/$token'|'/card/$code'|'/companies/$companyId'|'/company/$slug'|'/connect-app/activate'|'/connect-app/calendar'|'/connect-app/card-scan'|'/connect-app/nfc-tags'|'/connect-app/notifications'|'/connect/calendar-settings'|'/connect/connections'|'/connect/saved-cards'|'/documents/$docId'|'/events/$eventId'|'/fees/$invoiceId'|'/h/$slug'|'/landing/business-connect'|'/landing/bussiness-connect'|'/landing/ceo1983'|'/landing/vione'|'/m/business-cards'|'/m/card'|'/m/checkin'|'/m/events'|'/m/history'|'/m/library'|'/m/members'|'/m/messages'|'/m/news'|'/m/notifications'|'/m/opportunities'|'/m/products'|'/m/profile'|'/marketplace/$productId'|'/marketplace/my-quotes'|'/marketplace/workspace'|'/members/$memberId'|'/opportunities/$id'|'/platform/admins'|'/platform/ai-audit'|'/platform/audit'|'/platform/introduction-operations'|'/platform/permissions'|'/platform/renewal-audit'|'/vione/login'|'/account-settings'|'/admin'|'/association'|'/business-connect'|'/companies'|'/connect-app'|'/documents'|'/events'|'/fees'|'/landing'|'/m'|'/marketplace'|'/members'|'/opportunities'|'/platform'|'/admin/business-cards/audit'|'/association/perks/$id'|'/association/renew/audit'|'/association/renew/history'|'/association/renew/pay'|'/association/renew/result'|'/business-connect/connections/$personNodeId'|'/business-connect/introductions/$targetPersonNodeId'|'/business-connect/introductions/analytics'|'/business-connect/introductions/deliveries'|'/business-connect/introductions/inbox'|'/business-connect/introductions/outcomes'|'/business-connect/introductions/requests'|'/business-connect/meetings/$meetingId'|'/connect-app/community/requests'|'/connect-app/inbox/$threadId'|'/connect-app/invite/$token'|'/connect-app/me/card'|'/connect-app/me/cards'|'/connect-app/me/edit'|'/connect-app/me/intel-settings'|'/connect-app/me/security'|'/connect-app/me/sessions'|'/connect-app/moment/$personId'|'/connect-app/network/$personId'|'/connect-app/network/requests'|'/connect/meetings/$section'|'/connect/network/connections'|'/connect/network/notifications'|'/landing/ceo/v1'|'/landing/ceo1983/cinematic'|'/m/perks/$id'|'/m/renew/audit'|'/m/renew/history'|'/m/renew/pay'|'/m/renew/result'|'/opportunities/$id/edit'|'/admin/business-cards'|'/association/perks'|'/association/renew'|'/business-connect/connections'|'/business-connect/meetings'|'/connect-app/community'|'/connect-app/inbox'|'/connect-app/me'|'/connect-app/moment'|'/connect-app/network'|'/connect/cards'|'/connect/meetings'|'/connect/network'|'/m/perks'|'/m/renew'|'/api/public/card/{$slug}.vcf'|'/api/public/hooks/notification-runtime'|'/api/public/hooks/outcome-consumer'|'/api/public/hooks/timeline-projection'|'/connect/cards/$cardId/edit'|'/connect/network/requests/incoming'|'/connect/network/requests/sent'|'/connect-app/community/$communityId'|'/api/public/avatar/$owner/$file'|'/api/public/card/$slug/contact'|'/api/public/identity/$token/contact'|'/connect-app/community/$communityId/events/$eventRef'|'/connect-app/community/$communityId/members/$memberRef'|'/connect-app/community/$communityId/news/$newsRef'|'/connect-app/community/$communityId/opportunities/$opportunityRef'|'/connect-app/community/$communityId/events'|'/connect-app/community/$communityId/members'|'/connect-app/community/$communityId/news'|'/connect-app/community/$communityId/opportunities'
-id: '__root__'|'/'|'/account-settings'|'/activity'|'/ai'|'/association'|'/auth'|'/benefits'|'/business-cards'|'/business-connect'|'/checkin'|'/checkin-qr'|'/companies'|'/connect'|'/connect-app'|'/demo'|'/documents'|'/email-marketing'|'/event-registrations'|'/events'|'/events-overview'|'/expenses'|'/fees'|'/finance-report'|'/forgot-password'|'/income'|'/install'|'/landing'|'/m'|'/marketplace'|'/meetings'|'/my-permissions'|'/network'|'/news'|'/notifications'|'/opportunities'|'/perks'|'/profile'|'/register'|'/renewal'|'/reset-password'|'/segments'|'/settings'|'/sitemap.xml'|'/sponsor-packages'|'/sponsor-report'|'/sponsors'|'/verify'|'/vione-app'|'/voting'|'/account-settings/notifications'|'/admin/business-cards'|'/admin/cta-analytics'|'/admin/demo-leads'|'/admin/landing-templates'|'/association/benefits'|'/association/business-cards'|'/association/card'|'/association/checkin'|'/association/events'|'/association/history'|'/association/library'|'/association/login'|'/association/members'|'/association/messages'|'/association/news'|'/association/notifications'|'/association/opportunities'|'/association/perks'|'/association/products'|'/association/profile'|'/association/renew'|'/association/settings'|'/b/$slug'|'/business-connect/connections'|'/business-connect/meetings'|'/business-connect/memory'|'/business-connect/my-card'|'/business-connect/notifications'|'/business-connect/relationship-timeline'|'/business-connect/saved-cards'|'/business-connect/v1'|'/business-connect/v2'|'/business-connect/v3'|'/business-connect/v4'|'/business-connect/v5'|'/business-connect/v6'|'/business-connect/v7'|'/business-connect/v8'|'/c/$token'|'/card/$code'|'/companies/$companyId'|'/company/$slug'|'/connect-app/activate'|'/connect-app/calendar'|'/connect-app/card-scan'|'/connect-app/community'|'/connect-app/inbox'|'/connect-app/me'|'/connect-app/moment'|'/connect-app/network'|'/connect-app/nfc-tags'|'/connect-app/notifications'|'/connect/calendar-settings'|'/connect/connections'|'/connect/meetings'|'/connect/network'|'/connect/saved-cards'|'/documents/$docId'|'/events/$eventId'|'/fees/$invoiceId'|'/h/$slug'|'/landing/business-connect'|'/landing/bussiness-connect'|'/landing/ceo1983'|'/landing/vione'|'/m/business-cards'|'/m/card'|'/m/checkin'|'/m/events'|'/m/history'|'/m/library'|'/m/members'|'/m/messages'|'/m/news'|'/m/notifications'|'/m/opportunities'|'/m/perks'|'/m/products'|'/m/profile'|'/m/renew'|'/marketplace/$productId'|'/marketplace/my-quotes'|'/marketplace/workspace'|'/members/$memberId'|'/opportunities/$id'|'/platform/admins'|'/platform/ai-audit'|'/platform/audit'|'/platform/introduction-operations'|'/platform/permissions'|'/platform/renewal-audit'|'/vione/login'|'/account-settings/'|'/admin/'|'/association/'|'/business-connect/'|'/companies/'|'/connect-app/'|'/documents/'|'/events/'|'/fees/'|'/landing/'|'/m/'|'/marketplace/'|'/members/'|'/opportunities/'|'/platform/'|'/admin/business-cards/audit'|'/association/perks/$id'|'/association/renew/audit'|'/association/renew/history'|'/association/renew/pay'|'/association/renew/result'|'/business-connect/connections/$personNodeId'|'/business-connect/introductions/$targetPersonNodeId'|'/business-connect/introductions/analytics'|'/business-connect/introductions/deliveries'|'/business-connect/introductions/inbox'|'/business-connect/introductions/outcomes'|'/business-connect/introductions/requests'|'/business-connect/meetings/$meetingId'|'/connect-app/community/$communityId'|'/connect-app/community/requests'|'/connect-app/inbox/$threadId'|'/connect-app/invite/$token'|'/connect-app/me/card'|'/connect-app/me/cards'|'/connect-app/me/edit'|'/connect-app/me/intel-settings'|'/connect-app/me/security'|'/connect-app/me/sessions'|'/connect-app/moment/$personId'|'/connect-app/network/$personId'|'/connect-app/network/requests'|'/connect/meetings/$section'|'/connect/network/connections'|'/connect/network/notifications'|'/landing/ceo/v1'|'/landing/ceo1983/cinematic'|'/m/perks/$id'|'/m/renew/audit'|'/m/renew/history'|'/m/renew/pay'|'/m/renew/result'|'/opportunities/$id/edit'|'/admin/business-cards/'|'/association/perks/'|'/association/renew/'|'/business-connect/connections/'|'/business-connect/meetings/'|'/connect-app/community/'|'/connect-app/inbox/'|'/connect-app/me/'|'/connect-app/moment/'|'/connect-app/network/'|'/connect/cards/'|'/connect/meetings/'|'/connect/network/'|'/m/perks/'|'/m/renew/'|'/api/public/card/{$slug}.vcf'|'/api/public/hooks/notification-runtime'|'/api/public/hooks/outcome-consumer'|'/api/public/hooks/timeline-projection'|'/connect-app/community/$communityId/events'|'/connect-app/community/$communityId/members'|'/connect-app/community/$communityId/news'|'/connect-app/community/$communityId/opportunities'|'/connect/cards/$cardId/edit'|'/connect/network/requests/incoming'|'/connect/network/requests/sent'|'/connect-app/community/$communityId/'|'/api/public/avatar/$owner/$file'|'/api/public/card/$slug/contact'|'/api/public/identity/$token/contact'|'/connect-app/community/$communityId/events/$eventRef'|'/connect-app/community/$communityId/members/$memberRef'|'/connect-app/community/$communityId/news/$newsRef'|'/connect-app/community/$communityId/opportunities/$opportunityRef'|'/connect-app/community/$communityId/events/'|'/connect-app/community/$communityId/members/'|'/connect-app/community/$communityId/news/'|'/connect-app/community/$communityId/opportunities/'
-fileRoutesById: FileRoutesById
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/account-settings'
+    | '/activity'
+    | '/ai'
+    | '/association'
+    | '/auth'
+    | '/benefits'
+    | '/business-cards'
+    | '/business-connect'
+    | '/checkin'
+    | '/checkin-qr'
+    | '/companies'
+    | '/connect'
+    | '/connect-app'
+    | '/demo'
+    | '/documents'
+    | '/email-marketing'
+    | '/event-registrations'
+    | '/events'
+    | '/events-overview'
+    | '/expenses'
+    | '/fees'
+    | '/finance-report'
+    | '/forgot-password'
+    | '/income'
+    | '/install'
+    | '/landing'
+    | '/m'
+    | '/marketplace'
+    | '/meetings'
+    | '/my-permissions'
+    | '/network'
+    | '/news'
+    | '/notifications'
+    | '/opportunities'
+    | '/perks'
+    | '/profile'
+    | '/register'
+    | '/renewal'
+    | '/reset-password'
+    | '/segments'
+    | '/settings'
+    | '/sitemap.xml'
+    | '/sponsor-packages'
+    | '/sponsor-report'
+    | '/sponsors'
+    | '/verify'
+    | '/vione-app'
+    | '/voting'
+    | '/account-settings/notifications'
+    | '/admin/business-cards'
+    | '/admin/cta-analytics'
+    | '/admin/demo-leads'
+    | '/admin/landing-templates'
+    | '/association/benefits'
+    | '/association/business-cards'
+    | '/association/card'
+    | '/association/checkin'
+    | '/association/events'
+    | '/association/history'
+    | '/association/library'
+    | '/association/login'
+    | '/association/members'
+    | '/association/messages'
+    | '/association/news'
+    | '/association/notifications'
+    | '/association/opportunities'
+    | '/association/perks'
+    | '/association/products'
+    | '/association/profile'
+    | '/association/renew'
+    | '/association/settings'
+    | '/b/$slug'
+    | '/business-connect/connections'
+    | '/business-connect/meetings'
+    | '/business-connect/memory'
+    | '/business-connect/my-card'
+    | '/business-connect/notifications'
+    | '/business-connect/relationship-timeline'
+    | '/business-connect/saved-cards'
+    | '/business-connect/v1'
+    | '/business-connect/v2'
+    | '/business-connect/v3'
+    | '/business-connect/v4'
+    | '/business-connect/v5'
+    | '/business-connect/v6'
+    | '/business-connect/v7'
+    | '/business-connect/v8'
+    | '/c/$token'
+    | '/card/$code'
+    | '/companies/$companyId'
+    | '/company/$slug'
+    | '/connect-app/activate'
+    | '/connect-app/calendar'
+    | '/connect-app/card-scan'
+    | '/connect-app/community'
+    | '/connect-app/inbox'
+    | '/connect-app/me'
+    | '/connect-app/moment'
+    | '/connect-app/network'
+    | '/connect-app/nfc-tags'
+    | '/connect-app/notifications'
+    | '/connect/calendar-settings'
+    | '/connect/connections'
+    | '/connect/meetings'
+    | '/connect/network'
+    | '/connect/saved-cards'
+    | '/documents/$docId'
+    | '/events/$eventId'
+    | '/fees/$invoiceId'
+    | '/h/$slug'
+    | '/landing/business-connect'
+    | '/landing/bussiness-connect'
+    | '/landing/ceo1983'
+    | '/landing/vione'
+    | '/m/business-cards'
+    | '/m/card'
+    | '/m/checkin'
+    | '/m/events'
+    | '/m/history'
+    | '/m/library'
+    | '/m/members'
+    | '/m/messages'
+    | '/m/news'
+    | '/m/notifications'
+    | '/m/opportunities'
+    | '/m/perks'
+    | '/m/products'
+    | '/m/profile'
+    | '/m/renew'
+    | '/marketplace/$productId'
+    | '/marketplace/my-quotes'
+    | '/marketplace/workspace'
+    | '/members/$memberId'
+    | '/opportunities/$id'
+    | '/platform/admins'
+    | '/platform/ai-audit'
+    | '/platform/audit'
+    | '/platform/introduction-operations'
+    | '/platform/permissions'
+    | '/platform/renewal-audit'
+    | '/vione/login'
+    | '/account-settings/'
+    | '/admin/'
+    | '/association/'
+    | '/business-connect/'
+    | '/companies/'
+    | '/connect-app/'
+    | '/documents/'
+    | '/events/'
+    | '/fees/'
+    | '/landing/'
+    | '/m/'
+    | '/marketplace/'
+    | '/members/'
+    | '/opportunities/'
+    | '/platform/'
+    | '/admin/business-cards/audit'
+    | '/association/perks/$id'
+    | '/association/renew/audit'
+    | '/association/renew/history'
+    | '/association/renew/pay'
+    | '/association/renew/result'
+    | '/business-connect/connections/$personNodeId'
+    | '/business-connect/introductions/$targetPersonNodeId'
+    | '/business-connect/introductions/analytics'
+    | '/business-connect/introductions/deliveries'
+    | '/business-connect/introductions/inbox'
+    | '/business-connect/introductions/outcomes'
+    | '/business-connect/introductions/requests'
+    | '/business-connect/meetings/$meetingId'
+    | '/connect-app/community/$communityId'
+    | '/connect-app/community/requests'
+    | '/connect-app/inbox/$threadId'
+    | '/connect-app/invite/$token'
+    | '/connect-app/me/card'
+    | '/connect-app/me/cards'
+    | '/connect-app/me/edit'
+    | '/connect-app/me/intel-settings'
+    | '/connect-app/me/security'
+    | '/connect-app/me/sessions'
+    | '/connect-app/moment/$personId'
+    | '/connect-app/network/$personId'
+    | '/connect-app/network/requests'
+    | '/connect/meetings/$section'
+    | '/connect/network/connections'
+    | '/connect/network/notifications'
+    | '/landing/ceo/v1'
+    | '/landing/ceo1983/cinematic'
+    | '/m/perks/$id'
+    | '/m/renew/audit'
+    | '/m/renew/history'
+    | '/m/renew/pay'
+    | '/m/renew/result'
+    | '/opportunities/$id/edit'
+    | '/admin/business-cards/'
+    | '/association/perks/'
+    | '/association/renew/'
+    | '/business-connect/connections/'
+    | '/business-connect/meetings/'
+    | '/connect-app/community/'
+    | '/connect-app/inbox/'
+    | '/connect-app/me/'
+    | '/connect-app/moment/'
+    | '/connect-app/network/'
+    | '/connect/cards/'
+    | '/connect/meetings/'
+    | '/connect/network/'
+    | '/m/perks/'
+    | '/m/renew/'
+    | '/api/public/card/{$slug}.vcf'
+    | '/api/public/hooks/notification-runtime'
+    | '/api/public/hooks/outcome-consumer'
+    | '/api/public/hooks/timeline-projection'
+    | '/connect-app/community/$communityId/events'
+    | '/connect-app/community/$communityId/members'
+    | '/connect-app/community/$communityId/news'
+    | '/connect-app/community/$communityId/opportunities'
+    | '/connect/cards/$cardId/edit'
+    | '/connect/network/requests/incoming'
+    | '/connect/network/requests/sent'
+    | '/connect-app/community/$communityId/'
+    | '/api/public/avatar/$owner/$file'
+    | '/api/public/card/$slug/contact'
+    | '/api/public/identity/$token/contact'
+    | '/connect-app/community/$communityId/events/$eventRef'
+    | '/connect-app/community/$communityId/members/$memberRef'
+    | '/connect-app/community/$communityId/news/$newsRef'
+    | '/connect-app/community/$communityId/opportunities/$opportunityRef'
+    | '/connect-app/community/$communityId/events/'
+    | '/connect-app/community/$communityId/members/'
+    | '/connect-app/community/$communityId/news/'
+    | '/connect-app/community/$communityId/opportunities/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/activity'
+    | '/ai'
+    | '/auth'
+    | '/benefits'
+    | '/business-cards'
+    | '/checkin'
+    | '/checkin-qr'
+    | '/connect'
+    | '/demo'
+    | '/email-marketing'
+    | '/event-registrations'
+    | '/events-overview'
+    | '/expenses'
+    | '/finance-report'
+    | '/forgot-password'
+    | '/income'
+    | '/install'
+    | '/meetings'
+    | '/my-permissions'
+    | '/network'
+    | '/news'
+    | '/notifications'
+    | '/perks'
+    | '/profile'
+    | '/register'
+    | '/renewal'
+    | '/reset-password'
+    | '/segments'
+    | '/settings'
+    | '/sitemap.xml'
+    | '/sponsor-packages'
+    | '/sponsor-report'
+    | '/sponsors'
+    | '/verify'
+    | '/vione-app'
+    | '/voting'
+    | '/account-settings/notifications'
+    | '/admin/cta-analytics'
+    | '/admin/demo-leads'
+    | '/admin/landing-templates'
+    | '/association/benefits'
+    | '/association/business-cards'
+    | '/association/card'
+    | '/association/checkin'
+    | '/association/events'
+    | '/association/history'
+    | '/association/library'
+    | '/association/login'
+    | '/association/members'
+    | '/association/messages'
+    | '/association/news'
+    | '/association/notifications'
+    | '/association/opportunities'
+    | '/association/products'
+    | '/association/profile'
+    | '/association/settings'
+    | '/b/$slug'
+    | '/business-connect/memory'
+    | '/business-connect/my-card'
+    | '/business-connect/notifications'
+    | '/business-connect/relationship-timeline'
+    | '/business-connect/saved-cards'
+    | '/business-connect/v1'
+    | '/business-connect/v2'
+    | '/business-connect/v3'
+    | '/business-connect/v4'
+    | '/business-connect/v5'
+    | '/business-connect/v6'
+    | '/business-connect/v7'
+    | '/business-connect/v8'
+    | '/c/$token'
+    | '/card/$code'
+    | '/companies/$companyId'
+    | '/company/$slug'
+    | '/connect-app/activate'
+    | '/connect-app/calendar'
+    | '/connect-app/card-scan'
+    | '/connect-app/nfc-tags'
+    | '/connect-app/notifications'
+    | '/connect/calendar-settings'
+    | '/connect/connections'
+    | '/connect/saved-cards'
+    | '/documents/$docId'
+    | '/events/$eventId'
+    | '/fees/$invoiceId'
+    | '/h/$slug'
+    | '/landing/business-connect'
+    | '/landing/bussiness-connect'
+    | '/landing/ceo1983'
+    | '/landing/vione'
+    | '/m/business-cards'
+    | '/m/card'
+    | '/m/checkin'
+    | '/m/events'
+    | '/m/history'
+    | '/m/library'
+    | '/m/members'
+    | '/m/messages'
+    | '/m/news'
+    | '/m/notifications'
+    | '/m/opportunities'
+    | '/m/products'
+    | '/m/profile'
+    | '/marketplace/$productId'
+    | '/marketplace/my-quotes'
+    | '/marketplace/workspace'
+    | '/members/$memberId'
+    | '/opportunities/$id'
+    | '/platform/admins'
+    | '/platform/ai-audit'
+    | '/platform/audit'
+    | '/platform/introduction-operations'
+    | '/platform/permissions'
+    | '/platform/renewal-audit'
+    | '/vione/login'
+    | '/account-settings'
+    | '/admin'
+    | '/association'
+    | '/business-connect'
+    | '/companies'
+    | '/connect-app'
+    | '/documents'
+    | '/events'
+    | '/fees'
+    | '/landing'
+    | '/m'
+    | '/marketplace'
+    | '/members'
+    | '/opportunities'
+    | '/platform'
+    | '/admin/business-cards/audit'
+    | '/association/perks/$id'
+    | '/association/renew/audit'
+    | '/association/renew/history'
+    | '/association/renew/pay'
+    | '/association/renew/result'
+    | '/business-connect/connections/$personNodeId'
+    | '/business-connect/introductions/$targetPersonNodeId'
+    | '/business-connect/introductions/analytics'
+    | '/business-connect/introductions/deliveries'
+    | '/business-connect/introductions/inbox'
+    | '/business-connect/introductions/outcomes'
+    | '/business-connect/introductions/requests'
+    | '/business-connect/meetings/$meetingId'
+    | '/connect-app/community/requests'
+    | '/connect-app/inbox/$threadId'
+    | '/connect-app/invite/$token'
+    | '/connect-app/me/card'
+    | '/connect-app/me/cards'
+    | '/connect-app/me/edit'
+    | '/connect-app/me/intel-settings'
+    | '/connect-app/me/security'
+    | '/connect-app/me/sessions'
+    | '/connect-app/moment/$personId'
+    | '/connect-app/network/$personId'
+    | '/connect-app/network/requests'
+    | '/connect/meetings/$section'
+    | '/connect/network/connections'
+    | '/connect/network/notifications'
+    | '/landing/ceo/v1'
+    | '/landing/ceo1983/cinematic'
+    | '/m/perks/$id'
+    | '/m/renew/audit'
+    | '/m/renew/history'
+    | '/m/renew/pay'
+    | '/m/renew/result'
+    | '/opportunities/$id/edit'
+    | '/admin/business-cards'
+    | '/association/perks'
+    | '/association/renew'
+    | '/business-connect/connections'
+    | '/business-connect/meetings'
+    | '/connect-app/community'
+    | '/connect-app/inbox'
+    | '/connect-app/me'
+    | '/connect-app/moment'
+    | '/connect-app/network'
+    | '/connect/cards'
+    | '/connect/meetings'
+    | '/connect/network'
+    | '/m/perks'
+    | '/m/renew'
+    | '/api/public/card/{$slug}.vcf'
+    | '/api/public/hooks/notification-runtime'
+    | '/api/public/hooks/outcome-consumer'
+    | '/api/public/hooks/timeline-projection'
+    | '/connect/cards/$cardId/edit'
+    | '/connect/network/requests/incoming'
+    | '/connect/network/requests/sent'
+    | '/connect-app/community/$communityId'
+    | '/api/public/avatar/$owner/$file'
+    | '/api/public/card/$slug/contact'
+    | '/api/public/identity/$token/contact'
+    | '/connect-app/community/$communityId/events/$eventRef'
+    | '/connect-app/community/$communityId/members/$memberRef'
+    | '/connect-app/community/$communityId/news/$newsRef'
+    | '/connect-app/community/$communityId/opportunities/$opportunityRef'
+    | '/connect-app/community/$communityId/events'
+    | '/connect-app/community/$communityId/members'
+    | '/connect-app/community/$communityId/news'
+    | '/connect-app/community/$communityId/opportunities'
+  id:
+    | '__root__'
+    | '/'
+    | '/account-settings'
+    | '/activity'
+    | '/ai'
+    | '/association'
+    | '/auth'
+    | '/benefits'
+    | '/business-cards'
+    | '/business-connect'
+    | '/checkin'
+    | '/checkin-qr'
+    | '/companies'
+    | '/connect'
+    | '/connect-app'
+    | '/demo'
+    | '/documents'
+    | '/email-marketing'
+    | '/event-registrations'
+    | '/events'
+    | '/events-overview'
+    | '/expenses'
+    | '/fees'
+    | '/finance-report'
+    | '/forgot-password'
+    | '/income'
+    | '/install'
+    | '/landing'
+    | '/m'
+    | '/marketplace'
+    | '/meetings'
+    | '/my-permissions'
+    | '/network'
+    | '/news'
+    | '/notifications'
+    | '/opportunities'
+    | '/perks'
+    | '/profile'
+    | '/register'
+    | '/renewal'
+    | '/reset-password'
+    | '/segments'
+    | '/settings'
+    | '/sitemap.xml'
+    | '/sponsor-packages'
+    | '/sponsor-report'
+    | '/sponsors'
+    | '/verify'
+    | '/vione-app'
+    | '/voting'
+    | '/account-settings/notifications'
+    | '/admin/business-cards'
+    | '/admin/cta-analytics'
+    | '/admin/demo-leads'
+    | '/admin/landing-templates'
+    | '/association/benefits'
+    | '/association/business-cards'
+    | '/association/card'
+    | '/association/checkin'
+    | '/association/events'
+    | '/association/history'
+    | '/association/library'
+    | '/association/login'
+    | '/association/members'
+    | '/association/messages'
+    | '/association/news'
+    | '/association/notifications'
+    | '/association/opportunities'
+    | '/association/perks'
+    | '/association/products'
+    | '/association/profile'
+    | '/association/renew'
+    | '/association/settings'
+    | '/b/$slug'
+    | '/business-connect/connections'
+    | '/business-connect/meetings'
+    | '/business-connect/memory'
+    | '/business-connect/my-card'
+    | '/business-connect/notifications'
+    | '/business-connect/relationship-timeline'
+    | '/business-connect/saved-cards'
+    | '/business-connect/v1'
+    | '/business-connect/v2'
+    | '/business-connect/v3'
+    | '/business-connect/v4'
+    | '/business-connect/v5'
+    | '/business-connect/v6'
+    | '/business-connect/v7'
+    | '/business-connect/v8'
+    | '/c/$token'
+    | '/card/$code'
+    | '/companies/$companyId'
+    | '/company/$slug'
+    | '/connect-app/activate'
+    | '/connect-app/calendar'
+    | '/connect-app/card-scan'
+    | '/connect-app/community'
+    | '/connect-app/inbox'
+    | '/connect-app/me'
+    | '/connect-app/moment'
+    | '/connect-app/network'
+    | '/connect-app/nfc-tags'
+    | '/connect-app/notifications'
+    | '/connect/calendar-settings'
+    | '/connect/connections'
+    | '/connect/meetings'
+    | '/connect/network'
+    | '/connect/saved-cards'
+    | '/documents/$docId'
+    | '/events/$eventId'
+    | '/fees/$invoiceId'
+    | '/h/$slug'
+    | '/landing/business-connect'
+    | '/landing/bussiness-connect'
+    | '/landing/ceo1983'
+    | '/landing/vione'
+    | '/m/business-cards'
+    | '/m/card'
+    | '/m/checkin'
+    | '/m/events'
+    | '/m/history'
+    | '/m/library'
+    | '/m/members'
+    | '/m/messages'
+    | '/m/news'
+    | '/m/notifications'
+    | '/m/opportunities'
+    | '/m/perks'
+    | '/m/products'
+    | '/m/profile'
+    | '/m/renew'
+    | '/marketplace/$productId'
+    | '/marketplace/my-quotes'
+    | '/marketplace/workspace'
+    | '/members/$memberId'
+    | '/opportunities/$id'
+    | '/platform/admins'
+    | '/platform/ai-audit'
+    | '/platform/audit'
+    | '/platform/introduction-operations'
+    | '/platform/permissions'
+    | '/platform/renewal-audit'
+    | '/vione/login'
+    | '/account-settings/'
+    | '/admin/'
+    | '/association/'
+    | '/business-connect/'
+    | '/companies/'
+    | '/connect-app/'
+    | '/documents/'
+    | '/events/'
+    | '/fees/'
+    | '/landing/'
+    | '/m/'
+    | '/marketplace/'
+    | '/members/'
+    | '/opportunities/'
+    | '/platform/'
+    | '/admin/business-cards/audit'
+    | '/association/perks/$id'
+    | '/association/renew/audit'
+    | '/association/renew/history'
+    | '/association/renew/pay'
+    | '/association/renew/result'
+    | '/business-connect/connections/$personNodeId'
+    | '/business-connect/introductions/$targetPersonNodeId'
+    | '/business-connect/introductions/analytics'
+    | '/business-connect/introductions/deliveries'
+    | '/business-connect/introductions/inbox'
+    | '/business-connect/introductions/outcomes'
+    | '/business-connect/introductions/requests'
+    | '/business-connect/meetings/$meetingId'
+    | '/connect-app/community/$communityId'
+    | '/connect-app/community/requests'
+    | '/connect-app/inbox/$threadId'
+    | '/connect-app/invite/$token'
+    | '/connect-app/me/card'
+    | '/connect-app/me/cards'
+    | '/connect-app/me/edit'
+    | '/connect-app/me/intel-settings'
+    | '/connect-app/me/security'
+    | '/connect-app/me/sessions'
+    | '/connect-app/moment/$personId'
+    | '/connect-app/network/$personId'
+    | '/connect-app/network/requests'
+    | '/connect/meetings/$section'
+    | '/connect/network/connections'
+    | '/connect/network/notifications'
+    | '/landing/ceo/v1'
+    | '/landing/ceo1983/cinematic'
+    | '/m/perks/$id'
+    | '/m/renew/audit'
+    | '/m/renew/history'
+    | '/m/renew/pay'
+    | '/m/renew/result'
+    | '/opportunities/$id/edit'
+    | '/admin/business-cards/'
+    | '/association/perks/'
+    | '/association/renew/'
+    | '/business-connect/connections/'
+    | '/business-connect/meetings/'
+    | '/connect-app/community/'
+    | '/connect-app/inbox/'
+    | '/connect-app/me/'
+    | '/connect-app/moment/'
+    | '/connect-app/network/'
+    | '/connect/cards/'
+    | '/connect/meetings/'
+    | '/connect/network/'
+    | '/m/perks/'
+    | '/m/renew/'
+    | '/api/public/card/{$slug}.vcf'
+    | '/api/public/hooks/notification-runtime'
+    | '/api/public/hooks/outcome-consumer'
+    | '/api/public/hooks/timeline-projection'
+    | '/connect-app/community/$communityId/events'
+    | '/connect-app/community/$communityId/members'
+    | '/connect-app/community/$communityId/news'
+    | '/connect-app/community/$communityId/opportunities'
+    | '/connect/cards/$cardId/edit'
+    | '/connect/network/requests/incoming'
+    | '/connect/network/requests/sent'
+    | '/connect-app/community/$communityId/'
+    | '/api/public/avatar/$owner/$file'
+    | '/api/public/card/$slug/contact'
+    | '/api/public/identity/$token/contact'
+    | '/connect-app/community/$communityId/events/$eventRef'
+    | '/connect-app/community/$communityId/members/$memberRef'
+    | '/connect-app/community/$communityId/news/$newsRef'
+    | '/connect-app/community/$communityId/opportunities/$opportunityRef'
+    | '/connect-app/community/$communityId/events/'
+    | '/connect-app/community/$communityId/members/'
+    | '/connect-app/community/$communityId/news/'
+    | '/connect-app/community/$communityId/opportunities/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-IndexRoute: typeof IndexRoute,AccountSettingsRoute: typeof AccountSettingsRouteWithChildren,ActivityRoute: typeof ActivityRoute,AiRoute: typeof AiRoute,AssociationRoute: typeof AssociationRouteWithChildren,AuthRoute: typeof AuthRoute,BenefitsRoute: typeof BenefitsRoute,BusinessCardsRoute: typeof BusinessCardsRoute,BusinessConnectRoute: typeof BusinessConnectRouteWithChildren,CheckinRoute: typeof CheckinRoute,CheckinQrRoute: typeof CheckinQrRoute,CompaniesRoute: typeof CompaniesRouteWithChildren,ConnectRoute: typeof ConnectRouteWithChildren,ConnectAppRoute: typeof ConnectAppRouteWithChildren,DemoRoute: typeof DemoRoute,DocumentsRoute: typeof DocumentsRouteWithChildren,EmailMarketingRoute: typeof EmailMarketingRoute,EventRegistrationsRoute: typeof EventRegistrationsRoute,EventsRoute: typeof EventsRouteWithChildren,EventsOverviewRoute: typeof EventsOverviewRoute,ExpensesRoute: typeof ExpensesRoute,FeesRoute: typeof FeesRouteWithChildren,FinanceReportRoute: typeof FinanceReportRoute,ForgotPasswordRoute: typeof ForgotPasswordRoute,IncomeRoute: typeof IncomeRoute,InstallRoute: typeof InstallRoute,LandingRoute: typeof LandingRouteWithChildren,MRoute: typeof MRouteWithChildren,MarketplaceRoute: typeof MarketplaceRouteWithChildren,MeetingsRoute: typeof MeetingsRoute,MyPermissionsRoute: typeof MyPermissionsRoute,NetworkRoute: typeof NetworkRoute,NewsRoute: typeof NewsRoute,NotificationsRoute: typeof NotificationsRoute,OpportunitiesRoute: typeof OpportunitiesRouteWithChildren,PerksRoute: typeof PerksRoute,ProfileRoute: typeof ProfileRoute,RegisterRoute: typeof RegisterRoute,RenewalRoute: typeof RenewalRoute,ResetPasswordRoute: typeof ResetPasswordRoute,SegmentsRoute: typeof SegmentsRoute,SettingsRoute: typeof SettingsRoute,SitemapDotxmlRoute: typeof SitemapDotxmlRoute,SponsorPackagesRoute: typeof SponsorPackagesRoute,SponsorReportRoute: typeof SponsorReportRoute,SponsorsRoute: typeof SponsorsRoute,VerifyRoute: typeof VerifyRoute,VioneAppRoute: typeof VioneAppRoute,VotingRoute: typeof VotingRoute,AdminBusinessCardsRoute: typeof AdminBusinessCardsRouteWithChildren,AdminCtaAnalyticsRoute: typeof AdminCtaAnalyticsRoute,AdminDemoLeadsRoute: typeof AdminDemoLeadsRoute,AdminLandingTemplatesRoute: typeof AdminLandingTemplatesRoute,BSlugRoute: typeof BSlugRoute,CTokenRoute: typeof CTokenRoute,CardCodeRoute: typeof CardCodeRoute,CompanySlugRoute: typeof CompanySlugRoute,HSlugRoute: typeof HSlugRoute,MembersMemberIdRoute: typeof MembersMemberIdRoute,PlatformAdminsRoute: typeof PlatformAdminsRoute,PlatformAiAuditRoute: typeof PlatformAiAuditRoute,PlatformAuditRoute: typeof PlatformAuditRoute,PlatformIntroductionOperationsRoute: typeof PlatformIntroductionOperationsRoute,PlatformPermissionsRoute: typeof PlatformPermissionsRoute,PlatformRenewalAuditRoute: typeof PlatformRenewalAuditRoute,VioneLoginRoute: typeof VioneLoginRoute,AdminIndexRoute: typeof AdminIndexRoute,MembersIndexRoute: typeof MembersIndexRoute,PlatformIndexRoute: typeof PlatformIndexRoute,ApiPublicCardChar123slugChar125DotvcfRoute: typeof ApiPublicCardChar123slugChar125DotvcfRoute,ApiPublicHooksNotificationRuntimeRoute: typeof ApiPublicHooksNotificationRuntimeRoute,ApiPublicHooksOutcomeConsumerRoute: typeof ApiPublicHooksOutcomeConsumerRoute,ApiPublicHooksTimelineProjectionRoute: typeof ApiPublicHooksTimelineProjectionRoute,ApiPublicAvatarOwnerFileRoute: typeof ApiPublicAvatarOwnerFileRoute,ApiPublicCardSlugContactRoute: typeof ApiPublicCardSlugContactRoute,ApiPublicIdentityTokenContactRoute: typeof ApiPublicIdentityTokenContactRoute
+  IndexRoute: typeof IndexRoute
+  AccountSettingsRoute: typeof AccountSettingsRouteWithChildren
+  ActivityRoute: typeof ActivityRoute
+  AiRoute: typeof AiRoute
+  AssociationRoute: typeof AssociationRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  BenefitsRoute: typeof BenefitsRoute
+  BusinessCardsRoute: typeof BusinessCardsRoute
+  BusinessConnectRoute: typeof BusinessConnectRouteWithChildren
+  CheckinRoute: typeof CheckinRoute
+  CheckinQrRoute: typeof CheckinQrRoute
+  CompaniesRoute: typeof CompaniesRouteWithChildren
+  ConnectRoute: typeof ConnectRouteWithChildren
+  ConnectAppRoute: typeof ConnectAppRouteWithChildren
+  DemoRoute: typeof DemoRoute
+  DocumentsRoute: typeof DocumentsRouteWithChildren
+  EmailMarketingRoute: typeof EmailMarketingRoute
+  EventRegistrationsRoute: typeof EventRegistrationsRoute
+  EventsRoute: typeof EventsRouteWithChildren
+  EventsOverviewRoute: typeof EventsOverviewRoute
+  ExpensesRoute: typeof ExpensesRoute
+  FeesRoute: typeof FeesRouteWithChildren
+  FinanceReportRoute: typeof FinanceReportRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  IncomeRoute: typeof IncomeRoute
+  InstallRoute: typeof InstallRoute
+  LandingRoute: typeof LandingRouteWithChildren
+  MRoute: typeof MRouteWithChildren
+  MarketplaceRoute: typeof MarketplaceRouteWithChildren
+  MeetingsRoute: typeof MeetingsRoute
+  MyPermissionsRoute: typeof MyPermissionsRoute
+  NetworkRoute: typeof NetworkRoute
+  NewsRoute: typeof NewsRoute
+  NotificationsRoute: typeof NotificationsRoute
+  OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
+  PerksRoute: typeof PerksRoute
+  ProfileRoute: typeof ProfileRoute
+  RegisterRoute: typeof RegisterRoute
+  RenewalRoute: typeof RenewalRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SegmentsRoute: typeof SegmentsRoute
+  SettingsRoute: typeof SettingsRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SponsorPackagesRoute: typeof SponsorPackagesRoute
+  SponsorReportRoute: typeof SponsorReportRoute
+  SponsorsRoute: typeof SponsorsRoute
+  VerifyRoute: typeof VerifyRoute
+  VioneAppRoute: typeof VioneAppRoute
+  VotingRoute: typeof VotingRoute
+  AdminBusinessCardsRoute: typeof AdminBusinessCardsRouteWithChildren
+  AdminCtaAnalyticsRoute: typeof AdminCtaAnalyticsRoute
+  AdminDemoLeadsRoute: typeof AdminDemoLeadsRoute
+  AdminLandingTemplatesRoute: typeof AdminLandingTemplatesRoute
+  BSlugRoute: typeof BSlugRoute
+  CTokenRoute: typeof CTokenRoute
+  CardCodeRoute: typeof CardCodeRoute
+  CompanySlugRoute: typeof CompanySlugRoute
+  HSlugRoute: typeof HSlugRoute
+  MembersMemberIdRoute: typeof MembersMemberIdRoute
+  PlatformAdminsRoute: typeof PlatformAdminsRoute
+  PlatformAiAuditRoute: typeof PlatformAiAuditRoute
+  PlatformAuditRoute: typeof PlatformAuditRoute
+  PlatformIntroductionOperationsRoute: typeof PlatformIntroductionOperationsRoute
+  PlatformPermissionsRoute: typeof PlatformPermissionsRoute
+  PlatformRenewalAuditRoute: typeof PlatformRenewalAuditRoute
+  VioneLoginRoute: typeof VioneLoginRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  MembersIndexRoute: typeof MembersIndexRoute
+  PlatformIndexRoute: typeof PlatformIndexRoute
+  ApiPublicCardChar123slugChar125DotvcfRoute: typeof ApiPublicCardChar123slugChar125DotvcfRoute
+  ApiPublicHooksNotificationRuntimeRoute: typeof ApiPublicHooksNotificationRuntimeRoute
+  ApiPublicHooksOutcomeConsumerRoute: typeof ApiPublicHooksOutcomeConsumerRoute
+  ApiPublicHooksTimelineProjectionRoute: typeof ApiPublicHooksTimelineProjectionRoute
+  ApiPublicAvatarOwnerFileRoute: typeof ApiPublicAvatarOwnerFileRoute
+  ApiPublicCardSlugContactRoute: typeof ApiPublicCardSlugContactRoute
+  ApiPublicIdentityTokenContactRoute: typeof ApiPublicIdentityTokenContactRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/voting': {
-          id: '/voting'
-          path: '/voting'
-          fullPath: '/voting'
-          preLoaderRoute: typeof VotingRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/vione-app': {
-          id: '/vione-app'
-          path: '/vione-app'
-          fullPath: '/vione-app'
-          preLoaderRoute: typeof VioneAppRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/verify': {
-          id: '/verify'
-          path: '/verify'
-          fullPath: '/verify'
-          preLoaderRoute: typeof VerifyRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/sponsors': {
-          id: '/sponsors'
-          path: '/sponsors'
-          fullPath: '/sponsors'
-          preLoaderRoute: typeof SponsorsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/sponsor-report': {
-          id: '/sponsor-report'
-          path: '/sponsor-report'
-          fullPath: '/sponsor-report'
-          preLoaderRoute: typeof SponsorReportRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/sponsor-packages': {
-          id: '/sponsor-packages'
-          path: '/sponsor-packages'
-          fullPath: '/sponsor-packages'
-          preLoaderRoute: typeof SponsorPackagesRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/sitemap.xml': {
-          id: '/sitemap.xml'
-          path: '/sitemap.xml'
-          fullPath: '/sitemap.xml'
-          preLoaderRoute: typeof SitemapDotxmlRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/settings': {
-          id: '/settings'
-          path: '/settings'
-          fullPath: '/settings'
-          preLoaderRoute: typeof SettingsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/segments': {
-          id: '/segments'
-          path: '/segments'
-          fullPath: '/segments'
-          preLoaderRoute: typeof SegmentsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/reset-password': {
-          id: '/reset-password'
-          path: '/reset-password'
-          fullPath: '/reset-password'
-          preLoaderRoute: typeof ResetPasswordRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/renewal': {
-          id: '/renewal'
-          path: '/renewal'
-          fullPath: '/renewal'
-          preLoaderRoute: typeof RenewalRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/register': {
-          id: '/register'
-          path: '/register'
-          fullPath: '/register'
-          preLoaderRoute: typeof RegisterRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/profile': {
-          id: '/profile'
-          path: '/profile'
-          fullPath: '/profile'
-          preLoaderRoute: typeof ProfileRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/perks': {
-          id: '/perks'
-          path: '/perks'
-          fullPath: '/perks'
-          preLoaderRoute: typeof PerksRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/opportunities': {
-          id: '/opportunities'
-          path: '/opportunities'
-          fullPath: '/opportunities'
-          preLoaderRoute: typeof OpportunitiesRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/notifications': {
-          id: '/notifications'
-          path: '/notifications'
-          fullPath: '/notifications'
-          preLoaderRoute: typeof NotificationsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/news': {
-          id: '/news'
-          path: '/news'
-          fullPath: '/news'
-          preLoaderRoute: typeof NewsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/network': {
-          id: '/network'
-          path: '/network'
-          fullPath: '/network'
-          preLoaderRoute: typeof NetworkRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/my-permissions': {
-          id: '/my-permissions'
-          path: '/my-permissions'
-          fullPath: '/my-permissions'
-          preLoaderRoute: typeof MyPermissionsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/meetings': {
-          id: '/meetings'
-          path: '/meetings'
-          fullPath: '/meetings'
-          preLoaderRoute: typeof MeetingsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/marketplace': {
-          id: '/marketplace'
-          path: '/marketplace'
-          fullPath: '/marketplace'
-          preLoaderRoute: typeof MarketplaceRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/m': {
-          id: '/m'
-          path: '/m'
-          fullPath: '/m'
-          preLoaderRoute: typeof MRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/landing': {
-          id: '/landing'
-          path: '/landing'
-          fullPath: '/landing'
-          preLoaderRoute: typeof LandingRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/install': {
-          id: '/install'
-          path: '/install'
-          fullPath: '/install'
-          preLoaderRoute: typeof InstallRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/income': {
-          id: '/income'
-          path: '/income'
-          fullPath: '/income'
-          preLoaderRoute: typeof IncomeRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/forgot-password': {
-          id: '/forgot-password'
-          path: '/forgot-password'
-          fullPath: '/forgot-password'
-          preLoaderRoute: typeof ForgotPasswordRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/finance-report': {
-          id: '/finance-report'
-          path: '/finance-report'
-          fullPath: '/finance-report'
-          preLoaderRoute: typeof FinanceReportRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/fees': {
-          id: '/fees'
-          path: '/fees'
-          fullPath: '/fees'
-          preLoaderRoute: typeof FeesRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/expenses': {
-          id: '/expenses'
-          path: '/expenses'
-          fullPath: '/expenses'
-          preLoaderRoute: typeof ExpensesRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/events-overview': {
-          id: '/events-overview'
-          path: '/events-overview'
-          fullPath: '/events-overview'
-          preLoaderRoute: typeof EventsOverviewRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/events': {
-          id: '/events'
-          path: '/events'
-          fullPath: '/events'
-          preLoaderRoute: typeof EventsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/event-registrations': {
-          id: '/event-registrations'
-          path: '/event-registrations'
-          fullPath: '/event-registrations'
-          preLoaderRoute: typeof EventRegistrationsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/email-marketing': {
-          id: '/email-marketing'
-          path: '/email-marketing'
-          fullPath: '/email-marketing'
-          preLoaderRoute: typeof EmailMarketingRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/documents': {
-          id: '/documents'
-          path: '/documents'
-          fullPath: '/documents'
-          preLoaderRoute: typeof DocumentsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/demo': {
-          id: '/demo'
-          path: '/demo'
-          fullPath: '/demo'
-          preLoaderRoute: typeof DemoRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/connect-app': {
-          id: '/connect-app'
-          path: '/connect-app'
-          fullPath: '/connect-app'
-          preLoaderRoute: typeof ConnectAppRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/connect': {
-          id: '/connect'
-          path: '/connect'
-          fullPath: '/connect'
-          preLoaderRoute: typeof ConnectRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/companies': {
-          id: '/companies'
-          path: '/companies'
-          fullPath: '/companies'
-          preLoaderRoute: typeof CompaniesRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/checkin-qr': {
-          id: '/checkin-qr'
-          path: '/checkin-qr'
-          fullPath: '/checkin-qr'
-          preLoaderRoute: typeof CheckinQrRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/checkin': {
-          id: '/checkin'
-          path: '/checkin'
-          fullPath: '/checkin'
-          preLoaderRoute: typeof CheckinRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/business-connect': {
-          id: '/business-connect'
-          path: '/business-connect'
-          fullPath: '/business-connect'
-          preLoaderRoute: typeof BusinessConnectRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/business-cards': {
-          id: '/business-cards'
-          path: '/business-cards'
-          fullPath: '/business-cards'
-          preLoaderRoute: typeof BusinessCardsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/benefits': {
-          id: '/benefits'
-          path: '/benefits'
-          fullPath: '/benefits'
-          preLoaderRoute: typeof BenefitsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/auth': {
-          id: '/auth'
-          path: '/auth'
-          fullPath: '/auth'
-          preLoaderRoute: typeof AuthRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/association': {
-          id: '/association'
-          path: '/association'
-          fullPath: '/association'
-          preLoaderRoute: typeof AssociationRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/ai': {
-          id: '/ai'
-          path: '/ai'
-          fullPath: '/ai'
-          preLoaderRoute: typeof AiRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/activity': {
-          id: '/activity'
-          path: '/activity'
-          fullPath: '/activity'
-          preLoaderRoute: typeof ActivityRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/account-settings': {
-          id: '/account-settings'
-          path: '/account-settings'
-          fullPath: '/account-settings'
-          preLoaderRoute: typeof AccountSettingsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/': {
-          id: '/'
-          path: '/'
-          fullPath: '/'
-          preLoaderRoute: typeof IndexRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/': {
-          id: '/platform/'
-          path: '/platform'
-          fullPath: '/platform/'
-          preLoaderRoute: typeof PlatformIndexRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/opportunities/': {
-          id: '/opportunities/'
-          path: '/'
-          fullPath: '/opportunities/'
-          preLoaderRoute: typeof OpportunitiesIndexRouteImport
-          parentRoute: typeof OpportunitiesRoute
-        }
-'/members/': {
-          id: '/members/'
-          path: '/members'
-          fullPath: '/members/'
-          preLoaderRoute: typeof MembersIndexRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/marketplace/': {
-          id: '/marketplace/'
-          path: '/'
-          fullPath: '/marketplace/'
-          preLoaderRoute: typeof MarketplaceIndexRouteImport
-          parentRoute: typeof MarketplaceRoute
-        }
-'/m/': {
-          id: '/m/'
-          path: '/'
-          fullPath: '/m/'
-          preLoaderRoute: typeof MIndexRouteImport
-          parentRoute: typeof MRoute
-        }
-'/landing/': {
-          id: '/landing/'
-          path: '/'
-          fullPath: '/landing/'
-          preLoaderRoute: typeof LandingIndexRouteImport
-          parentRoute: typeof LandingRoute
-        }
-'/fees/': {
-          id: '/fees/'
-          path: '/'
-          fullPath: '/fees/'
-          preLoaderRoute: typeof FeesIndexRouteImport
-          parentRoute: typeof FeesRoute
-        }
-'/events/': {
-          id: '/events/'
-          path: '/'
-          fullPath: '/events/'
-          preLoaderRoute: typeof EventsIndexRouteImport
-          parentRoute: typeof EventsRoute
-        }
-'/documents/': {
-          id: '/documents/'
-          path: '/'
-          fullPath: '/documents/'
-          preLoaderRoute: typeof DocumentsIndexRouteImport
-          parentRoute: typeof DocumentsRoute
-        }
-'/connect-app/': {
-          id: '/connect-app/'
-          path: '/'
-          fullPath: '/connect-app/'
-          preLoaderRoute: typeof ConnectAppIndexRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/companies/': {
-          id: '/companies/'
-          path: '/'
-          fullPath: '/companies/'
-          preLoaderRoute: typeof CompaniesIndexRouteImport
-          parentRoute: typeof CompaniesRoute
-        }
-'/business-connect/': {
-          id: '/business-connect/'
-          path: '/'
-          fullPath: '/business-connect/'
-          preLoaderRoute: typeof BusinessConnectIndexRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/association/': {
-          id: '/association/'
-          path: '/'
-          fullPath: '/association/'
-          preLoaderRoute: typeof AssociationIndexRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/admin/': {
-          id: '/admin/'
-          path: '/admin'
-          fullPath: '/admin/'
-          preLoaderRoute: typeof AdminIndexRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/account-settings/': {
-          id: '/account-settings/'
-          path: '/'
-          fullPath: '/account-settings/'
-          preLoaderRoute: typeof AccountSettingsIndexRouteImport
-          parentRoute: typeof AccountSettingsRoute
-        }
-'/vione/login': {
-          id: '/vione/login'
-          path: '/vione/login'
-          fullPath: '/vione/login'
-          preLoaderRoute: typeof VioneLoginRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/renewal-audit': {
-          id: '/platform/renewal-audit'
-          path: '/platform/renewal-audit'
-          fullPath: '/platform/renewal-audit'
-          preLoaderRoute: typeof PlatformRenewalAuditRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/permissions': {
-          id: '/platform/permissions'
-          path: '/platform/permissions'
-          fullPath: '/platform/permissions'
-          preLoaderRoute: typeof PlatformPermissionsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/introduction-operations': {
-          id: '/platform/introduction-operations'
-          path: '/platform/introduction-operations'
-          fullPath: '/platform/introduction-operations'
-          preLoaderRoute: typeof PlatformIntroductionOperationsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/audit': {
-          id: '/platform/audit'
-          path: '/platform/audit'
-          fullPath: '/platform/audit'
-          preLoaderRoute: typeof PlatformAuditRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/ai-audit': {
-          id: '/platform/ai-audit'
-          path: '/platform/ai-audit'
-          fullPath: '/platform/ai-audit'
-          preLoaderRoute: typeof PlatformAiAuditRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/platform/admins': {
-          id: '/platform/admins'
-          path: '/platform/admins'
-          fullPath: '/platform/admins'
-          preLoaderRoute: typeof PlatformAdminsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/opportunities/$id': {
-          id: '/opportunities/$id'
-          path: '/$id'
-          fullPath: '/opportunities/$id'
-          preLoaderRoute: typeof OpportunitiesIdRouteImport
-          parentRoute: typeof OpportunitiesRoute
-        }
-'/members/$memberId': {
-          id: '/members/$memberId'
-          path: '/members/$memberId'
-          fullPath: '/members/$memberId'
-          preLoaderRoute: typeof MembersMemberIdRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/marketplace/workspace': {
-          id: '/marketplace/workspace'
-          path: '/workspace'
-          fullPath: '/marketplace/workspace'
-          preLoaderRoute: typeof MarketplaceWorkspaceRouteImport
-          parentRoute: typeof MarketplaceRoute
-        }
-'/marketplace/my-quotes': {
-          id: '/marketplace/my-quotes'
-          path: '/my-quotes'
-          fullPath: '/marketplace/my-quotes'
-          preLoaderRoute: typeof MarketplaceMyQuotesRouteImport
-          parentRoute: typeof MarketplaceRoute
-        }
-'/marketplace/$productId': {
-          id: '/marketplace/$productId'
-          path: '/$productId'
-          fullPath: '/marketplace/$productId'
-          preLoaderRoute: typeof MarketplaceProductIdRouteImport
-          parentRoute: typeof MarketplaceRoute
-        }
-'/m/renew': {
-          id: '/m/renew'
-          path: '/renew'
-          fullPath: '/m/renew'
-          preLoaderRoute: typeof MRenewRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/profile': {
-          id: '/m/profile'
-          path: '/profile'
-          fullPath: '/m/profile'
-          preLoaderRoute: typeof MProfileRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/products': {
-          id: '/m/products'
-          path: '/products'
-          fullPath: '/m/products'
-          preLoaderRoute: typeof MProductsRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/perks': {
-          id: '/m/perks'
-          path: '/perks'
-          fullPath: '/m/perks'
-          preLoaderRoute: typeof MPerksRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/opportunities': {
-          id: '/m/opportunities'
-          path: '/opportunities'
-          fullPath: '/m/opportunities'
-          preLoaderRoute: typeof MOpportunitiesRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/notifications': {
-          id: '/m/notifications'
-          path: '/notifications'
-          fullPath: '/m/notifications'
-          preLoaderRoute: typeof MNotificationsRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/news': {
-          id: '/m/news'
-          path: '/news'
-          fullPath: '/m/news'
-          preLoaderRoute: typeof MNewsRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/messages': {
-          id: '/m/messages'
-          path: '/messages'
-          fullPath: '/m/messages'
-          preLoaderRoute: typeof MMessagesRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/members': {
-          id: '/m/members'
-          path: '/members'
-          fullPath: '/m/members'
-          preLoaderRoute: typeof MMembersRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/library': {
-          id: '/m/library'
-          path: '/library'
-          fullPath: '/m/library'
-          preLoaderRoute: typeof MLibraryRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/history': {
-          id: '/m/history'
-          path: '/history'
-          fullPath: '/m/history'
-          preLoaderRoute: typeof MHistoryRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/events': {
-          id: '/m/events'
-          path: '/events'
-          fullPath: '/m/events'
-          preLoaderRoute: typeof MEventsRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/checkin': {
-          id: '/m/checkin'
-          path: '/checkin'
-          fullPath: '/m/checkin'
-          preLoaderRoute: typeof MCheckinRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/card': {
-          id: '/m/card'
-          path: '/card'
-          fullPath: '/m/card'
-          preLoaderRoute: typeof MCardRouteImport
-          parentRoute: typeof MRoute
-        }
-'/m/business-cards': {
-          id: '/m/business-cards'
-          path: '/business-cards'
-          fullPath: '/m/business-cards'
-          preLoaderRoute: typeof MBusinessCardsRouteImport
-          parentRoute: typeof MRoute
-        }
-'/landing/vione': {
-          id: '/landing/vione'
-          path: '/vione'
-          fullPath: '/landing/vione'
-          preLoaderRoute: typeof LandingVioneRouteImport
-          parentRoute: typeof LandingRoute
-        }
-'/landing/ceo1983': {
-          id: '/landing/ceo1983'
-          path: '/ceo1983'
-          fullPath: '/landing/ceo1983'
-          preLoaderRoute: typeof LandingCeo1983RouteImport
-          parentRoute: typeof LandingRoute
-        }
-'/landing/bussiness-connect': {
-          id: '/landing/bussiness-connect'
-          path: '/bussiness-connect'
-          fullPath: '/landing/bussiness-connect'
-          preLoaderRoute: typeof LandingBussinessConnectRouteImport
-          parentRoute: typeof LandingRoute
-        }
-'/landing/business-connect': {
-          id: '/landing/business-connect'
-          path: '/business-connect'
-          fullPath: '/landing/business-connect'
-          preLoaderRoute: typeof LandingBusinessConnectRouteImport
-          parentRoute: typeof LandingRoute
-        }
-'/h/$slug': {
-          id: '/h/$slug'
-          path: '/h/$slug'
-          fullPath: '/h/$slug'
-          preLoaderRoute: typeof HSlugRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/fees/$invoiceId': {
-          id: '/fees/$invoiceId'
-          path: '/$invoiceId'
-          fullPath: '/fees/$invoiceId'
-          preLoaderRoute: typeof FeesInvoiceIdRouteImport
-          parentRoute: typeof FeesRoute
-        }
-'/events/$eventId': {
-          id: '/events/$eventId'
-          path: '/$eventId'
-          fullPath: '/events/$eventId'
-          preLoaderRoute: typeof EventsEventIdRouteImport
-          parentRoute: typeof EventsRoute
-        }
-'/documents/$docId': {
-          id: '/documents/$docId'
-          path: '/$docId'
-          fullPath: '/documents/$docId'
-          preLoaderRoute: typeof DocumentsDocIdRouteImport
-          parentRoute: typeof DocumentsRoute
-        }
-'/connect/saved-cards': {
-          id: '/connect/saved-cards'
-          path: '/saved-cards'
-          fullPath: '/connect/saved-cards'
-          preLoaderRoute: typeof ConnectSavedCardsRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect/network': {
-          id: '/connect/network'
-          path: '/network'
-          fullPath: '/connect/network'
-          preLoaderRoute: typeof ConnectNetworkRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect/meetings': {
-          id: '/connect/meetings'
-          path: '/meetings'
-          fullPath: '/connect/meetings'
-          preLoaderRoute: typeof ConnectMeetingsRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect/connections': {
-          id: '/connect/connections'
-          path: '/connections'
-          fullPath: '/connect/connections'
-          preLoaderRoute: typeof ConnectConnectionsRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect/calendar-settings': {
-          id: '/connect/calendar-settings'
-          path: '/calendar-settings'
-          fullPath: '/connect/calendar-settings'
-          preLoaderRoute: typeof ConnectCalendarSettingsRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect-app/notifications': {
-          id: '/connect-app/notifications'
-          path: '/notifications'
-          fullPath: '/connect-app/notifications'
-          preLoaderRoute: typeof ConnectAppNotificationsRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/nfc-tags': {
-          id: '/connect-app/nfc-tags'
-          path: '/nfc-tags'
-          fullPath: '/connect-app/nfc-tags'
-          preLoaderRoute: typeof ConnectAppNfcTagsRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/network': {
-          id: '/connect-app/network'
-          path: '/network'
-          fullPath: '/connect-app/network'
-          preLoaderRoute: typeof ConnectAppNetworkRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/moment': {
-          id: '/connect-app/moment'
-          path: '/moment'
-          fullPath: '/connect-app/moment'
-          preLoaderRoute: typeof ConnectAppMomentRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/me': {
-          id: '/connect-app/me'
-          path: '/me'
-          fullPath: '/connect-app/me'
-          preLoaderRoute: typeof ConnectAppMeRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/inbox': {
-          id: '/connect-app/inbox'
-          path: '/inbox'
-          fullPath: '/connect-app/inbox'
-          preLoaderRoute: typeof ConnectAppInboxRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/community': {
-          id: '/connect-app/community'
-          path: '/community'
-          fullPath: '/connect-app/community'
-          preLoaderRoute: typeof ConnectAppCommunityRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/card-scan': {
-          id: '/connect-app/card-scan'
-          path: '/card-scan'
-          fullPath: '/connect-app/card-scan'
-          preLoaderRoute: typeof ConnectAppCardScanRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/calendar': {
-          id: '/connect-app/calendar'
-          path: '/calendar'
-          fullPath: '/connect-app/calendar'
-          preLoaderRoute: typeof ConnectAppCalendarRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/activate': {
-          id: '/connect-app/activate'
-          path: '/activate'
-          fullPath: '/connect-app/activate'
-          preLoaderRoute: typeof ConnectAppActivateRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/company/$slug': {
-          id: '/company/$slug'
-          path: '/company/$slug'
-          fullPath: '/company/$slug'
-          preLoaderRoute: typeof CompanySlugRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/companies/$companyId': {
-          id: '/companies/$companyId'
-          path: '/$companyId'
-          fullPath: '/companies/$companyId'
-          preLoaderRoute: typeof CompaniesCompanyIdRouteImport
-          parentRoute: typeof CompaniesRoute
-        }
-'/card/$code': {
-          id: '/card/$code'
-          path: '/card/$code'
-          fullPath: '/card/$code'
-          preLoaderRoute: typeof CardCodeRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/c/$token': {
-          id: '/c/$token'
-          path: '/c/$token'
-          fullPath: '/c/$token'
-          preLoaderRoute: typeof CTokenRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/business-connect/v8': {
-          id: '/business-connect/v8'
-          path: '/v8'
-          fullPath: '/business-connect/v8'
-          preLoaderRoute: typeof BusinessConnectV8RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v7': {
-          id: '/business-connect/v7'
-          path: '/v7'
-          fullPath: '/business-connect/v7'
-          preLoaderRoute: typeof BusinessConnectV7RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v6': {
-          id: '/business-connect/v6'
-          path: '/v6'
-          fullPath: '/business-connect/v6'
-          preLoaderRoute: typeof BusinessConnectV6RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v5': {
-          id: '/business-connect/v5'
-          path: '/v5'
-          fullPath: '/business-connect/v5'
-          preLoaderRoute: typeof BusinessConnectV5RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v4': {
-          id: '/business-connect/v4'
-          path: '/v4'
-          fullPath: '/business-connect/v4'
-          preLoaderRoute: typeof BusinessConnectV4RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v3': {
-          id: '/business-connect/v3'
-          path: '/v3'
-          fullPath: '/business-connect/v3'
-          preLoaderRoute: typeof BusinessConnectV3RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v2': {
-          id: '/business-connect/v2'
-          path: '/v2'
-          fullPath: '/business-connect/v2'
-          preLoaderRoute: typeof BusinessConnectV2RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/v1': {
-          id: '/business-connect/v1'
-          path: '/v1'
-          fullPath: '/business-connect/v1'
-          preLoaderRoute: typeof BusinessConnectV1RouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/saved-cards': {
-          id: '/business-connect/saved-cards'
-          path: '/saved-cards'
-          fullPath: '/business-connect/saved-cards'
-          preLoaderRoute: typeof BusinessConnectSavedCardsRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/relationship-timeline': {
-          id: '/business-connect/relationship-timeline'
-          path: '/relationship-timeline'
-          fullPath: '/business-connect/relationship-timeline'
-          preLoaderRoute: typeof BusinessConnectRelationshipTimelineRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/notifications': {
-          id: '/business-connect/notifications'
-          path: '/notifications'
-          fullPath: '/business-connect/notifications'
-          preLoaderRoute: typeof BusinessConnectNotificationsRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/my-card': {
-          id: '/business-connect/my-card'
-          path: '/my-card'
-          fullPath: '/business-connect/my-card'
-          preLoaderRoute: typeof BusinessConnectMyCardRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/memory': {
-          id: '/business-connect/memory'
-          path: '/memory'
-          fullPath: '/business-connect/memory'
-          preLoaderRoute: typeof BusinessConnectMemoryRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/meetings': {
-          id: '/business-connect/meetings'
-          path: '/meetings'
-          fullPath: '/business-connect/meetings'
-          preLoaderRoute: typeof BusinessConnectMeetingsRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/connections': {
-          id: '/business-connect/connections'
-          path: '/connections'
-          fullPath: '/business-connect/connections'
-          preLoaderRoute: typeof BusinessConnectConnectionsRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/b/$slug': {
-          id: '/b/$slug'
-          path: '/b/$slug'
-          fullPath: '/b/$slug'
-          preLoaderRoute: typeof BSlugRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/association/settings': {
-          id: '/association/settings'
-          path: '/settings'
-          fullPath: '/association/settings'
-          preLoaderRoute: typeof AssociationSettingsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/renew': {
-          id: '/association/renew'
-          path: '/renew'
-          fullPath: '/association/renew'
-          preLoaderRoute: typeof AssociationRenewRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/profile': {
-          id: '/association/profile'
-          path: '/profile'
-          fullPath: '/association/profile'
-          preLoaderRoute: typeof AssociationProfileRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/products': {
-          id: '/association/products'
-          path: '/products'
-          fullPath: '/association/products'
-          preLoaderRoute: typeof AssociationProductsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/perks': {
-          id: '/association/perks'
-          path: '/perks'
-          fullPath: '/association/perks'
-          preLoaderRoute: typeof AssociationPerksRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/opportunities': {
-          id: '/association/opportunities'
-          path: '/opportunities'
-          fullPath: '/association/opportunities'
-          preLoaderRoute: typeof AssociationOpportunitiesRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/notifications': {
-          id: '/association/notifications'
-          path: '/notifications'
-          fullPath: '/association/notifications'
-          preLoaderRoute: typeof AssociationNotificationsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/news': {
-          id: '/association/news'
-          path: '/news'
-          fullPath: '/association/news'
-          preLoaderRoute: typeof AssociationNewsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/messages': {
-          id: '/association/messages'
-          path: '/messages'
-          fullPath: '/association/messages'
-          preLoaderRoute: typeof AssociationMessagesRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/members': {
-          id: '/association/members'
-          path: '/members'
-          fullPath: '/association/members'
-          preLoaderRoute: typeof AssociationMembersRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/login': {
-          id: '/association/login'
-          path: '/login'
-          fullPath: '/association/login'
-          preLoaderRoute: typeof AssociationLoginRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/library': {
-          id: '/association/library'
-          path: '/library'
-          fullPath: '/association/library'
-          preLoaderRoute: typeof AssociationLibraryRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/history': {
-          id: '/association/history'
-          path: '/history'
-          fullPath: '/association/history'
-          preLoaderRoute: typeof AssociationHistoryRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/events': {
-          id: '/association/events'
-          path: '/events'
-          fullPath: '/association/events'
-          preLoaderRoute: typeof AssociationEventsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/checkin': {
-          id: '/association/checkin'
-          path: '/checkin'
-          fullPath: '/association/checkin'
-          preLoaderRoute: typeof AssociationCheckinRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/card': {
-          id: '/association/card'
-          path: '/card'
-          fullPath: '/association/card'
-          preLoaderRoute: typeof AssociationCardRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/business-cards': {
-          id: '/association/business-cards'
-          path: '/business-cards'
-          fullPath: '/association/business-cards'
-          preLoaderRoute: typeof AssociationBusinessCardsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/association/benefits': {
-          id: '/association/benefits'
-          path: '/benefits'
-          fullPath: '/association/benefits'
-          preLoaderRoute: typeof AssociationBenefitsRouteImport
-          parentRoute: typeof AssociationRoute
-        }
-'/admin/landing-templates': {
-          id: '/admin/landing-templates'
-          path: '/admin/landing-templates'
-          fullPath: '/admin/landing-templates'
-          preLoaderRoute: typeof AdminLandingTemplatesRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/admin/demo-leads': {
-          id: '/admin/demo-leads'
-          path: '/admin/demo-leads'
-          fullPath: '/admin/demo-leads'
-          preLoaderRoute: typeof AdminDemoLeadsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/admin/cta-analytics': {
-          id: '/admin/cta-analytics'
-          path: '/admin/cta-analytics'
-          fullPath: '/admin/cta-analytics'
-          preLoaderRoute: typeof AdminCtaAnalyticsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/admin/business-cards': {
-          id: '/admin/business-cards'
-          path: '/admin/business-cards'
-          fullPath: '/admin/business-cards'
-          preLoaderRoute: typeof AdminBusinessCardsRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/account-settings/notifications': {
-          id: '/account-settings/notifications'
-          path: '/notifications'
-          fullPath: '/account-settings/notifications'
-          preLoaderRoute: typeof AccountSettingsNotificationsRouteImport
-          parentRoute: typeof AccountSettingsRoute
-        }
-'/m/renew/': {
-          id: '/m/renew/'
-          path: '/'
-          fullPath: '/m/renew/'
-          preLoaderRoute: typeof MRenewIndexRouteImport
-          parentRoute: typeof MRenewRoute
-        }
-'/m/perks/': {
-          id: '/m/perks/'
-          path: '/'
-          fullPath: '/m/perks/'
-          preLoaderRoute: typeof MPerksIndexRouteImport
-          parentRoute: typeof MPerksRoute
-        }
-'/connect/network/': {
-          id: '/connect/network/'
-          path: '/'
-          fullPath: '/connect/network/'
-          preLoaderRoute: typeof ConnectNetworkIndexRouteImport
-          parentRoute: typeof ConnectNetworkRoute
-        }
-'/connect/meetings/': {
-          id: '/connect/meetings/'
-          path: '/'
-          fullPath: '/connect/meetings/'
-          preLoaderRoute: typeof ConnectMeetingsIndexRouteImport
-          parentRoute: typeof ConnectMeetingsRoute
-        }
-'/connect/cards/': {
-          id: '/connect/cards/'
-          path: '/cards'
-          fullPath: '/connect/cards/'
-          preLoaderRoute: typeof ConnectCardsIndexRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect-app/network/': {
-          id: '/connect-app/network/'
-          path: '/'
-          fullPath: '/connect-app/network/'
-          preLoaderRoute: typeof ConnectAppNetworkIndexRouteImport
-          parentRoute: typeof ConnectAppNetworkRoute
-        }
-'/connect-app/moment/': {
-          id: '/connect-app/moment/'
-          path: '/'
-          fullPath: '/connect-app/moment/'
-          preLoaderRoute: typeof ConnectAppMomentIndexRouteImport
-          parentRoute: typeof ConnectAppMomentRoute
-        }
-'/connect-app/me/': {
-          id: '/connect-app/me/'
-          path: '/'
-          fullPath: '/connect-app/me/'
-          preLoaderRoute: typeof ConnectAppMeIndexRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/inbox/': {
-          id: '/connect-app/inbox/'
-          path: '/'
-          fullPath: '/connect-app/inbox/'
-          preLoaderRoute: typeof ConnectAppInboxIndexRouteImport
-          parentRoute: typeof ConnectAppInboxRoute
-        }
-'/connect-app/community/': {
-          id: '/connect-app/community/'
-          path: '/'
-          fullPath: '/connect-app/community/'
-          preLoaderRoute: typeof ConnectAppCommunityIndexRouteImport
-          parentRoute: typeof ConnectAppCommunityRoute
-        }
-'/business-connect/meetings/': {
-          id: '/business-connect/meetings/'
-          path: '/'
-          fullPath: '/business-connect/meetings/'
-          preLoaderRoute: typeof BusinessConnectMeetingsIndexRouteImport
-          parentRoute: typeof BusinessConnectMeetingsRoute
-        }
-'/business-connect/connections/': {
-          id: '/business-connect/connections/'
-          path: '/'
-          fullPath: '/business-connect/connections/'
-          preLoaderRoute: typeof BusinessConnectConnectionsIndexRouteImport
-          parentRoute: typeof BusinessConnectConnectionsRoute
-        }
-'/association/renew/': {
-          id: '/association/renew/'
-          path: '/'
-          fullPath: '/association/renew/'
-          preLoaderRoute: typeof AssociationRenewIndexRouteImport
-          parentRoute: typeof AssociationRenewRoute
-        }
-'/association/perks/': {
-          id: '/association/perks/'
-          path: '/'
-          fullPath: '/association/perks/'
-          preLoaderRoute: typeof AssociationPerksIndexRouteImport
-          parentRoute: typeof AssociationPerksRoute
-        }
-'/admin/business-cards/': {
-          id: '/admin/business-cards/'
-          path: '/'
-          fullPath: '/admin/business-cards/'
-          preLoaderRoute: typeof AdminBusinessCardsIndexRouteImport
-          parentRoute: typeof AdminBusinessCardsRoute
-        }
-'/opportunities/$id/edit': {
-          id: '/opportunities/$id/edit'
-          path: '/edit'
-          fullPath: '/opportunities/$id/edit'
-          preLoaderRoute: typeof OpportunitiesIdEditRouteImport
-          parentRoute: typeof OpportunitiesIdRoute
-        }
-'/m/renew/result': {
-          id: '/m/renew/result'
-          path: '/result'
-          fullPath: '/m/renew/result'
-          preLoaderRoute: typeof MRenewResultRouteImport
-          parentRoute: typeof MRenewRoute
-        }
-'/m/renew/pay': {
-          id: '/m/renew/pay'
-          path: '/pay'
-          fullPath: '/m/renew/pay'
-          preLoaderRoute: typeof MRenewPayRouteImport
-          parentRoute: typeof MRenewRoute
-        }
-'/m/renew/history': {
-          id: '/m/renew/history'
-          path: '/history'
-          fullPath: '/m/renew/history'
-          preLoaderRoute: typeof MRenewHistoryRouteImport
-          parentRoute: typeof MRenewRoute
-        }
-'/m/renew/audit': {
-          id: '/m/renew/audit'
-          path: '/audit'
-          fullPath: '/m/renew/audit'
-          preLoaderRoute: typeof MRenewAuditRouteImport
-          parentRoute: typeof MRenewRoute
-        }
-'/m/perks/$id': {
-          id: '/m/perks/$id'
-          path: '/$id'
-          fullPath: '/m/perks/$id'
-          preLoaderRoute: typeof MPerksIdRouteImport
-          parentRoute: typeof MPerksRoute
-        }
-'/landing/ceo1983/cinematic': {
-          id: '/landing/ceo1983/cinematic'
-          path: '/cinematic'
-          fullPath: '/landing/ceo1983/cinematic'
-          preLoaderRoute: typeof LandingCeo1983CinematicRouteImport
-          parentRoute: typeof LandingCeo1983Route
-        }
-'/landing/ceo/v1': {
-          id: '/landing/ceo/v1'
-          path: '/ceo/v1'
-          fullPath: '/landing/ceo/v1'
-          preLoaderRoute: typeof LandingCeoV1RouteImport
-          parentRoute: typeof LandingRoute
-        }
-'/connect/network/notifications': {
-          id: '/connect/network/notifications'
-          path: '/notifications'
-          fullPath: '/connect/network/notifications'
-          preLoaderRoute: typeof ConnectNetworkNotificationsRouteImport
-          parentRoute: typeof ConnectNetworkRoute
-        }
-'/connect/network/connections': {
-          id: '/connect/network/connections'
-          path: '/connections'
-          fullPath: '/connect/network/connections'
-          preLoaderRoute: typeof ConnectNetworkConnectionsRouteImport
-          parentRoute: typeof ConnectNetworkRoute
-        }
-'/connect/meetings/$section': {
-          id: '/connect/meetings/$section'
-          path: '/$section'
-          fullPath: '/connect/meetings/$section'
-          preLoaderRoute: typeof ConnectMeetingsSectionRouteImport
-          parentRoute: typeof ConnectMeetingsRoute
-        }
-'/connect-app/network/requests': {
-          id: '/connect-app/network/requests'
-          path: '/requests'
-          fullPath: '/connect-app/network/requests'
-          preLoaderRoute: typeof ConnectAppNetworkRequestsRouteImport
-          parentRoute: typeof ConnectAppNetworkRoute
-        }
-'/connect-app/network/$personId': {
-          id: '/connect-app/network/$personId'
-          path: '/$personId'
-          fullPath: '/connect-app/network/$personId'
-          preLoaderRoute: typeof ConnectAppNetworkPersonIdRouteImport
-          parentRoute: typeof ConnectAppNetworkRoute
-        }
-'/connect-app/moment/$personId': {
-          id: '/connect-app/moment/$personId'
-          path: '/$personId'
-          fullPath: '/connect-app/moment/$personId'
-          preLoaderRoute: typeof ConnectAppMomentPersonIdRouteImport
-          parentRoute: typeof ConnectAppMomentRoute
-        }
-'/connect-app/me/sessions': {
-          id: '/connect-app/me/sessions'
-          path: '/sessions'
-          fullPath: '/connect-app/me/sessions'
-          preLoaderRoute: typeof ConnectAppMeSessionsRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/me/security': {
-          id: '/connect-app/me/security'
-          path: '/security'
-          fullPath: '/connect-app/me/security'
-          preLoaderRoute: typeof ConnectAppMeSecurityRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/me/intel-settings': {
-          id: '/connect-app/me/intel-settings'
-          path: '/intel-settings'
-          fullPath: '/connect-app/me/intel-settings'
-          preLoaderRoute: typeof ConnectAppMeIntelSettingsRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/me/edit': {
-          id: '/connect-app/me/edit'
-          path: '/edit'
-          fullPath: '/connect-app/me/edit'
-          preLoaderRoute: typeof ConnectAppMeEditRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/me/cards': {
-          id: '/connect-app/me/cards'
-          path: '/cards'
-          fullPath: '/connect-app/me/cards'
-          preLoaderRoute: typeof ConnectAppMeCardsRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/me/card': {
-          id: '/connect-app/me/card'
-          path: '/card'
-          fullPath: '/connect-app/me/card'
-          preLoaderRoute: typeof ConnectAppMeCardRouteImport
-          parentRoute: typeof ConnectAppMeRoute
-        }
-'/connect-app/invite/$token': {
-          id: '/connect-app/invite/$token'
-          path: '/invite/$token'
-          fullPath: '/connect-app/invite/$token'
-          preLoaderRoute: typeof ConnectAppInviteTokenRouteImport
-          parentRoute: typeof ConnectAppRoute
-        }
-'/connect-app/inbox/$threadId': {
-          id: '/connect-app/inbox/$threadId'
-          path: '/$threadId'
-          fullPath: '/connect-app/inbox/$threadId'
-          preLoaderRoute: typeof ConnectAppInboxThreadIdRouteImport
-          parentRoute: typeof ConnectAppInboxRoute
-        }
-'/connect-app/community/requests': {
-          id: '/connect-app/community/requests'
-          path: '/requests'
-          fullPath: '/connect-app/community/requests'
-          preLoaderRoute: typeof ConnectAppCommunityRequestsRouteImport
-          parentRoute: typeof ConnectAppCommunityRoute
-        }
-'/connect-app/community/$communityId': {
-          id: '/connect-app/community/$communityId'
-          path: '/$communityId'
-          fullPath: '/connect-app/community/$communityId'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdRouteImport
-          parentRoute: typeof ConnectAppCommunityRoute
-        }
-'/business-connect/meetings/$meetingId': {
-          id: '/business-connect/meetings/$meetingId'
-          path: '/$meetingId'
-          fullPath: '/business-connect/meetings/$meetingId'
-          preLoaderRoute: typeof BusinessConnectMeetingsMeetingIdRouteImport
-          parentRoute: typeof BusinessConnectMeetingsRoute
-        }
-'/business-connect/introductions/requests': {
-          id: '/business-connect/introductions/requests'
-          path: '/introductions/requests'
-          fullPath: '/business-connect/introductions/requests'
-          preLoaderRoute: typeof BusinessConnectIntroductionsRequestsRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/introductions/outcomes': {
-          id: '/business-connect/introductions/outcomes'
-          path: '/introductions/outcomes'
-          fullPath: '/business-connect/introductions/outcomes'
-          preLoaderRoute: typeof BusinessConnectIntroductionsOutcomesRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/introductions/inbox': {
-          id: '/business-connect/introductions/inbox'
-          path: '/introductions/inbox'
-          fullPath: '/business-connect/introductions/inbox'
-          preLoaderRoute: typeof BusinessConnectIntroductionsInboxRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/introductions/deliveries': {
-          id: '/business-connect/introductions/deliveries'
-          path: '/introductions/deliveries'
-          fullPath: '/business-connect/introductions/deliveries'
-          preLoaderRoute: typeof BusinessConnectIntroductionsDeliveriesRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/introductions/analytics': {
-          id: '/business-connect/introductions/analytics'
-          path: '/introductions/analytics'
-          fullPath: '/business-connect/introductions/analytics'
-          preLoaderRoute: typeof BusinessConnectIntroductionsAnalyticsRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/introductions/$targetPersonNodeId': {
-          id: '/business-connect/introductions/$targetPersonNodeId'
-          path: '/introductions/$targetPersonNodeId'
-          fullPath: '/business-connect/introductions/$targetPersonNodeId'
-          preLoaderRoute: typeof BusinessConnectIntroductionsTargetPersonNodeIdRouteImport
-          parentRoute: typeof BusinessConnectRoute
-        }
-'/business-connect/connections/$personNodeId': {
-          id: '/business-connect/connections/$personNodeId'
-          path: '/$personNodeId'
-          fullPath: '/business-connect/connections/$personNodeId'
-          preLoaderRoute: typeof BusinessConnectConnectionsPersonNodeIdRouteImport
-          parentRoute: typeof BusinessConnectConnectionsRoute
-        }
-'/association/renew/result': {
-          id: '/association/renew/result'
-          path: '/result'
-          fullPath: '/association/renew/result'
-          preLoaderRoute: typeof AssociationRenewResultRouteImport
-          parentRoute: typeof AssociationRenewRoute
-        }
-'/association/renew/pay': {
-          id: '/association/renew/pay'
-          path: '/pay'
-          fullPath: '/association/renew/pay'
-          preLoaderRoute: typeof AssociationRenewPayRouteImport
-          parentRoute: typeof AssociationRenewRoute
-        }
-'/association/renew/history': {
-          id: '/association/renew/history'
-          path: '/history'
-          fullPath: '/association/renew/history'
-          preLoaderRoute: typeof AssociationRenewHistoryRouteImport
-          parentRoute: typeof AssociationRenewRoute
-        }
-'/association/renew/audit': {
-          id: '/association/renew/audit'
-          path: '/audit'
-          fullPath: '/association/renew/audit'
-          preLoaderRoute: typeof AssociationRenewAuditRouteImport
-          parentRoute: typeof AssociationRenewRoute
-        }
-'/association/perks/$id': {
-          id: '/association/perks/$id'
-          path: '/$id'
-          fullPath: '/association/perks/$id'
-          preLoaderRoute: typeof AssociationPerksIdRouteImport
-          parentRoute: typeof AssociationPerksRoute
-        }
-'/admin/business-cards/audit': {
-          id: '/admin/business-cards/audit'
-          path: '/audit'
-          fullPath: '/admin/business-cards/audit'
-          preLoaderRoute: typeof AdminBusinessCardsAuditRouteImport
-          parentRoute: typeof AdminBusinessCardsRoute
-        }
-'/connect-app/community/$communityId/': {
-          id: '/connect-app/community/$communityId/'
-          path: '/'
-          fullPath: '/connect-app/community/$communityId/'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdIndexRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdRoute
-        }
-'/connect/network/requests/sent': {
-          id: '/connect/network/requests/sent'
-          path: '/requests/sent'
-          fullPath: '/connect/network/requests/sent'
-          preLoaderRoute: typeof ConnectNetworkRequestsSentRouteImport
-          parentRoute: typeof ConnectNetworkRoute
-        }
-'/connect/network/requests/incoming': {
-          id: '/connect/network/requests/incoming'
-          path: '/requests/incoming'
-          fullPath: '/connect/network/requests/incoming'
-          preLoaderRoute: typeof ConnectNetworkRequestsIncomingRouteImport
-          parentRoute: typeof ConnectNetworkRoute
-        }
-'/connect/cards/$cardId/edit': {
-          id: '/connect/cards/$cardId/edit'
-          path: '/cards/$cardId/edit'
-          fullPath: '/connect/cards/$cardId/edit'
-          preLoaderRoute: typeof ConnectCardsCardIdEditRouteImport
-          parentRoute: typeof ConnectRoute
-        }
-'/connect-app/community/$communityId/opportunities': {
-          id: '/connect-app/community/$communityId/opportunities'
-          path: '/opportunities'
-          fullPath: '/connect-app/community/$communityId/opportunities'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdRoute
-        }
-'/connect-app/community/$communityId/news': {
-          id: '/connect-app/community/$communityId/news'
-          path: '/news'
-          fullPath: '/connect-app/community/$communityId/news'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdNewsRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdRoute
-        }
-'/connect-app/community/$communityId/members': {
-          id: '/connect-app/community/$communityId/members'
-          path: '/members'
-          fullPath: '/connect-app/community/$communityId/members'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdMembersRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdRoute
-        }
-'/connect-app/community/$communityId/events': {
-          id: '/connect-app/community/$communityId/events'
-          path: '/events'
-          fullPath: '/connect-app/community/$communityId/events'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdEventsRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdRoute
-        }
-'/api/public/hooks/timeline-projection': {
-          id: '/api/public/hooks/timeline-projection'
-          path: '/api/public/hooks/timeline-projection'
-          fullPath: '/api/public/hooks/timeline-projection'
-          preLoaderRoute: typeof ApiPublicHooksTimelineProjectionRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/api/public/hooks/outcome-consumer': {
-          id: '/api/public/hooks/outcome-consumer'
-          path: '/api/public/hooks/outcome-consumer'
-          fullPath: '/api/public/hooks/outcome-consumer'
-          preLoaderRoute: typeof ApiPublicHooksOutcomeConsumerRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/api/public/hooks/notification-runtime': {
-          id: '/api/public/hooks/notification-runtime'
-          path: '/api/public/hooks/notification-runtime'
-          fullPath: '/api/public/hooks/notification-runtime'
-          preLoaderRoute: typeof ApiPublicHooksNotificationRuntimeRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/api/public/card/{$slug}.vcf': {
-          id: '/api/public/card/{$slug}.vcf'
-          path: '/api/public/card/{$slug}.vcf'
-          fullPath: '/api/public/card/{$slug}.vcf'
-          preLoaderRoute: typeof ApiPublicCardChar123slugChar125DotvcfRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/connect-app/community/$communityId/opportunities/': {
-          id: '/connect-app/community/$communityId/opportunities/'
-          path: '/'
-          fullPath: '/connect-app/community/$communityId/opportunities/'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRoute
-        }
-'/connect-app/community/$communityId/news/': {
-          id: '/connect-app/community/$communityId/news/'
-          path: '/'
-          fullPath: '/connect-app/community/$communityId/news/'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdNewsIndexRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdNewsRoute
-        }
-'/connect-app/community/$communityId/members/': {
-          id: '/connect-app/community/$communityId/members/'
-          path: '/'
-          fullPath: '/connect-app/community/$communityId/members/'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdMembersIndexRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdMembersRoute
-        }
-'/connect-app/community/$communityId/events/': {
-          id: '/connect-app/community/$communityId/events/'
-          path: '/'
-          fullPath: '/connect-app/community/$communityId/events/'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdEventsIndexRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdEventsRoute
-        }
-'/connect-app/community/$communityId/opportunities/$opportunityRef': {
-          id: '/connect-app/community/$communityId/opportunities/$opportunityRef'
-          path: '/$opportunityRef'
-          fullPath: '/connect-app/community/$communityId/opportunities/$opportunityRef'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRoute
-        }
-'/connect-app/community/$communityId/news/$newsRef': {
-          id: '/connect-app/community/$communityId/news/$newsRef'
-          path: '/$newsRef'
-          fullPath: '/connect-app/community/$communityId/news/$newsRef'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdNewsNewsRefRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdNewsRoute
-        }
-'/connect-app/community/$communityId/members/$memberRef': {
-          id: '/connect-app/community/$communityId/members/$memberRef'
-          path: '/$memberRef'
-          fullPath: '/connect-app/community/$communityId/members/$memberRef'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdMembersMemberRefRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdMembersRoute
-        }
-'/connect-app/community/$communityId/events/$eventRef': {
-          id: '/connect-app/community/$communityId/events/$eventRef'
-          path: '/$eventRef'
-          fullPath: '/connect-app/community/$communityId/events/$eventRef'
-          preLoaderRoute: typeof ConnectAppCommunityCommunityIdEventsEventRefRouteImport
-          parentRoute: typeof ConnectAppCommunityCommunityIdEventsRoute
-        }
-'/api/public/identity/$token/contact': {
-          id: '/api/public/identity/$token/contact'
-          path: '/api/public/identity/$token/contact'
-          fullPath: '/api/public/identity/$token/contact'
-          preLoaderRoute: typeof ApiPublicIdentityTokenContactRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/api/public/card/$slug/contact': {
-          id: '/api/public/card/$slug/contact'
-          path: '/api/public/card/$slug/contact'
-          fullPath: '/api/public/card/$slug/contact'
-          preLoaderRoute: typeof ApiPublicCardSlugContactRouteImport
-          parentRoute: typeof rootRouteImport
-        }
-'/api/public/avatar/$owner/$file': {
-          id: '/api/public/avatar/$owner/$file'
-          path: '/api/public/avatar/$owner/$file'
-          fullPath: '/api/public/avatar/$owner/$file'
-          preLoaderRoute: typeof ApiPublicAvatarOwnerFileRouteImport
-          parentRoute: typeof rootRouteImport
-        }
+      id: '/voting'
+      path: '/voting'
+      fullPath: '/voting'
+      preLoaderRoute: typeof VotingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vione-app': {
+      id: '/vione-app'
+      path: '/vione-app'
+      fullPath: '/vione-app'
+      preLoaderRoute: typeof VioneAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verify': {
+      id: '/verify'
+      path: '/verify'
+      fullPath: '/verify'
+      preLoaderRoute: typeof VerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsors': {
+      id: '/sponsors'
+      path: '/sponsors'
+      fullPath: '/sponsors'
+      preLoaderRoute: typeof SponsorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsor-report': {
+      id: '/sponsor-report'
+      path: '/sponsor-report'
+      fullPath: '/sponsor-report'
+      preLoaderRoute: typeof SponsorReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sponsor-packages': {
+      id: '/sponsor-packages'
+      path: '/sponsor-packages'
+      fullPath: '/sponsor-packages'
+      preLoaderRoute: typeof SponsorPackagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/segments': {
+      id: '/segments'
+      path: '/segments'
+      fullPath: '/segments'
+      preLoaderRoute: typeof SegmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/renewal': {
+      id: '/renewal'
+      path: '/renewal'
+      fullPath: '/renewal'
+      preLoaderRoute: typeof RenewalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/perks': {
+      id: '/perks'
+      path: '/perks'
+      fullPath: '/perks'
+      preLoaderRoute: typeof PerksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/network': {
+      id: '/network'
+      path: '/network'
+      fullPath: '/network'
+      preLoaderRoute: typeof NetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-permissions': {
+      id: '/my-permissions'
+      path: '/my-permissions'
+      fullPath: '/my-permissions'
+      preLoaderRoute: typeof MyPermissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meetings': {
+      id: '/meetings'
+      path: '/meetings'
+      fullPath: '/meetings'
+      preLoaderRoute: typeof MeetingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace': {
+      id: '/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/m': {
+      id: '/m'
+      path: '/m'
+      fullPath: '/m'
+      preLoaderRoute: typeof MRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/install': {
+      id: '/install'
+      path: '/install'
+      fullPath: '/install'
+      preLoaderRoute: typeof InstallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/income': {
+      id: '/income'
+      path: '/income'
+      fullPath: '/income'
+      preLoaderRoute: typeof IncomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance-report': {
+      id: '/finance-report'
+      path: '/finance-report'
+      fullPath: '/finance-report'
+      preLoaderRoute: typeof FinanceReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fees': {
+      id: '/fees'
+      path: '/fees'
+      fullPath: '/fees'
+      preLoaderRoute: typeof FeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/expenses': {
+      id: '/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof ExpensesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events-overview': {
+      id: '/events-overview'
+      path: '/events-overview'
+      fullPath: '/events-overview'
+      preLoaderRoute: typeof EventsOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/event-registrations': {
+      id: '/event-registrations'
+      path: '/event-registrations'
+      fullPath: '/event-registrations'
+      preLoaderRoute: typeof EventRegistrationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/email-marketing': {
+      id: '/email-marketing'
+      path: '/email-marketing'
+      fullPath: '/email-marketing'
+      preLoaderRoute: typeof EmailMarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/documents': {
+      id: '/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof DocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect-app': {
+      id: '/connect-app'
+      path: '/connect-app'
+      fullPath: '/connect-app'
+      preLoaderRoute: typeof ConnectAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect': {
+      id: '/connect'
+      path: '/connect'
+      fullPath: '/connect'
+      preLoaderRoute: typeof ConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/companies': {
+      id: '/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof CompaniesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkin-qr': {
+      id: '/checkin-qr'
+      path: '/checkin-qr'
+      fullPath: '/checkin-qr'
+      preLoaderRoute: typeof CheckinQrRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkin': {
+      id: '/checkin'
+      path: '/checkin'
+      fullPath: '/checkin'
+      preLoaderRoute: typeof CheckinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-connect': {
+      id: '/business-connect'
+      path: '/business-connect'
+      fullPath: '/business-connect'
+      preLoaderRoute: typeof BusinessConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-cards': {
+      id: '/business-cards'
+      path: '/business-cards'
+      fullPath: '/business-cards'
+      preLoaderRoute: typeof BusinessCardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/benefits': {
+      id: '/benefits'
+      path: '/benefits'
+      fullPath: '/benefits'
+      preLoaderRoute: typeof BenefitsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/association': {
+      id: '/association'
+      path: '/association'
+      fullPath: '/association'
+      preLoaderRoute: typeof AssociationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai': {
+      id: '/ai'
+      path: '/ai'
+      fullPath: '/ai'
+      preLoaderRoute: typeof AiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activity': {
+      id: '/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ActivityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account-settings': {
+      id: '/account-settings'
+      path: '/account-settings'
+      fullPath: '/account-settings'
+      preLoaderRoute: typeof AccountSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/': {
+      id: '/platform/'
+      path: '/platform'
+      fullPath: '/platform/'
+      preLoaderRoute: typeof PlatformIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities/': {
+      id: '/opportunities/'
+      path: '/'
+      fullPath: '/opportunities/'
+      preLoaderRoute: typeof OpportunitiesIndexRouteImport
+      parentRoute: typeof OpportunitiesRoute
+    }
+    '/members/': {
+      id: '/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof MembersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace/': {
+      id: '/marketplace/'
+      path: '/'
+      fullPath: '/marketplace/'
+      preLoaderRoute: typeof MarketplaceIndexRouteImport
+      parentRoute: typeof MarketplaceRoute
+    }
+    '/m/': {
+      id: '/m/'
+      path: '/'
+      fullPath: '/m/'
+      preLoaderRoute: typeof MIndexRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/landing/': {
+      id: '/landing/'
+      path: '/'
+      fullPath: '/landing/'
+      preLoaderRoute: typeof LandingIndexRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/fees/': {
+      id: '/fees/'
+      path: '/'
+      fullPath: '/fees/'
+      preLoaderRoute: typeof FeesIndexRouteImport
+      parentRoute: typeof FeesRoute
+    }
+    '/events/': {
+      id: '/events/'
+      path: '/'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/documents/': {
+      id: '/documents/'
+      path: '/'
+      fullPath: '/documents/'
+      preLoaderRoute: typeof DocumentsIndexRouteImport
+      parentRoute: typeof DocumentsRoute
+    }
+    '/connect-app/': {
+      id: '/connect-app/'
+      path: '/'
+      fullPath: '/connect-app/'
+      preLoaderRoute: typeof ConnectAppIndexRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/companies/': {
+      id: '/companies/'
+      path: '/'
+      fullPath: '/companies/'
+      preLoaderRoute: typeof CompaniesIndexRouteImport
+      parentRoute: typeof CompaniesRoute
+    }
+    '/business-connect/': {
+      id: '/business-connect/'
+      path: '/'
+      fullPath: '/business-connect/'
+      preLoaderRoute: typeof BusinessConnectIndexRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/association/': {
+      id: '/association/'
+      path: '/'
+      fullPath: '/association/'
+      preLoaderRoute: typeof AssociationIndexRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account-settings/': {
+      id: '/account-settings/'
+      path: '/'
+      fullPath: '/account-settings/'
+      preLoaderRoute: typeof AccountSettingsIndexRouteImport
+      parentRoute: typeof AccountSettingsRoute
+    }
+    '/vione/login': {
+      id: '/vione/login'
+      path: '/vione/login'
+      fullPath: '/vione/login'
+      preLoaderRoute: typeof VioneLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/renewal-audit': {
+      id: '/platform/renewal-audit'
+      path: '/platform/renewal-audit'
+      fullPath: '/platform/renewal-audit'
+      preLoaderRoute: typeof PlatformRenewalAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/permissions': {
+      id: '/platform/permissions'
+      path: '/platform/permissions'
+      fullPath: '/platform/permissions'
+      preLoaderRoute: typeof PlatformPermissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/introduction-operations': {
+      id: '/platform/introduction-operations'
+      path: '/platform/introduction-operations'
+      fullPath: '/platform/introduction-operations'
+      preLoaderRoute: typeof PlatformIntroductionOperationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/audit': {
+      id: '/platform/audit'
+      path: '/platform/audit'
+      fullPath: '/platform/audit'
+      preLoaderRoute: typeof PlatformAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/ai-audit': {
+      id: '/platform/ai-audit'
+      path: '/platform/ai-audit'
+      fullPath: '/platform/ai-audit'
+      preLoaderRoute: typeof PlatformAiAuditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/platform/admins': {
+      id: '/platform/admins'
+      path: '/platform/admins'
+      fullPath: '/platform/admins'
+      preLoaderRoute: typeof PlatformAdminsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities/$id': {
+      id: '/opportunities/$id'
+      path: '/$id'
+      fullPath: '/opportunities/$id'
+      preLoaderRoute: typeof OpportunitiesIdRouteImport
+      parentRoute: typeof OpportunitiesRoute
+    }
+    '/members/$memberId': {
+      id: '/members/$memberId'
+      path: '/members/$memberId'
+      fullPath: '/members/$memberId'
+      preLoaderRoute: typeof MembersMemberIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace/workspace': {
+      id: '/marketplace/workspace'
+      path: '/workspace'
+      fullPath: '/marketplace/workspace'
+      preLoaderRoute: typeof MarketplaceWorkspaceRouteImport
+      parentRoute: typeof MarketplaceRoute
+    }
+    '/marketplace/my-quotes': {
+      id: '/marketplace/my-quotes'
+      path: '/my-quotes'
+      fullPath: '/marketplace/my-quotes'
+      preLoaderRoute: typeof MarketplaceMyQuotesRouteImport
+      parentRoute: typeof MarketplaceRoute
+    }
+    '/marketplace/$productId': {
+      id: '/marketplace/$productId'
+      path: '/$productId'
+      fullPath: '/marketplace/$productId'
+      preLoaderRoute: typeof MarketplaceProductIdRouteImport
+      parentRoute: typeof MarketplaceRoute
+    }
+    '/m/renew': {
+      id: '/m/renew'
+      path: '/renew'
+      fullPath: '/m/renew'
+      preLoaderRoute: typeof MRenewRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/profile': {
+      id: '/m/profile'
+      path: '/profile'
+      fullPath: '/m/profile'
+      preLoaderRoute: typeof MProfileRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/products': {
+      id: '/m/products'
+      path: '/products'
+      fullPath: '/m/products'
+      preLoaderRoute: typeof MProductsRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/perks': {
+      id: '/m/perks'
+      path: '/perks'
+      fullPath: '/m/perks'
+      preLoaderRoute: typeof MPerksRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/opportunities': {
+      id: '/m/opportunities'
+      path: '/opportunities'
+      fullPath: '/m/opportunities'
+      preLoaderRoute: typeof MOpportunitiesRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/notifications': {
+      id: '/m/notifications'
+      path: '/notifications'
+      fullPath: '/m/notifications'
+      preLoaderRoute: typeof MNotificationsRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/news': {
+      id: '/m/news'
+      path: '/news'
+      fullPath: '/m/news'
+      preLoaderRoute: typeof MNewsRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/messages': {
+      id: '/m/messages'
+      path: '/messages'
+      fullPath: '/m/messages'
+      preLoaderRoute: typeof MMessagesRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/members': {
+      id: '/m/members'
+      path: '/members'
+      fullPath: '/m/members'
+      preLoaderRoute: typeof MMembersRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/library': {
+      id: '/m/library'
+      path: '/library'
+      fullPath: '/m/library'
+      preLoaderRoute: typeof MLibraryRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/history': {
+      id: '/m/history'
+      path: '/history'
+      fullPath: '/m/history'
+      preLoaderRoute: typeof MHistoryRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/events': {
+      id: '/m/events'
+      path: '/events'
+      fullPath: '/m/events'
+      preLoaderRoute: typeof MEventsRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/checkin': {
+      id: '/m/checkin'
+      path: '/checkin'
+      fullPath: '/m/checkin'
+      preLoaderRoute: typeof MCheckinRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/card': {
+      id: '/m/card'
+      path: '/card'
+      fullPath: '/m/card'
+      preLoaderRoute: typeof MCardRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/m/business-cards': {
+      id: '/m/business-cards'
+      path: '/business-cards'
+      fullPath: '/m/business-cards'
+      preLoaderRoute: typeof MBusinessCardsRouteImport
+      parentRoute: typeof MRoute
+    }
+    '/landing/vione': {
+      id: '/landing/vione'
+      path: '/vione'
+      fullPath: '/landing/vione'
+      preLoaderRoute: typeof LandingVioneRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/landing/ceo1983': {
+      id: '/landing/ceo1983'
+      path: '/ceo1983'
+      fullPath: '/landing/ceo1983'
+      preLoaderRoute: typeof LandingCeo1983RouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/landing/bussiness-connect': {
+      id: '/landing/bussiness-connect'
+      path: '/bussiness-connect'
+      fullPath: '/landing/bussiness-connect'
+      preLoaderRoute: typeof LandingBussinessConnectRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/landing/business-connect': {
+      id: '/landing/business-connect'
+      path: '/business-connect'
+      fullPath: '/landing/business-connect'
+      preLoaderRoute: typeof LandingBusinessConnectRouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/h/$slug': {
+      id: '/h/$slug'
+      path: '/h/$slug'
+      fullPath: '/h/$slug'
+      preLoaderRoute: typeof HSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fees/$invoiceId': {
+      id: '/fees/$invoiceId'
+      path: '/$invoiceId'
+      fullPath: '/fees/$invoiceId'
+      preLoaderRoute: typeof FeesInvoiceIdRouteImport
+      parentRoute: typeof FeesRoute
+    }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdRouteImport
+      parentRoute: typeof EventsRoute
+    }
+    '/documents/$docId': {
+      id: '/documents/$docId'
+      path: '/$docId'
+      fullPath: '/documents/$docId'
+      preLoaderRoute: typeof DocumentsDocIdRouteImport
+      parentRoute: typeof DocumentsRoute
+    }
+    '/connect/saved-cards': {
+      id: '/connect/saved-cards'
+      path: '/saved-cards'
+      fullPath: '/connect/saved-cards'
+      preLoaderRoute: typeof ConnectSavedCardsRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect/network': {
+      id: '/connect/network'
+      path: '/network'
+      fullPath: '/connect/network'
+      preLoaderRoute: typeof ConnectNetworkRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect/meetings': {
+      id: '/connect/meetings'
+      path: '/meetings'
+      fullPath: '/connect/meetings'
+      preLoaderRoute: typeof ConnectMeetingsRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect/connections': {
+      id: '/connect/connections'
+      path: '/connections'
+      fullPath: '/connect/connections'
+      preLoaderRoute: typeof ConnectConnectionsRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect/calendar-settings': {
+      id: '/connect/calendar-settings'
+      path: '/calendar-settings'
+      fullPath: '/connect/calendar-settings'
+      preLoaderRoute: typeof ConnectCalendarSettingsRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect-app/notifications': {
+      id: '/connect-app/notifications'
+      path: '/notifications'
+      fullPath: '/connect-app/notifications'
+      preLoaderRoute: typeof ConnectAppNotificationsRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/nfc-tags': {
+      id: '/connect-app/nfc-tags'
+      path: '/nfc-tags'
+      fullPath: '/connect-app/nfc-tags'
+      preLoaderRoute: typeof ConnectAppNfcTagsRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/network': {
+      id: '/connect-app/network'
+      path: '/network'
+      fullPath: '/connect-app/network'
+      preLoaderRoute: typeof ConnectAppNetworkRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/moment': {
+      id: '/connect-app/moment'
+      path: '/moment'
+      fullPath: '/connect-app/moment'
+      preLoaderRoute: typeof ConnectAppMomentRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/me': {
+      id: '/connect-app/me'
+      path: '/me'
+      fullPath: '/connect-app/me'
+      preLoaderRoute: typeof ConnectAppMeRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/inbox': {
+      id: '/connect-app/inbox'
+      path: '/inbox'
+      fullPath: '/connect-app/inbox'
+      preLoaderRoute: typeof ConnectAppInboxRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/community': {
+      id: '/connect-app/community'
+      path: '/community'
+      fullPath: '/connect-app/community'
+      preLoaderRoute: typeof ConnectAppCommunityRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/card-scan': {
+      id: '/connect-app/card-scan'
+      path: '/card-scan'
+      fullPath: '/connect-app/card-scan'
+      preLoaderRoute: typeof ConnectAppCardScanRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/calendar': {
+      id: '/connect-app/calendar'
+      path: '/calendar'
+      fullPath: '/connect-app/calendar'
+      preLoaderRoute: typeof ConnectAppCalendarRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/activate': {
+      id: '/connect-app/activate'
+      path: '/activate'
+      fullPath: '/connect-app/activate'
+      preLoaderRoute: typeof ConnectAppActivateRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/company/$slug': {
+      id: '/company/$slug'
+      path: '/company/$slug'
+      fullPath: '/company/$slug'
+      preLoaderRoute: typeof CompanySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/companies/$companyId': {
+      id: '/companies/$companyId'
+      path: '/$companyId'
+      fullPath: '/companies/$companyId'
+      preLoaderRoute: typeof CompaniesCompanyIdRouteImport
+      parentRoute: typeof CompaniesRoute
+    }
+    '/card/$code': {
+      id: '/card/$code'
+      path: '/card/$code'
+      fullPath: '/card/$code'
+      preLoaderRoute: typeof CardCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/c/$token': {
+      id: '/c/$token'
+      path: '/c/$token'
+      fullPath: '/c/$token'
+      preLoaderRoute: typeof CTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-connect/v8': {
+      id: '/business-connect/v8'
+      path: '/v8'
+      fullPath: '/business-connect/v8'
+      preLoaderRoute: typeof BusinessConnectV8RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v7': {
+      id: '/business-connect/v7'
+      path: '/v7'
+      fullPath: '/business-connect/v7'
+      preLoaderRoute: typeof BusinessConnectV7RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v6': {
+      id: '/business-connect/v6'
+      path: '/v6'
+      fullPath: '/business-connect/v6'
+      preLoaderRoute: typeof BusinessConnectV6RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v5': {
+      id: '/business-connect/v5'
+      path: '/v5'
+      fullPath: '/business-connect/v5'
+      preLoaderRoute: typeof BusinessConnectV5RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v4': {
+      id: '/business-connect/v4'
+      path: '/v4'
+      fullPath: '/business-connect/v4'
+      preLoaderRoute: typeof BusinessConnectV4RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v3': {
+      id: '/business-connect/v3'
+      path: '/v3'
+      fullPath: '/business-connect/v3'
+      preLoaderRoute: typeof BusinessConnectV3RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v2': {
+      id: '/business-connect/v2'
+      path: '/v2'
+      fullPath: '/business-connect/v2'
+      preLoaderRoute: typeof BusinessConnectV2RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/v1': {
+      id: '/business-connect/v1'
+      path: '/v1'
+      fullPath: '/business-connect/v1'
+      preLoaderRoute: typeof BusinessConnectV1RouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/saved-cards': {
+      id: '/business-connect/saved-cards'
+      path: '/saved-cards'
+      fullPath: '/business-connect/saved-cards'
+      preLoaderRoute: typeof BusinessConnectSavedCardsRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/relationship-timeline': {
+      id: '/business-connect/relationship-timeline'
+      path: '/relationship-timeline'
+      fullPath: '/business-connect/relationship-timeline'
+      preLoaderRoute: typeof BusinessConnectRelationshipTimelineRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/notifications': {
+      id: '/business-connect/notifications'
+      path: '/notifications'
+      fullPath: '/business-connect/notifications'
+      preLoaderRoute: typeof BusinessConnectNotificationsRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/my-card': {
+      id: '/business-connect/my-card'
+      path: '/my-card'
+      fullPath: '/business-connect/my-card'
+      preLoaderRoute: typeof BusinessConnectMyCardRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/memory': {
+      id: '/business-connect/memory'
+      path: '/memory'
+      fullPath: '/business-connect/memory'
+      preLoaderRoute: typeof BusinessConnectMemoryRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/meetings': {
+      id: '/business-connect/meetings'
+      path: '/meetings'
+      fullPath: '/business-connect/meetings'
+      preLoaderRoute: typeof BusinessConnectMeetingsRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/connections': {
+      id: '/business-connect/connections'
+      path: '/connections'
+      fullPath: '/business-connect/connections'
+      preLoaderRoute: typeof BusinessConnectConnectionsRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/b/$slug': {
+      id: '/b/$slug'
+      path: '/b/$slug'
+      fullPath: '/b/$slug'
+      preLoaderRoute: typeof BSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/association/settings': {
+      id: '/association/settings'
+      path: '/settings'
+      fullPath: '/association/settings'
+      preLoaderRoute: typeof AssociationSettingsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/renew': {
+      id: '/association/renew'
+      path: '/renew'
+      fullPath: '/association/renew'
+      preLoaderRoute: typeof AssociationRenewRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/profile': {
+      id: '/association/profile'
+      path: '/profile'
+      fullPath: '/association/profile'
+      preLoaderRoute: typeof AssociationProfileRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/products': {
+      id: '/association/products'
+      path: '/products'
+      fullPath: '/association/products'
+      preLoaderRoute: typeof AssociationProductsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/perks': {
+      id: '/association/perks'
+      path: '/perks'
+      fullPath: '/association/perks'
+      preLoaderRoute: typeof AssociationPerksRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/opportunities': {
+      id: '/association/opportunities'
+      path: '/opportunities'
+      fullPath: '/association/opportunities'
+      preLoaderRoute: typeof AssociationOpportunitiesRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/notifications': {
+      id: '/association/notifications'
+      path: '/notifications'
+      fullPath: '/association/notifications'
+      preLoaderRoute: typeof AssociationNotificationsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/news': {
+      id: '/association/news'
+      path: '/news'
+      fullPath: '/association/news'
+      preLoaderRoute: typeof AssociationNewsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/messages': {
+      id: '/association/messages'
+      path: '/messages'
+      fullPath: '/association/messages'
+      preLoaderRoute: typeof AssociationMessagesRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/members': {
+      id: '/association/members'
+      path: '/members'
+      fullPath: '/association/members'
+      preLoaderRoute: typeof AssociationMembersRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/login': {
+      id: '/association/login'
+      path: '/login'
+      fullPath: '/association/login'
+      preLoaderRoute: typeof AssociationLoginRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/library': {
+      id: '/association/library'
+      path: '/library'
+      fullPath: '/association/library'
+      preLoaderRoute: typeof AssociationLibraryRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/history': {
+      id: '/association/history'
+      path: '/history'
+      fullPath: '/association/history'
+      preLoaderRoute: typeof AssociationHistoryRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/events': {
+      id: '/association/events'
+      path: '/events'
+      fullPath: '/association/events'
+      preLoaderRoute: typeof AssociationEventsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/checkin': {
+      id: '/association/checkin'
+      path: '/checkin'
+      fullPath: '/association/checkin'
+      preLoaderRoute: typeof AssociationCheckinRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/card': {
+      id: '/association/card'
+      path: '/card'
+      fullPath: '/association/card'
+      preLoaderRoute: typeof AssociationCardRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/business-cards': {
+      id: '/association/business-cards'
+      path: '/business-cards'
+      fullPath: '/association/business-cards'
+      preLoaderRoute: typeof AssociationBusinessCardsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/association/benefits': {
+      id: '/association/benefits'
+      path: '/benefits'
+      fullPath: '/association/benefits'
+      preLoaderRoute: typeof AssociationBenefitsRouteImport
+      parentRoute: typeof AssociationRoute
+    }
+    '/admin/landing-templates': {
+      id: '/admin/landing-templates'
+      path: '/admin/landing-templates'
+      fullPath: '/admin/landing-templates'
+      preLoaderRoute: typeof AdminLandingTemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/demo-leads': {
+      id: '/admin/demo-leads'
+      path: '/admin/demo-leads'
+      fullPath: '/admin/demo-leads'
+      preLoaderRoute: typeof AdminDemoLeadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/cta-analytics': {
+      id: '/admin/cta-analytics'
+      path: '/admin/cta-analytics'
+      fullPath: '/admin/cta-analytics'
+      preLoaderRoute: typeof AdminCtaAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/business-cards': {
+      id: '/admin/business-cards'
+      path: '/admin/business-cards'
+      fullPath: '/admin/business-cards'
+      preLoaderRoute: typeof AdminBusinessCardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account-settings/notifications': {
+      id: '/account-settings/notifications'
+      path: '/notifications'
+      fullPath: '/account-settings/notifications'
+      preLoaderRoute: typeof AccountSettingsNotificationsRouteImport
+      parentRoute: typeof AccountSettingsRoute
+    }
+    '/m/renew/': {
+      id: '/m/renew/'
+      path: '/'
+      fullPath: '/m/renew/'
+      preLoaderRoute: typeof MRenewIndexRouteImport
+      parentRoute: typeof MRenewRoute
+    }
+    '/m/perks/': {
+      id: '/m/perks/'
+      path: '/'
+      fullPath: '/m/perks/'
+      preLoaderRoute: typeof MPerksIndexRouteImport
+      parentRoute: typeof MPerksRoute
+    }
+    '/connect/network/': {
+      id: '/connect/network/'
+      path: '/'
+      fullPath: '/connect/network/'
+      preLoaderRoute: typeof ConnectNetworkIndexRouteImport
+      parentRoute: typeof ConnectNetworkRoute
+    }
+    '/connect/meetings/': {
+      id: '/connect/meetings/'
+      path: '/'
+      fullPath: '/connect/meetings/'
+      preLoaderRoute: typeof ConnectMeetingsIndexRouteImport
+      parentRoute: typeof ConnectMeetingsRoute
+    }
+    '/connect/cards/': {
+      id: '/connect/cards/'
+      path: '/cards'
+      fullPath: '/connect/cards/'
+      preLoaderRoute: typeof ConnectCardsIndexRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect-app/network/': {
+      id: '/connect-app/network/'
+      path: '/'
+      fullPath: '/connect-app/network/'
+      preLoaderRoute: typeof ConnectAppNetworkIndexRouteImport
+      parentRoute: typeof ConnectAppNetworkRoute
+    }
+    '/connect-app/moment/': {
+      id: '/connect-app/moment/'
+      path: '/'
+      fullPath: '/connect-app/moment/'
+      preLoaderRoute: typeof ConnectAppMomentIndexRouteImport
+      parentRoute: typeof ConnectAppMomentRoute
+    }
+    '/connect-app/me/': {
+      id: '/connect-app/me/'
+      path: '/'
+      fullPath: '/connect-app/me/'
+      preLoaderRoute: typeof ConnectAppMeIndexRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/inbox/': {
+      id: '/connect-app/inbox/'
+      path: '/'
+      fullPath: '/connect-app/inbox/'
+      preLoaderRoute: typeof ConnectAppInboxIndexRouteImport
+      parentRoute: typeof ConnectAppInboxRoute
+    }
+    '/connect-app/community/': {
+      id: '/connect-app/community/'
+      path: '/'
+      fullPath: '/connect-app/community/'
+      preLoaderRoute: typeof ConnectAppCommunityIndexRouteImport
+      parentRoute: typeof ConnectAppCommunityRoute
+    }
+    '/business-connect/meetings/': {
+      id: '/business-connect/meetings/'
+      path: '/'
+      fullPath: '/business-connect/meetings/'
+      preLoaderRoute: typeof BusinessConnectMeetingsIndexRouteImport
+      parentRoute: typeof BusinessConnectMeetingsRoute
+    }
+    '/business-connect/connections/': {
+      id: '/business-connect/connections/'
+      path: '/'
+      fullPath: '/business-connect/connections/'
+      preLoaderRoute: typeof BusinessConnectConnectionsIndexRouteImport
+      parentRoute: typeof BusinessConnectConnectionsRoute
+    }
+    '/association/renew/': {
+      id: '/association/renew/'
+      path: '/'
+      fullPath: '/association/renew/'
+      preLoaderRoute: typeof AssociationRenewIndexRouteImport
+      parentRoute: typeof AssociationRenewRoute
+    }
+    '/association/perks/': {
+      id: '/association/perks/'
+      path: '/'
+      fullPath: '/association/perks/'
+      preLoaderRoute: typeof AssociationPerksIndexRouteImport
+      parentRoute: typeof AssociationPerksRoute
+    }
+    '/admin/business-cards/': {
+      id: '/admin/business-cards/'
+      path: '/'
+      fullPath: '/admin/business-cards/'
+      preLoaderRoute: typeof AdminBusinessCardsIndexRouteImport
+      parentRoute: typeof AdminBusinessCardsRoute
+    }
+    '/opportunities/$id/edit': {
+      id: '/opportunities/$id/edit'
+      path: '/edit'
+      fullPath: '/opportunities/$id/edit'
+      preLoaderRoute: typeof OpportunitiesIdEditRouteImport
+      parentRoute: typeof OpportunitiesIdRoute
+    }
+    '/m/renew/result': {
+      id: '/m/renew/result'
+      path: '/result'
+      fullPath: '/m/renew/result'
+      preLoaderRoute: typeof MRenewResultRouteImport
+      parentRoute: typeof MRenewRoute
+    }
+    '/m/renew/pay': {
+      id: '/m/renew/pay'
+      path: '/pay'
+      fullPath: '/m/renew/pay'
+      preLoaderRoute: typeof MRenewPayRouteImport
+      parentRoute: typeof MRenewRoute
+    }
+    '/m/renew/history': {
+      id: '/m/renew/history'
+      path: '/history'
+      fullPath: '/m/renew/history'
+      preLoaderRoute: typeof MRenewHistoryRouteImport
+      parentRoute: typeof MRenewRoute
+    }
+    '/m/renew/audit': {
+      id: '/m/renew/audit'
+      path: '/audit'
+      fullPath: '/m/renew/audit'
+      preLoaderRoute: typeof MRenewAuditRouteImport
+      parentRoute: typeof MRenewRoute
+    }
+    '/m/perks/$id': {
+      id: '/m/perks/$id'
+      path: '/$id'
+      fullPath: '/m/perks/$id'
+      preLoaderRoute: typeof MPerksIdRouteImport
+      parentRoute: typeof MPerksRoute
+    }
+    '/landing/ceo1983/cinematic': {
+      id: '/landing/ceo1983/cinematic'
+      path: '/cinematic'
+      fullPath: '/landing/ceo1983/cinematic'
+      preLoaderRoute: typeof LandingCeo1983CinematicRouteImport
+      parentRoute: typeof LandingCeo1983Route
+    }
+    '/landing/ceo/v1': {
+      id: '/landing/ceo/v1'
+      path: '/ceo/v1'
+      fullPath: '/landing/ceo/v1'
+      preLoaderRoute: typeof LandingCeoV1RouteImport
+      parentRoute: typeof LandingRoute
+    }
+    '/connect/network/notifications': {
+      id: '/connect/network/notifications'
+      path: '/notifications'
+      fullPath: '/connect/network/notifications'
+      preLoaderRoute: typeof ConnectNetworkNotificationsRouteImport
+      parentRoute: typeof ConnectNetworkRoute
+    }
+    '/connect/network/connections': {
+      id: '/connect/network/connections'
+      path: '/connections'
+      fullPath: '/connect/network/connections'
+      preLoaderRoute: typeof ConnectNetworkConnectionsRouteImport
+      parentRoute: typeof ConnectNetworkRoute
+    }
+    '/connect/meetings/$section': {
+      id: '/connect/meetings/$section'
+      path: '/$section'
+      fullPath: '/connect/meetings/$section'
+      preLoaderRoute: typeof ConnectMeetingsSectionRouteImport
+      parentRoute: typeof ConnectMeetingsRoute
+    }
+    '/connect-app/network/requests': {
+      id: '/connect-app/network/requests'
+      path: '/requests'
+      fullPath: '/connect-app/network/requests'
+      preLoaderRoute: typeof ConnectAppNetworkRequestsRouteImport
+      parentRoute: typeof ConnectAppNetworkRoute
+    }
+    '/connect-app/network/$personId': {
+      id: '/connect-app/network/$personId'
+      path: '/$personId'
+      fullPath: '/connect-app/network/$personId'
+      preLoaderRoute: typeof ConnectAppNetworkPersonIdRouteImport
+      parentRoute: typeof ConnectAppNetworkRoute
+    }
+    '/connect-app/moment/$personId': {
+      id: '/connect-app/moment/$personId'
+      path: '/$personId'
+      fullPath: '/connect-app/moment/$personId'
+      preLoaderRoute: typeof ConnectAppMomentPersonIdRouteImport
+      parentRoute: typeof ConnectAppMomentRoute
+    }
+    '/connect-app/me/sessions': {
+      id: '/connect-app/me/sessions'
+      path: '/sessions'
+      fullPath: '/connect-app/me/sessions'
+      preLoaderRoute: typeof ConnectAppMeSessionsRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/me/security': {
+      id: '/connect-app/me/security'
+      path: '/security'
+      fullPath: '/connect-app/me/security'
+      preLoaderRoute: typeof ConnectAppMeSecurityRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/me/intel-settings': {
+      id: '/connect-app/me/intel-settings'
+      path: '/intel-settings'
+      fullPath: '/connect-app/me/intel-settings'
+      preLoaderRoute: typeof ConnectAppMeIntelSettingsRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/me/edit': {
+      id: '/connect-app/me/edit'
+      path: '/edit'
+      fullPath: '/connect-app/me/edit'
+      preLoaderRoute: typeof ConnectAppMeEditRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/me/cards': {
+      id: '/connect-app/me/cards'
+      path: '/cards'
+      fullPath: '/connect-app/me/cards'
+      preLoaderRoute: typeof ConnectAppMeCardsRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/me/card': {
+      id: '/connect-app/me/card'
+      path: '/card'
+      fullPath: '/connect-app/me/card'
+      preLoaderRoute: typeof ConnectAppMeCardRouteImport
+      parentRoute: typeof ConnectAppMeRoute
+    }
+    '/connect-app/invite/$token': {
+      id: '/connect-app/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/connect-app/invite/$token'
+      preLoaderRoute: typeof ConnectAppInviteTokenRouteImport
+      parentRoute: typeof ConnectAppRoute
+    }
+    '/connect-app/inbox/$threadId': {
+      id: '/connect-app/inbox/$threadId'
+      path: '/$threadId'
+      fullPath: '/connect-app/inbox/$threadId'
+      preLoaderRoute: typeof ConnectAppInboxThreadIdRouteImport
+      parentRoute: typeof ConnectAppInboxRoute
+    }
+    '/connect-app/community/requests': {
+      id: '/connect-app/community/requests'
+      path: '/requests'
+      fullPath: '/connect-app/community/requests'
+      preLoaderRoute: typeof ConnectAppCommunityRequestsRouteImport
+      parentRoute: typeof ConnectAppCommunityRoute
+    }
+    '/connect-app/community/$communityId': {
+      id: '/connect-app/community/$communityId'
+      path: '/$communityId'
+      fullPath: '/connect-app/community/$communityId'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdRouteImport
+      parentRoute: typeof ConnectAppCommunityRoute
+    }
+    '/business-connect/meetings/$meetingId': {
+      id: '/business-connect/meetings/$meetingId'
+      path: '/$meetingId'
+      fullPath: '/business-connect/meetings/$meetingId'
+      preLoaderRoute: typeof BusinessConnectMeetingsMeetingIdRouteImport
+      parentRoute: typeof BusinessConnectMeetingsRoute
+    }
+    '/business-connect/introductions/requests': {
+      id: '/business-connect/introductions/requests'
+      path: '/introductions/requests'
+      fullPath: '/business-connect/introductions/requests'
+      preLoaderRoute: typeof BusinessConnectIntroductionsRequestsRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/introductions/outcomes': {
+      id: '/business-connect/introductions/outcomes'
+      path: '/introductions/outcomes'
+      fullPath: '/business-connect/introductions/outcomes'
+      preLoaderRoute: typeof BusinessConnectIntroductionsOutcomesRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/introductions/inbox': {
+      id: '/business-connect/introductions/inbox'
+      path: '/introductions/inbox'
+      fullPath: '/business-connect/introductions/inbox'
+      preLoaderRoute: typeof BusinessConnectIntroductionsInboxRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/introductions/deliveries': {
+      id: '/business-connect/introductions/deliveries'
+      path: '/introductions/deliveries'
+      fullPath: '/business-connect/introductions/deliveries'
+      preLoaderRoute: typeof BusinessConnectIntroductionsDeliveriesRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/introductions/analytics': {
+      id: '/business-connect/introductions/analytics'
+      path: '/introductions/analytics'
+      fullPath: '/business-connect/introductions/analytics'
+      preLoaderRoute: typeof BusinessConnectIntroductionsAnalyticsRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/introductions/$targetPersonNodeId': {
+      id: '/business-connect/introductions/$targetPersonNodeId'
+      path: '/introductions/$targetPersonNodeId'
+      fullPath: '/business-connect/introductions/$targetPersonNodeId'
+      preLoaderRoute: typeof BusinessConnectIntroductionsTargetPersonNodeIdRouteImport
+      parentRoute: typeof BusinessConnectRoute
+    }
+    '/business-connect/connections/$personNodeId': {
+      id: '/business-connect/connections/$personNodeId'
+      path: '/$personNodeId'
+      fullPath: '/business-connect/connections/$personNodeId'
+      preLoaderRoute: typeof BusinessConnectConnectionsPersonNodeIdRouteImport
+      parentRoute: typeof BusinessConnectConnectionsRoute
+    }
+    '/association/renew/result': {
+      id: '/association/renew/result'
+      path: '/result'
+      fullPath: '/association/renew/result'
+      preLoaderRoute: typeof AssociationRenewResultRouteImport
+      parentRoute: typeof AssociationRenewRoute
+    }
+    '/association/renew/pay': {
+      id: '/association/renew/pay'
+      path: '/pay'
+      fullPath: '/association/renew/pay'
+      preLoaderRoute: typeof AssociationRenewPayRouteImport
+      parentRoute: typeof AssociationRenewRoute
+    }
+    '/association/renew/history': {
+      id: '/association/renew/history'
+      path: '/history'
+      fullPath: '/association/renew/history'
+      preLoaderRoute: typeof AssociationRenewHistoryRouteImport
+      parentRoute: typeof AssociationRenewRoute
+    }
+    '/association/renew/audit': {
+      id: '/association/renew/audit'
+      path: '/audit'
+      fullPath: '/association/renew/audit'
+      preLoaderRoute: typeof AssociationRenewAuditRouteImport
+      parentRoute: typeof AssociationRenewRoute
+    }
+    '/association/perks/$id': {
+      id: '/association/perks/$id'
+      path: '/$id'
+      fullPath: '/association/perks/$id'
+      preLoaderRoute: typeof AssociationPerksIdRouteImport
+      parentRoute: typeof AssociationPerksRoute
+    }
+    '/admin/business-cards/audit': {
+      id: '/admin/business-cards/audit'
+      path: '/audit'
+      fullPath: '/admin/business-cards/audit'
+      preLoaderRoute: typeof AdminBusinessCardsAuditRouteImport
+      parentRoute: typeof AdminBusinessCardsRoute
+    }
+    '/connect-app/community/$communityId/': {
+      id: '/connect-app/community/$communityId/'
+      path: '/'
+      fullPath: '/connect-app/community/$communityId/'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdIndexRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdRoute
+    }
+    '/connect/network/requests/sent': {
+      id: '/connect/network/requests/sent'
+      path: '/requests/sent'
+      fullPath: '/connect/network/requests/sent'
+      preLoaderRoute: typeof ConnectNetworkRequestsSentRouteImport
+      parentRoute: typeof ConnectNetworkRoute
+    }
+    '/connect/network/requests/incoming': {
+      id: '/connect/network/requests/incoming'
+      path: '/requests/incoming'
+      fullPath: '/connect/network/requests/incoming'
+      preLoaderRoute: typeof ConnectNetworkRequestsIncomingRouteImport
+      parentRoute: typeof ConnectNetworkRoute
+    }
+    '/connect/cards/$cardId/edit': {
+      id: '/connect/cards/$cardId/edit'
+      path: '/cards/$cardId/edit'
+      fullPath: '/connect/cards/$cardId/edit'
+      preLoaderRoute: typeof ConnectCardsCardIdEditRouteImport
+      parentRoute: typeof ConnectRoute
+    }
+    '/connect-app/community/$communityId/opportunities': {
+      id: '/connect-app/community/$communityId/opportunities'
+      path: '/opportunities'
+      fullPath: '/connect-app/community/$communityId/opportunities'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdRoute
+    }
+    '/connect-app/community/$communityId/news': {
+      id: '/connect-app/community/$communityId/news'
+      path: '/news'
+      fullPath: '/connect-app/community/$communityId/news'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdNewsRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdRoute
+    }
+    '/connect-app/community/$communityId/members': {
+      id: '/connect-app/community/$communityId/members'
+      path: '/members'
+      fullPath: '/connect-app/community/$communityId/members'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdMembersRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdRoute
+    }
+    '/connect-app/community/$communityId/events': {
+      id: '/connect-app/community/$communityId/events'
+      path: '/events'
+      fullPath: '/connect-app/community/$communityId/events'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdEventsRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdRoute
+    }
+    '/api/public/hooks/timeline-projection': {
+      id: '/api/public/hooks/timeline-projection'
+      path: '/api/public/hooks/timeline-projection'
+      fullPath: '/api/public/hooks/timeline-projection'
+      preLoaderRoute: typeof ApiPublicHooksTimelineProjectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/outcome-consumer': {
+      id: '/api/public/hooks/outcome-consumer'
+      path: '/api/public/hooks/outcome-consumer'
+      fullPath: '/api/public/hooks/outcome-consumer'
+      preLoaderRoute: typeof ApiPublicHooksOutcomeConsumerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/notification-runtime': {
+      id: '/api/public/hooks/notification-runtime'
+      path: '/api/public/hooks/notification-runtime'
+      fullPath: '/api/public/hooks/notification-runtime'
+      preLoaderRoute: typeof ApiPublicHooksNotificationRuntimeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/card/{$slug}.vcf': {
+      id: '/api/public/card/{$slug}.vcf'
+      path: '/api/public/card/{$slug}.vcf'
+      fullPath: '/api/public/card/{$slug}.vcf'
+      preLoaderRoute: typeof ApiPublicCardChar123slugChar125DotvcfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connect-app/community/$communityId/opportunities/': {
+      id: '/connect-app/community/$communityId/opportunities/'
+      path: '/'
+      fullPath: '/connect-app/community/$communityId/opportunities/'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRoute
+    }
+    '/connect-app/community/$communityId/news/': {
+      id: '/connect-app/community/$communityId/news/'
+      path: '/'
+      fullPath: '/connect-app/community/$communityId/news/'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdNewsIndexRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdNewsRoute
+    }
+    '/connect-app/community/$communityId/members/': {
+      id: '/connect-app/community/$communityId/members/'
+      path: '/'
+      fullPath: '/connect-app/community/$communityId/members/'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdMembersIndexRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdMembersRoute
+    }
+    '/connect-app/community/$communityId/events/': {
+      id: '/connect-app/community/$communityId/events/'
+      path: '/'
+      fullPath: '/connect-app/community/$communityId/events/'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdEventsIndexRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdEventsRoute
+    }
+    '/connect-app/community/$communityId/opportunities/$opportunityRef': {
+      id: '/connect-app/community/$communityId/opportunities/$opportunityRef'
+      path: '/$opportunityRef'
+      fullPath: '/connect-app/community/$communityId/opportunities/$opportunityRef'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRoute
+    }
+    '/connect-app/community/$communityId/news/$newsRef': {
+      id: '/connect-app/community/$communityId/news/$newsRef'
+      path: '/$newsRef'
+      fullPath: '/connect-app/community/$communityId/news/$newsRef'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdNewsNewsRefRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdNewsRoute
+    }
+    '/connect-app/community/$communityId/members/$memberRef': {
+      id: '/connect-app/community/$communityId/members/$memberRef'
+      path: '/$memberRef'
+      fullPath: '/connect-app/community/$communityId/members/$memberRef'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdMembersMemberRefRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdMembersRoute
+    }
+    '/connect-app/community/$communityId/events/$eventRef': {
+      id: '/connect-app/community/$communityId/events/$eventRef'
+      path: '/$eventRef'
+      fullPath: '/connect-app/community/$communityId/events/$eventRef'
+      preLoaderRoute: typeof ConnectAppCommunityCommunityIdEventsEventRefRouteImport
+      parentRoute: typeof ConnectAppCommunityCommunityIdEventsRoute
+    }
+    '/api/public/identity/$token/contact': {
+      id: '/api/public/identity/$token/contact'
+      path: '/api/public/identity/$token/contact'
+      fullPath: '/api/public/identity/$token/contact'
+      preLoaderRoute: typeof ApiPublicIdentityTokenContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/card/$slug/contact': {
+      id: '/api/public/card/$slug/contact'
+      path: '/api/public/card/$slug/contact'
+      fullPath: '/api/public/card/$slug/contact'
+      preLoaderRoute: typeof ApiPublicCardSlugContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/avatar/$owner/$file': {
+      id: '/api/public/avatar/$owner/$file'
+      path: '/api/public/avatar/$owner/$file'
+      fullPath: '/api/public/avatar/$owner/$file'
+      preLoaderRoute: typeof ApiPublicAvatarOwnerFileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
-
-
 interface AccountSettingsRouteChildren {
-  AccountSettingsNotificationsRoute: typeof AccountSettingsNotificationsRoute,AccountSettingsIndexRoute: typeof AccountSettingsIndexRoute
+  AccountSettingsNotificationsRoute: typeof AccountSettingsNotificationsRoute
+  AccountSettingsIndexRoute: typeof AccountSettingsIndexRoute
 }
 
 const AccountSettingsRouteChildren: AccountSettingsRouteChildren = {
-  AccountSettingsNotificationsRoute: AccountSettingsNotificationsRoute,AccountSettingsIndexRoute: AccountSettingsIndexRoute
+  AccountSettingsNotificationsRoute: AccountSettingsNotificationsRoute,
+  AccountSettingsIndexRoute: AccountSettingsIndexRoute,
 }
 
-const AccountSettingsRouteWithChildren = AccountSettingsRoute._addFileChildren(AccountSettingsRouteChildren)
-
+const AccountSettingsRouteWithChildren = AccountSettingsRoute._addFileChildren(
+  AccountSettingsRouteChildren,
+)
 
 interface AssociationPerksRouteChildren {
-  AssociationPerksIdRoute: typeof AssociationPerksIdRoute,AssociationPerksIndexRoute: typeof AssociationPerksIndexRoute
+  AssociationPerksIdRoute: typeof AssociationPerksIdRoute
+  AssociationPerksIndexRoute: typeof AssociationPerksIndexRoute
 }
 
 const AssociationPerksRouteChildren: AssociationPerksRouteChildren = {
-  AssociationPerksIdRoute: AssociationPerksIdRoute,AssociationPerksIndexRoute: AssociationPerksIndexRoute
+  AssociationPerksIdRoute: AssociationPerksIdRoute,
+  AssociationPerksIndexRoute: AssociationPerksIndexRoute,
 }
 
-const AssociationPerksRouteWithChildren = AssociationPerksRoute._addFileChildren(AssociationPerksRouteChildren)
-
+const AssociationPerksRouteWithChildren =
+  AssociationPerksRoute._addFileChildren(AssociationPerksRouteChildren)
 
 interface AssociationRenewRouteChildren {
-  AssociationRenewAuditRoute: typeof AssociationRenewAuditRoute,AssociationRenewHistoryRoute: typeof AssociationRenewHistoryRoute,AssociationRenewPayRoute: typeof AssociationRenewPayRoute,AssociationRenewResultRoute: typeof AssociationRenewResultRoute,AssociationRenewIndexRoute: typeof AssociationRenewIndexRoute
+  AssociationRenewAuditRoute: typeof AssociationRenewAuditRoute
+  AssociationRenewHistoryRoute: typeof AssociationRenewHistoryRoute
+  AssociationRenewPayRoute: typeof AssociationRenewPayRoute
+  AssociationRenewResultRoute: typeof AssociationRenewResultRoute
+  AssociationRenewIndexRoute: typeof AssociationRenewIndexRoute
 }
 
 const AssociationRenewRouteChildren: AssociationRenewRouteChildren = {
-  AssociationRenewAuditRoute: AssociationRenewAuditRoute,AssociationRenewHistoryRoute: AssociationRenewHistoryRoute,AssociationRenewPayRoute: AssociationRenewPayRoute,AssociationRenewResultRoute: AssociationRenewResultRoute,AssociationRenewIndexRoute: AssociationRenewIndexRoute
+  AssociationRenewAuditRoute: AssociationRenewAuditRoute,
+  AssociationRenewHistoryRoute: AssociationRenewHistoryRoute,
+  AssociationRenewPayRoute: AssociationRenewPayRoute,
+  AssociationRenewResultRoute: AssociationRenewResultRoute,
+  AssociationRenewIndexRoute: AssociationRenewIndexRoute,
 }
 
-const AssociationRenewRouteWithChildren = AssociationRenewRoute._addFileChildren(AssociationRenewRouteChildren)
+const AssociationRenewRouteWithChildren =
+  AssociationRenewRoute._addFileChildren(AssociationRenewRouteChildren)
 
 interface AssociationRouteChildren {
-  AssociationBenefitsRoute: typeof AssociationBenefitsRoute,AssociationBusinessCardsRoute: typeof AssociationBusinessCardsRoute,AssociationCardRoute: typeof AssociationCardRoute,AssociationCheckinRoute: typeof AssociationCheckinRoute,AssociationEventsRoute: typeof AssociationEventsRoute,AssociationHistoryRoute: typeof AssociationHistoryRoute,AssociationLibraryRoute: typeof AssociationLibraryRoute,AssociationLoginRoute: typeof AssociationLoginRoute,AssociationMembersRoute: typeof AssociationMembersRoute,AssociationMessagesRoute: typeof AssociationMessagesRoute,AssociationNewsRoute: typeof AssociationNewsRoute,AssociationNotificationsRoute: typeof AssociationNotificationsRoute,AssociationOpportunitiesRoute: typeof AssociationOpportunitiesRoute,AssociationPerksRoute: typeof AssociationPerksRouteWithChildren,AssociationProductsRoute: typeof AssociationProductsRoute,AssociationProfileRoute: typeof AssociationProfileRoute,AssociationRenewRoute: typeof AssociationRenewRouteWithChildren,AssociationSettingsRoute: typeof AssociationSettingsRoute,AssociationIndexRoute: typeof AssociationIndexRoute
+  AssociationBenefitsRoute: typeof AssociationBenefitsRoute
+  AssociationBusinessCardsRoute: typeof AssociationBusinessCardsRoute
+  AssociationCardRoute: typeof AssociationCardRoute
+  AssociationCheckinRoute: typeof AssociationCheckinRoute
+  AssociationEventsRoute: typeof AssociationEventsRoute
+  AssociationHistoryRoute: typeof AssociationHistoryRoute
+  AssociationLibraryRoute: typeof AssociationLibraryRoute
+  AssociationLoginRoute: typeof AssociationLoginRoute
+  AssociationMembersRoute: typeof AssociationMembersRoute
+  AssociationMessagesRoute: typeof AssociationMessagesRoute
+  AssociationNewsRoute: typeof AssociationNewsRoute
+  AssociationNotificationsRoute: typeof AssociationNotificationsRoute
+  AssociationOpportunitiesRoute: typeof AssociationOpportunitiesRoute
+  AssociationPerksRoute: typeof AssociationPerksRouteWithChildren
+  AssociationProductsRoute: typeof AssociationProductsRoute
+  AssociationProfileRoute: typeof AssociationProfileRoute
+  AssociationRenewRoute: typeof AssociationRenewRouteWithChildren
+  AssociationSettingsRoute: typeof AssociationSettingsRoute
+  AssociationIndexRoute: typeof AssociationIndexRoute
 }
 
 const AssociationRouteChildren: AssociationRouteChildren = {
-  AssociationBenefitsRoute: AssociationBenefitsRoute,AssociationBusinessCardsRoute: AssociationBusinessCardsRoute,AssociationCardRoute: AssociationCardRoute,AssociationCheckinRoute: AssociationCheckinRoute,AssociationEventsRoute: AssociationEventsRoute,AssociationHistoryRoute: AssociationHistoryRoute,AssociationLibraryRoute: AssociationLibraryRoute,AssociationLoginRoute: AssociationLoginRoute,AssociationMembersRoute: AssociationMembersRoute,AssociationMessagesRoute: AssociationMessagesRoute,AssociationNewsRoute: AssociationNewsRoute,AssociationNotificationsRoute: AssociationNotificationsRoute,AssociationOpportunitiesRoute: AssociationOpportunitiesRoute,AssociationPerksRoute: AssociationPerksRouteWithChildren,AssociationProductsRoute: AssociationProductsRoute,AssociationProfileRoute: AssociationProfileRoute,AssociationRenewRoute: AssociationRenewRouteWithChildren,AssociationSettingsRoute: AssociationSettingsRoute,AssociationIndexRoute: AssociationIndexRoute
+  AssociationBenefitsRoute: AssociationBenefitsRoute,
+  AssociationBusinessCardsRoute: AssociationBusinessCardsRoute,
+  AssociationCardRoute: AssociationCardRoute,
+  AssociationCheckinRoute: AssociationCheckinRoute,
+  AssociationEventsRoute: AssociationEventsRoute,
+  AssociationHistoryRoute: AssociationHistoryRoute,
+  AssociationLibraryRoute: AssociationLibraryRoute,
+  AssociationLoginRoute: AssociationLoginRoute,
+  AssociationMembersRoute: AssociationMembersRoute,
+  AssociationMessagesRoute: AssociationMessagesRoute,
+  AssociationNewsRoute: AssociationNewsRoute,
+  AssociationNotificationsRoute: AssociationNotificationsRoute,
+  AssociationOpportunitiesRoute: AssociationOpportunitiesRoute,
+  AssociationPerksRoute: AssociationPerksRouteWithChildren,
+  AssociationProductsRoute: AssociationProductsRoute,
+  AssociationProfileRoute: AssociationProfileRoute,
+  AssociationRenewRoute: AssociationRenewRouteWithChildren,
+  AssociationSettingsRoute: AssociationSettingsRoute,
+  AssociationIndexRoute: AssociationIndexRoute,
 }
 
-const AssociationRouteWithChildren = AssociationRoute._addFileChildren(AssociationRouteChildren)
-
+const AssociationRouteWithChildren = AssociationRoute._addFileChildren(
+  AssociationRouteChildren,
+)
 
 interface BusinessConnectConnectionsRouteChildren {
-  BusinessConnectConnectionsPersonNodeIdRoute: typeof BusinessConnectConnectionsPersonNodeIdRoute,BusinessConnectConnectionsIndexRoute: typeof BusinessConnectConnectionsIndexRoute
+  BusinessConnectConnectionsPersonNodeIdRoute: typeof BusinessConnectConnectionsPersonNodeIdRoute
+  BusinessConnectConnectionsIndexRoute: typeof BusinessConnectConnectionsIndexRoute
 }
 
-const BusinessConnectConnectionsRouteChildren: BusinessConnectConnectionsRouteChildren = {
-  BusinessConnectConnectionsPersonNodeIdRoute: BusinessConnectConnectionsPersonNodeIdRoute,BusinessConnectConnectionsIndexRoute: BusinessConnectConnectionsIndexRoute
-}
+const BusinessConnectConnectionsRouteChildren: BusinessConnectConnectionsRouteChildren =
+  {
+    BusinessConnectConnectionsPersonNodeIdRoute:
+      BusinessConnectConnectionsPersonNodeIdRoute,
+    BusinessConnectConnectionsIndexRoute: BusinessConnectConnectionsIndexRoute,
+  }
 
-const BusinessConnectConnectionsRouteWithChildren = BusinessConnectConnectionsRoute._addFileChildren(BusinessConnectConnectionsRouteChildren)
-
+const BusinessConnectConnectionsRouteWithChildren =
+  BusinessConnectConnectionsRoute._addFileChildren(
+    BusinessConnectConnectionsRouteChildren,
+  )
 
 interface BusinessConnectMeetingsRouteChildren {
-  BusinessConnectMeetingsMeetingIdRoute: typeof BusinessConnectMeetingsMeetingIdRoute,BusinessConnectMeetingsIndexRoute: typeof BusinessConnectMeetingsIndexRoute
+  BusinessConnectMeetingsMeetingIdRoute: typeof BusinessConnectMeetingsMeetingIdRoute
+  BusinessConnectMeetingsIndexRoute: typeof BusinessConnectMeetingsIndexRoute
 }
 
-const BusinessConnectMeetingsRouteChildren: BusinessConnectMeetingsRouteChildren = {
-  BusinessConnectMeetingsMeetingIdRoute: BusinessConnectMeetingsMeetingIdRoute,BusinessConnectMeetingsIndexRoute: BusinessConnectMeetingsIndexRoute
-}
+const BusinessConnectMeetingsRouteChildren: BusinessConnectMeetingsRouteChildren =
+  {
+    BusinessConnectMeetingsMeetingIdRoute:
+      BusinessConnectMeetingsMeetingIdRoute,
+    BusinessConnectMeetingsIndexRoute: BusinessConnectMeetingsIndexRoute,
+  }
 
-const BusinessConnectMeetingsRouteWithChildren = BusinessConnectMeetingsRoute._addFileChildren(BusinessConnectMeetingsRouteChildren)
+const BusinessConnectMeetingsRouteWithChildren =
+  BusinessConnectMeetingsRoute._addFileChildren(
+    BusinessConnectMeetingsRouteChildren,
+  )
 
 interface BusinessConnectRouteChildren {
-  BusinessConnectConnectionsRoute: typeof BusinessConnectConnectionsRouteWithChildren,BusinessConnectMeetingsRoute: typeof BusinessConnectMeetingsRouteWithChildren,BusinessConnectMemoryRoute: typeof BusinessConnectMemoryRoute,BusinessConnectMyCardRoute: typeof BusinessConnectMyCardRoute,BusinessConnectNotificationsRoute: typeof BusinessConnectNotificationsRoute,BusinessConnectRelationshipTimelineRoute: typeof BusinessConnectRelationshipTimelineRoute,BusinessConnectSavedCardsRoute: typeof BusinessConnectSavedCardsRoute,BusinessConnectV1Route: typeof BusinessConnectV1Route,BusinessConnectV2Route: typeof BusinessConnectV2Route,BusinessConnectV3Route: typeof BusinessConnectV3Route,BusinessConnectV4Route: typeof BusinessConnectV4Route,BusinessConnectV5Route: typeof BusinessConnectV5Route,BusinessConnectV6Route: typeof BusinessConnectV6Route,BusinessConnectV7Route: typeof BusinessConnectV7Route,BusinessConnectV8Route: typeof BusinessConnectV8Route,BusinessConnectIndexRoute: typeof BusinessConnectIndexRoute,BusinessConnectIntroductionsTargetPersonNodeIdRoute: typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute,BusinessConnectIntroductionsAnalyticsRoute: typeof BusinessConnectIntroductionsAnalyticsRoute,BusinessConnectIntroductionsDeliveriesRoute: typeof BusinessConnectIntroductionsDeliveriesRoute,BusinessConnectIntroductionsInboxRoute: typeof BusinessConnectIntroductionsInboxRoute,BusinessConnectIntroductionsOutcomesRoute: typeof BusinessConnectIntroductionsOutcomesRoute,BusinessConnectIntroductionsRequestsRoute: typeof BusinessConnectIntroductionsRequestsRoute
+  BusinessConnectConnectionsRoute: typeof BusinessConnectConnectionsRouteWithChildren
+  BusinessConnectMeetingsRoute: typeof BusinessConnectMeetingsRouteWithChildren
+  BusinessConnectMemoryRoute: typeof BusinessConnectMemoryRoute
+  BusinessConnectMyCardRoute: typeof BusinessConnectMyCardRoute
+  BusinessConnectNotificationsRoute: typeof BusinessConnectNotificationsRoute
+  BusinessConnectRelationshipTimelineRoute: typeof BusinessConnectRelationshipTimelineRoute
+  BusinessConnectSavedCardsRoute: typeof BusinessConnectSavedCardsRoute
+  BusinessConnectV1Route: typeof BusinessConnectV1Route
+  BusinessConnectV2Route: typeof BusinessConnectV2Route
+  BusinessConnectV3Route: typeof BusinessConnectV3Route
+  BusinessConnectV4Route: typeof BusinessConnectV4Route
+  BusinessConnectV5Route: typeof BusinessConnectV5Route
+  BusinessConnectV6Route: typeof BusinessConnectV6Route
+  BusinessConnectV7Route: typeof BusinessConnectV7Route
+  BusinessConnectV8Route: typeof BusinessConnectV8Route
+  BusinessConnectIndexRoute: typeof BusinessConnectIndexRoute
+  BusinessConnectIntroductionsTargetPersonNodeIdRoute: typeof BusinessConnectIntroductionsTargetPersonNodeIdRoute
+  BusinessConnectIntroductionsAnalyticsRoute: typeof BusinessConnectIntroductionsAnalyticsRoute
+  BusinessConnectIntroductionsDeliveriesRoute: typeof BusinessConnectIntroductionsDeliveriesRoute
+  BusinessConnectIntroductionsInboxRoute: typeof BusinessConnectIntroductionsInboxRoute
+  BusinessConnectIntroductionsOutcomesRoute: typeof BusinessConnectIntroductionsOutcomesRoute
+  BusinessConnectIntroductionsRequestsRoute: typeof BusinessConnectIntroductionsRequestsRoute
 }
 
 const BusinessConnectRouteChildren: BusinessConnectRouteChildren = {
-  BusinessConnectConnectionsRoute: BusinessConnectConnectionsRouteWithChildren,BusinessConnectMeetingsRoute: BusinessConnectMeetingsRouteWithChildren,BusinessConnectMemoryRoute: BusinessConnectMemoryRoute,BusinessConnectMyCardRoute: BusinessConnectMyCardRoute,BusinessConnectNotificationsRoute: BusinessConnectNotificationsRoute,BusinessConnectRelationshipTimelineRoute: BusinessConnectRelationshipTimelineRoute,BusinessConnectSavedCardsRoute: BusinessConnectSavedCardsRoute,BusinessConnectV1Route: BusinessConnectV1Route,BusinessConnectV2Route: BusinessConnectV2Route,BusinessConnectV3Route: BusinessConnectV3Route,BusinessConnectV4Route: BusinessConnectV4Route,BusinessConnectV5Route: BusinessConnectV5Route,BusinessConnectV6Route: BusinessConnectV6Route,BusinessConnectV7Route: BusinessConnectV7Route,BusinessConnectV8Route: BusinessConnectV8Route,BusinessConnectIndexRoute: BusinessConnectIndexRoute,BusinessConnectIntroductionsTargetPersonNodeIdRoute: BusinessConnectIntroductionsTargetPersonNodeIdRoute,BusinessConnectIntroductionsAnalyticsRoute: BusinessConnectIntroductionsAnalyticsRoute,BusinessConnectIntroductionsDeliveriesRoute: BusinessConnectIntroductionsDeliveriesRoute,BusinessConnectIntroductionsInboxRoute: BusinessConnectIntroductionsInboxRoute,BusinessConnectIntroductionsOutcomesRoute: BusinessConnectIntroductionsOutcomesRoute,BusinessConnectIntroductionsRequestsRoute: BusinessConnectIntroductionsRequestsRoute
+  BusinessConnectConnectionsRoute: BusinessConnectConnectionsRouteWithChildren,
+  BusinessConnectMeetingsRoute: BusinessConnectMeetingsRouteWithChildren,
+  BusinessConnectMemoryRoute: BusinessConnectMemoryRoute,
+  BusinessConnectMyCardRoute: BusinessConnectMyCardRoute,
+  BusinessConnectNotificationsRoute: BusinessConnectNotificationsRoute,
+  BusinessConnectRelationshipTimelineRoute:
+    BusinessConnectRelationshipTimelineRoute,
+  BusinessConnectSavedCardsRoute: BusinessConnectSavedCardsRoute,
+  BusinessConnectV1Route: BusinessConnectV1Route,
+  BusinessConnectV2Route: BusinessConnectV2Route,
+  BusinessConnectV3Route: BusinessConnectV3Route,
+  BusinessConnectV4Route: BusinessConnectV4Route,
+  BusinessConnectV5Route: BusinessConnectV5Route,
+  BusinessConnectV6Route: BusinessConnectV6Route,
+  BusinessConnectV7Route: BusinessConnectV7Route,
+  BusinessConnectV8Route: BusinessConnectV8Route,
+  BusinessConnectIndexRoute: BusinessConnectIndexRoute,
+  BusinessConnectIntroductionsTargetPersonNodeIdRoute:
+    BusinessConnectIntroductionsTargetPersonNodeIdRoute,
+  BusinessConnectIntroductionsAnalyticsRoute:
+    BusinessConnectIntroductionsAnalyticsRoute,
+  BusinessConnectIntroductionsDeliveriesRoute:
+    BusinessConnectIntroductionsDeliveriesRoute,
+  BusinessConnectIntroductionsInboxRoute:
+    BusinessConnectIntroductionsInboxRoute,
+  BusinessConnectIntroductionsOutcomesRoute:
+    BusinessConnectIntroductionsOutcomesRoute,
+  BusinessConnectIntroductionsRequestsRoute:
+    BusinessConnectIntroductionsRequestsRoute,
 }
 
-const BusinessConnectRouteWithChildren = BusinessConnectRoute._addFileChildren(BusinessConnectRouteChildren)
-
+const BusinessConnectRouteWithChildren = BusinessConnectRoute._addFileChildren(
+  BusinessConnectRouteChildren,
+)
 
 interface CompaniesRouteChildren {
-  CompaniesCompanyIdRoute: typeof CompaniesCompanyIdRoute,CompaniesIndexRoute: typeof CompaniesIndexRoute
+  CompaniesCompanyIdRoute: typeof CompaniesCompanyIdRoute
+  CompaniesIndexRoute: typeof CompaniesIndexRoute
 }
 
 const CompaniesRouteChildren: CompaniesRouteChildren = {
-  CompaniesCompanyIdRoute: CompaniesCompanyIdRoute,CompaniesIndexRoute: CompaniesIndexRoute
+  CompaniesCompanyIdRoute: CompaniesCompanyIdRoute,
+  CompaniesIndexRoute: CompaniesIndexRoute,
 }
 
-const CompaniesRouteWithChildren = CompaniesRoute._addFileChildren(CompaniesRouteChildren)
-
+const CompaniesRouteWithChildren = CompaniesRoute._addFileChildren(
+  CompaniesRouteChildren,
+)
 
 interface ConnectMeetingsRouteChildren {
-  ConnectMeetingsSectionRoute: typeof ConnectMeetingsSectionRoute,ConnectMeetingsIndexRoute: typeof ConnectMeetingsIndexRoute
+  ConnectMeetingsSectionRoute: typeof ConnectMeetingsSectionRoute
+  ConnectMeetingsIndexRoute: typeof ConnectMeetingsIndexRoute
 }
 
 const ConnectMeetingsRouteChildren: ConnectMeetingsRouteChildren = {
-  ConnectMeetingsSectionRoute: ConnectMeetingsSectionRoute,ConnectMeetingsIndexRoute: ConnectMeetingsIndexRoute
+  ConnectMeetingsSectionRoute: ConnectMeetingsSectionRoute,
+  ConnectMeetingsIndexRoute: ConnectMeetingsIndexRoute,
 }
 
-const ConnectMeetingsRouteWithChildren = ConnectMeetingsRoute._addFileChildren(ConnectMeetingsRouteChildren)
-
+const ConnectMeetingsRouteWithChildren = ConnectMeetingsRoute._addFileChildren(
+  ConnectMeetingsRouteChildren,
+)
 
 interface ConnectNetworkRouteChildren {
-  ConnectNetworkConnectionsRoute: typeof ConnectNetworkConnectionsRoute,ConnectNetworkNotificationsRoute: typeof ConnectNetworkNotificationsRoute,ConnectNetworkIndexRoute: typeof ConnectNetworkIndexRoute,ConnectNetworkRequestsIncomingRoute: typeof ConnectNetworkRequestsIncomingRoute,ConnectNetworkRequestsSentRoute: typeof ConnectNetworkRequestsSentRoute
+  ConnectNetworkConnectionsRoute: typeof ConnectNetworkConnectionsRoute
+  ConnectNetworkNotificationsRoute: typeof ConnectNetworkNotificationsRoute
+  ConnectNetworkIndexRoute: typeof ConnectNetworkIndexRoute
+  ConnectNetworkRequestsIncomingRoute: typeof ConnectNetworkRequestsIncomingRoute
+  ConnectNetworkRequestsSentRoute: typeof ConnectNetworkRequestsSentRoute
 }
 
 const ConnectNetworkRouteChildren: ConnectNetworkRouteChildren = {
-  ConnectNetworkConnectionsRoute: ConnectNetworkConnectionsRoute,ConnectNetworkNotificationsRoute: ConnectNetworkNotificationsRoute,ConnectNetworkIndexRoute: ConnectNetworkIndexRoute,ConnectNetworkRequestsIncomingRoute: ConnectNetworkRequestsIncomingRoute,ConnectNetworkRequestsSentRoute: ConnectNetworkRequestsSentRoute
+  ConnectNetworkConnectionsRoute: ConnectNetworkConnectionsRoute,
+  ConnectNetworkNotificationsRoute: ConnectNetworkNotificationsRoute,
+  ConnectNetworkIndexRoute: ConnectNetworkIndexRoute,
+  ConnectNetworkRequestsIncomingRoute: ConnectNetworkRequestsIncomingRoute,
+  ConnectNetworkRequestsSentRoute: ConnectNetworkRequestsSentRoute,
 }
 
-const ConnectNetworkRouteWithChildren = ConnectNetworkRoute._addFileChildren(ConnectNetworkRouteChildren)
+const ConnectNetworkRouteWithChildren = ConnectNetworkRoute._addFileChildren(
+  ConnectNetworkRouteChildren,
+)
 
 interface ConnectRouteChildren {
-  ConnectCalendarSettingsRoute: typeof ConnectCalendarSettingsRoute,ConnectConnectionsRoute: typeof ConnectConnectionsRoute,ConnectMeetingsRoute: typeof ConnectMeetingsRouteWithChildren,ConnectNetworkRoute: typeof ConnectNetworkRouteWithChildren,ConnectSavedCardsRoute: typeof ConnectSavedCardsRoute,ConnectCardsIndexRoute: typeof ConnectCardsIndexRoute,ConnectCardsCardIdEditRoute: typeof ConnectCardsCardIdEditRoute
+  ConnectCalendarSettingsRoute: typeof ConnectCalendarSettingsRoute
+  ConnectConnectionsRoute: typeof ConnectConnectionsRoute
+  ConnectMeetingsRoute: typeof ConnectMeetingsRouteWithChildren
+  ConnectNetworkRoute: typeof ConnectNetworkRouteWithChildren
+  ConnectSavedCardsRoute: typeof ConnectSavedCardsRoute
+  ConnectCardsIndexRoute: typeof ConnectCardsIndexRoute
+  ConnectCardsCardIdEditRoute: typeof ConnectCardsCardIdEditRoute
 }
 
 const ConnectRouteChildren: ConnectRouteChildren = {
-  ConnectCalendarSettingsRoute: ConnectCalendarSettingsRoute,ConnectConnectionsRoute: ConnectConnectionsRoute,ConnectMeetingsRoute: ConnectMeetingsRouteWithChildren,ConnectNetworkRoute: ConnectNetworkRouteWithChildren,ConnectSavedCardsRoute: ConnectSavedCardsRoute,ConnectCardsIndexRoute: ConnectCardsIndexRoute,ConnectCardsCardIdEditRoute: ConnectCardsCardIdEditRoute
+  ConnectCalendarSettingsRoute: ConnectCalendarSettingsRoute,
+  ConnectConnectionsRoute: ConnectConnectionsRoute,
+  ConnectMeetingsRoute: ConnectMeetingsRouteWithChildren,
+  ConnectNetworkRoute: ConnectNetworkRouteWithChildren,
+  ConnectSavedCardsRoute: ConnectSavedCardsRoute,
+  ConnectCardsIndexRoute: ConnectCardsIndexRoute,
+  ConnectCardsCardIdEditRoute: ConnectCardsCardIdEditRoute,
 }
 
-const ConnectRouteWithChildren = ConnectRoute._addFileChildren(ConnectRouteChildren)
-
+const ConnectRouteWithChildren =
+  ConnectRoute._addFileChildren(ConnectRouteChildren)
 
 interface ConnectAppCommunityCommunityIdEventsRouteChildren {
-  ConnectAppCommunityCommunityIdEventsEventRefRoute: typeof ConnectAppCommunityCommunityIdEventsEventRefRoute,ConnectAppCommunityCommunityIdEventsIndexRoute: typeof ConnectAppCommunityCommunityIdEventsIndexRoute
+  ConnectAppCommunityCommunityIdEventsEventRefRoute: typeof ConnectAppCommunityCommunityIdEventsEventRefRoute
+  ConnectAppCommunityCommunityIdEventsIndexRoute: typeof ConnectAppCommunityCommunityIdEventsIndexRoute
 }
 
-const ConnectAppCommunityCommunityIdEventsRouteChildren: ConnectAppCommunityCommunityIdEventsRouteChildren = {
-  ConnectAppCommunityCommunityIdEventsEventRefRoute: ConnectAppCommunityCommunityIdEventsEventRefRoute,ConnectAppCommunityCommunityIdEventsIndexRoute: ConnectAppCommunityCommunityIdEventsIndexRoute
-}
+const ConnectAppCommunityCommunityIdEventsRouteChildren: ConnectAppCommunityCommunityIdEventsRouteChildren =
+  {
+    ConnectAppCommunityCommunityIdEventsEventRefRoute:
+      ConnectAppCommunityCommunityIdEventsEventRefRoute,
+    ConnectAppCommunityCommunityIdEventsIndexRoute:
+      ConnectAppCommunityCommunityIdEventsIndexRoute,
+  }
 
-const ConnectAppCommunityCommunityIdEventsRouteWithChildren = ConnectAppCommunityCommunityIdEventsRoute._addFileChildren(ConnectAppCommunityCommunityIdEventsRouteChildren)
-
+const ConnectAppCommunityCommunityIdEventsRouteWithChildren =
+  ConnectAppCommunityCommunityIdEventsRoute._addFileChildren(
+    ConnectAppCommunityCommunityIdEventsRouteChildren,
+  )
 
 interface ConnectAppCommunityCommunityIdMembersRouteChildren {
-  ConnectAppCommunityCommunityIdMembersMemberRefRoute: typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute,ConnectAppCommunityCommunityIdMembersIndexRoute: typeof ConnectAppCommunityCommunityIdMembersIndexRoute
+  ConnectAppCommunityCommunityIdMembersMemberRefRoute: typeof ConnectAppCommunityCommunityIdMembersMemberRefRoute
+  ConnectAppCommunityCommunityIdMembersIndexRoute: typeof ConnectAppCommunityCommunityIdMembersIndexRoute
 }
 
-const ConnectAppCommunityCommunityIdMembersRouteChildren: ConnectAppCommunityCommunityIdMembersRouteChildren = {
-  ConnectAppCommunityCommunityIdMembersMemberRefRoute: ConnectAppCommunityCommunityIdMembersMemberRefRoute,ConnectAppCommunityCommunityIdMembersIndexRoute: ConnectAppCommunityCommunityIdMembersIndexRoute
-}
+const ConnectAppCommunityCommunityIdMembersRouteChildren: ConnectAppCommunityCommunityIdMembersRouteChildren =
+  {
+    ConnectAppCommunityCommunityIdMembersMemberRefRoute:
+      ConnectAppCommunityCommunityIdMembersMemberRefRoute,
+    ConnectAppCommunityCommunityIdMembersIndexRoute:
+      ConnectAppCommunityCommunityIdMembersIndexRoute,
+  }
 
-const ConnectAppCommunityCommunityIdMembersRouteWithChildren = ConnectAppCommunityCommunityIdMembersRoute._addFileChildren(ConnectAppCommunityCommunityIdMembersRouteChildren)
-
+const ConnectAppCommunityCommunityIdMembersRouteWithChildren =
+  ConnectAppCommunityCommunityIdMembersRoute._addFileChildren(
+    ConnectAppCommunityCommunityIdMembersRouteChildren,
+  )
 
 interface ConnectAppCommunityCommunityIdNewsRouteChildren {
-  ConnectAppCommunityCommunityIdNewsNewsRefRoute: typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute,ConnectAppCommunityCommunityIdNewsIndexRoute: typeof ConnectAppCommunityCommunityIdNewsIndexRoute
+  ConnectAppCommunityCommunityIdNewsNewsRefRoute: typeof ConnectAppCommunityCommunityIdNewsNewsRefRoute
+  ConnectAppCommunityCommunityIdNewsIndexRoute: typeof ConnectAppCommunityCommunityIdNewsIndexRoute
 }
 
-const ConnectAppCommunityCommunityIdNewsRouteChildren: ConnectAppCommunityCommunityIdNewsRouteChildren = {
-  ConnectAppCommunityCommunityIdNewsNewsRefRoute: ConnectAppCommunityCommunityIdNewsNewsRefRoute,ConnectAppCommunityCommunityIdNewsIndexRoute: ConnectAppCommunityCommunityIdNewsIndexRoute
-}
+const ConnectAppCommunityCommunityIdNewsRouteChildren: ConnectAppCommunityCommunityIdNewsRouteChildren =
+  {
+    ConnectAppCommunityCommunityIdNewsNewsRefRoute:
+      ConnectAppCommunityCommunityIdNewsNewsRefRoute,
+    ConnectAppCommunityCommunityIdNewsIndexRoute:
+      ConnectAppCommunityCommunityIdNewsIndexRoute,
+  }
 
-const ConnectAppCommunityCommunityIdNewsRouteWithChildren = ConnectAppCommunityCommunityIdNewsRoute._addFileChildren(ConnectAppCommunityCommunityIdNewsRouteChildren)
-
+const ConnectAppCommunityCommunityIdNewsRouteWithChildren =
+  ConnectAppCommunityCommunityIdNewsRoute._addFileChildren(
+    ConnectAppCommunityCommunityIdNewsRouteChildren,
+  )
 
 interface ConnectAppCommunityCommunityIdOpportunitiesRouteChildren {
-  ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute,ConnectAppCommunityCommunityIdOpportunitiesIndexRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
+  ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute
+  ConnectAppCommunityCommunityIdOpportunitiesIndexRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
 }
 
-const ConnectAppCommunityCommunityIdOpportunitiesRouteChildren: ConnectAppCommunityCommunityIdOpportunitiesRouteChildren = {
-  ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute: ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute,ConnectAppCommunityCommunityIdOpportunitiesIndexRoute: ConnectAppCommunityCommunityIdOpportunitiesIndexRoute
-}
+const ConnectAppCommunityCommunityIdOpportunitiesRouteChildren: ConnectAppCommunityCommunityIdOpportunitiesRouteChildren =
+  {
+    ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute:
+      ConnectAppCommunityCommunityIdOpportunitiesOpportunityRefRoute,
+    ConnectAppCommunityCommunityIdOpportunitiesIndexRoute:
+      ConnectAppCommunityCommunityIdOpportunitiesIndexRoute,
+  }
 
-const ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren = ConnectAppCommunityCommunityIdOpportunitiesRoute._addFileChildren(ConnectAppCommunityCommunityIdOpportunitiesRouteChildren)
+const ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren =
+  ConnectAppCommunityCommunityIdOpportunitiesRoute._addFileChildren(
+    ConnectAppCommunityCommunityIdOpportunitiesRouteChildren,
+  )
 
 interface ConnectAppCommunityCommunityIdRouteChildren {
-  ConnectAppCommunityCommunityIdEventsRoute: typeof ConnectAppCommunityCommunityIdEventsRouteWithChildren,ConnectAppCommunityCommunityIdMembersRoute: typeof ConnectAppCommunityCommunityIdMembersRouteWithChildren,ConnectAppCommunityCommunityIdNewsRoute: typeof ConnectAppCommunityCommunityIdNewsRouteWithChildren,ConnectAppCommunityCommunityIdOpportunitiesRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren,ConnectAppCommunityCommunityIdIndexRoute: typeof ConnectAppCommunityCommunityIdIndexRoute
+  ConnectAppCommunityCommunityIdEventsRoute: typeof ConnectAppCommunityCommunityIdEventsRouteWithChildren
+  ConnectAppCommunityCommunityIdMembersRoute: typeof ConnectAppCommunityCommunityIdMembersRouteWithChildren
+  ConnectAppCommunityCommunityIdNewsRoute: typeof ConnectAppCommunityCommunityIdNewsRouteWithChildren
+  ConnectAppCommunityCommunityIdOpportunitiesRoute: typeof ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren
+  ConnectAppCommunityCommunityIdIndexRoute: typeof ConnectAppCommunityCommunityIdIndexRoute
 }
 
-const ConnectAppCommunityCommunityIdRouteChildren: ConnectAppCommunityCommunityIdRouteChildren = {
-  ConnectAppCommunityCommunityIdEventsRoute: ConnectAppCommunityCommunityIdEventsRouteWithChildren,ConnectAppCommunityCommunityIdMembersRoute: ConnectAppCommunityCommunityIdMembersRouteWithChildren,ConnectAppCommunityCommunityIdNewsRoute: ConnectAppCommunityCommunityIdNewsRouteWithChildren,ConnectAppCommunityCommunityIdOpportunitiesRoute: ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren,ConnectAppCommunityCommunityIdIndexRoute: ConnectAppCommunityCommunityIdIndexRoute
-}
+const ConnectAppCommunityCommunityIdRouteChildren: ConnectAppCommunityCommunityIdRouteChildren =
+  {
+    ConnectAppCommunityCommunityIdEventsRoute:
+      ConnectAppCommunityCommunityIdEventsRouteWithChildren,
+    ConnectAppCommunityCommunityIdMembersRoute:
+      ConnectAppCommunityCommunityIdMembersRouteWithChildren,
+    ConnectAppCommunityCommunityIdNewsRoute:
+      ConnectAppCommunityCommunityIdNewsRouteWithChildren,
+    ConnectAppCommunityCommunityIdOpportunitiesRoute:
+      ConnectAppCommunityCommunityIdOpportunitiesRouteWithChildren,
+    ConnectAppCommunityCommunityIdIndexRoute:
+      ConnectAppCommunityCommunityIdIndexRoute,
+  }
 
-const ConnectAppCommunityCommunityIdRouteWithChildren = ConnectAppCommunityCommunityIdRoute._addFileChildren(ConnectAppCommunityCommunityIdRouteChildren)
+const ConnectAppCommunityCommunityIdRouteWithChildren =
+  ConnectAppCommunityCommunityIdRoute._addFileChildren(
+    ConnectAppCommunityCommunityIdRouteChildren,
+  )
 
 interface ConnectAppCommunityRouteChildren {
-  ConnectAppCommunityCommunityIdRoute: typeof ConnectAppCommunityCommunityIdRouteWithChildren,ConnectAppCommunityRequestsRoute: typeof ConnectAppCommunityRequestsRoute,ConnectAppCommunityIndexRoute: typeof ConnectAppCommunityIndexRoute
+  ConnectAppCommunityCommunityIdRoute: typeof ConnectAppCommunityCommunityIdRouteWithChildren
+  ConnectAppCommunityRequestsRoute: typeof ConnectAppCommunityRequestsRoute
+  ConnectAppCommunityIndexRoute: typeof ConnectAppCommunityIndexRoute
 }
 
 const ConnectAppCommunityRouteChildren: ConnectAppCommunityRouteChildren = {
-  ConnectAppCommunityCommunityIdRoute: ConnectAppCommunityCommunityIdRouteWithChildren,ConnectAppCommunityRequestsRoute: ConnectAppCommunityRequestsRoute,ConnectAppCommunityIndexRoute: ConnectAppCommunityIndexRoute
+  ConnectAppCommunityCommunityIdRoute:
+    ConnectAppCommunityCommunityIdRouteWithChildren,
+  ConnectAppCommunityRequestsRoute: ConnectAppCommunityRequestsRoute,
+  ConnectAppCommunityIndexRoute: ConnectAppCommunityIndexRoute,
 }
 
-const ConnectAppCommunityRouteWithChildren = ConnectAppCommunityRoute._addFileChildren(ConnectAppCommunityRouteChildren)
-
+const ConnectAppCommunityRouteWithChildren =
+  ConnectAppCommunityRoute._addFileChildren(ConnectAppCommunityRouteChildren)
 
 interface ConnectAppInboxRouteChildren {
-  ConnectAppInboxThreadIdRoute: typeof ConnectAppInboxThreadIdRoute,ConnectAppInboxIndexRoute: typeof ConnectAppInboxIndexRoute
+  ConnectAppInboxThreadIdRoute: typeof ConnectAppInboxThreadIdRoute
+  ConnectAppInboxIndexRoute: typeof ConnectAppInboxIndexRoute
 }
 
 const ConnectAppInboxRouteChildren: ConnectAppInboxRouteChildren = {
-  ConnectAppInboxThreadIdRoute: ConnectAppInboxThreadIdRoute,ConnectAppInboxIndexRoute: ConnectAppInboxIndexRoute
+  ConnectAppInboxThreadIdRoute: ConnectAppInboxThreadIdRoute,
+  ConnectAppInboxIndexRoute: ConnectAppInboxIndexRoute,
 }
 
-const ConnectAppInboxRouteWithChildren = ConnectAppInboxRoute._addFileChildren(ConnectAppInboxRouteChildren)
-
+const ConnectAppInboxRouteWithChildren = ConnectAppInboxRoute._addFileChildren(
+  ConnectAppInboxRouteChildren,
+)
 
 interface ConnectAppMeRouteChildren {
-  ConnectAppMeCardRoute: typeof ConnectAppMeCardRoute,ConnectAppMeCardsRoute: typeof ConnectAppMeCardsRoute,ConnectAppMeEditRoute: typeof ConnectAppMeEditRoute,ConnectAppMeIntelSettingsRoute: typeof ConnectAppMeIntelSettingsRoute,ConnectAppMeSecurityRoute: typeof ConnectAppMeSecurityRoute,ConnectAppMeSessionsRoute: typeof ConnectAppMeSessionsRoute,ConnectAppMeIndexRoute: typeof ConnectAppMeIndexRoute
+  ConnectAppMeCardRoute: typeof ConnectAppMeCardRoute
+  ConnectAppMeCardsRoute: typeof ConnectAppMeCardsRoute
+  ConnectAppMeEditRoute: typeof ConnectAppMeEditRoute
+  ConnectAppMeIntelSettingsRoute: typeof ConnectAppMeIntelSettingsRoute
+  ConnectAppMeSecurityRoute: typeof ConnectAppMeSecurityRoute
+  ConnectAppMeSessionsRoute: typeof ConnectAppMeSessionsRoute
+  ConnectAppMeIndexRoute: typeof ConnectAppMeIndexRoute
 }
 
 const ConnectAppMeRouteChildren: ConnectAppMeRouteChildren = {
-  ConnectAppMeCardRoute: ConnectAppMeCardRoute,ConnectAppMeCardsRoute: ConnectAppMeCardsRoute,ConnectAppMeEditRoute: ConnectAppMeEditRoute,ConnectAppMeIntelSettingsRoute: ConnectAppMeIntelSettingsRoute,ConnectAppMeSecurityRoute: ConnectAppMeSecurityRoute,ConnectAppMeSessionsRoute: ConnectAppMeSessionsRoute,ConnectAppMeIndexRoute: ConnectAppMeIndexRoute
+  ConnectAppMeCardRoute: ConnectAppMeCardRoute,
+  ConnectAppMeCardsRoute: ConnectAppMeCardsRoute,
+  ConnectAppMeEditRoute: ConnectAppMeEditRoute,
+  ConnectAppMeIntelSettingsRoute: ConnectAppMeIntelSettingsRoute,
+  ConnectAppMeSecurityRoute: ConnectAppMeSecurityRoute,
+  ConnectAppMeSessionsRoute: ConnectAppMeSessionsRoute,
+  ConnectAppMeIndexRoute: ConnectAppMeIndexRoute,
 }
 
-const ConnectAppMeRouteWithChildren = ConnectAppMeRoute._addFileChildren(ConnectAppMeRouteChildren)
-
+const ConnectAppMeRouteWithChildren = ConnectAppMeRoute._addFileChildren(
+  ConnectAppMeRouteChildren,
+)
 
 interface ConnectAppMomentRouteChildren {
-  ConnectAppMomentPersonIdRoute: typeof ConnectAppMomentPersonIdRoute,ConnectAppMomentIndexRoute: typeof ConnectAppMomentIndexRoute
+  ConnectAppMomentPersonIdRoute: typeof ConnectAppMomentPersonIdRoute
+  ConnectAppMomentIndexRoute: typeof ConnectAppMomentIndexRoute
 }
 
 const ConnectAppMomentRouteChildren: ConnectAppMomentRouteChildren = {
-  ConnectAppMomentPersonIdRoute: ConnectAppMomentPersonIdRoute,ConnectAppMomentIndexRoute: ConnectAppMomentIndexRoute
+  ConnectAppMomentPersonIdRoute: ConnectAppMomentPersonIdRoute,
+  ConnectAppMomentIndexRoute: ConnectAppMomentIndexRoute,
 }
 
-const ConnectAppMomentRouteWithChildren = ConnectAppMomentRoute._addFileChildren(ConnectAppMomentRouteChildren)
-
+const ConnectAppMomentRouteWithChildren =
+  ConnectAppMomentRoute._addFileChildren(ConnectAppMomentRouteChildren)
 
 interface ConnectAppNetworkRouteChildren {
-  ConnectAppNetworkPersonIdRoute: typeof ConnectAppNetworkPersonIdRoute,ConnectAppNetworkRequestsRoute: typeof ConnectAppNetworkRequestsRoute,ConnectAppNetworkIndexRoute: typeof ConnectAppNetworkIndexRoute
+  ConnectAppNetworkPersonIdRoute: typeof ConnectAppNetworkPersonIdRoute
+  ConnectAppNetworkRequestsRoute: typeof ConnectAppNetworkRequestsRoute
+  ConnectAppNetworkIndexRoute: typeof ConnectAppNetworkIndexRoute
 }
 
 const ConnectAppNetworkRouteChildren: ConnectAppNetworkRouteChildren = {
-  ConnectAppNetworkPersonIdRoute: ConnectAppNetworkPersonIdRoute,ConnectAppNetworkRequestsRoute: ConnectAppNetworkRequestsRoute,ConnectAppNetworkIndexRoute: ConnectAppNetworkIndexRoute
+  ConnectAppNetworkPersonIdRoute: ConnectAppNetworkPersonIdRoute,
+  ConnectAppNetworkRequestsRoute: ConnectAppNetworkRequestsRoute,
+  ConnectAppNetworkIndexRoute: ConnectAppNetworkIndexRoute,
 }
 
-const ConnectAppNetworkRouteWithChildren = ConnectAppNetworkRoute._addFileChildren(ConnectAppNetworkRouteChildren)
+const ConnectAppNetworkRouteWithChildren =
+  ConnectAppNetworkRoute._addFileChildren(ConnectAppNetworkRouteChildren)
 
 interface ConnectAppRouteChildren {
-  ConnectAppActivateRoute: typeof ConnectAppActivateRoute,ConnectAppCalendarRoute: typeof ConnectAppCalendarRoute,ConnectAppCardScanRoute: typeof ConnectAppCardScanRoute,ConnectAppCommunityRoute: typeof ConnectAppCommunityRouteWithChildren,ConnectAppInboxRoute: typeof ConnectAppInboxRouteWithChildren,ConnectAppMeRoute: typeof ConnectAppMeRouteWithChildren,ConnectAppMomentRoute: typeof ConnectAppMomentRouteWithChildren,ConnectAppNetworkRoute: typeof ConnectAppNetworkRouteWithChildren,ConnectAppNfcTagsRoute: typeof ConnectAppNfcTagsRoute,ConnectAppNotificationsRoute: typeof ConnectAppNotificationsRoute,ConnectAppIndexRoute: typeof ConnectAppIndexRoute,ConnectAppInviteTokenRoute: typeof ConnectAppInviteTokenRoute
+  ConnectAppActivateRoute: typeof ConnectAppActivateRoute
+  ConnectAppCalendarRoute: typeof ConnectAppCalendarRoute
+  ConnectAppCardScanRoute: typeof ConnectAppCardScanRoute
+  ConnectAppCommunityRoute: typeof ConnectAppCommunityRouteWithChildren
+  ConnectAppInboxRoute: typeof ConnectAppInboxRouteWithChildren
+  ConnectAppMeRoute: typeof ConnectAppMeRouteWithChildren
+  ConnectAppMomentRoute: typeof ConnectAppMomentRouteWithChildren
+  ConnectAppNetworkRoute: typeof ConnectAppNetworkRouteWithChildren
+  ConnectAppNfcTagsRoute: typeof ConnectAppNfcTagsRoute
+  ConnectAppNotificationsRoute: typeof ConnectAppNotificationsRoute
+  ConnectAppIndexRoute: typeof ConnectAppIndexRoute
+  ConnectAppInviteTokenRoute: typeof ConnectAppInviteTokenRoute
 }
 
 const ConnectAppRouteChildren: ConnectAppRouteChildren = {
-  ConnectAppActivateRoute: ConnectAppActivateRoute,ConnectAppCalendarRoute: ConnectAppCalendarRoute,ConnectAppCardScanRoute: ConnectAppCardScanRoute,ConnectAppCommunityRoute: ConnectAppCommunityRouteWithChildren,ConnectAppInboxRoute: ConnectAppInboxRouteWithChildren,ConnectAppMeRoute: ConnectAppMeRouteWithChildren,ConnectAppMomentRoute: ConnectAppMomentRouteWithChildren,ConnectAppNetworkRoute: ConnectAppNetworkRouteWithChildren,ConnectAppNfcTagsRoute: ConnectAppNfcTagsRoute,ConnectAppNotificationsRoute: ConnectAppNotificationsRoute,ConnectAppIndexRoute: ConnectAppIndexRoute,ConnectAppInviteTokenRoute: ConnectAppInviteTokenRoute
+  ConnectAppActivateRoute: ConnectAppActivateRoute,
+  ConnectAppCalendarRoute: ConnectAppCalendarRoute,
+  ConnectAppCardScanRoute: ConnectAppCardScanRoute,
+  ConnectAppCommunityRoute: ConnectAppCommunityRouteWithChildren,
+  ConnectAppInboxRoute: ConnectAppInboxRouteWithChildren,
+  ConnectAppMeRoute: ConnectAppMeRouteWithChildren,
+  ConnectAppMomentRoute: ConnectAppMomentRouteWithChildren,
+  ConnectAppNetworkRoute: ConnectAppNetworkRouteWithChildren,
+  ConnectAppNfcTagsRoute: ConnectAppNfcTagsRoute,
+  ConnectAppNotificationsRoute: ConnectAppNotificationsRoute,
+  ConnectAppIndexRoute: ConnectAppIndexRoute,
+  ConnectAppInviteTokenRoute: ConnectAppInviteTokenRoute,
 }
 
-const ConnectAppRouteWithChildren = ConnectAppRoute._addFileChildren(ConnectAppRouteChildren)
-
+const ConnectAppRouteWithChildren = ConnectAppRoute._addFileChildren(
+  ConnectAppRouteChildren,
+)
 
 interface DocumentsRouteChildren {
-  DocumentsDocIdRoute: typeof DocumentsDocIdRoute,DocumentsIndexRoute: typeof DocumentsIndexRoute
+  DocumentsDocIdRoute: typeof DocumentsDocIdRoute
+  DocumentsIndexRoute: typeof DocumentsIndexRoute
 }
 
 const DocumentsRouteChildren: DocumentsRouteChildren = {
-  DocumentsDocIdRoute: DocumentsDocIdRoute,DocumentsIndexRoute: DocumentsIndexRoute
+  DocumentsDocIdRoute: DocumentsDocIdRoute,
+  DocumentsIndexRoute: DocumentsIndexRoute,
 }
 
-const DocumentsRouteWithChildren = DocumentsRoute._addFileChildren(DocumentsRouteChildren)
-
+const DocumentsRouteWithChildren = DocumentsRoute._addFileChildren(
+  DocumentsRouteChildren,
+)
 
 interface EventsRouteChildren {
-  EventsEventIdRoute: typeof EventsEventIdRoute,EventsIndexRoute: typeof EventsIndexRoute
+  EventsEventIdRoute: typeof EventsEventIdRoute
+  EventsIndexRoute: typeof EventsIndexRoute
 }
 
 const EventsRouteChildren: EventsRouteChildren = {
-  EventsEventIdRoute: EventsEventIdRoute,EventsIndexRoute: EventsIndexRoute
+  EventsEventIdRoute: EventsEventIdRoute,
+  EventsIndexRoute: EventsIndexRoute,
 }
 
-const EventsRouteWithChildren = EventsRoute._addFileChildren(EventsRouteChildren)
-
+const EventsRouteWithChildren =
+  EventsRoute._addFileChildren(EventsRouteChildren)
 
 interface FeesRouteChildren {
-  FeesInvoiceIdRoute: typeof FeesInvoiceIdRoute,FeesIndexRoute: typeof FeesIndexRoute
+  FeesInvoiceIdRoute: typeof FeesInvoiceIdRoute
+  FeesIndexRoute: typeof FeesIndexRoute
 }
 
 const FeesRouteChildren: FeesRouteChildren = {
-  FeesInvoiceIdRoute: FeesInvoiceIdRoute,FeesIndexRoute: FeesIndexRoute
+  FeesInvoiceIdRoute: FeesInvoiceIdRoute,
+  FeesIndexRoute: FeesIndexRoute,
 }
 
 const FeesRouteWithChildren = FeesRoute._addFileChildren(FeesRouteChildren)
-
 
 interface LandingCeo1983RouteChildren {
   LandingCeo1983CinematicRoute: typeof LandingCeo1983CinematicRoute
 }
 
 const LandingCeo1983RouteChildren: LandingCeo1983RouteChildren = {
-  LandingCeo1983CinematicRoute: LandingCeo1983CinematicRoute
+  LandingCeo1983CinematicRoute: LandingCeo1983CinematicRoute,
 }
 
-const LandingCeo1983RouteWithChildren = LandingCeo1983Route._addFileChildren(LandingCeo1983RouteChildren)
+const LandingCeo1983RouteWithChildren = LandingCeo1983Route._addFileChildren(
+  LandingCeo1983RouteChildren,
+)
 
 interface LandingRouteChildren {
-  LandingBusinessConnectRoute: typeof LandingBusinessConnectRoute,LandingBussinessConnectRoute: typeof LandingBussinessConnectRoute,LandingCeo1983Route: typeof LandingCeo1983RouteWithChildren,LandingVioneRoute: typeof LandingVioneRoute,LandingIndexRoute: typeof LandingIndexRoute,LandingCeoV1Route: typeof LandingCeoV1Route
+  LandingBusinessConnectRoute: typeof LandingBusinessConnectRoute
+  LandingBussinessConnectRoute: typeof LandingBussinessConnectRoute
+  LandingCeo1983Route: typeof LandingCeo1983RouteWithChildren
+  LandingVioneRoute: typeof LandingVioneRoute
+  LandingIndexRoute: typeof LandingIndexRoute
+  LandingCeoV1Route: typeof LandingCeoV1Route
 }
 
 const LandingRouteChildren: LandingRouteChildren = {
-  LandingBusinessConnectRoute: LandingBusinessConnectRoute,LandingBussinessConnectRoute: LandingBussinessConnectRoute,LandingCeo1983Route: LandingCeo1983RouteWithChildren,LandingVioneRoute: LandingVioneRoute,LandingIndexRoute: LandingIndexRoute,LandingCeoV1Route: LandingCeoV1Route
+  LandingBusinessConnectRoute: LandingBusinessConnectRoute,
+  LandingBussinessConnectRoute: LandingBussinessConnectRoute,
+  LandingCeo1983Route: LandingCeo1983RouteWithChildren,
+  LandingVioneRoute: LandingVioneRoute,
+  LandingIndexRoute: LandingIndexRoute,
+  LandingCeoV1Route: LandingCeoV1Route,
 }
 
-const LandingRouteWithChildren = LandingRoute._addFileChildren(LandingRouteChildren)
-
+const LandingRouteWithChildren =
+  LandingRoute._addFileChildren(LandingRouteChildren)
 
 interface MPerksRouteChildren {
-  MPerksIdRoute: typeof MPerksIdRoute,MPerksIndexRoute: typeof MPerksIndexRoute
+  MPerksIdRoute: typeof MPerksIdRoute
+  MPerksIndexRoute: typeof MPerksIndexRoute
 }
 
 const MPerksRouteChildren: MPerksRouteChildren = {
-  MPerksIdRoute: MPerksIdRoute,MPerksIndexRoute: MPerksIndexRoute
+  MPerksIdRoute: MPerksIdRoute,
+  MPerksIndexRoute: MPerksIndexRoute,
 }
 
-const MPerksRouteWithChildren = MPerksRoute._addFileChildren(MPerksRouteChildren)
-
+const MPerksRouteWithChildren =
+  MPerksRoute._addFileChildren(MPerksRouteChildren)
 
 interface MRenewRouteChildren {
-  MRenewAuditRoute: typeof MRenewAuditRoute,MRenewHistoryRoute: typeof MRenewHistoryRoute,MRenewPayRoute: typeof MRenewPayRoute,MRenewResultRoute: typeof MRenewResultRoute,MRenewIndexRoute: typeof MRenewIndexRoute
+  MRenewAuditRoute: typeof MRenewAuditRoute
+  MRenewHistoryRoute: typeof MRenewHistoryRoute
+  MRenewPayRoute: typeof MRenewPayRoute
+  MRenewResultRoute: typeof MRenewResultRoute
+  MRenewIndexRoute: typeof MRenewIndexRoute
 }
 
 const MRenewRouteChildren: MRenewRouteChildren = {
-  MRenewAuditRoute: MRenewAuditRoute,MRenewHistoryRoute: MRenewHistoryRoute,MRenewPayRoute: MRenewPayRoute,MRenewResultRoute: MRenewResultRoute,MRenewIndexRoute: MRenewIndexRoute
+  MRenewAuditRoute: MRenewAuditRoute,
+  MRenewHistoryRoute: MRenewHistoryRoute,
+  MRenewPayRoute: MRenewPayRoute,
+  MRenewResultRoute: MRenewResultRoute,
+  MRenewIndexRoute: MRenewIndexRoute,
 }
 
-const MRenewRouteWithChildren = MRenewRoute._addFileChildren(MRenewRouteChildren)
+const MRenewRouteWithChildren =
+  MRenewRoute._addFileChildren(MRenewRouteChildren)
 
 interface MRouteChildren {
-  MBusinessCardsRoute: typeof MBusinessCardsRoute,MCardRoute: typeof MCardRoute,MCheckinRoute: typeof MCheckinRoute,MEventsRoute: typeof MEventsRoute,MHistoryRoute: typeof MHistoryRoute,MLibraryRoute: typeof MLibraryRoute,MMembersRoute: typeof MMembersRoute,MMessagesRoute: typeof MMessagesRoute,MNewsRoute: typeof MNewsRoute,MNotificationsRoute: typeof MNotificationsRoute,MOpportunitiesRoute: typeof MOpportunitiesRoute,MPerksRoute: typeof MPerksRouteWithChildren,MProductsRoute: typeof MProductsRoute,MProfileRoute: typeof MProfileRoute,MRenewRoute: typeof MRenewRouteWithChildren,MIndexRoute: typeof MIndexRoute
+  MBusinessCardsRoute: typeof MBusinessCardsRoute
+  MCardRoute: typeof MCardRoute
+  MCheckinRoute: typeof MCheckinRoute
+  MEventsRoute: typeof MEventsRoute
+  MHistoryRoute: typeof MHistoryRoute
+  MLibraryRoute: typeof MLibraryRoute
+  MMembersRoute: typeof MMembersRoute
+  MMessagesRoute: typeof MMessagesRoute
+  MNewsRoute: typeof MNewsRoute
+  MNotificationsRoute: typeof MNotificationsRoute
+  MOpportunitiesRoute: typeof MOpportunitiesRoute
+  MPerksRoute: typeof MPerksRouteWithChildren
+  MProductsRoute: typeof MProductsRoute
+  MProfileRoute: typeof MProfileRoute
+  MRenewRoute: typeof MRenewRouteWithChildren
+  MIndexRoute: typeof MIndexRoute
 }
 
 const MRouteChildren: MRouteChildren = {
-  MBusinessCardsRoute: MBusinessCardsRoute,MCardRoute: MCardRoute,MCheckinRoute: MCheckinRoute,MEventsRoute: MEventsRoute,MHistoryRoute: MHistoryRoute,MLibraryRoute: MLibraryRoute,MMembersRoute: MMembersRoute,MMessagesRoute: MMessagesRoute,MNewsRoute: MNewsRoute,MNotificationsRoute: MNotificationsRoute,MOpportunitiesRoute: MOpportunitiesRoute,MPerksRoute: MPerksRouteWithChildren,MProductsRoute: MProductsRoute,MProfileRoute: MProfileRoute,MRenewRoute: MRenewRouteWithChildren,MIndexRoute: MIndexRoute
+  MBusinessCardsRoute: MBusinessCardsRoute,
+  MCardRoute: MCardRoute,
+  MCheckinRoute: MCheckinRoute,
+  MEventsRoute: MEventsRoute,
+  MHistoryRoute: MHistoryRoute,
+  MLibraryRoute: MLibraryRoute,
+  MMembersRoute: MMembersRoute,
+  MMessagesRoute: MMessagesRoute,
+  MNewsRoute: MNewsRoute,
+  MNotificationsRoute: MNotificationsRoute,
+  MOpportunitiesRoute: MOpportunitiesRoute,
+  MPerksRoute: MPerksRouteWithChildren,
+  MProductsRoute: MProductsRoute,
+  MProfileRoute: MProfileRoute,
+  MRenewRoute: MRenewRouteWithChildren,
+  MIndexRoute: MIndexRoute,
 }
 
 const MRouteWithChildren = MRoute._addFileChildren(MRouteChildren)
 
-
 interface MarketplaceRouteChildren {
-  MarketplaceProductIdRoute: typeof MarketplaceProductIdRoute,MarketplaceMyQuotesRoute: typeof MarketplaceMyQuotesRoute,MarketplaceWorkspaceRoute: typeof MarketplaceWorkspaceRoute,MarketplaceIndexRoute: typeof MarketplaceIndexRoute
+  MarketplaceProductIdRoute: typeof MarketplaceProductIdRoute
+  MarketplaceMyQuotesRoute: typeof MarketplaceMyQuotesRoute
+  MarketplaceWorkspaceRoute: typeof MarketplaceWorkspaceRoute
+  MarketplaceIndexRoute: typeof MarketplaceIndexRoute
 }
 
 const MarketplaceRouteChildren: MarketplaceRouteChildren = {
-  MarketplaceProductIdRoute: MarketplaceProductIdRoute,MarketplaceMyQuotesRoute: MarketplaceMyQuotesRoute,MarketplaceWorkspaceRoute: MarketplaceWorkspaceRoute,MarketplaceIndexRoute: MarketplaceIndexRoute
+  MarketplaceProductIdRoute: MarketplaceProductIdRoute,
+  MarketplaceMyQuotesRoute: MarketplaceMyQuotesRoute,
+  MarketplaceWorkspaceRoute: MarketplaceWorkspaceRoute,
+  MarketplaceIndexRoute: MarketplaceIndexRoute,
 }
 
-const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(MarketplaceRouteChildren)
-
+const MarketplaceRouteWithChildren = MarketplaceRoute._addFileChildren(
+  MarketplaceRouteChildren,
+)
 
 interface OpportunitiesIdRouteChildren {
   OpportunitiesIdEditRoute: typeof OpportunitiesIdEditRoute
 }
 
 const OpportunitiesIdRouteChildren: OpportunitiesIdRouteChildren = {
-  OpportunitiesIdEditRoute: OpportunitiesIdEditRoute
+  OpportunitiesIdEditRoute: OpportunitiesIdEditRoute,
 }
 
-const OpportunitiesIdRouteWithChildren = OpportunitiesIdRoute._addFileChildren(OpportunitiesIdRouteChildren)
+const OpportunitiesIdRouteWithChildren = OpportunitiesIdRoute._addFileChildren(
+  OpportunitiesIdRouteChildren,
+)
 
 interface OpportunitiesRouteChildren {
-  OpportunitiesIdRoute: typeof OpportunitiesIdRouteWithChildren,OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
+  OpportunitiesIdRoute: typeof OpportunitiesIdRouteWithChildren
+  OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
 }
 
 const OpportunitiesRouteChildren: OpportunitiesRouteChildren = {
-  OpportunitiesIdRoute: OpportunitiesIdRouteWithChildren,OpportunitiesIndexRoute: OpportunitiesIndexRoute
+  OpportunitiesIdRoute: OpportunitiesIdRouteWithChildren,
+  OpportunitiesIndexRoute: OpportunitiesIndexRoute,
 }
 
-const OpportunitiesRouteWithChildren = OpportunitiesRoute._addFileChildren(OpportunitiesRouteChildren)
-
+const OpportunitiesRouteWithChildren = OpportunitiesRoute._addFileChildren(
+  OpportunitiesRouteChildren,
+)
 
 interface AdminBusinessCardsRouteChildren {
-  AdminBusinessCardsAuditRoute: typeof AdminBusinessCardsAuditRoute,AdminBusinessCardsIndexRoute: typeof AdminBusinessCardsIndexRoute
+  AdminBusinessCardsAuditRoute: typeof AdminBusinessCardsAuditRoute
+  AdminBusinessCardsIndexRoute: typeof AdminBusinessCardsIndexRoute
 }
 
 const AdminBusinessCardsRouteChildren: AdminBusinessCardsRouteChildren = {
-  AdminBusinessCardsAuditRoute: AdminBusinessCardsAuditRoute,AdminBusinessCardsIndexRoute: AdminBusinessCardsIndexRoute
+  AdminBusinessCardsAuditRoute: AdminBusinessCardsAuditRoute,
+  AdminBusinessCardsIndexRoute: AdminBusinessCardsIndexRoute,
 }
 
-const AdminBusinessCardsRouteWithChildren = AdminBusinessCardsRoute._addFileChildren(AdminBusinessCardsRouteChildren)
+const AdminBusinessCardsRouteWithChildren =
+  AdminBusinessCardsRoute._addFileChildren(AdminBusinessCardsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,AccountSettingsRoute: AccountSettingsRouteWithChildren,ActivityRoute: ActivityRoute,AiRoute: AiRoute,AssociationRoute: AssociationRouteWithChildren,AuthRoute: AuthRoute,BenefitsRoute: BenefitsRoute,BusinessCardsRoute: BusinessCardsRoute,BusinessConnectRoute: BusinessConnectRouteWithChildren,CheckinRoute: CheckinRoute,CheckinQrRoute: CheckinQrRoute,CompaniesRoute: CompaniesRouteWithChildren,ConnectRoute: ConnectRouteWithChildren,ConnectAppRoute: ConnectAppRouteWithChildren,DemoRoute: DemoRoute,DocumentsRoute: DocumentsRouteWithChildren,EmailMarketingRoute: EmailMarketingRoute,EventRegistrationsRoute: EventRegistrationsRoute,EventsRoute: EventsRouteWithChildren,EventsOverviewRoute: EventsOverviewRoute,ExpensesRoute: ExpensesRoute,FeesRoute: FeesRouteWithChildren,FinanceReportRoute: FinanceReportRoute,ForgotPasswordRoute: ForgotPasswordRoute,IncomeRoute: IncomeRoute,InstallRoute: InstallRoute,LandingRoute: LandingRouteWithChildren,MRoute: MRouteWithChildren,MarketplaceRoute: MarketplaceRouteWithChildren,MeetingsRoute: MeetingsRoute,MyPermissionsRoute: MyPermissionsRoute,NetworkRoute: NetworkRoute,NewsRoute: NewsRoute,NotificationsRoute: NotificationsRoute,OpportunitiesRoute: OpportunitiesRouteWithChildren,PerksRoute: PerksRoute,ProfileRoute: ProfileRoute,RegisterRoute: RegisterRoute,RenewalRoute: RenewalRoute,ResetPasswordRoute: ResetPasswordRoute,SegmentsRoute: SegmentsRoute,SettingsRoute: SettingsRoute,SitemapDotxmlRoute: SitemapDotxmlRoute,SponsorPackagesRoute: SponsorPackagesRoute,SponsorReportRoute: SponsorReportRoute,SponsorsRoute: SponsorsRoute,VerifyRoute: VerifyRoute,VioneAppRoute: VioneAppRoute,VotingRoute: VotingRoute,AdminBusinessCardsRoute: AdminBusinessCardsRouteWithChildren,AdminCtaAnalyticsRoute: AdminCtaAnalyticsRoute,AdminDemoLeadsRoute: AdminDemoLeadsRoute,AdminLandingTemplatesRoute: AdminLandingTemplatesRoute,BSlugRoute: BSlugRoute,CTokenRoute: CTokenRoute,CardCodeRoute: CardCodeRoute,CompanySlugRoute: CompanySlugRoute,HSlugRoute: HSlugRoute,MembersMemberIdRoute: MembersMemberIdRoute,PlatformAdminsRoute: PlatformAdminsRoute,PlatformAiAuditRoute: PlatformAiAuditRoute,PlatformAuditRoute: PlatformAuditRoute,PlatformIntroductionOperationsRoute: PlatformIntroductionOperationsRoute,PlatformPermissionsRoute: PlatformPermissionsRoute,PlatformRenewalAuditRoute: PlatformRenewalAuditRoute,VioneLoginRoute: VioneLoginRoute,AdminIndexRoute: AdminIndexRoute,MembersIndexRoute: MembersIndexRoute,PlatformIndexRoute: PlatformIndexRoute,ApiPublicCardChar123slugChar125DotvcfRoute: ApiPublicCardChar123slugChar125DotvcfRoute,ApiPublicHooksNotificationRuntimeRoute: ApiPublicHooksNotificationRuntimeRoute,ApiPublicHooksOutcomeConsumerRoute: ApiPublicHooksOutcomeConsumerRoute,ApiPublicHooksTimelineProjectionRoute: ApiPublicHooksTimelineProjectionRoute,ApiPublicAvatarOwnerFileRoute: ApiPublicAvatarOwnerFileRoute,ApiPublicCardSlugContactRoute: ApiPublicCardSlugContactRoute,ApiPublicIdentityTokenContactRoute: ApiPublicIdentityTokenContactRoute
+  IndexRoute: IndexRoute,
+  AccountSettingsRoute: AccountSettingsRouteWithChildren,
+  ActivityRoute: ActivityRoute,
+  AiRoute: AiRoute,
+  AssociationRoute: AssociationRouteWithChildren,
+  AuthRoute: AuthRoute,
+  BenefitsRoute: BenefitsRoute,
+  BusinessCardsRoute: BusinessCardsRoute,
+  BusinessConnectRoute: BusinessConnectRouteWithChildren,
+  CheckinRoute: CheckinRoute,
+  CheckinQrRoute: CheckinQrRoute,
+  CompaniesRoute: CompaniesRouteWithChildren,
+  ConnectRoute: ConnectRouteWithChildren,
+  ConnectAppRoute: ConnectAppRouteWithChildren,
+  DemoRoute: DemoRoute,
+  DocumentsRoute: DocumentsRouteWithChildren,
+  EmailMarketingRoute: EmailMarketingRoute,
+  EventRegistrationsRoute: EventRegistrationsRoute,
+  EventsRoute: EventsRouteWithChildren,
+  EventsOverviewRoute: EventsOverviewRoute,
+  ExpensesRoute: ExpensesRoute,
+  FeesRoute: FeesRouteWithChildren,
+  FinanceReportRoute: FinanceReportRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  IncomeRoute: IncomeRoute,
+  InstallRoute: InstallRoute,
+  LandingRoute: LandingRouteWithChildren,
+  MRoute: MRouteWithChildren,
+  MarketplaceRoute: MarketplaceRouteWithChildren,
+  MeetingsRoute: MeetingsRoute,
+  MyPermissionsRoute: MyPermissionsRoute,
+  NetworkRoute: NetworkRoute,
+  NewsRoute: NewsRoute,
+  NotificationsRoute: NotificationsRoute,
+  OpportunitiesRoute: OpportunitiesRouteWithChildren,
+  PerksRoute: PerksRoute,
+  ProfileRoute: ProfileRoute,
+  RegisterRoute: RegisterRoute,
+  RenewalRoute: RenewalRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SegmentsRoute: SegmentsRoute,
+  SettingsRoute: SettingsRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SponsorPackagesRoute: SponsorPackagesRoute,
+  SponsorReportRoute: SponsorReportRoute,
+  SponsorsRoute: SponsorsRoute,
+  VerifyRoute: VerifyRoute,
+  VioneAppRoute: VioneAppRoute,
+  VotingRoute: VotingRoute,
+  AdminBusinessCardsRoute: AdminBusinessCardsRouteWithChildren,
+  AdminCtaAnalyticsRoute: AdminCtaAnalyticsRoute,
+  AdminDemoLeadsRoute: AdminDemoLeadsRoute,
+  AdminLandingTemplatesRoute: AdminLandingTemplatesRoute,
+  BSlugRoute: BSlugRoute,
+  CTokenRoute: CTokenRoute,
+  CardCodeRoute: CardCodeRoute,
+  CompanySlugRoute: CompanySlugRoute,
+  HSlugRoute: HSlugRoute,
+  MembersMemberIdRoute: MembersMemberIdRoute,
+  PlatformAdminsRoute: PlatformAdminsRoute,
+  PlatformAiAuditRoute: PlatformAiAuditRoute,
+  PlatformAuditRoute: PlatformAuditRoute,
+  PlatformIntroductionOperationsRoute: PlatformIntroductionOperationsRoute,
+  PlatformPermissionsRoute: PlatformPermissionsRoute,
+  PlatformRenewalAuditRoute: PlatformRenewalAuditRoute,
+  VioneLoginRoute: VioneLoginRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  MembersIndexRoute: MembersIndexRoute,
+  PlatformIndexRoute: PlatformIndexRoute,
+  ApiPublicCardChar123slugChar125DotvcfRoute:
+    ApiPublicCardChar123slugChar125DotvcfRoute,
+  ApiPublicHooksNotificationRuntimeRoute:
+    ApiPublicHooksNotificationRuntimeRoute,
+  ApiPublicHooksOutcomeConsumerRoute: ApiPublicHooksOutcomeConsumerRoute,
+  ApiPublicHooksTimelineProjectionRoute: ApiPublicHooksTimelineProjectionRoute,
+  ApiPublicAvatarOwnerFileRoute: ApiPublicAvatarOwnerFileRoute,
+  ApiPublicCardSlugContactRoute: ApiPublicCardSlugContactRoute,
+  ApiPublicIdentityTokenContactRoute: ApiPublicIdentityTokenContactRoute,
 }
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
