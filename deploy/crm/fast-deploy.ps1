@@ -11,8 +11,8 @@
 if ($NoHttps) { $EnableHttps = $false }
 
 # =========================================================================
-# Kịch bản triển khai độc lập Web CRM Platform CLB CEO 1983 (Hướng 2 - Standalone Compose)
-# Tách biệt hoàn toàn khỏi ViOne: Container riêng, Port 5004/5005 riêng, Compose riêng
+# Kich ban trien khai doc lap Web CRM Platform CLB CEO 1983 (Huong 2 - Standalone Compose)
+# Tach biet hoan toan khoi ViOne: Container rieng, Port 5004/5005 rieng, Compose rieng
 # =========================================================================
 
 $SERVER_IP   = "14.225.217.232"
@@ -31,7 +31,7 @@ function Invoke-CheckedCommand {
     )
     & $Action
     if ($LASTEXITCODE -ne 0) {
-        throw "Lỗi: Tiến trình [$Description] thất bại với mã lỗi $LASTEXITCODE"
+        throw "Loi: Tien trinh [$Description] that bai voi ma loi $LASTEXITCODE"
     }
 }
 
@@ -43,9 +43,9 @@ try {
     if (-not $SkipBuild) {
         if ($buildFE) {
             if ($SkipWebBuild) {
-                Write-Host "`n[0/5] Bỏ qua Build Frontend (Web) cục bộ (-SkipWebBuild)..." -ForegroundColor Yellow
+                Write-Host "`n[0/5] Bo qua Build Frontend (Web) cuc bo (-SkipWebBuild)..." -ForegroundColor Yellow
             } else {
-                Write-Host "`n[0/5] Build Frontend CRM Platform (Web) cục bộ với Scope = crm_platform..." -ForegroundColor Cyan
+                Write-Host "`n[0/5] Build Frontend CRM Platform (Web) cuc bo voi Scope = crm_platform..." -ForegroundColor Cyan
                 $env:NODE_OPTIONS = "--max-old-space-size=4096"
                 $env:VITE_APP_SCOPE = "crm_platform"
                 $env:VITE_APP_NAME = "ViOne CRM Platform"
@@ -59,21 +59,21 @@ try {
                 if ($InstallDeps -or (-not (Test-Path "node_modules"))) {
                     Invoke-CheckedCommand -Description "NPM Install" -Action { npm install }
                 } else {
-                    Write-Host "  -> Bỏ qua 'npm install' (đã có node_modules). Dùng -InstallDeps nếu muốn tải lại." -ForegroundColor DarkGray
+                    Write-Host "  -> Bo qua 'npm install' (da co node_modules). Dung -InstallDeps neu muon tai lai." -ForegroundColor DarkGray
                 }
 
                 Invoke-CheckedCommand -Description "Build Web CRM Platform" -Action { npm run build --prefix apps/vione_app_fe }
             }
         }
 
-        Write-Host "`n[1/5] Khởi tạo quy trình Build Docker Images cho Web CRM Platform CEO 1983..." -ForegroundColor Cyan
+        Write-Host "`n[1/5] Khoi tao quy trinh Build Docker Images cho Web CRM Platform CEO 1983..." -ForegroundColor Cyan
         if ($buildBE) {
-            Invoke-CheckedCommand -Description "Xây dựng Backend Image (crm-backend)" -Action {
+            Invoke-CheckedCommand -Description "Xay dung Backend Image (crm-backend)" -Action {
                 docker build -t crm-backend:latest -f Dockerfile.backend .
             }
         }
         if ($buildFE) {
-            Invoke-CheckedCommand -Description "Xây dựng Frontend Image (crm-frontend)" -Action {
+            Invoke-CheckedCommand -Description "Xay dung Frontend Image (crm-frontend)" -Action {
                 docker build --no-cache -t crm-frontend:latest -f "$DEPLOY_DIR/Dockerfile.frontend" .
             }
         }
@@ -90,40 +90,40 @@ try {
             }
 
             if (Test-Path $gitGzip) {
-                Write-Host "  -> Streaming trực tiếp 'docker save | gzip -1' vào $OutGzPath..." -ForegroundColor Cyan
+                Write-Host "  -> Streaming truc tiep 'docker save | gzip -1' vao $OutGzPath..." -ForegroundColor Cyan
                 cmd.exe /c "docker save $ImageName | `"$gitGzip`" -1 > `"$OutGzPath`""
                 if ($LASTEXITCODE -ne 0 -or (-not (Test-Path $OutGzPath))) {
-                    throw "Streaming Docker save thất bại cho $ImageName"
+                    throw "Streaming Docker save that bai cho $ImageName"
                 }
             } else {
-                Write-Host "  -> Nén Node Stream vào $OutGzPath..." -ForegroundColor Cyan
+                Write-Host "  -> Nen Node Stream vao $OutGzPath..." -ForegroundColor Cyan
                 $nodeCompress = 'const fs = require("fs"); const zlib = require("zlib"); const { spawn } = require("child_process"); const proc = spawn("docker", ["save", process.argv[1]], { stdio: ["ignore", "pipe", "inherit"] }); const out = fs.createWriteStream(process.argv[2]); proc.stdout.pipe(zlib.createGzip({ level: 1 })).pipe(out); proc.on("close", (code) => { if (code !== 0) process.exit(code); });'
                 node -e $nodeCompress $ImageName $OutGzPath
             }
         }
 
-        Write-Host "`n[2/5] Xuất và nén Gzip (.tar.gz) tốc độ cao cho Web CRM Platform..." -ForegroundColor Cyan
+        Write-Host "`n[2/5] Xuat va nen Gzip (.tar.gz) toc do cao cho Web CRM Platform..." -ForegroundColor Cyan
         if ($buildBE) {
-            Invoke-CheckedCommand -Description "Xuất & Nén Backend Image (.tar.gz)" -Action {
+            Invoke-CheckedCommand -Description "Xuat & Nen Backend Image (.tar.gz)" -Action {
                 Save-And-Compress-DockerImage -ImageName "crm-backend:latest" -OutGzPath "crm-backend.tar.gz"
             }
         }
         if ($buildFE) {
-            Invoke-CheckedCommand -Description "Xuất & Nén Frontend Image (.tar.gz)" -Action {
+            Invoke-CheckedCommand -Description "Xuat & Nen Frontend Image (.tar.gz)" -Action {
                 Save-And-Compress-DockerImage -ImageName "crm-frontend:latest" -OutGzPath "crm-frontend.tar.gz"
             }
         }
     } else {
-        Write-Host "`n[1-2/5] BỎ QUA quy trình Build và đóng gói (SkipBuild)..." -ForegroundColor Yellow
+        Write-Host "`n[1-2/5] BO QUA quy trinh Build va dong goi (SkipBuild)..." -ForegroundColor Yellow
     }
 
-    Write-Host "`n[3/5] Khởi tạo thư mục và đồng bộ tệp tin độc lập lên máy chủ hạ tầng ($SERVER_IP)..." -ForegroundColor Cyan
+    Write-Host "`n[3/5] Khoi tao thu muc va dong bo tep tin doc lap len may chu ha tang ($SERVER_IP)..." -ForegroundColor Cyan
 
-    Invoke-CheckedCommand -Description "Tạo thư mục ~/crm trên server" -Action {
+    Invoke-CheckedCommand -Description "Tao thu muc ~/crm tren server" -Action {
         ssh "${SERVER_USER}@${SERVER_IP}" "mkdir -p $REMOTE_PATH"
     }
 
-    # Đảm bảo có tệp tin .env.crm cục bộ
+    # Dam bao co tep tin .env.crm cuc bo
     Copy-Item "$DEPLOY_DIR/.env.production" "$DEPLOY_DIR/.env.crm" -Force -ErrorAction SilentlyContinue
 
     $filesToUpload = @(
@@ -137,11 +137,11 @@ try {
     }
 
     $scpArgs = $filesToUpload + "${SERVER_USER}@${SERVER_IP}:${REMOTE_PATH}/"
-    Invoke-CheckedCommand -Description "Chuyển giao tệp tin qua SCP vào ~/crm" -Action {
+    Invoke-CheckedCommand -Description "Chuyen giao tep tin qua SCP vao ~/crm" -Action {
         scp @scpArgs
     }
 
-    Write-Host "`n[4/5] Kích hoạt Docker Compose riêng cho Web CRM Platform từ xa thông qua SSH..." -ForegroundColor Cyan
+    Write-Host "`n[4/5] Kich hoat Docker Compose rieng cho Web CRM Platform tu xa thong qua SSH..." -ForegroundColor Cyan
 
     $remoteLoadCmd = ""
     if ($buildBE -and (Test-Path "crm-backend.tar.gz")) {
@@ -153,27 +153,27 @@ try {
 
     $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env.crm 2>/dev/null || true; touch .env.crm; sed -i 's/\r//g' .env.crm docker-compose.yml; docker network create vione-network 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop 2>/dev/null || true; docker rm -f crm-frontend-prod crm-backend-prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate"
 
-    Invoke-CheckedCommand -Description "Thực thi cấu trúc container độc lập Web CRM Platform" -Action {
+    Invoke-CheckedCommand -Description "Thuc thi cau truc container doc lap Web CRM Platform" -Action {
         ssh "${SERVER_USER}@${SERVER_IP}" $REMOTE_CMD
     }
 
-    Write-Host "`n[5/5] Dọn dẹp bộ nhớ đệm tạm thời tại máy cục bộ..." -ForegroundColor Cyan
+    Write-Host "`n[5/5] Don dep bo nho dem tam thoi tai may cuc bo..." -ForegroundColor Cyan
     Remove-Item crm-backend.tar.gz, crm-frontend.tar.gz, crm-backend.tar, crm-frontend.tar -ErrorAction SilentlyContinue
 
     if ($EnableHttps) {
-        Write-Host "`n[BỔ SUNG] Đồng bộ Nginx Reverse Proxy SSL / HTTPS..." -ForegroundColor Magenta
+        Write-Host "`n[BO SUNG] Dong bo Nginx Reverse Proxy SSL / HTTPS..." -ForegroundColor Magenta
         & "$DEPLOY_DIR/../ssl/deploy-ssl.ps1"
     }
 
     Write-Host "=================================================================" -ForegroundColor Green
-    Write-Host "TRIỂN KHAI ĐỘC LẬP WEB CRM PLATFORM VÀ LANDING CEO 1983 THÀNH CÔNG!" -ForegroundColor Green
+    Write-Host "TRIEN KHAI DOC LAP WEB CRM PLATFORM VA LANDING CEO 1983 THANH CONG!" -ForegroundColor Green
     if ($EnableHttps) {
-        Write-Host "Cổng Frontend CRM (HTTPS): https://${SERVER_IP}:5443" -ForegroundColor Yellow
-        Write-Host "Cổng Frontend CRM (HTTP) : http://${SERVER_IP}:5004" -ForegroundColor DarkGray
+        Write-Host "Cong Frontend CRM (HTTPS): https://${SERVER_IP}:5443" -ForegroundColor Yellow
+        Write-Host "Cong Frontend CRM (HTTP) : http://${SERVER_IP}:5004" -ForegroundColor DarkGray
     } else {
-        Write-Host "Cổng Frontend CRM : http://${SERVER_IP}:5004" -ForegroundColor Yellow
+        Write-Host "Cong Frontend CRM : http://${SERVER_IP}:5004" -ForegroundColor Yellow
     }
-    Write-Host "Cổng Backend CRM  : http://${SERVER_IP}:5005" -ForegroundColor Yellow
+    Write-Host "Cong Backend CRM  : http://${SERVER_IP}:5005" -ForegroundColor Yellow
     Write-Host "=================================================================" -ForegroundColor Green
 } finally {
     Pop-Location

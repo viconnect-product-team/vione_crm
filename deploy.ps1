@@ -1,4 +1,4 @@
-param (
+﻿param (
     [switch]$SkipBuild,
     [switch]$SkipWebBuild,
     [switch]$FrontendOnly,
@@ -16,7 +16,7 @@ $OutputEncoding = [System.Text.Encoding]::UTF8
 chcp 65001 > $null
 
 # =========================================================================
-# VIONE STANDALONE DEPLOYMENT SCRIPT (HTTPS CỔNG 5445)
+# VIONE STANDALONE DEPLOYMENT SCRIPT (HTTPS CONG 5445)
 # Trien khai he thong doc lap ViOne Connect & Backend
 # =========================================================================
 

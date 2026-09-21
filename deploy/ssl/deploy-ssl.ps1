@@ -1,4 +1,4 @@
-param (
+﻿param (
     [string]$ServerIp = "14.225.217.232",
     [string]$ServerUser = "root",
     [string]$RemotePath = "~/ssl-proxy"
