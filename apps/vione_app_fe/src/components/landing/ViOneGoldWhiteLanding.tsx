@@ -24,18 +24,27 @@ import {
   X,
   Award,
   Zap,
+  Radio,
+  Fingerprint,
+  Check,
 } from "lucide-react";
 
 export function ViOneGoldWhiteLanding() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"app" | "crm" | "nfc">("app");
   const [typingIndex, setTypingIndex] = useState(0);
+  const [nfcSimActive, setNfcSimActive] = useState(false);
+  const [nfcTapped, setNfcTapped] = useState(false);
+
+  // 3D Card Tilt state
+  const [cardTilt, setCardTilt] = useState({ rotateX: 0, rotateY: 0, glareX: 50, glareY: 50 });
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const morphingWords = [
-    "Doanh Nhân Tinh Hoa",
+    "Doanh Nhân Tinh Hoa 5.0",
     "Hệ Thống CRM Hợp Nhất",
-    "Danh Thiếp Số 1-Chạm",
-    "Giao Thương B2B 5.0",
+    "Danh Thiếp Titanium NFC 1-Chạm",
+    "Hệ Điều Hành Giao Thương B2B",
   ];
 
   // Rotate hero dynamic word
@@ -46,39 +55,83 @@ export function ViOneGoldWhiteLanding() {
     return () => clearInterval(timer);
   }, [morphingWords.length]);
 
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
+    const glareX = (x / rect.width) * 100;
+    const glareY = (y / rect.height) * 100;
+    setCardTilt({ rotateX, rotateY, glareX, glareY });
+  };
+
+  const handleCardMouseLeave = () => {
+    setCardTilt({ rotateX: 0, rotateY: 0, glareX: 50, glareY: 50 });
+  };
+
+  const triggerNfcSimulation = () => {
+    setNfcSimActive(true);
+    setNfcTapped(false);
+    setTimeout(() => {
+      setNfcTapped(true);
+      setTimeout(() => {
+        setNfcSimActive(false);
+      }, 3500);
+    }, 1200);
+  };
+
   return (
-    <div className="min-h-screen bg-[#FCFBF8] text-neutral-900 font-sans selection:bg-[#EBD28F] selection:text-black overflow-x-hidden">
-      {/* Top Banner Thông Báo */}
-      <div className="bg-gradient-to-r from-[#F9E9BE] via-[#E2BA60] to-[#DFB76C] text-black text-xs font-semibold py-2 px-4 text-center tracking-wide flex items-center justify-center gap-2 shadow-sm">
-        <Sparkles className="w-3.5 h-3.5 text-neutral-900 animate-pulse" />
-        <span>CHÍNH THỨC RA MẮT HỆ SINH THÁI DOANH NGHIỆP VIONE 5.0 & NỀN TẢNG CRM CÔ LẬP</span>
+    <div className="min-h-screen bg-[#FCFBF8] text-neutral-900 font-sans selection:bg-[#EBD28F] selection:text-black overflow-x-hidden relative">
+      {/* 5.0 Ambient Cyber-Gold Glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[550px] bg-gradient-to-b from-amber-200/40 via-amber-100/20 to-transparent blur-3xl pointer-events-none rounded-full" />
+      <div className="absolute top-80 right-[-150px] w-[500px] h-[500px] bg-amber-300/15 blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute top-[800px] left-[-150px] w-[500px] h-[500px] bg-blue-400/10 blur-3xl rounded-full pointer-events-none" />
+
+      {/* Top Banner Thông Báo 5.0 */}
+      <div className="bg-gradient-to-r from-[#0C121E] via-[#162032] to-[#0C121E] text-white text-xs font-semibold py-2.5 px-4 text-center tracking-wide flex items-center justify-center gap-2 border-b border-amber-500/30 relative z-50 shadow-md">
+        <span className="flex h-2 w-2 relative">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+        </span>
+        <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 bg-clip-text text-transparent font-bold">
+          VIONE PLATFORM 5.0
+        </span>
+        <span className="text-slate-400 hidden sm:inline">•</span>
+        <span className="text-slate-200 hidden sm:inline">
+          HỆ ĐIỀU HÀNH KẾT NỐI DOANH NGHIỆP & CRM 163 BẢNG DỮ LIỆU CÔ LẬP
+        </span>
         <a
           href="/connect-app"
-          className="hidden sm:inline-flex items-center gap-1 underline underline-offset-2 hover:opacity-80 transition"
+          className="ml-2 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[#DFB76C] to-[#B8860B] px-3 py-0.5 text-[11px] font-bold text-slate-950 hover:brightness-110 transition shadow-sm"
         >
           Trải nghiệm ngay <ArrowRight className="w-3 h-3" />
         </a>
       </div>
 
-      {/* Navigation Bar */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#EFE7D8] transition-all">
+      {/* Navigation Bar 5.0 */}
+      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-xl border-b border-[#EFE7D8]/80 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Brand Logo */}
-          <a href="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FDF6E2] via-[#E6C687] to-[#D4AF37] p-0.5 shadow-md shadow-amber-200/50 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-              <div className="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
-                <span className="font-extrabold text-xl bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#8B6508] bg-clip-text text-transparent">
+          <a href="/" className="flex items-center gap-3.5 group">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#FDF6E2] via-[#E6C687] to-[#D4AF37] p-[1.5px] shadow-md shadow-amber-200/50 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/20 to-transparent" />
+                <span className="font-black text-xl bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] bg-clip-text text-transparent">
                   V
                 </span>
               </div>
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-bold text-xl tracking-tight text-neutral-900">
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-xl tracking-tight text-neutral-900">
                   ViOne
                 </span>
-                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100/80 text-amber-900 border border-amber-300/60 uppercase tracking-wider">
-                  Connect
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 to-amber-600/20 text-amber-900 border border-amber-400/40 uppercase tracking-widest">
+                  OS 5.0
                 </span>
               </div>
               <p className="text-[11px] text-neutral-500 font-medium tracking-wide">
@@ -88,39 +141,39 @@ export function ViOneGoldWhiteLanding() {
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-neutral-700">
+          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-700">
             <a
               href="#ecosystem"
-              className="hover:text-amber-700 transition duration-200"
+              className="hover:text-amber-700 transition duration-200 flex items-center gap-1.5"
             >
-              Hệ Sinh Thái
+              <span>Hệ Sinh Thái</span>
             </a>
             <a
               href="#crm"
-              className="hover:text-amber-700 transition duration-200 flex items-center gap-1"
+              className="hover:text-amber-700 transition duration-200 flex items-center gap-1.5"
             >
-              Quản Trị CRM
-              <span className="text-[9px] font-bold bg-amber-100 text-amber-800 px-1 rounded">
-                Mới
+              <span>Quản Trị CRM</span>
+              <span className="text-[9.5px] font-extrabold bg-amber-100 text-amber-900 px-1.5 py-0.2 rounded-full border border-amber-300/60">
+                163 Tables
               </span>
             </a>
             <a
               href="#mobile-app"
-              className="hover:text-amber-700 transition duration-200"
+              className="hover:text-amber-700 transition duration-200 flex items-center gap-1.5"
             >
-              Mobile App
+              <span>Mobile App</span>
             </a>
             <a
               href="#nfc-card"
-              className="hover:text-amber-700 transition duration-200"
+              className="hover:text-amber-700 transition duration-200 flex items-center gap-1.5"
             >
-              Danh Thiếp NFC
+              <span>Danh Thiếp NFC</span>
             </a>
             <a
-              href="#features"
-              className="hover:text-amber-700 transition duration-200"
+              href="#telemetry"
+              className="hover:text-amber-700 transition duration-200 flex items-center gap-1.5"
             >
-              Tính Năng
+              <span>Hạ Tầng 5.0</span>
             </a>
           </nav>
 
@@ -128,24 +181,24 @@ export function ViOneGoldWhiteLanding() {
           <div className="hidden lg:flex items-center gap-3">
             <a
               href="/?portal=crm"
-              className="px-4 py-2 text-sm font-semibold text-neutral-800 bg-neutral-100/90 hover:bg-neutral-200/80 rounded-xl border border-neutral-200/80 transition shadow-sm flex items-center gap-1.5"
+              className="px-4 py-2.5 text-sm font-bold text-neutral-800 bg-neutral-100/90 hover:bg-neutral-200/80 rounded-xl border border-neutral-200/80 transition shadow-xs flex items-center gap-2"
             >
               <Database className="w-4 h-4 text-amber-700" />
-              Đăng Nhập CRM
+              <span>Đăng Nhập CRM</span>
             </a>
             <a
               href="/connect-app"
-              className="px-5 py-2.5 text-sm font-bold text-neutral-900 bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] hover:brightness-105 rounded-xl border border-amber-300/80 shadow-md shadow-amber-300/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
+              className="px-5 py-2.5 text-sm font-bold text-neutral-950 bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] hover:brightness-105 rounded-xl border border-amber-300/80 shadow-md shadow-amber-300/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
             >
-              <Smartphone className="w-4 h-4 text-neutral-900" />
-              Vào ViOne App
+              <Smartphone className="w-4 h-4 text-neutral-950" />
+              <span>Vào ViOne App</span>
             </a>
           </div>
 
           {/* Mobile menu toggle */}
           <button
             onClick={() => setMobileNavOpen(!mobileNavOpen)}
-            className="md:hidden p-2 rounded-lg text-neutral-700 hover:bg-neutral-100"
+            className="md:hidden p-2 rounded-xl text-neutral-700 hover:bg-neutral-100 transition"
           >
             {mobileNavOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -153,45 +206,45 @@ export function ViOneGoldWhiteLanding() {
 
         {/* Mobile Dropdown Menu */}
         {mobileNavOpen && (
-          <div className="md:hidden border-b border-[#EFE7D8] bg-white px-4 pt-3 pb-6 space-y-3 animate-in slide-in-from-top duration-200">
+          <div className="md:hidden border-b border-[#EFE7D8] bg-white/95 backdrop-blur-xl px-5 pt-3 pb-6 space-y-3 animate-in slide-in-from-top duration-200">
             <a
               href="#ecosystem"
               onClick={() => setMobileNavOpen(false)}
-              className="block py-2 text-base font-medium text-neutral-800 hover:text-amber-700"
+              className="block py-2 text-base font-semibold text-neutral-800 hover:text-amber-700"
             >
-              Hệ Sinh Thái ViOne
+              Hệ Sinh Thái ViOne 5.0
             </a>
             <a
               href="#crm"
               onClick={() => setMobileNavOpen(false)}
-              className="block py-2 text-base font-medium text-neutral-800 hover:text-amber-700"
+              className="block py-2 text-base font-semibold text-neutral-800 hover:text-amber-700"
             >
-              Hệ Thống Quản Trị CRM
+              Hệ Thống CRM Cô Lập (163 Tables)
             </a>
             <a
               href="#mobile-app"
               onClick={() => setMobileNavOpen(false)}
-              className="block py-2 text-base font-medium text-neutral-800 hover:text-amber-700"
+              className="block py-2 text-base font-semibold text-neutral-800 hover:text-amber-700"
             >
-              Ứng Dụng Di Động
+              Ứng Dụng Di Động ViOne Connect
             </a>
             <a
               href="#nfc-card"
               onClick={() => setMobileNavOpen(false)}
-              className="block py-2 text-base font-medium text-neutral-800 hover:text-amber-700"
+              className="block py-2 text-base font-semibold text-neutral-800 hover:text-amber-700"
             >
-              Danh Thiếp Thông Minh NFC
+              Danh Thiếp Titanium NFC 1-Chạm
             </a>
-            <div className="pt-2 flex flex-col gap-2">
+            <div className="pt-2 flex flex-col gap-2.5">
               <a
                 href="/?portal=crm"
-                className="w-full text-center py-2.5 rounded-xl border border-neutral-300 font-semibold text-sm text-neutral-800 bg-neutral-50"
+                className="w-full text-center py-2.5 rounded-xl border border-neutral-300 font-bold text-sm text-neutral-800 bg-neutral-50"
               >
                 Vào Hệ Thống CRM
               </a>
               <a
                 href="/connect-app"
-                className="w-full text-center py-3 rounded-xl font-bold text-sm text-neutral-900 bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] shadow-md shadow-amber-300/30"
+                className="w-full text-center py-3 rounded-xl font-bold text-sm text-neutral-950 bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] shadow-md shadow-amber-300/30"
               >
                 Mở ViOne Connect App
               </a>
@@ -200,25 +253,24 @@ export function ViOneGoldWhiteLanding() {
         )}
       </header>
 
-      {/* Hero Section */}
+      {/* Hero Section 5.0 */}
       <section className="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
-        {/* Subtle Ambient Gold Glow Circles (Light Background) */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[450px] bg-gradient-to-b from-amber-100/60 via-amber-50/30 to-transparent blur-3xl pointer-events-none rounded-full" />
-        <div className="absolute top-32 right-[-100px] w-96 h-96 bg-amber-200/20 blur-3xl rounded-full pointer-events-none" />
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto space-y-6">
-            {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[#E8D4A2] shadow-sm text-xs font-semibold text-neutral-800 hover:border-amber-400 transition cursor-default">
-              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
-              <span className="font-bold text-amber-900">VIONE 5.0</span>
+            {/* 5.0 Futuristic Pill Badge */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-[#E8D4A2] shadow-sm text-xs font-bold text-neutral-800 hover:border-amber-400 transition cursor-default">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-600"></span>
+              </span>
+              <span className="font-black tracking-wider text-amber-900">VIONE 5.0 NEXT-GEN</span>
               <span className="text-neutral-300">•</span>
-              <span>HỆ ĐIỀU HÀNH KẾT NỐI DOANH NGHIỆP & HIỆP HỘI</span>
+              <span className="text-neutral-600 font-semibold">HỆ ĐIỀU HÀNH KẾT NỐI KINH DOANH & CRM CÔ LẬP</span>
             </div>
 
-            {/* Main Headline with Morphing Dynamic Word & Gold Shimmer */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-neutral-900 tracking-tight leading-[1.18]">
-              Nền Tảng Hợp Nhất Dành Cho{" "}
+            {/* Main Headline with Kinetic Streaming Text */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-neutral-900 tracking-tight leading-[1.18]">
+              Nền Tảng Hợp Nhất Thế Hệ Mới Cho{" "}
               <span className="block mt-2 min-h-[1.25em]">
                 <span className="inline-block relative">
                   <span className="bg-gradient-to-r from-[#8C6207] via-[#D4AF37] to-[#B8860B] bg-clip-text text-transparent transition-all duration-500 drop-shadow-sm font-black">
@@ -231,97 +283,116 @@ export function ViOneGoldWhiteLanding() {
 
             {/* Subtitle */}
             <p className="text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed font-normal">
-              Giải pháp kép độc bản: <strong className="text-neutral-900 font-semibold">ViOne Connect</strong> (Mạng xã hội doanh nhân & danh thiếp số NFC) kết hợp cùng <strong className="text-neutral-900 font-semibold">Enterprise CRM</strong> (Hệ quản trị 163 bảng dữ liệu cô lập).
+              Giải pháp kép độc bản: <strong className="text-neutral-900 font-semibold">ViOne Connect</strong> (Mạng xã hội doanh nhân & danh thiếp Titanium NFC 1-chạm) kết hợp cùng <strong className="text-neutral-900 font-semibold">Enterprise CRM</strong> (Hệ quản trị 163 bảng dữ liệu cô lập an toàn).
             </p>
 
             {/* Hero CTAs */}
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a
                 href="/connect-app"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-base text-neutral-900 bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] hover:brightness-105 shadow-lg shadow-amber-300/40 border border-amber-300 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 group"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl font-black text-base text-neutral-950 bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] hover:brightness-105 shadow-xl shadow-amber-300/40 border border-amber-300 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2.5 group"
               >
-                <Smartphone className="w-5 h-5 text-neutral-900 group-hover:scale-110 transition" />
+                <Smartphone className="w-5 h-5 text-neutral-950 group-hover:scale-110 transition" />
                 <span>Trải Nghiệm ViOne Connect</span>
-                <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition" />
+                <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1.5 transition" />
               </a>
 
               <a
                 href="/?portal=crm"
-                className="w-full sm:w-auto px-8 py-4 rounded-xl font-semibold text-base text-neutral-800 bg-white hover:bg-neutral-50 shadow-md shadow-neutral-200/60 border border-neutral-200 transition-all flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-8 py-4 rounded-2xl font-bold text-base text-neutral-800 bg-white hover:bg-neutral-50 shadow-lg shadow-neutral-200/60 border border-neutral-200 transition-all flex items-center justify-center gap-2.5"
               >
                 <Database className="w-5 h-5 text-amber-700" />
-                <span>Hệ Thống Quản Trị CRM</span>
+                <span>Quản Trị CRM (163 Tables)</span>
               </a>
             </div>
 
-            {/* Highlights Bar */}
-            <div className="pt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
-              <div className="bg-white/95 p-4 rounded-2xl border border-[#EFE5D0] shadow-sm hover:border-amber-300 transition">
-                <div className="text-2xl font-black text-neutral-900 tracking-tight">163+</div>
-                <div className="text-xs text-neutral-500 font-medium mt-0.5">Bảng Dữ Liệu CRM Độc Lập</div>
+            {/* Live Telemetry Bar 5.0 */}
+            <div id="telemetry" className="pt-6 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
+              <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-[#EFE5D0] shadow-xs hover:border-amber-400/60 transition">
+                <div className="flex items-center justify-between text-neutral-400 text-xs font-semibold">
+                  <span>HẠ TẦNG CRM</span>
+                  <Database className="w-3.5 h-3.5 text-amber-700" />
+                </div>
+                <div className="text-2xl font-black text-neutral-900 tracking-tight mt-1">163+</div>
+                <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">Bảng Schemas Cô Lập</div>
               </div>
-              <div className="bg-white/95 p-4 rounded-2xl border border-[#EFE5D0] shadow-sm hover:border-amber-300 transition">
-                <div className="text-2xl font-black text-neutral-900 tracking-tight">1-Chạm</div>
-                <div className="text-xs text-neutral-500 font-medium mt-0.5">Danh Thiếp Titanium NFC</div>
+
+              <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-[#EFE5D0] shadow-xs hover:border-amber-400/60 transition">
+                <div className="flex items-center justify-between text-neutral-400 text-xs font-semibold">
+                  <span>DANH THIẾP SỐ</span>
+                  <Fingerprint className="w-3.5 h-3.5 text-amber-700" />
+                </div>
+                <div className="text-2xl font-black text-neutral-900 tracking-tight mt-1">1-Chạm</div>
+                <div className="text-[11px] text-amber-700 font-semibold mt-0.5">Titanium NFC NTAG216</div>
               </div>
-              <div className="bg-white/95 p-4 rounded-2xl border border-[#EFE5D0] shadow-sm hover:border-amber-300 transition">
-                <div className="text-2xl font-black text-neutral-900 tracking-tight">100%</div>
-                <div className="text-xs text-neutral-500 font-medium mt-0.5">Bảo Mật SSL HTTPS 5445</div>
+
+              <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-[#EFE5D0] shadow-xs hover:border-amber-400/60 transition">
+                <div className="flex items-center justify-between text-neutral-400 text-xs font-semibold">
+                  <span>MÃ HÓA KẾT NỐI</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                </div>
+                <div className="text-2xl font-black text-neutral-900 tracking-tight mt-1">SSL 5445</div>
+                <div className="text-[11px] text-emerald-600 font-semibold mt-0.5">Cổng Bảo Mật HTTPS</div>
               </div>
-              <div className="bg-white/95 p-4 rounded-2xl border border-[#EFE5D0] shadow-sm hover:border-amber-300 transition">
-                <div className="text-2xl font-black text-neutral-900 tracking-tight">2 Nền Tảng</div>
-                <div className="text-xs text-neutral-500 font-medium mt-0.5">Android APK & iOS IPA</div>
+
+              <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl border border-[#EFE5D0] shadow-xs hover:border-amber-400/60 transition">
+                <div className="flex items-center justify-between text-neutral-400 text-xs font-semibold">
+                  <span>ĐỒNG BỘ ỨNG DỤNG</span>
+                  <Radio className="w-3.5 h-3.5 text-blue-600" />
+                </div>
+                <div className="text-2xl font-black text-neutral-900 tracking-tight mt-1">Realtime</div>
+                <div className="text-[11px] text-blue-600 font-semibold mt-0.5">Android APK & iOS IPA</div>
               </div>
             </div>
           </div>
 
-          {/* Interactive Card / Device Preview */}
+          {/* Interactive 5.0 Cockpit Showcase */}
           <div className="mt-14 relative max-w-5xl mx-auto">
-            <div className="rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-[#F2DFAC] via-[#DFB76C]/30 to-transparent border border-amber-200/80 shadow-2xl shadow-amber-200/20">
-              <div className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/70 overflow-hidden relative">
-                {/* Tabs switch */}
+            <div className="rounded-[32px] p-2 sm:p-3 bg-gradient-to-b from-[#F2DFAC] via-[#DFB76C]/30 to-transparent border border-amber-300/80 shadow-2xl shadow-amber-200/20">
+              <div className="bg-white rounded-[26px] p-6 sm:p-8 border border-neutral-200/70 overflow-hidden relative">
+                {/* 5.0 Tabs switch */}
                 <div className="flex flex-wrap items-center justify-center gap-2 pb-6 border-b border-neutral-100">
                   <button
                     onClick={() => setActiveTab("app")}
-                    className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${
+                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                       activeTab === "app"
-                        ? "bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] text-neutral-900 shadow-md shadow-amber-200/50"
-                        : "text-neutral-600 hover:text-neutral-900 bg-neutral-100"
+                        ? "bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] text-neutral-950 shadow-md shadow-amber-200/50"
+                        : "text-neutral-600 hover:text-neutral-900 bg-neutral-100/80"
                     }`}
                   >
                     1. Mạng Xã Hội ViOne Connect
                   </button>
                   <button
                     onClick={() => setActiveTab("crm")}
-                    className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${
+                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                       activeTab === "crm"
-                        ? "bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] text-neutral-900 shadow-md shadow-amber-200/50"
-                        : "text-neutral-600 hover:text-neutral-900 bg-neutral-100"
+                        ? "bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] text-neutral-950 shadow-md shadow-amber-200/50"
+                        : "text-neutral-600 hover:text-neutral-900 bg-neutral-100/80"
                     }`}
                   >
-                    2. Web CRM Quản Trị Hợp Nhất
+                    2. Web CRM Quản Trị Hợp Nhất (163 Tables)
                   </button>
                   <button
                     onClick={() => setActiveTab("nfc")}
-                    className={`px-5 py-2 rounded-xl text-sm font-bold transition-all ${
+                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                       activeTab === "nfc"
-                        ? "bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] text-neutral-900 shadow-md shadow-amber-200/50"
-                        : "text-neutral-600 hover:text-neutral-900 bg-neutral-100"
+                        ? "bg-gradient-to-r from-[#FDEABF] via-[#E2BA60] to-[#DFB76C] text-neutral-950 shadow-md shadow-amber-200/50"
+                        : "text-neutral-600 hover:text-neutral-900 bg-neutral-100/80"
                     }`}
                   >
-                    3. Danh Thiếp Số Titanium NFC
+                    3. Danh Thiếp Số Titanium NFC 3D
                   </button>
                 </div>
 
                 {/* Tab 1: App View */}
                 {activeTab === "app" && (
-                  <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div className="space-y-4 text-left">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
+                  <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
+                    <div className="space-y-4">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
                         <Smartphone className="w-3.5 h-3.5 text-amber-700" />
-                        GIAO THƯƠNG DOANH NHÂN DI ĐỘNG
+                        GIAO THƯƠNG DOANH NHÂN DI ĐỘNG 5.0
                       </div>
-                      <h3 className="text-2xl sm:text-3xl font-bold text-neutral-900">
+                      <h3 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
                         Giao Thoa Giữa Mạng Xã Hội & Sàn B2B 5.0
                       </h3>
                       <p className="text-sm text-neutral-600 leading-relaxed">
@@ -341,7 +412,7 @@ export function ViOneGoldWhiteLanding() {
                           <span>Hỗ trợ song song Android APK & iOS TestFlight chính thức</span>
                         </li>
                       </ul>
-                      <div className="pt-2">
+                      <div className="pt-3">
                         <a
                           href="/connect-app"
                           className="inline-flex items-center gap-2 text-sm font-bold text-amber-900 hover:text-amber-700 underline underline-offset-4"
@@ -351,26 +422,35 @@ export function ViOneGoldWhiteLanding() {
                       </div>
                     </div>
 
-                    <div className="relative flex items-center justify-center p-4 bg-gradient-to-b from-neutral-50 to-amber-50/30 rounded-2xl border border-amber-100">
-                      <div className="w-64 h-[440px] bg-neutral-900 rounded-[38px] p-3 shadow-2xl border-4 border-[#D4AF37] relative overflow-hidden flex flex-col justify-between">
+                    <div className="relative flex items-center justify-center p-6 bg-gradient-to-b from-neutral-50 to-amber-50/30 rounded-3xl border border-amber-100">
+                      <div className="w-68 h-[450px] bg-neutral-950 rounded-[40px] p-3 shadow-2xl border-4 border-[#D4AF37] relative overflow-hidden flex flex-col justify-between">
                         {/* Mockup screen inside */}
-                        <div className="w-full h-full bg-neutral-950 rounded-[28px] overflow-hidden text-white flex flex-col justify-between p-4 text-left">
-                          <div>
-                            <div className="flex justify-between items-center text-[11px] text-amber-400 font-bold mb-3">
-                              <span>ViOne Connect</span>
-                              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <div className="w-full h-full bg-slate-950 rounded-[30px] overflow-hidden text-white flex flex-col justify-between p-4 text-left relative">
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-center text-[11px] text-amber-300 font-bold border-b border-white/10 pb-2">
+                              <span className="flex items-center gap-1.5">
+                                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                                ViOne Connect 5.0
+                              </span>
+                              <span className="text-[10px] text-slate-400">128 Active Deals</span>
                             </div>
-                            <div className="text-sm font-bold">Mạng Xã Hội Doanh Nhân</div>
-                            <div className="text-[11px] text-neutral-400 mt-1">Cộng đồng C-Level kết nối giao thương</div>
-                            <div className="mt-4 p-2.5 rounded-xl bg-neutral-900/90 border border-amber-500/30 space-y-1.5">
-                              <div className="text-[10px] text-amber-300 font-semibold">CƠ HỘI MỚI</div>
-                              <div className="text-xs font-medium">Hợp tác cung ứng vật tư F&B miền Bắc</div>
-                              <div className="text-[10px] text-emerald-400 font-bold">Ngân sách: 2.5 Tỷ VNĐ</div>
+                            <div className="text-sm font-black text-white">Mạng Xã Hội Doanh Nhân</div>
+                            <div className="text-[11px] text-slate-400">Cộng đồng C-Level kết nối giao thương</div>
+                            <div className="p-3 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-amber-300 uppercase">CƠ HỘI ĐỘC QUYỀN</span>
+                                <span className="text-[10px] font-black text-emerald-400">2.5 TỶ VNĐ</span>
+                              </div>
+                              <div className="text-xs font-semibold text-slate-200">Hợp tác cung ứng vật tư chuỗi F&B toàn quốc</div>
+                              <div className="text-[10px] text-slate-400">Đăng bởi: Tập đoàn Khang Thịnh • CEO 1983</div>
                             </div>
                           </div>
-                          <div className="text-center py-2 bg-gradient-to-r from-[#DFB76C] to-[#C29329] text-neutral-950 rounded-lg text-xs font-bold">
-                            Chạm Để Kết Nối
-                          </div>
+                          <a
+                            href="/connect-app"
+                            className="text-center py-2.5 bg-gradient-to-r from-[#DFB76C] to-[#C29329] text-neutral-950 rounded-xl text-xs font-black shadow hover:brightness-110 transition"
+                          >
+                            Chạm Để Vào Ứng Dụng
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -381,11 +461,11 @@ export function ViOneGoldWhiteLanding() {
                 {activeTab === "crm" && (
                   <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
                     <div className="space-y-4">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
                         <Database className="w-3.5 h-3.5 text-amber-700" />
                         HỆ QUẢN TRỊ DOANH NGHIỆP CÔ LẬP
                       </div>
-                      <h3 className="text-2xl sm:text-3xl font-bold text-neutral-900">
+                      <h3 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
                         Kế Thừa 100% Sức Mạnh CRM Hiệp Hội CEO 1983
                       </h3>
                       <p className="text-sm text-neutral-600 leading-relaxed">
@@ -432,57 +512,57 @@ export function ViOneGoldWhiteLanding() {
                     </div>
 
                     {/* CRM Dashboard Mockup */}
-                    <div className="p-5 bg-neutral-50 rounded-2xl border border-neutral-200 shadow-md space-y-3 font-mono text-xs">
-                      <div className="flex items-center justify-between pb-3 border-b border-neutral-200 text-neutral-600">
-                        <span className="font-bold text-neutral-800 flex items-center gap-2">
-                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                          ViOne CRM Control Panel
+                    <div className="p-6 bg-slate-950 rounded-3xl border border-slate-800 shadow-xl space-y-3 font-mono text-xs text-white">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-800 text-slate-400">
+                        <span className="font-bold text-amber-300 flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                          ViOne CRM Control Panel 5.0
                         </span>
-                        <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold">
-                          STANDALONE DB
+                        <span className="text-[10px] bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full font-bold">
+                          163 TABLES
                         </span>
                       </div>
-                      <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="p-2.5 bg-white rounded-lg border border-neutral-200">
-                          <div className="text-neutral-500 text-[10px]">Thành Viên</div>
-                          <div className="text-lg font-black text-neutral-900">31 Active</div>
+                      <div className="grid grid-cols-3 gap-2.5 text-center">
+                        <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                          <div className="text-slate-400 text-[10px]">Hội Viên</div>
+                          <div className="text-lg font-black text-amber-300 mt-0.5">31 Active</div>
                         </div>
-                        <div className="p-2.5 bg-white rounded-lg border border-neutral-200">
-                          <div className="text-neutral-500 text-[10px]">Cơ Hội B2B</div>
-                          <div className="text-lg font-black text-amber-700">128+</div>
+                        <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                          <div className="text-slate-400 text-[10px]">Cơ Hội B2B</div>
+                          <div className="text-lg font-black text-emerald-400 mt-0.5">128+ Deals</div>
                         </div>
-                        <div className="p-2.5 bg-white rounded-lg border border-neutral-200">
-                          <div className="text-neutral-500 text-[10px]">Bảng Dữ Liệu</div>
-                          <div className="text-lg font-black text-neutral-900">163 Tables</div>
+                        <div className="p-3 bg-slate-900 rounded-xl border border-slate-800">
+                          <div className="text-slate-400 text-[10px]">Database</div>
+                          <div className="text-lg font-black text-white mt-0.5">Isolated</div>
                         </div>
                       </div>
-                      <div className="bg-white p-3 rounded-lg border border-neutral-200 space-y-2 text-[11px] text-neutral-600">
-                        <div className="flex justify-between font-semibold text-neutral-800">
-                          <span>Database Schema</span>
-                          <span className="text-emerald-600">vione_standalone_app</span>
+                      <div className="bg-slate-900/80 p-3.5 rounded-xl border border-slate-800 space-y-2 text-[11px] text-slate-300">
+                        <div className="flex justify-between font-semibold">
+                          <span className="text-slate-400">Database Schema:</span>
+                          <span className="text-emerald-400 font-mono">vione_standalone_app</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Cổng CRM Web</span>
-                          <span className="font-semibold text-neutral-800">5445 (HTTPS) / 5010</span>
+                          <span className="text-slate-400">Cổng HTTPS SSL:</span>
+                          <span className="text-amber-300 font-semibold font-mono">5445 (HTTPS) / 5010</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Mạng Cô Lập</span>
-                          <span className="font-semibold text-neutral-800">vione-standalone-network</span>
+                          <span className="text-slate-400">Mạng Cô Lập:</span>
+                          <span className="text-white font-mono">vione-standalone-network</span>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Tab 3: NFC View */}
+                {/* Tab 3: NFC 3D View */}
                 {activeTab === "nfc" && (
-                  <div className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
+                  <div id="nfc-card" className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-left">
                     <div className="space-y-4">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
                         <QrCode className="w-3.5 h-3.5 text-amber-700" />
-                        DANH THIẾP TITANIUM THẾ HỆ MỚI
+                        DANH THIẾP TITANIUM THẾ HỆ 5.0
                       </div>
-                      <h3 className="text-2xl sm:text-3xl font-bold text-neutral-900">
+                      <h3 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">
                         Danh Thiếp Số NFC 1-Chạm — Khẳng Định Đẳng Cấp
                       </h3>
                       <p className="text-sm text-neutral-600 leading-relaxed">
@@ -502,49 +582,95 @@ export function ViOneGoldWhiteLanding() {
                           <span>Đồng bộ tức thì vào danh bạ điện thoại và hệ thống CRM</span>
                         </li>
                       </ul>
-                      <div className="pt-2">
+
+                      {/* Interactive Sim Button */}
+                      <div className="pt-2 flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={triggerNfcSimulation}
+                          className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition active:scale-95 cursor-pointer flex items-center gap-2 shadow"
+                        >
+                          <Fingerprint className="w-4 h-4 text-amber-400" />
+                          <span>Chạm Thử NFC (Simulate Tap)</span>
+                        </button>
                         <a
                           href="/business-cards"
-                          className="inline-flex items-center gap-2 text-sm font-bold text-amber-900 hover:text-amber-700 underline underline-offset-4"
+                          className="text-xs font-bold text-amber-900 hover:text-amber-700 underline underline-offset-4"
                         >
-                          Khám phá mẫu thẻ danh thiếp số <ArrowRight className="w-4 h-4" />
+                          Bộ sưu tập thẻ
                         </a>
                       </div>
+
+                      {nfcSimActive && (
+                        <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-xs text-amber-900 font-medium animate-in fade-in">
+                          {nfcTapped ? (
+                            <span className="text-emerald-700 font-bold flex items-center gap-1.5">
+                              <Check className="w-4 h-4 text-emerald-600 stroke-[3]" />
+                              Kết nối thành công! Đã truyền toàn bộ danh bạ và đồng bộ vào CRM ViOne.
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2">
+                              <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping" />
+                              Đang phát sóng NFC NTAG216... Chạm điện thoại vào thẻ!
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
 
-                    {/* Realistic Gold Titanium Card Representation */}
-                    <div className="flex items-center justify-center p-6">
-                      <div className="w-80 h-48 rounded-2xl bg-gradient-to-tr from-[#E6C687] via-[#FFF3D1] to-[#C89B2B] p-[1.5px] shadow-2xl shadow-amber-300/40 transform hover:rotate-1 hover:scale-105 transition-all duration-300">
-                        <div className="w-full h-full bg-gradient-to-br from-white via-[#FCFBF8] to-[#F5EAD4] rounded-[15px] p-6 flex flex-col justify-between border border-white relative overflow-hidden">
+                    {/* Interactive 3D Card Preview with Tilt */}
+                    <div
+                      ref={cardRef}
+                      onMouseMove={handleCardMouseMove}
+                      onMouseLeave={handleCardMouseLeave}
+                      style={{ perspective: "1000px" }}
+                      className="flex items-center justify-center p-6 cursor-pointer select-none"
+                    >
+                      <div
+                        style={{
+                          transform: `rotateX(${cardTilt.rotateX}deg) rotateY(${cardTilt.rotateY}deg) scale3d(1.02, 1.02, 1.02)`,
+                          transition: "transform 0.1s ease-out",
+                        }}
+                        className="w-84 sm:w-92 h-52 sm:h-56 rounded-2xl bg-gradient-to-tr from-[#E6C687] via-[#FFF3D1] to-[#C89B2B] p-[1.5px] shadow-2xl shadow-amber-300/40 relative overflow-hidden"
+                      >
+                        {/* Shifting Glare Overlay */}
+                        <div
+                          style={{
+                            background: `radial-gradient(circle at ${cardTilt.glareX}% ${cardTilt.glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`,
+                          }}
+                          className="absolute inset-0 pointer-events-none z-20"
+                        />
+
+                        <div className="w-full h-full bg-gradient-to-br from-slate-950 via-slate-900 to-black rounded-[15px] p-6 flex flex-col justify-between border border-amber-400/30 relative text-white">
                           {/* Card chip & logo */}
                           <div className="flex justify-between items-start">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#DFB76C] to-[#B8860B] flex items-center justify-center text-white font-extrabold text-sm shadow">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#DFB76C] to-[#B8860B] flex items-center justify-center text-slate-950 font-black text-base shadow">
                                 V
                               </div>
                               <div>
-                                <div className="text-xs font-black text-neutral-900">VIONE TITANIUM</div>
-                                <div className="text-[9px] text-amber-800 font-semibold tracking-wider">EXECUTIVE PASS</div>
+                                <div className="text-xs font-black tracking-wider text-amber-300">VIONE TITANIUM 5.0</div>
+                                <div className="text-[9px] text-slate-400 font-semibold tracking-widest uppercase">EXECUTIVE PASS</div>
                               </div>
                             </div>
-                            <QrCode className="w-7 h-7 text-neutral-800 opacity-80" />
+                            <QrCode className="w-7 h-7 text-amber-300 opacity-90" />
                           </div>
 
                           {/* Card details */}
                           <div className="space-y-1">
-                            <div className="text-sm font-extrabold text-neutral-900 tracking-wide">
+                            <div className="text-sm sm:text-base font-black text-white tracking-wide">
                               NGUYỄN VĂN AN
                             </div>
-                            <div className="text-[11px] text-neutral-600 font-medium">
+                            <div className="text-[11px] text-amber-200/90 font-medium">
                               Chủ Tịch HĐQT • ViOne Enterprise
                             </div>
                           </div>
 
                           {/* NFC Wireless Icon */}
-                          <div className="flex justify-between items-center pt-2 border-t border-amber-200/60 text-[10px] text-amber-900 font-mono">
+                          <div className="flex justify-between items-center pt-2.5 border-t border-white/10 text-[10px] text-slate-400 font-mono">
                             <span>ID: VN-8899-VIP</span>
-                            <span className="font-bold flex items-center gap-1">
-                              <Zap className="w-3 h-3 text-amber-700" /> NFC TOUCH
+                            <span className="font-bold flex items-center gap-1.5 text-amber-300">
+                              <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> NFC TOUCH 5.0
                             </span>
                           </div>
                         </div>
@@ -558,14 +684,14 @@ export function ViOneGoldWhiteLanding() {
         </div>
       </section>
 
-      {/* 3 Trụ Cột Hợp Nhất */}
-      <section id="ecosystem" className="py-20 bg-white border-t border-b border-[#EFE7D8]">
+      {/* 3 Trụ Cột Hợp Nhất 5.0 */}
+      <section id="ecosystem" className="py-20 bg-white border-t border-b border-[#EFE7D8] relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="max-w-3xl mx-auto space-y-4">
-            <h2 className="text-xs font-bold text-amber-800 tracking-widest uppercase">
+            <h2 className="text-xs font-extrabold text-amber-800 tracking-widest uppercase">
               KIẾN TRÚC NỀN TẢNG TOÀN DIỆN
             </h2>
-            <h3 className="text-3xl sm:text-4xl font-extrabold text-neutral-900">
+            <h3 className="text-3xl sm:text-4xl font-black text-neutral-900 tracking-tight">
               3 Trụ Cột Đột Phá Hợp Nhất Của ViOne
             </h3>
             <p className="text-base text-neutral-600">
@@ -688,7 +814,7 @@ export function ViOneGoldWhiteLanding() {
           <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[#EAE0CB] shadow-lg">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               <div className="lg:col-span-6 space-y-6 text-left">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-amber-100 text-amber-900 text-xs font-bold border border-amber-300/80">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold border border-amber-300/80">
                   <Database className="w-3.5 h-3.5 text-amber-800" />
                   HỆ THỐNG CRM QUẢN TRỊ CLONE TỪ HIỆP HỘI CEO 1983
                 </div>
