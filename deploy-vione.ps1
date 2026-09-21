@@ -1,4 +1,4 @@
-﻿param (
+param (
     [switch]$SkipBuild,
     [switch]$SkipWebBuild,
     [switch]$FrontendOnly,
@@ -9,6 +9,11 @@
 )
 
 if ($NoHttps) { $EnableHttps = $false }
+
+# Thiet lap ma hoa UTF-8 cho console de khong bi loi font tieng Viet tren PowerShell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+chcp 65001 > $null
 
 # =========================================================================
 # LỆNH ĐỘC LẬP: TRIỂN KHAI VIONE APP - MẠNG XÃ HỘI DOANH NHÂN VIONE CONNECT (PORT 5445)

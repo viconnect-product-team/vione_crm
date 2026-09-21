@@ -10,6 +10,11 @@ param (
 
 if ($NoHttps) { $EnableHttps = $false }
 
+# Thiet lap ma hoa UTF-8 cho console de khong bi loi font tieng Viet tren PowerShell
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
+chcp 65001 > $null
+
 # =========================================================================
 # VIONE STANDALONE DEPLOYMENT SCRIPT (HTTPS CỔNG 5445)
 # Trien khai he thong doc lap ViOne Connect & Backend
