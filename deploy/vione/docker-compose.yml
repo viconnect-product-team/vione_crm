@@ -58,9 +58,11 @@ services:
 
 volumes:
   vione-minio-data-prod:
-    driver: local
+    name: vione-minio-data-prod
+    external: true
   vione-uploads-data:
     name: vione-uploads-data
+    external: true
 
 networks:
   vione-network:
