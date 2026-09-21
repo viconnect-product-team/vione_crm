@@ -11,8 +11,8 @@ param (
 if ($NoHttps) { $EnableHttps = $false }
 
 # =========================================================================
-# Kịch bản triển khai độc lập ViOne Connect CLB CEO 1983 (Hướng 2 - Standalone Compose)
-# Tách biệt hoàn toàn khỏi ViOne: Container riêng, Port 5000/5001 riêng, Compose riêng
+# Kich ban trien khai doc lap ViOne Connect (Standalone Compose)
+# Tach biet hoan toan: Container rieng, Port rieng, Compose rieng
 # =========================================================================
 
 $SERVER_IP   = "14.225.217.232"
@@ -31,7 +31,7 @@ function Invoke-CheckedCommand {
     )
     & $Action
     if ($LASTEXITCODE -ne 0) {
-        throw "Lỗi: Tiến trình [$Description] thất bại với mã lỗi $LASTEXITCODE"
+        throw "Loi: Tien trinh [$Description] that bai voi ma loi $LASTEXITCODE"
     }
 }
 
@@ -43,9 +43,9 @@ try {
     if (-not $SkipBuild) {
         if ($buildFE) {
             if ($SkipWebBuild) {
-                Write-Host "`n[0/5] Bỏ qua Build Frontend (Web) cục bộ (-SkipWebBuild)..." -ForegroundColor Yellow
+                Write-Host "`n[0/5] Bo qua Build Frontend (Web) cuc bo (-SkipWebBuild)..." -ForegroundColor Yellow
             } else {
-                Write-Host "`n[0/5] Build Frontend ViOne Connect (Web) cục bộ với Scope = vione_app..." -ForegroundColor Cyan
+                Write-Host "`n[0/5] Build Frontend ViOne Connect (Web) cuc bo voi Scope = vione_app..." -ForegroundColor Cyan
                 $env:NODE_OPTIONS = "--max-old-space-size=4096"
                 $env:VITE_APP_SCOPE = "vione_app"
                 $env:VITE_APP_NAME = "ViOne Connect"
@@ -59,21 +59,21 @@ try {
                 if ($InstallDeps -or (-not (Test-Path "node_modules"))) {
                     Invoke-CheckedCommand -Description "NPM Install" -Action { npm install }
                 } else {
-                    Write-Host "  -> Bỏ qua 'npm install' (đã có node_modules). Dùng -InstallDeps nếu muốn tải lại." -ForegroundColor DarkGray
+                    Write-Host "  -> Bo qua 'npm install' (da co node_modules). Dung -InstallDeps neu muon tai lai." -ForegroundColor DarkGray
                 }
 
                 Invoke-CheckedCommand -Description "Build Web ViOne Connect" -Action { npm run build --prefix apps/vione_app_fe }
             }
         }
 
-        Write-Host "`n[1/5] Khởi tạo quy trình Build Docker Images cho ViOne Connect Standalone..." -ForegroundColor Cyan
+        Write-Host "`n[1/5] Khoi tao quy trinh Build Docker Images cho ViOne Connect Standalone..." -ForegroundColor Cyan
         if ($buildBE) {
-            Invoke-CheckedCommand -Description "Xây dựng Backend Image (vione-standalone-backend)" -Action {
+            Invoke-CheckedCommand -Description "Xay dung Backend Image (vione-standalone-backend)" -Action {
                 docker build -t vione-standalone-backend:latest -t vione-backend:latest -f Dockerfile.backend .
             }
         }
         if ($buildFE) {
-            Invoke-CheckedCommand -Description "Xây dựng Frontend Image (vione-standalone-frontend)" -Action {
+            Invoke-CheckedCommand -Description "Xay dung Frontend Image (vione-standalone-frontend)" -Action {
                 docker build --no-cache -t vione-standalone-frontend:latest -t vione-frontend:latest -f "$DEPLOY_DIR/Dockerfile.frontend" .
             }
         }
@@ -90,40 +90,40 @@ try {
             }
 
             if (Test-Path $gitGzip) {
-                Write-Host "  -> Streaming trực tiếp 'docker save | gzip -1' vào $OutGzPath..." -ForegroundColor Cyan
+                Write-Host "  -> Streaming truc tiep 'docker save | gzip -1' vao $OutGzPath..." -ForegroundColor Cyan
                 cmd.exe /c "docker save $ImageName | `"$gitGzip`" -1 > `"$OutGzPath`""
                 if ($LASTEXITCODE -ne 0 -or (-not (Test-Path $OutGzPath))) {
-                    throw "Streaming Docker save thất bại cho $ImageName"
+                    throw "Streaming Docker save that bai cho $ImageName"
                 }
             } else {
-                Write-Host "  -> Nén Node Stream vào $OutGzPath..." -ForegroundColor Cyan
+                Write-Host "  -> Nen Node Stream vao $OutGzPath..." -ForegroundColor Cyan
                 $nodeCompress = 'const fs = require("fs"); const zlib = require("zlib"); const { spawn } = require("child_process"); const proc = spawn("docker", ["save", process.argv[1]], { stdio: ["ignore", "pipe", "inherit"] }); const out = fs.createWriteStream(process.argv[2]); proc.stdout.pipe(zlib.createGzip({ level: 1 })).pipe(out); proc.on("close", (code) => { if (code !== 0) process.exit(code); });'
                 node -e $nodeCompress $ImageName $OutGzPath
             }
         }
 
-        Write-Host "`n[2/5] Xuất và nén Gzip (.tar.gz) tốc độ cao cho ViOne Connect..." -ForegroundColor Cyan
+        Write-Host "`n[2/5] Xuat va nen Gzip (.tar.gz) toc do cao cho ViOne Connect..." -ForegroundColor Cyan
         if ($buildBE) {
-            Invoke-CheckedCommand -Description "Xuất & Nén Backend Image (.tar.gz)" -Action {
+            Invoke-CheckedCommand -Description "Xuat va Nen Backend Image (.tar.gz)" -Action {
                 Save-And-Compress-DockerImage -ImageName "vione-standalone-backend:latest" -OutGzPath "vione-backend.tar.gz"
             }
         }
         if ($buildFE) {
-            Invoke-CheckedCommand -Description "Xuất & Nén Frontend Image (.tar.gz)" -Action {
+            Invoke-CheckedCommand -Description "Xuat va Nen Frontend Image (.tar.gz)" -Action {
                 Save-And-Compress-DockerImage -ImageName "vione-standalone-frontend:latest" -OutGzPath "vione-frontend.tar.gz"
             }
         }
     } else {
-        Write-Host "`n[1-2/5] BỎ QUA quy trình Build và đóng gói (SkipBuild)..." -ForegroundColor Yellow
+        Write-Host "`n[1-2/5] BO QUA quy trinh Build va dong goi (SkipBuild)..." -ForegroundColor Yellow
     }
 
-    Write-Host "`n[3/5] Khởi tạo thư mục và đồng bộ tệp tin độc lập lên máy chủ hạ tầng ($SERVER_IP)..." -ForegroundColor Cyan
+    Write-Host "`n[3/5] Khoi tao thu muc va dong bo tep tin doc lap len may chu ha tang ($SERVER_IP)..." -ForegroundColor Cyan
 
-    Invoke-CheckedCommand -Description "Tạo thư mục ~ trên server" -Action {
+    Invoke-CheckedCommand -Description "Tao thu muc remote tren server" -Action {
         ssh "${SERVER_USER}@${SERVER_IP}" "mkdir -p $REMOTE_PATH"
     }
 
-    # Đảm bảo có tệp tin .env cục bộ
+    # Dam bao co tep tin .env cuc bo
     Copy-Item "$DEPLOY_DIR/.env.production" "$DEPLOY_DIR/.env" -Force -ErrorAction SilentlyContinue
 
     $filesToUpload = @(
@@ -137,11 +137,11 @@ try {
     }
 
     $scpArgs = $filesToUpload + "${SERVER_USER}@${SERVER_IP}:${REMOTE_PATH}/"
-    Invoke-CheckedCommand -Description "Chuyển giao tệp tin qua SCP vào ~" -Action {
+    Invoke-CheckedCommand -Description "Chuyen giao tep tin qua SCP" -Action {
         scp @scpArgs
     }
 
-    Write-Host "`n[4/5] Kích hoạt Docker Compose riêng cho ViOne Connect từ xa thông qua SSH..." -ForegroundColor Cyan
+    Write-Host "`n[4/5] Kich hoat Docker Compose rieng cho ViOne Connect tu xa thong qua SSH..." -ForegroundColor Cyan
 
     $remoteLoadCmd = ""
     if ($buildBE -and (Test-Path "vione-backend.tar.gz")) {
@@ -153,28 +153,30 @@ try {
 
     $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env 2>/dev/null || true; touch .env; sed -i 's/\r//g' .env docker-compose.yml; docker network create vione-standalone-network 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop frontend backend 2>/dev/null || true; docker rm -f vione-standalone-frontend-prod vione-standalone-backend-prod vione-frontend-prod vione-backend-prod vibe_frontend_prod vibe_backend_prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate frontend backend minio"
 
-    Invoke-CheckedCommand -Description "Thực thi cấu trúc container độc lập ViOne Connect" -Action {
+    Invoke-CheckedCommand -Description "Thuc thi cau truc container doc lap ViOne Connect" -Action {
         ssh "${SERVER_USER}@${SERVER_IP}" $REMOTE_CMD
     }
 
-    Write-Host "`n[5/5] Dọn dẹp bộ nhớ đệm tạm thời tại máy cục bộ..." -ForegroundColor Cyan
+    Write-Host "`n[5/5] Don dep bo nho dem tam thoi tai may cuc bo..." -ForegroundColor Cyan
     Remove-Item vione-backend.tar.gz, vione-frontend.tar.gz, vione-backend.tar, vione-frontend.tar -ErrorAction SilentlyContinue
 
     if ($EnableHttps) {
-        Write-Host "`n[BỔ SUNG] Đồng bộ Nginx Reverse Proxy SSL / HTTPS..." -ForegroundColor Magenta
-        & "$DEPLOY_DIR/../ssl/deploy-ssl.ps1"
+        Write-Host "`n[BO SUNG] Dong bo Nginx Reverse Proxy SSL / HTTPS..." -ForegroundColor Magenta
+        if (Test-Path "$DEPLOY_DIR/../ssl/deploy-ssl.ps1") {
+            & "$DEPLOY_DIR/../ssl/deploy-ssl.ps1"
+        }
     }
 
     Write-Host "=================================================================" -ForegroundColor Green
-    Write-Host "TRIỂN KHAI VIONE APP - MẠNG XÃ HỘI DOANH NHÂN [PORT 5000/5445] THÀNH CÔNG!" -ForegroundColor Green
+    Write-Host "TRIEN KHAI VIONE STANDALONE [PORT 5010/5445] THANH CONG!" -ForegroundColor Green
     if ($EnableHttps) {
-        Write-Host "Cổng Frontend ViOne App (HTTPS) : https://${SERVER_IP}:5445 (hoặc https://dev-vione.14-225-217-232.sslip.io:5445)" -ForegroundColor Yellow
-        Write-Host "Tuyến đường chính              : /connect-app" -ForegroundColor Yellow
-        Write-Host "Cổng Frontend ViOne App (HTTP)  : http://${SERVER_IP}:5000" -ForegroundColor DarkGray
+        Write-Host "Cong Frontend ViOne App (HTTPS) : https://${SERVER_IP}:5445 (hoac https://dev-vione.14-225-217-232.sslip.io:5445)" -ForegroundColor Yellow
+        Write-Host "Tuyen duong chinh               : /connect-app" -ForegroundColor Yellow
+        Write-Host "Cong Frontend ViOne App (HTTP)  : http://${SERVER_IP}:5010" -ForegroundColor DarkGray
     } else {
-        Write-Host "Cổng Frontend ViOne App (HTTP)  : http://${SERVER_IP}:5000 (Tuyến đường: /connect-app)" -ForegroundColor Yellow
+        Write-Host "Cong Frontend ViOne App (HTTP)  : http://${SERVER_IP}:5010 (Tuyen duong: /connect-app)" -ForegroundColor Yellow
     }
-    Write-Host "Cổng Backend API ViOne App      : http://${SERVER_IP}:5001" -ForegroundColor Yellow
+    Write-Host "Cong Backend API ViOne App       : http://${SERVER_IP}:5011" -ForegroundColor Yellow
     Write-Host "=================================================================" -ForegroundColor Green
 } finally {
     Pop-Location
