@@ -29,7 +29,7 @@ services:
       - NODE_ENV=production
     user: "0:0"
     volumes:
-      - vione-uploads-data:/app/uploads
+      - vione-standalone-uploads-data:/app/uploads
     ports:
       - "127.0.0.1:${TARGET_PROD_PORT_BACKEND:-5001}:4000"
     depends_on:
@@ -39,30 +39,29 @@ services:
 
   minio:
     image: minio/minio:latest
-    container_name: vione-minio-prod
+    container_name: vione-standalone-minio-prod
     restart: always
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-vioneadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-vioneadmin}
     ports:
-      - "9050:9000"
-      - "9051:9001"
+      - "9060:9000"
+      - "9061:9001"
     volumes:
-      - vione-minio-data-prod:/data
+      - vione-standalone-minio-data:/data
     command: server /data --console-address ":9001"
     networks:
       vione-network:
         aliases:
           - minio
-          - vione-minio-prod
+          - vione-standalone-minio-prod
+          - vione-standalone-minio
 
 volumes:
-  vione-minio-data-prod:
-    name: vione-minio-data-prod
-    external: true
-  vione-uploads-data:
-    name: vione-uploads-data
-    external: true
+  vione-standalone-minio-data:
+    name: vione-standalone-minio-data
+  vione-standalone-uploads-data:
+    name: vione-standalone-uploads-data
 
 networks:
   vione-network:

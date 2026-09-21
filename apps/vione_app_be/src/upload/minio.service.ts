@@ -15,19 +15,7 @@ export class MinioService implements OnModuleInit {
 
     const candidateConfigs: { name: string; endPoint: string; port: number }[] = [];
 
-    // 1. Docker container aliases in vione-network (Fastest & direct inside docker container network)
-    candidateConfigs.push({
-      name: 'docker-alias(vione-minio-prod:9000)',
-      endPoint: 'vione-minio-prod',
-      port: 9000,
-    });
-    candidateConfigs.push({
-      name: 'docker-alias(minio:9000)',
-      endPoint: 'minio',
-      port: 9000,
-    });
-
-    // 2. Env configured endpoint
+    // 1. Env configured endpoint (Highest Priority)
     if (envEndpoint) {
       candidateConfigs.push({
         name: `env(${envEndpoint}:${envPort || 9000})`,
@@ -36,18 +24,35 @@ export class MinioService implements OnModuleInit {
       });
     }
 
-    // 3. Direct server public IP on port 9050
+    // 2. Docker container aliases in vione-network (Fastest & direct inside docker container network)
     candidateConfigs.push({
-      name: 'host-public(14.225.217.232:9050)',
-      endPoint: '14.225.217.232',
-      port: 9050,
+      name: 'docker-alias(vione-standalone-minio-prod:9000)',
+      endPoint: 'vione-standalone-minio-prod',
+      port: 9000,
+    });
+    candidateConfigs.push({
+      name: 'docker-alias(vione-standalone-minio:9000)',
+      endPoint: 'vione-standalone-minio',
+      port: 9000,
+    });
+    candidateConfigs.push({
+      name: 'docker-alias(minio:9000)',
+      endPoint: 'minio',
+      port: 9000,
     });
 
-    // 4. Docker bridge host gateway
+    // 3. Direct server public IP on port 9060 (Dedicated port for ViOne Standalone MinIO)
     candidateConfigs.push({
-      name: 'docker-bridge(172.17.0.1:9050)',
+      name: 'host-public(14.225.217.232:9060)',
+      endPoint: '14.225.217.232',
+      port: 9060,
+    });
+
+    // 4. Docker bridge host gateway on port 9060
+    candidateConfigs.push({
+      name: 'docker-bridge(172.17.0.1:9060)',
       endPoint: '172.17.0.1',
-      port: 9050,
+      port: 9060,
     });
 
     // Deduplicate by endPoint:port

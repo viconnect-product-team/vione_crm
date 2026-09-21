@@ -151,7 +151,7 @@ try {
         $remoteLoadCmd += "docker load -i vione-frontend.tar.gz; docker tag vione-frontend:latest vione-standalone-frontend:latest 2>/dev/null || true; rm -f vione-frontend.tar.gz; "
     }
 
-    $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env 2>/dev/null || true; touch .env; sed -i 's/\r//g' .env docker-compose.yml; docker network create vione-network 2>/dev/null || true; docker volume create vione-minio-data-prod 2>/dev/null || true; docker volume create vione-uploads-data 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop frontend backend minio 2>/dev/null || true; docker rm -f vione-frontend-prod vione-backend-prod vione-minio-prod vione-standalone-frontend-prod vione-standalone-backend-prod vione-standalone-minio-prod vibe_frontend_prod vibe_backend_prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate frontend backend minio"
+    $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env 2>/dev/null || true; touch .env; sed -i 's/\r//g' .env docker-compose.yml; docker network create vione-network 2>/dev/null || true; docker volume create vione-standalone-minio-data 2>/dev/null || true; docker volume create vione-standalone-uploads-data 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop frontend backend minio 2>/dev/null || true; docker rm -f vione-frontend-prod vione-backend-prod vione-standalone-frontend-prod vione-standalone-backend-prod vione-standalone-minio-prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate frontend backend minio"
 
     Invoke-CheckedCommand -Description "Thuc thi cau truc container doc lap ViOne Connect" -Action {
         ssh "${SERVER_USER}@${SERVER_IP}" $REMOTE_CMD

@@ -5,13 +5,15 @@ cd /root/ssl-proxy
 
 # 1. Mở các cổng trên UFW nếu có UFW
 if command -v ufw >/dev/null 2>&1; then
-    echo "[UFW] Mở cổng 5443, 5444, 5445, 5446, 9050, 9051 trên tường lửa Ubuntu..."
+    echo "[UFW] Mở cổng 5443, 5444, 5445, 5446, 9050, 9051, 9060, 9061 trên tường lửa Ubuntu..."
     ufw allow 5443/tcp >/dev/null 2>&1 || true
     ufw allow 5444/tcp >/dev/null 2>&1 || true
     ufw allow 5445/tcp >/dev/null 2>&1 || true
     ufw allow 5446/tcp >/dev/null 2>&1 || true
     ufw allow 9050/tcp >/dev/null 2>&1 || true
     ufw allow 9051/tcp >/dev/null 2>&1 || true
+    ufw allow 9060/tcp >/dev/null 2>&1 || true
+    ufw allow 9061/tcp >/dev/null 2>&1 || true
     ufw reload >/dev/null 2>&1 || true
 fi
 
@@ -22,6 +24,8 @@ iptables -I INPUT -p tcp --dport 5445 -j ACCEPT 2>/dev/null || true
 iptables -I INPUT -p tcp --dport 5446 -j ACCEPT 2>/dev/null || true
 iptables -I INPUT -p tcp --dport 9050 -j ACCEPT 2>/dev/null || true
 iptables -I INPUT -p tcp --dport 9051 -j ACCEPT 2>/dev/null || true
+iptables -I INPUT -p tcp --dport 9060 -j ACCEPT 2>/dev/null || true
+iptables -I INPUT -p tcp --dport 9061 -j ACCEPT 2>/dev/null || true
 
 # 3. Chuẩn hóa tệp tin cấu hình (xóa bỏ \r nếu có)
 sed -i 's/\r$//' nginx.conf docker-compose.ssl.yml 2>/dev/null || true
