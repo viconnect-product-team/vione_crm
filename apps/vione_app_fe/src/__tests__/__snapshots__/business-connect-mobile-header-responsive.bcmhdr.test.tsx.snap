@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`BC-Mobile header — snapshot cấu trúc > iPhone 8 Plus (không notch): cấu trúc header "Tôi" ổn định 1`] = `"padding-top: var(--bc-mobile-safe-top-compact); min-height: calc(var(--bc-mobile-safe-top-compact) + var(--bc-mobile-header-h));"`;
+
+exports[`BC-Mobile header — snapshot cấu trúc > iPhone 13 mini (notch): cấu trúc header "Tôi" ổn định 1`] = `"padding-top: var(--bc-mobile-safe-top-compact); min-height: calc(var(--bc-mobile-safe-top-compact) + var(--bc-mobile-header-h));"`;
+
+exports[`BC-Mobile header — snapshot cấu trúc > iPhone 14 (notch): cấu trúc header "Tôi" ổn định 1`] = `"padding-top: var(--bc-mobile-safe-top-compact); min-height: calc(var(--bc-mobile-safe-top-compact) + var(--bc-mobile-header-h));"`;
+
+exports[`BC-Mobile header — snapshot cấu trúc > iPhone 15 Pro Max (Dynamic Island): cấu trúc header "Tôi" ổn định 1`] = `"padding-top: var(--bc-mobile-safe-top-compact); min-height: calc(var(--bc-mobile-safe-top-compact) + var(--bc-mobile-header-h));"`;
+
+exports[`BC-Mobile header — snapshot cấu trúc > iPhone SE (không notch): cấu trúc header "Tôi" ổn định 1`] = `"padding-top: var(--bc-mobile-safe-top-compact); min-height: calc(var(--bc-mobile-safe-top-compact) + var(--bc-mobile-header-h));"`;

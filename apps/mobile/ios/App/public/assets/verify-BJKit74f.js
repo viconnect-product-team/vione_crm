@@ -1,0 +1,1 @@
+import{j as e}from"./main-oKw2k0Js.js";import{S as r}from"./verify-rLtoNuK5.js";const m=({error:t})=>e.jsx(r,{children:e.jsx("div",{className:"text-center text-[var(--vba-text-muted)]",children:t.message})});export{m as errorComponent};

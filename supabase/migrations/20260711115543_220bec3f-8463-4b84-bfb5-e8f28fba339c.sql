@@ -1,0 +1,1 @@
+ALTER TABLE public.member_notifications ADD COLUMN IF NOT EXISTS dismissed boolean NOT NULL DEFAULT false;

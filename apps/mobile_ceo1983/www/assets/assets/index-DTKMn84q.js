@@ -1,0 +1,1 @@
+import{j as r,A as o}from"./index-BI--mQOZ.js";const s=({error:e})=>r.jsx(o,{children:r.jsx("div",{role:"alert",className:"rounded-2xl border border-border bg-card p-6 text-sm text-destructive",children:e.message})});export{s as errorComponent};

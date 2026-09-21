@@ -1,0 +1,20 @@
+services:
+  ssl-reverse-proxy:
+    image: nginx:alpine
+    container_name: vione-ssl-proxy
+    restart: always
+    ports:
+      - "5443:5443"
+      - "5444:5444"
+      - "5445:5445"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./server.crt:/etc/nginx/ssl/server.crt:ro
+      - ./server.key:/etc/nginx/ssl/server.key:ro
+    networks:
+      - vione-network
+
+networks:
+  vione-network:
+    external: true
+    name: vione-network

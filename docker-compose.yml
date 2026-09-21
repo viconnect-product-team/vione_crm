@@ -1,0 +1,12 @@
+services:
+  app:
+    image: registry-harbor.ubos.vn/github-demo/vione-standalone:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vione-standalone-app
+    restart: always
+    ports:
+      - "5010:4000"
+    env_file:
+      - .env

@@ -1,0 +1,3018 @@
+[
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "GET",
+    "subPath": "demo-leads",
+    "fullPath": "/admin/demo-leads",
+    "handler": "listDemoLeads"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "PATCH",
+    "subPath": "demo-leads/:id",
+    "fullPath": "/admin/demo-leads/:id",
+    "handler": "updateDemoLead"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "GET",
+    "subPath": "invoices",
+    "fullPath": "/admin/invoices",
+    "handler": "listInvoices"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "GET",
+    "subPath": "invoices/:id",
+    "fullPath": "/admin/invoices/:id",
+    "handler": "getInvoiceById"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "POST",
+    "subPath": "invoices",
+    "fullPath": "/admin/invoices",
+    "handler": "createInvoice"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "POST",
+    "subPath": "invoices/:id/pay",
+    "fullPath": "/admin/invoices/:id/pay",
+    "handler": "markInvoicePaid"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "PATCH",
+    "subPath": "invoices/:id/method",
+    "fullPath": "/admin/invoices/:id/method",
+    "handler": "updateInvoiceMethod"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "POST",
+    "subPath": "invoices/:id/reminders",
+    "fullPath": "/admin/invoices/:id/reminders",
+    "handler": "addInvoiceReminder"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "GET",
+    "subPath": "notifications",
+    "fullPath": "/admin/notifications",
+    "handler": "listNotifications"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "POST",
+    "subPath": "notifications",
+    "fullPath": "/admin/notifications",
+    "handler": "createNotification"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "PATCH",
+    "subPath": "notifications/:id",
+    "fullPath": "/admin/notifications/:id",
+    "handler": "updateNotification"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "POST",
+    "subPath": "notifications/:id/send",
+    "fullPath": "/admin/notifications/:id/send",
+    "handler": "sendNotification"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "DELETE",
+    "subPath": "notifications/:id",
+    "fullPath": "/admin/notifications/:id",
+    "handler": "deleteNotification"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "GET",
+    "subPath": "campaigns",
+    "fullPath": "/admin/campaigns",
+    "handler": "listCampaigns"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "POST",
+    "subPath": "campaigns",
+    "fullPath": "/admin/campaigns",
+    "handler": "createCampaign"
+  },
+  {
+    "file": "admin/admin.controller.ts",
+    "basePath": "admin",
+    "method": "DELETE",
+    "subPath": "campaigns/:id",
+    "fullPath": "/admin/campaigns/:id",
+    "handler": "deleteCampaign"
+  },
+  {
+    "file": "ai/ai.controller.ts",
+    "basePath": "ai",
+    "method": "GET",
+    "subPath": "roles",
+    "fullPath": "/ai/roles",
+    "handler": "getRoles"
+  },
+  {
+    "file": "ai/ai.controller.ts",
+    "basePath": "ai",
+    "method": "GET",
+    "subPath": "settings/provider",
+    "fullPath": "/ai/settings/provider",
+    "handler": "getProviderSetting"
+  },
+  {
+    "file": "ai/ai.controller.ts",
+    "basePath": "ai",
+    "method": "POST",
+    "subPath": "audit",
+    "fullPath": "/ai/audit",
+    "handler": "insertAudit"
+  },
+  {
+    "file": "ai/ai.controller.ts",
+    "basePath": "ai",
+    "method": "GET",
+    "subPath": "activity-log",
+    "fullPath": "/ai/activity-log",
+    "handler": "listActivityLog"
+  },
+  {
+    "file": "ai/ai.controller.ts",
+    "basePath": "ai",
+    "method": "DELETE",
+    "subPath": "activity-log/:id",
+    "fullPath": "/ai/activity-log/:id",
+    "handler": "deleteActivityLog"
+  },
+  {
+    "file": "ai/ai.controller.ts",
+    "basePath": "ai",
+    "method": "POST",
+    "subPath": "activity-log/clear",
+    "fullPath": "/ai/activity-log/clear",
+    "handler": "clearActivityLog"
+  },
+  {
+    "file": "app.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/",
+    "handler": "getHello"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "login",
+    "fullPath": "/auth/login",
+    "handler": "login"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "refresh",
+    "fullPath": "/auth/refresh",
+    "handler": "refresh"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "register",
+    "fullPath": "/auth/register",
+    "handler": "register"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "forgot-password",
+    "fullPath": "/auth/forgot-password",
+    "handler": "forgotPassword"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "reset-password",
+    "fullPath": "/auth/reset-password",
+    "handler": "resetPassword"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "google",
+    "fullPath": "/auth/google",
+    "handler": "googleLogin"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "POST",
+    "subPath": "apple",
+    "fullPath": "/auth/apple",
+    "handler": "appleLogin"
+  },
+  {
+    "file": "auth/auth.controller.ts",
+    "basePath": "auth",
+    "method": "GET",
+    "subPath": "me",
+    "fullPath": "/auth/me",
+    "handler": "getProfile"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "public/:slug",
+    "fullPath": "/business-cards/public/:slug",
+    "handler": "getPublicCard"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "public-card/:code",
+    "fullPath": "/business-cards/public-card/:code",
+    "handler": "getPublicCardByCode"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "settings/me",
+    "fullPath": "/business-cards/settings/me",
+    "handler": "getCardSettings"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "settings/me",
+    "fullPath": "/business-cards/settings/me",
+    "handler": "saveCardSettings"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "ai-history",
+    "fullPath": "/business-cards/ai-history",
+    "handler": "saveCardAiHistory"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "ai-history",
+    "fullPath": "/business-cards/ai-history",
+    "handler": "listCardAiHistory"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "DELETE",
+    "subPath": "ai-history/:id",
+    "fullPath": "/business-cards/ai-history/:id",
+    "handler": "deleteCardAiHistory"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "admin/level",
+    "fullPath": "/business-cards/admin/level",
+    "handler": "getBcAdminLevel"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "admin/all",
+    "fullPath": "/business-cards/admin/all",
+    "handler": "listAllAdminCards"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "admin/status",
+    "fullPath": "/business-cards/admin/status",
+    "handler": "adminSetCardStatus"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "admin/bulk-status",
+    "fullPath": "/business-cards/admin/bulk-status",
+    "handler": "adminSetCardsStatus"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/business-cards",
+    "handler": "listMyCards"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": ":id",
+    "fullPath": "/business-cards/:id",
+    "handler": "getMyCard"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/business-cards",
+    "handler": "saveCard"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "PATCH",
+    "subPath": ":id/status",
+    "fullPath": "/business-cards/:id/status",
+    "handler": "setStatus"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "preview/:slug",
+    "fullPath": "/business-cards/preview/:slug",
+    "handler": "getPreviewBySlug"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "public-slugs",
+    "fullPath": "/business-cards/public-slugs",
+    "handler": "listPublicProfileSlugs"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": ":id/primary",
+    "fullPath": "/business-cards/:id/primary",
+    "handler": "setPrimary"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/business-cards/:id",
+    "handler": "deleteCard"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "leads/me",
+    "fullPath": "/business-cards/leads/me",
+    "handler": "listMyLeads"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "PATCH",
+    "subPath": "leads/:id/status",
+    "fullPath": "/business-cards/leads/:id/status",
+    "handler": "updateLeadStatus"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "leads/:id/reply",
+    "fullPath": "/business-cards/leads/:id/reply",
+    "handler": "sendLeadReply"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "POST",
+    "subPath": "leads/:id/workflow",
+    "fullPath": "/business-cards/leads/:id/workflow",
+    "handler": "processLeadWorkflow"
+  },
+  {
+    "file": "business-card/business-card.controller.ts",
+    "basePath": "business-cards",
+    "method": "GET",
+    "subPath": "leads/stats",
+    "fullPath": "/business-cards/leads/stats",
+    "handler": "getLeadStats"
+  },
+  {
+    "file": "connect-app/card-scan.controller.ts",
+    "basePath": "card-scans",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/card-scans",
+    "handler": "cardScanOcr"
+  },
+  {
+    "file": "connect-app/card-scan.controller.ts",
+    "basePath": "card-scans",
+    "method": "POST",
+    "subPath": "resolve",
+    "fullPath": "/card-scans/resolve",
+    "handler": "cardScanResolve"
+  },
+  {
+    "file": "connect-app/card-scan.controller.ts",
+    "basePath": "card-scans",
+    "method": "POST",
+    "subPath": "save",
+    "fullPath": "/card-scans/save",
+    "handler": "cardScanSave"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/",
+    "handler": "getMyCommunities"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/",
+    "handler": "createCommunity"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "joinable",
+    "fullPath": "/joinable",
+    "handler": "listJoinableCommunities"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "join-requests/history",
+    "fullPath": "/join-requests/history",
+    "handler": "listCommunityJoinHistory"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "join-requests/sync",
+    "fullPath": "/join-requests/sync",
+    "handler": "syncCommunityJoinDecisions"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "join-requests/admin",
+    "fullPath": "/join-requests/admin",
+    "handler": "listCommunityJoinAdminRequests"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "invites/:inviteRef",
+    "fullPath": "/invites/:inviteRef",
+    "handler": "cancelCommunityInvite"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "invites/:inviteRef/resend",
+    "fullPath": "/invites/:inviteRef/resend",
+    "handler": "resendCommunityInvite"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "invites/token/:token",
+    "fullPath": "/invites/token/:token",
+    "handler": "getCommunityInviteByToken"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "invites/accept",
+    "fullPath": "/invites/accept",
+    "handler": "acceptCommunityInvite"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "invites/:inviteRef/role",
+    "fullPath": "/invites/:inviteRef/role",
+    "handler": "updateAcceptedInviteRole"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "invites/:inviteRef/role-history",
+    "fullPath": "/invites/:inviteRef/role-history",
+    "handler": "listInviteRoleHistory"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId",
+    "fullPath": "/:communityId",
+    "handler": "getCommunityDetail"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/activity-preview",
+    "fullPath": "/:communityId/activity-preview",
+    "handler": "getCommunityActivityPreview"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/members",
+    "fullPath": "/:communityId/members",
+    "handler": "listCommunityMembers"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/members/:memberRef",
+    "fullPath": "/:communityId/members/:memberRef",
+    "handler": "getCommunityMemberProfile"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/members/:memberRef/connect",
+    "fullPath": "/:communityId/members/:memberRef/connect",
+    "handler": "connectCommunityMember"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": ":communityId/members/:memberRef/role",
+    "fullPath": "/:communityId/members/:memberRef/role",
+    "handler": "updateCommunityMemberRole"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/news",
+    "fullPath": "/:communityId/news",
+    "handler": "listCommunityNews"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/news/:newsRef",
+    "fullPath": "/:communityId/news/:newsRef",
+    "handler": "getCommunityNewsDetail"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/join-requests",
+    "fullPath": "/:communityId/join-requests",
+    "handler": "requestCommunityJoin"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":communityId/join-requests",
+    "fullPath": "/:communityId/join-requests",
+    "handler": "cancelCommunityJoin"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/invites",
+    "fullPath": "/:communityId/invites",
+    "handler": "listCommunityInvites"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/invites",
+    "fullPath": "/:communityId/invites",
+    "handler": "createCommunityInvite"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/invite-templates",
+    "fullPath": "/:communityId/invite-templates",
+    "handler": "listCommunityInviteTemplates"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/invite-templates",
+    "fullPath": "/:communityId/invite-templates",
+    "handler": "saveCommunityInviteTemplate"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/invite-templates/reset",
+    "fullPath": "/:communityId/invite-templates/reset",
+    "handler": "resetCommunityInviteTemplate"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/events",
+    "fullPath": "/:communityId/events",
+    "handler": "listCommunityEvents"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/events/:eventRef",
+    "fullPath": "/:communityId/events/:eventRef",
+    "handler": "getCommunityEventDetail"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/events/:eventRef/registrations",
+    "fullPath": "/:communityId/events/:eventRef/registrations",
+    "handler": "registerCommunityEvent"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":communityId/events/:eventRef/registrations",
+    "fullPath": "/:communityId/events/:eventRef/registrations",
+    "handler": "cancelCommunityEventRegistration"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/opportunities",
+    "fullPath": "/:communityId/opportunities",
+    "handler": "listCommunityOpportunities"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":communityId/opportunities/:opportunityRef",
+    "fullPath": "/:communityId/opportunities/:opportunityRef",
+    "handler": "getCommunityOpportunityDetail"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/opportunities",
+    "fullPath": "/:communityId/opportunities",
+    "handler": "createCommunityOpportunity"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/news",
+    "fullPath": "/:communityId/news",
+    "handler": "createCommunityNews"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/opportunities/:opportunityRef/claim",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/claim",
+    "handler": "claimCommunityOpportunity"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/opportunities/:opportunityRef/interests",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/interests",
+    "handler": "expressCommunityOpportunityInterest"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":communityId/opportunities/:opportunityRef/interests",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/interests",
+    "handler": "withdrawCommunityOpportunityInterest"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/opportunities/:opportunityRef/followups",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/followups",
+    "handler": "scheduleCommunityOpportunityFollowUp"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": ":communityId/opportunities/:opportunityRef/followups",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/followups",
+    "handler": "updateCommunityOpportunityFollowUp"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/opportunities/:opportunityRef/progress",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/progress",
+    "handler": "saveCommunityOpportunityProgress"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":communityId/opportunities/:opportunityRef/attachments",
+    "fullPath": "/:communityId/opportunities/:opportunityRef/attachments",
+    "handler": "addCommunityOpportunityAttachment"
+  },
+  {
+    "file": "connect-app/community.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "opportunities/attachments/:attachmentId",
+    "fullPath": "/opportunities/attachments/:attachmentId",
+    "handler": "removeCommunityOpportunityAttachment"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "GET",
+    "subPath": "news",
+    "fullPath": "/content/news",
+    "handler": "listNews"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "GET",
+    "subPath": "admin/news",
+    "fullPath": "/content/admin/news",
+    "handler": "listAdminNews"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "POST",
+    "subPath": "admin/news",
+    "fullPath": "/content/admin/news",
+    "handler": "createAdminNews"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "PUT",
+    "subPath": "admin/news/:id",
+    "fullPath": "/content/admin/news/:id",
+    "handler": "updateAdminNewsPut"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "PATCH",
+    "subPath": "admin/news/:id",
+    "fullPath": "/content/admin/news/:id",
+    "handler": "updateAdminNewsPatch"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "DELETE",
+    "subPath": "admin/news/:id",
+    "fullPath": "/content/admin/news/:id",
+    "handler": "deleteAdminNews"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "GET",
+    "subPath": "perks",
+    "fullPath": "/content/perks",
+    "handler": "listPerks"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "GET",
+    "subPath": "admin/perks",
+    "fullPath": "/content/admin/perks",
+    "handler": "listAdminPerks"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "POST",
+    "subPath": "admin/perks",
+    "fullPath": "/content/admin/perks",
+    "handler": "createAdminPerk"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "PATCH",
+    "subPath": "admin/perks/:id",
+    "fullPath": "/content/admin/perks/:id",
+    "handler": "updateAdminPerk"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "DELETE",
+    "subPath": "admin/perks/:id",
+    "fullPath": "/content/admin/perks/:id",
+    "handler": "deleteAdminPerk"
+  },
+  {
+    "file": "connect-app/content.controller.ts",
+    "basePath": "content",
+    "method": "GET",
+    "subPath": "perks/:id",
+    "fullPath": "/content/perks/:id",
+    "handler": "getPerk"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "tags",
+    "fullPath": "/tags",
+    "handler": "listBcCustomerTags"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "tags",
+    "fullPath": "/tags",
+    "handler": "createBcCustomerTag"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "tags/:tagId",
+    "fullPath": "/tags/:tagId",
+    "handler": "renameBcCustomerTag"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "tags/:tagId",
+    "fullPath": "/tags/:tagId",
+    "handler": "deleteBcCustomerTag"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "needs/:needId",
+    "fullPath": "/needs/:needId",
+    "handler": "updateBcCustomerNeed"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "needs/:needId",
+    "fullPath": "/needs/:needId",
+    "handler": "deleteBcCustomerNeed"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/",
+    "handler": "listBcCustomers"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/",
+    "handler": "createBcCustomer"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":customerId/logs",
+    "fullPath": "/:customerId/logs",
+    "handler": "listBcCustomerLogs"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":customerId/logs",
+    "fullPath": "/:customerId/logs",
+    "handler": "addBcCustomerLog"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "PUT",
+    "subPath": ":customerId/tags",
+    "fullPath": "/:customerId/tags",
+    "handler": "setBcCustomerTags"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":customerId/needs",
+    "fullPath": "/:customerId/needs",
+    "handler": "listBcCustomerNeeds"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":customerId/needs",
+    "fullPath": "/:customerId/needs",
+    "handler": "addBcCustomerNeed"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":customerId/tag-suggestions",
+    "fullPath": "/:customerId/tag-suggestions",
+    "handler": "suggestCustomerTags"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":customerId/tag-suggestions/history",
+    "fullPath": "/:customerId/tag-suggestions/history",
+    "handler": "listCustomerTagSuggestHistory"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":customerId/tag-suggestions/feedback",
+    "fullPath": "/:customerId/tag-suggestions/feedback",
+    "handler": "saveCustomerTagSuggestFeedback"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":customerId/tag-suggestions/feedback",
+    "fullPath": "/:customerId/tag-suggestions/feedback",
+    "handler": "listCustomerTagSuggestFeedback"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": ":customerId",
+    "fullPath": "/:customerId",
+    "handler": "updateBcCustomer"
+  },
+  {
+    "file": "connect-app/customer.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":customerId",
+    "fullPath": "/:customerId",
+    "handler": "deleteBcCustomer"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "member/conversations",
+    "fullPath": "/member/conversations",
+    "handler": "listMemberConversations"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "member/messages",
+    "fullPath": "/member/messages",
+    "handler": "listMemberMessages"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "member/messages",
+    "fullPath": "/member/messages",
+    "handler": "sendMemberMessage"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "member/messages/:messageId",
+    "fullPath": "/member/messages/:messageId",
+    "handler": "retractMemberMessage"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "threads",
+    "fullPath": "/threads",
+    "handler": "listMyDmThreads"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "threads",
+    "fullPath": "/threads",
+    "handler": "openMyDmThread"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "threads/:threadId",
+    "fullPath": "/threads/:threadId",
+    "handler": "getMyDmThreadDetail"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "threads/:threadId/messages",
+    "fullPath": "/threads/:threadId/messages",
+    "handler": "sendMyDmMessage"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "threads/:threadId/read",
+    "fullPath": "/threads/:threadId/read",
+    "handler": "markMyDmThreadRead"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "messages/:messageId",
+    "fullPath": "/messages/:messageId",
+    "handler": "retractMyDmMessage"
+  },
+  {
+    "file": "connect-app/dm.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "messages/:messageId/reactions",
+    "fullPath": "/messages/:messageId/reactions",
+    "handler": "reactToDmMessage"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "GET",
+    "subPath": "products",
+    "fullPath": "/marketplace/products",
+    "handler": "listProducts"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "GET",
+    "subPath": "products/:id",
+    "fullPath": "/marketplace/products/:id",
+    "handler": "getProductById"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "POST",
+    "subPath": "products",
+    "fullPath": "/marketplace/products",
+    "handler": "createProduct"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "PUT",
+    "subPath": "products/:id",
+    "fullPath": "/marketplace/products/:id",
+    "handler": "updateProduct"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "DELETE",
+    "subPath": "products/:id",
+    "fullPath": "/marketplace/products/:id",
+    "handler": "deleteProduct"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "PATCH",
+    "subPath": "products/:id/toggle-sold",
+    "fullPath": "/marketplace/products/:id/toggle-sold",
+    "handler": "toggleProductSold"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "GET",
+    "subPath": "quotes",
+    "fullPath": "/marketplace/quotes",
+    "handler": "listQuotes"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "POST",
+    "subPath": "quotes",
+    "fullPath": "/marketplace/quotes",
+    "handler": "requestQuote"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "PATCH",
+    "subPath": "quotes/:id/status",
+    "fullPath": "/marketplace/quotes/:id/status",
+    "handler": "updateQuoteStatus"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "POST",
+    "subPath": "quotes/:id/reminder",
+    "fullPath": "/marketplace/quotes/:id/reminder",
+    "handler": "sendQuoteReminder"
+  },
+  {
+    "file": "connect-app/marketplace.controller.ts",
+    "basePath": "marketplace",
+    "method": "POST",
+    "subPath": "quotes/:id/cancel",
+    "fullPath": "/marketplace/quotes/:id/cancel",
+    "handler": "cancelQuote"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "profile",
+    "fullPath": "/profile",
+    "handler": "getMyProfile"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "PUT",
+    "subPath": "profile",
+    "fullPath": "/profile",
+    "handler": "updateMyProfile"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "identity",
+    "fullPath": "/identity",
+    "handler": "getMyIdentity"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "PUT",
+    "subPath": "identity",
+    "fullPath": "/identity",
+    "handler": "upsertMyIdentity"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "identity/visibility",
+    "fullPath": "/identity/visibility",
+    "handler": "updateMyVisibility"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "identity/share-link",
+    "fullPath": "/identity/share-link",
+    "handler": "getOrCreateMyShareLink"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "identity/share-link/rotate",
+    "fullPath": "/identity/share-link/rotate",
+    "handler": "rotateMyShareLink"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "briefing",
+    "fullPath": "/briefing",
+    "handler": "getBriefing"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "notifications",
+    "fullPath": "/notifications",
+    "handler": "listNotifications"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "notifications/member",
+    "fullPath": "/notifications/member",
+    "handler": "listMyMemberNotifications"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/member/read",
+    "fullPath": "/notifications/member/read",
+    "handler": "markMemberNotificationRead"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/member/read-all",
+    "fullPath": "/notifications/member/read-all",
+    "handler": "markAllMemberNotificationsRead"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/member/dismiss",
+    "fullPath": "/notifications/member/dismiss",
+    "handler": "dismissMemberNotification"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/member/delete",
+    "fullPath": "/notifications/member/delete",
+    "handler": "deleteMemberNotification"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/member/dismiss-broadcast",
+    "fullPath": "/notifications/member/dismiss-broadcast",
+    "handler": "dismissBroadcastNotification"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "notifications/unread-count",
+    "fullPath": "/notifications/unread-count",
+    "handler": "getUnreadNotificationCount"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "notifications/read",
+    "fullPath": "/notifications/read",
+    "handler": "markNotificationsRead"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/read",
+    "fullPath": "/notifications/read",
+    "handler": "markNotificationsReadPost"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "notifications/:id",
+    "fullPath": "/notifications/:id",
+    "handler": "deleteNotification"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notifications/delete",
+    "fullPath": "/notifications/delete",
+    "handler": "deleteNotificationsPost"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "notifications/prefs",
+    "fullPath": "/notifications/prefs",
+    "handler": "getNotificationPrefs"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "PUT",
+    "subPath": "notifications/prefs",
+    "fullPath": "/notifications/prefs",
+    "handler": "setNotificationPrefs"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "showcase",
+    "fullPath": "/showcase",
+    "handler": "getMyShowcase"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "showcase",
+    "fullPath": "/showcase",
+    "handler": "addShowcaseItem"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "showcase/:id",
+    "fullPath": "/showcase/:id",
+    "handler": "deleteShowcaseItem"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "settings",
+    "fullPath": "/settings",
+    "handler": "getSettings"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "settings",
+    "fullPath": "/settings",
+    "handler": "saveSettings"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "voting-pref",
+    "fullPath": "/voting-pref",
+    "handler": "getVotingPref"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "voting-pref",
+    "fullPath": "/voting-pref",
+    "handler": "setVotingPref"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "post-login-route",
+    "fullPath": "/post-login-route",
+    "handler": "getPostLoginRoute"
+  },
+  {
+    "file": "connect-app/me.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "media/signed-url",
+    "fullPath": "/media/signed-url",
+    "handler": "getMediaSignedUrl"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "mentionable-users",
+    "fullPath": "/mentionable-users",
+    "handler": "searchMentionableUsers"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "notify-tags",
+    "fullPath": "/notify-tags",
+    "handler": "notifyMomentTags"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/mute",
+    "fullPath": "/:id/mute",
+    "handler": "toggleMuteMoment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":id/mute-status",
+    "fullPath": "/:id/mute-status",
+    "handler": "getMomentMuteStatus"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":id/likes",
+    "fullPath": "/:id/likes",
+    "handler": "getMomentLikeStatus"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/like",
+    "fullPath": "/:id/like",
+    "handler": "toggleMomentLike"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":id/comments",
+    "fullPath": "/:id/comments",
+    "handler": "listMomentComments"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/comments",
+    "fullPath": "/:id/comments",
+    "handler": "createMomentComment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":id/comments/:commentId",
+    "fullPath": "/:id/comments/:commentId",
+    "handler": "deleteMomentComment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/comments/:commentId/like",
+    "fullPath": "/:id/comments/:commentId/like",
+    "handler": "toggleMomentCommentLike"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/",
+    "handler": "prepareMoment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/finalize",
+    "fullPath": "/:id/finalize",
+    "handler": "finalizeMoment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": ":id",
+    "fullPath": "/:id",
+    "handler": "updateMoment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/:id",
+    "handler": "deleteMoment"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": ":id/photos",
+    "fullPath": "/:id/photos",
+    "handler": "listMomentPhotos"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/photo-slots",
+    "fullPath": "/:id/photo-slots",
+    "handler": "addMomentPhotoSlots"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/photos/commit",
+    "fullPath": "/:id/photos/commit",
+    "handler": "commitMomentPhotos"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": ":id/photos/:mediaId",
+    "fullPath": "/:id/photos/:mediaId",
+    "handler": "removeMomentPhoto"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "voice-transcribe",
+    "fullPath": "/voice-transcribe",
+    "handler": "transcribeMomentVoice"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "reminders",
+    "fullPath": "/reminders",
+    "handler": "listReminders"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": ":id/reminders",
+    "fullPath": "/:id/reminders",
+    "handler": "createReminder"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "reminders/:reminderId/status",
+    "fullPath": "/reminders/:reminderId/status",
+    "handler": "setReminderStatus"
+  },
+  {
+    "file": "connect-app/moment.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "reminders/:reminderId",
+    "fullPath": "/reminders/:reminderId",
+    "handler": "deleteReminder"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "connections",
+    "fullPath": "/connections",
+    "handler": "listConnections"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "person-journey",
+    "fullPath": "/person-journey",
+    "handler": "getPersonJourney"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "connections/resolve",
+    "fullPath": "/connections/resolve",
+    "handler": "resolvePublicCounterparts"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "saved-cards",
+    "fullPath": "/saved-cards",
+    "handler": "searchSavedCards"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "guest-contacts",
+    "fullPath": "/guest-contacts",
+    "handler": "listGuestContacts"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "guest-contacts/:id",
+    "fullPath": "/guest-contacts/:id",
+    "handler": "getGuestContact"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "guest-contacts/:id/owner-fields",
+    "fullPath": "/guest-contacts/:id/owner-fields",
+    "handler": "updateGuestContactOwnerFields"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "guest-contacts/:id",
+    "fullPath": "/guest-contacts/:id",
+    "handler": "deleteGuestContact"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "recommendations/today",
+    "fullPath": "/recommendations/today",
+    "handler": "getTodayRecommendations"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "recommendations/person/:personId",
+    "fullPath": "/recommendations/person/:personId",
+    "handler": "getPersonRecommendation"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "recommendations/person/:personId",
+    "fullPath": "/recommendations/person/:personId",
+    "handler": "dismissRecommendation"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "feed",
+    "fullPath": "/feed",
+    "handler": "getNetworkFeed"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "requests",
+    "fullPath": "/requests",
+    "handler": "sendConnectionRequest"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "connections/:id",
+    "fullPath": "/connections/:id",
+    "handler": "updateConnection"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "connections/:id",
+    "fullPath": "/connections/:id",
+    "handler": "deleteConnection"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "blocks",
+    "fullPath": "/blocks",
+    "handler": "blockUser"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "state",
+    "fullPath": "/state",
+    "handler": "getConnectionState"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "token-state/:token",
+    "fullPath": "/token-state/:token",
+    "handler": "getConnectionStateByToken"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "connections/token",
+    "fullPath": "/connections/token",
+    "handler": "sendConnectionRequestByToken"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "nfc-tap",
+    "fullPath": "/nfc-tap",
+    "handler": "nfcTap"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "connection/:connectionId",
+    "fullPath": "/connection/:connectionId",
+    "handler": "getConnectionById"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "requests/incoming",
+    "fullPath": "/requests/incoming",
+    "handler": "listIncomingRequests"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "requests/outgoing",
+    "fullPath": "/requests/outgoing",
+    "handler": "listOutgoingRequests"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "connections/status-counts",
+    "fullPath": "/connections/status-counts",
+    "handler": "countConnectionsByStatus"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "abuse/reports",
+    "fullPath": "/abuse/reports",
+    "handler": "reportUser"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "person-plans",
+    "fullPath": "/person-plans",
+    "handler": "createPersonPlan"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "person-plans",
+    "fullPath": "/person-plans",
+    "handler": "listPersonPlans"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "person-plans/:planId/status",
+    "fullPath": "/person-plans/:planId/status",
+    "handler": "setPersonPlanStatus"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "personalization/get",
+    "fullPath": "/personalization/get",
+    "handler": "getPersonalization"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "personalization/update",
+    "fullPath": "/personalization/update",
+    "handler": "updatePersonalization"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "personalization/record-interaction",
+    "fullPath": "/personalization/record-interaction",
+    "handler": "recordPersonalizationInteraction"
+  },
+  {
+    "file": "connect-app/network.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "personalization/reset",
+    "fullPath": "/personalization/reset",
+    "handler": "resetPersonalization"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "nfc-tags",
+    "fullPath": "/nfc-tags",
+    "handler": "listMyNfcTags"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "nfc-tags",
+    "fullPath": "/nfc-tags",
+    "handler": "registerMyNfcTag"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "PATCH",
+    "subPath": "nfc-tags/:tagId",
+    "fullPath": "/nfc-tags/:tagId",
+    "handler": "renameMyNfcTag"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "nfc-tags/:tagId",
+    "fullPath": "/nfc-tags/:tagId",
+    "handler": "revokeMyNfcTag"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "GET",
+    "subPath": "device-sessions",
+    "fullPath": "/device-sessions",
+    "handler": "listMyDeviceSessions"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "POST",
+    "subPath": "device-sessions/touch",
+    "fullPath": "/device-sessions/touch",
+    "handler": "touchMyDeviceSession"
+  },
+  {
+    "file": "connect-app/nfc-device.controller.ts",
+    "basePath": "",
+    "method": "DELETE",
+    "subPath": "device-sessions/:sessionId",
+    "fullPath": "/device-sessions/:sessionId",
+    "handler": "revokeMyDeviceSession"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/opportunities",
+    "handler": "listAll"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "GET",
+    "subPath": "my-opportunities",
+    "fullPath": "/opportunities/my-opportunities",
+    "handler": "listMyOpportunities"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "GET",
+    "subPath": ":id",
+    "fullPath": "/opportunities/:id",
+    "handler": "getById"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/opportunities",
+    "handler": "create"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/opportunities/:id",
+    "handler": "delete"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "PATCH",
+    "subPath": ":id/toggle-status",
+    "fullPath": "/opportunities/:id/toggle-status",
+    "handler": "toggleStatus"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "POST",
+    "subPath": ":id/claim",
+    "fullPath": "/opportunities/:id/claim",
+    "handler": "claim"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "POST",
+    "subPath": ":id/interests",
+    "fullPath": "/opportunities/:id/interests",
+    "handler": "expressInterestById"
+  },
+  {
+    "file": "connect-app/opportunity.controller.ts",
+    "basePath": "opportunities",
+    "method": "POST",
+    "subPath": "express-interest",
+    "fullPath": "/opportunities/express-interest",
+    "handler": "expressInterest"
+  },
+  {
+    "file": "connect-app/products.controller.ts",
+    "basePath": "products",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/products",
+    "handler": "listActiveProducts"
+  },
+  {
+    "file": "connect-app/products.controller.ts",
+    "basePath": "products",
+    "method": "POST",
+    "subPath": "quote",
+    "fullPath": "/products/quote",
+    "handler": "requestProductQuote"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "GET",
+    "subPath": "association/:slug",
+    "fullPath": "/public/association/:slug",
+    "handler": "getPublicAssociation"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "GET",
+    "subPath": "association/resolve-host",
+    "fullPath": "/public/association/resolve-host",
+    "handler": "resolveAssociationByHost"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "GET",
+    "subPath": "identity/:token",
+    "fullPath": "/public/identity/:token",
+    "handler": "getPublicIdentityByToken"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "POST",
+    "subPath": "card/:slug/contact",
+    "fullPath": "/public/card/:slug/contact",
+    "handler": "shareGuestContact"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "POST",
+    "subPath": "club-registration",
+    "fullPath": "/public/club-registration",
+    "handler": "submitClubRegistration"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "POST",
+    "subPath": "leads/club-registration",
+    "fullPath": "/public/leads/club-registration",
+    "handler": "submitClubRegistrationAlias"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "GET",
+    "subPath": "admin/renewal-scope",
+    "fullPath": "/public/admin/renewal-scope",
+    "handler": "getAdminRenewalScope"
+  },
+  {
+    "file": "connect-app/public.controller.ts",
+    "basePath": "public",
+    "method": "POST",
+    "subPath": "admin/renewal-audit",
+    "fullPath": "/public/admin/renewal-audit",
+    "handler": "searchRenewalAuditLog"
+  },
+  {
+    "file": "documents/documents.controller.ts",
+    "basePath": "documents",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/documents",
+    "handler": "list"
+  },
+  {
+    "file": "documents/documents.controller.ts",
+    "basePath": "documents",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/documents",
+    "handler": "create"
+  },
+  {
+    "file": "documents/documents.controller.ts",
+    "basePath": "documents",
+    "method": "PUT",
+    "subPath": ":id",
+    "fullPath": "/documents/:id",
+    "handler": "update"
+  },
+  {
+    "file": "documents/documents.controller.ts",
+    "basePath": "documents",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/documents/:id",
+    "handler": "delete"
+  },
+  {
+    "file": "documents/documents.controller.ts",
+    "basePath": "documents",
+    "method": "GET",
+    "subPath": ":id/url",
+    "fullPath": "/documents/:id/url",
+    "handler": "getUrl"
+  },
+  {
+    "file": "events/checkin.controller.ts",
+    "basePath": "checkin",
+    "method": "GET",
+    "subPath": "state",
+    "fullPath": "/checkin/state",
+    "handler": "getCheckinState"
+  },
+  {
+    "file": "events/checkin.controller.ts",
+    "basePath": "checkin",
+    "method": "GET",
+    "subPath": "qr-events",
+    "fullPath": "/checkin/qr-events",
+    "handler": "getCheckinQrEvents"
+  },
+  {
+    "file": "events/checkin.controller.ts",
+    "basePath": "checkin",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/checkin",
+    "handler": "checkIn"
+  },
+  {
+    "file": "events/checkin.controller.ts",
+    "basePath": "checkin",
+    "method": "POST",
+    "subPath": "undo",
+    "fullPath": "/checkin/undo",
+    "handler": "undoCheckIn"
+  },
+  {
+    "file": "events/checkin.controller.ts",
+    "basePath": "checkin",
+    "method": "POST",
+    "subPath": "record",
+    "fullPath": "/checkin/record",
+    "handler": "recordMemberCheckin"
+  },
+  {
+    "file": "events/checkin.controller.ts",
+    "basePath": "checkin",
+    "method": "GET",
+    "subPath": "my-checkins",
+    "fullPath": "/checkin/my-checkins",
+    "handler": "listMyMemberCheckins"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": "my-events",
+    "fullPath": "/events/my-events",
+    "handler": "listMyEvents"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": "overview",
+    "fullPath": "/events/overview",
+    "handler": "getEventsOverview"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": "registrations",
+    "fullPath": "/events/registrations",
+    "handler": "listRegistrations"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": "with-registrations",
+    "fullPath": "/events/with-registrations",
+    "handler": "listEventsWithRegistrations"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/events",
+    "handler": "listEvents"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": ":id",
+    "fullPath": "/events/:id",
+    "handler": "getEventById"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "GET",
+    "subPath": ":id/tickets",
+    "fullPath": "/events/:id/tickets",
+    "handler": "getEventTickets"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/events",
+    "handler": "createEvent"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "POST",
+    "subPath": ":id/register",
+    "fullPath": "/events/:id/register",
+    "handler": "registerForEvent"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "POST",
+    "subPath": ":id/cancel",
+    "fullPath": "/events/:id/cancel",
+    "handler": "cancelEventRegistration"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "PUT",
+    "subPath": ":id",
+    "fullPath": "/events/:id",
+    "handler": "updateEvent"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "PUT",
+    "subPath": ":id/qr-fields",
+    "fullPath": "/events/:id/qr-fields",
+    "handler": "updateQrFields"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "PUT",
+    "subPath": "registrations/:id/seating",
+    "fullPath": "/events/registrations/:id/seating",
+    "handler": "updateRegistrationSeating"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "POST",
+    "subPath": "registrations/:id/walk-in-cash",
+    "fullPath": "/events/registrations/:id/walk-in-cash",
+    "handler": "recordWalkInCashPayment"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "POST",
+    "subPath": "registrations/:id/send-payment-reminder",
+    "fullPath": "/events/registrations/:id/send-payment-reminder",
+    "handler": "sendPaymentReminder"
+  },
+  {
+    "file": "events/events.controller.ts",
+    "basePath": "events",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/events/:id",
+    "handler": "deleteEvent"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": "workspace/summary",
+    "fullPath": "/meetings/workspace/summary",
+    "handler": "getWorkspaceSummary"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": "workspace/list",
+    "fullPath": "/meetings/workspace/list",
+    "handler": "listWorkspaceMeetings"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": ":id/workspace-detail",
+    "fullPath": "/meetings/:id/workspace-detail",
+    "handler": "getMeetingWorkspaceDetail"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": ":id/outcome",
+    "fullPath": "/meetings/:id/outcome",
+    "handler": "getOutcome"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": ":id/outcome",
+    "fullPath": "/meetings/:id/outcome",
+    "handler": "saveOutcome"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": ":id/follow-ups",
+    "fullPath": "/meetings/:id/follow-ups",
+    "handler": "listFollowUps"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": ":id/follow-ups",
+    "fullPath": "/meetings/:id/follow-ups",
+    "handler": "createFollowUp"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "PATCH",
+    "subPath": "follow-ups/:followUpId/status",
+    "fullPath": "/meetings/follow-ups/:followUpId/status",
+    "handler": "updateFollowUpStatus"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": "availability/preferences",
+    "fullPath": "/meetings/availability/preferences",
+    "handler": "getAvailabilityPreferences"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": "availability/preferences",
+    "fullPath": "/meetings/availability/preferences",
+    "handler": "updateAvailabilityPreferences"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": ":id/time-proposals",
+    "fullPath": "/meetings/:id/time-proposals",
+    "handler": "listTimeProposals"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "GET",
+    "subPath": ":id/projections",
+    "fullPath": "/meetings/:id/projections",
+    "handler": "listProjections"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": "time-proposals",
+    "fullPath": "/meetings/time-proposals",
+    "handler": "createTimeProposals"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": "time-proposals/:id/respond",
+    "fullPath": "/meetings/time-proposals/:id/respond",
+    "handler": "respondToTimeProposal"
+  },
+  {
+    "file": "meetings/meetings.controller.ts",
+    "basePath": "meetings",
+    "method": "POST",
+    "subPath": "time-proposals/:id/select",
+    "fullPath": "/meetings/time-proposals/:id/select",
+    "handler": "selectTimeProposal"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "directory",
+    "fullPath": "/members/directory",
+    "handler": "listDirectory"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me",
+    "fullPath": "/members/me",
+    "handler": "getMyMember"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/context",
+    "fullPath": "/members/me/context",
+    "handler": "getMyMemberContext"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/membership",
+    "fullPath": "/members/me/membership",
+    "handler": "getMyMembership"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/history",
+    "fullPath": "/members/me/history",
+    "handler": "getMyMemberHistory"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/renewal-history",
+    "fullPath": "/members/me/renewal-history",
+    "handler": "getMyRenewalHistory"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/renewal-quote",
+    "fullPath": "/members/me/renewal-quote",
+    "handler": "getRenewalQuote"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": "me/renewal-payment",
+    "fullPath": "/members/me/renewal-payment",
+    "handler": "payMyRenewal"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/renewal-audit",
+    "fullPath": "/members/me/renewal-audit",
+    "handler": "getMyRenewalAuditLog"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "me/linkable",
+    "fullPath": "/members/me/linkable",
+    "handler": "listLinkableMembers"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": "me/link",
+    "fullPath": "/members/me/link",
+    "handler": "linkMyMemberProfile"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": "me/unlink",
+    "fullPath": "/members/me/unlink",
+    "handler": "unlinkMyMemberProfile"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "brand",
+    "fullPath": "/members/brand",
+    "handler": "getMyAssociationBrand"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "benefits",
+    "fullPath": "/members/benefits",
+    "handler": "getMyBenefits"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "benefits/admin",
+    "fullPath": "/members/benefits/admin",
+    "handler": "listAllBenefits"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": "benefits/admin",
+    "fullPath": "/members/benefits/admin",
+    "handler": "createBenefit"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "PUT",
+    "subPath": "benefits/admin/:id",
+    "fullPath": "/members/benefits/admin/:id",
+    "handler": "updateBenefit"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "DELETE",
+    "subPath": "benefits/admin/:id",
+    "fullPath": "/members/benefits/admin/:id",
+    "handler": "deleteBenefit"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "active-association-id",
+    "fullPath": "/members/active-association-id",
+    "handler": "getActiveAssociationId"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "account-statuses",
+    "fullPath": "/members/account-statuses",
+    "handler": "getAccountStatuses"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/members",
+    "handler": "listMembers"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": ":id/history",
+    "fullPath": "/members/:id/history",
+    "handler": "getMemberHistory"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "GET",
+    "subPath": ":id",
+    "fullPath": "/members/:id",
+    "handler": "getMemberById"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/members",
+    "handler": "createMember"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "PUT",
+    "subPath": ":id",
+    "fullPath": "/members/:id",
+    "handler": "updateMember"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "PATCH",
+    "subPath": ":id/contact",
+    "fullPath": "/members/:id/contact",
+    "handler": "updateMemberContact"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "PATCH",
+    "subPath": ":id/role-dept",
+    "fullPath": "/members/:id/role-dept",
+    "handler": "updateMemberRoleDept"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": ":id/role-dept",
+    "fullPath": "/members/:id/role-dept",
+    "handler": "updateMemberRoleDeptPost"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "PATCH",
+    "subPath": ":id/renew",
+    "fullPath": "/members/:id/renew",
+    "handler": "renewMember"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": ":id/renew",
+    "fullPath": "/members/:id/renew",
+    "handler": "renewMemberPost"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "PATCH",
+    "subPath": ":id/remind",
+    "fullPath": "/members/:id/remind",
+    "handler": "sendReminder"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "POST",
+    "subPath": ":id/remind",
+    "fullPath": "/members/:id/remind",
+    "handler": "sendReminderPost"
+  },
+  {
+    "file": "members/members.controller.ts",
+    "basePath": "members",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/members/:id",
+    "handler": "deleteMember"
+  },
+  {
+    "file": "reviews/reviews.controller.ts",
+    "basePath": "reviews",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/reviews",
+    "handler": "listReviews"
+  },
+  {
+    "file": "reviews/reviews.controller.ts",
+    "basePath": "reviews",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/reviews",
+    "handler": "addReview"
+  },
+  {
+    "file": "reviews/reviews.controller.ts",
+    "basePath": "reviews",
+    "method": "PUT",
+    "subPath": ":id",
+    "fullPath": "/reviews/:id",
+    "handler": "updateReview"
+  },
+  {
+    "file": "reviews/reviews.controller.ts",
+    "basePath": "reviews",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/reviews/:id",
+    "handler": "deleteReview"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "GET",
+    "subPath": "packages",
+    "fullPath": "/sponsors/packages",
+    "handler": "listPackages"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "GET",
+    "subPath": "packages/:id",
+    "fullPath": "/sponsors/packages/:id",
+    "handler": "getPackageById"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "POST",
+    "subPath": "packages",
+    "fullPath": "/sponsors/packages",
+    "handler": "createPackage"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "PUT",
+    "subPath": "packages/:id",
+    "fullPath": "/sponsors/packages/:id",
+    "handler": "updatePackage"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "DELETE",
+    "subPath": "packages/:id",
+    "fullPath": "/sponsors/packages/:id",
+    "handler": "deletePackage"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/sponsors",
+    "handler": "listSponsors"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "GET",
+    "subPath": ":id",
+    "fullPath": "/sponsors/:id",
+    "handler": "getSponsorById"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/sponsors",
+    "handler": "createSponsor"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "PUT",
+    "subPath": ":id",
+    "fullPath": "/sponsors/:id",
+    "handler": "updateSponsor"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/sponsors/:id",
+    "handler": "deleteSponsor"
+  },
+  {
+    "file": "sponsors/sponsors.controller.ts",
+    "basePath": "sponsors",
+    "method": "POST",
+    "subPath": "onboard",
+    "fullPath": "/sponsors/onboard",
+    "handler": "onboardSponsor"
+  },
+  {
+    "file": "upload/upload.controller.ts",
+    "basePath": "upload",
+    "method": "POST",
+    "subPath": "avatar",
+    "fullPath": "/upload/avatar",
+    "handler": "uploadAvatar"
+  },
+  {
+    "file": "upload/upload.controller.ts",
+    "basePath": "upload",
+    "method": "POST",
+    "subPath": "file",
+    "fullPath": "/upload/file",
+    "handler": "uploadFile"
+  },
+  {
+    "file": "upload/upload.controller.ts",
+    "basePath": "upload",
+    "method": "GET",
+    "subPath": "file/*path",
+    "fullPath": "/upload/file/*path",
+    "handler": "getFile"
+  },
+  {
+    "file": "upload/upload.controller.ts",
+    "basePath": "upload",
+    "method": "DELETE",
+    "subPath": "file/*path",
+    "fullPath": "/upload/file/*path",
+    "handler": "deleteFile"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "GET",
+    "subPath": "me",
+    "fullPath": "/users/me",
+    "handler": "getMyAccount"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "PUT",
+    "subPath": "me",
+    "fullPath": "/users/me",
+    "handler": "updateMyAccount"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "POST",
+    "subPath": "change-password",
+    "fullPath": "/users/change-password",
+    "handler": "changePassword"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "GET",
+    "subPath": "",
+    "fullPath": "/users",
+    "handler": "listUsers"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "GET",
+    "subPath": ":id",
+    "fullPath": "/users/:id",
+    "handler": "getUserById"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "POST",
+    "subPath": "",
+    "fullPath": "/users",
+    "handler": "createUser"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "PUT",
+    "subPath": ":id",
+    "fullPath": "/users/:id",
+    "handler": "updateUser"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "PATCH",
+    "subPath": ":id/status",
+    "fullPath": "/users/:id/status",
+    "handler": "toggleStatus"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "POST",
+    "subPath": ":id/reset-password",
+    "fullPath": "/users/:id/reset-password",
+    "handler": "resetPassword"
+  },
+  {
+    "file": "users/users.controller.ts",
+    "basePath": "users",
+    "method": "DELETE",
+    "subPath": ":id",
+    "fullPath": "/users/:id",
+    "handler": "deleteUser"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "GET",
+    "subPath": "polls",
+    "fullPath": "/voting/polls",
+    "handler": "listPolls"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "GET",
+    "subPath": "polls/:id",
+    "fullPath": "/voting/polls/:id",
+    "handler": "getPollById"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "POST",
+    "subPath": "polls",
+    "fullPath": "/voting/polls",
+    "handler": "createPoll"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "PUT",
+    "subPath": "polls/:id",
+    "fullPath": "/voting/polls/:id",
+    "handler": "updatePoll"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "POST",
+    "subPath": "polls/:id/close",
+    "fullPath": "/voting/polls/:id/close",
+    "handler": "closePoll"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "DELETE",
+    "subPath": "polls/:id",
+    "fullPath": "/voting/polls/:id",
+    "handler": "deletePoll"
+  },
+  {
+    "file": "voting/voting.controller.ts",
+    "basePath": "voting",
+    "method": "POST",
+    "subPath": "polls/:id/vote",
+    "fullPath": "/voting/polls/:id/vote",
+    "handler": "castVote"
+  }
+]

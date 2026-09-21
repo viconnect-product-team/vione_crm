@@ -1,0 +1,1 @@
+ALTER TABLE public.community_join_requests ADD COLUMN IF NOT EXISTS cancel_reason text;

@@ -1,0 +1,66 @@
+services:
+  frontend:
+    image: ${FRONTEND_IMAGE_NAME:-vione-standalone-frontend}:latest
+    container_name: vione-standalone-frontend-prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+      - NITRO_HOST=0.0.0.0
+      - NEST_API_URL=http://backend:4000
+    ports:
+      - "127.0.0.1:${TARGET_PROD_PORT_FRONTEND:-5010}:8080"
+    depends_on:
+      - backend
+    networks:
+      - vione-standalone-network
+
+  backend:
+    image: ${BACKEND_IMAGE_NAME:-vione-standalone-backend}:latest
+    container_name: vione-standalone-backend-prod
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    user: "0:0"
+    volumes:
+      - vione-standalone-uploads-data:/app/uploads
+    ports:
+      - "127.0.0.1:${TARGET_PROD_PORT_BACKEND:-5011}:4000"
+    depends_on:
+      - minio
+    networks:
+      - vione-standalone-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: vione-standalone-minio-prod
+    restart: always
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "9060:9000"
+      - "9061:9001"
+    volumes:
+      - vione-standalone-minio-data-prod:/data
+    command: server /data --console-address ":9001"
+    networks:
+      vione-standalone-network:
+        aliases:
+          - minio
+          - vione-standalone-minio-prod
+
+volumes:
+  vione-standalone-minio-data-prod:
+    driver: local
+  vione-standalone-uploads-data:
+    name: vione-standalone-uploads-data
+
+networks:
+  vione-standalone-network:
+    name: vione-standalone-network
+    driver: bridge

@@ -1,0 +1,1 @@
+ALTER TABLE public.quote_requests ADD COLUMN IF NOT EXISTS reminder_count integer NOT NULL DEFAULT 0;

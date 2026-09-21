@@ -1,0 +1,1 @@
+import{r as u,s as r}from"./main-oKw2k0Js.js";function c(){const[a,e]=u.useState(null);return u.useEffect(()=>{let t=!0;r.auth.getUser().then(({data:s})=>{t&&e(s.user?.id??null)});const{data:n}=r.auth.onAuthStateChange((s,i)=>{e(i?.user?.id??null)});return()=>{t=!1,n.subscription.unsubscribe()}},[]),a}export{c as u};

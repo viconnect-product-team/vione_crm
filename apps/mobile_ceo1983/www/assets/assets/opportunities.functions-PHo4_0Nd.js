@@ -1,0 +1,1 @@
+import{aN as e,aO as a,aP as d}from"./index-BI--mQOZ.js";const t=e({method:"GET"}).middleware([a]).handler(d("809936268748527b0fbd9e4b6b422680fac7fd0891f3a53513ff4af8258f57e8")),s=e({method:"POST"}).middleware([a]).handler(d("2f6f34a5eadbb8a45db97371eca461b5527e68e54f25d0757c85005870b43ddd"));export{s as e,t as l};

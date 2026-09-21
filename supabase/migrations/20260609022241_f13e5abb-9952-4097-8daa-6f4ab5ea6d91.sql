@@ -1,0 +1,2 @@
+ALTER TABLE public.reviews ADD COLUMN review_type text NOT NULL DEFAULT 'service';
+ALTER TABLE public.reviews ADD CONSTRAINT reviews_review_type_check CHECK (review_type IN ('service','event','networking'));

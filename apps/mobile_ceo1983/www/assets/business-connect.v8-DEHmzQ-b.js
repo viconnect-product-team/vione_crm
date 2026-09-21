@@ -1,0 +1,1 @@
+import{j as o}from"./index-DBZKjGg0.js";import{B as t}from"./BusinessConnectLandingV8-BbawWEZf.js";import"./proxy-DJ2xdgD6.js";import"./arrow-right-09vG9l23.js";import"./play-5HzQOAtJ.js";import"./layers-CTHV9YTH.js";import"./chart-column-C0tMN5i6.js";import"./bot-2wTADYR8.js";function u(){return o.jsx(t,{})}export{u as component};

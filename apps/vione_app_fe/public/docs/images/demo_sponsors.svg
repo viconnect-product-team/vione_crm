@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520" style="background:#0b1329;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="50%" stop-color="#111d40" />
+      <stop offset="100%" stop-color="#070c1b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0084FF" />
+      <stop offset="100%" stop-color="#003B95" />
+    </linearGradient>
+    <filter id="dropGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="520" fill="url(#bgGrad)" />
+  
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1">
+    <line x1="0" y1="80" x2="800" y2="80" />
+    <line x1="0" y1="180" x2="800" y2="180" />
+    <line x1="0" y1="280" x2="800" y2="280" />
+    <line x1="0" y1="380" x2="800" y2="380" />
+    <line x1="0" y1="480" x2="800" y2="480" />
+    <line x1="160" y1="0" x2="160" y2="520" />
+    <line x1="320" y1="0" x2="320" y2="520" />
+    <line x1="480" y1="0" x2="480" y2="520" />
+    <line x1="640" y1="0" x2="640" y2="520" />
+  </g>
+
+  <!-- Top Header Banner -->
+  <rect x="40" y="24" width="720" height="60" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+  <circle cx="75" cy="54" r="18" fill="url(#goldGrad)" />
+  <text x="75" y="60" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle">1983</text>
+  <text x="108" y="46" fill="#fbbf24" font-size="15" font-weight="800" letter-spacing="0.5">HƯỚNG DẪN 13: NHÀ TÀI TRỢ & QUYỀN LỢI TRUYỀN THÔNG</text>
+  <text x="108" y="66" fill="#94a3b8" font-size="12">Gói tài trợ Kim Cương, Vàng, Bạc và vinh danh đại biểu</text>
+  <rect x="660" y="40" width="80" height="28" rx="8" fill="#F59E0B" />
+  <text x="700" y="58" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">TÀI TRỢ</text>
+
+  <!-- Main Content -->
+  
+  <g transform="translate(60, 105)">
+    <rect x="0" y="0" width="280" height="380" rx="32" fill="#0f172a" stroke="#334155" stroke-width="4" filter="url(#dropGlow)" />
+    <rect x="90" y="8" width="100" height="16" rx="8" fill="#1e293b" />
+    <rect x="15" y="36" width="250" height="330" rx="20" fill="#ffffff" />
+    <text x="140" y="68" fill="#003B95" font-size="13" font-weight="bold" text-anchor="middle">NHÀ TÀI TRỢ KIM CƯƠNG</text>
+    <!-- Sponsor 1 -->
+    <rect x="25" y="82" width="230" height="75" rx="12" fill="#fffbeb" stroke="#fef3c7" />
+    <circle cx="55" cy="119" r="20" fill="#F59E0B" />
+    <text x="55" y="125" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">💎</text>
+    <text x="85" y="108" fill="#0f172a" font-size="12" font-weight="bold">Tập Đoàn Địa Ốc Quý Hợi</text>
+    <text x="85" y="122" fill="#d97706" font-size="10" font-weight="bold">Nhà Tài Trợ Kim Cương 2026</text>
+    <text x="85" y="136" fill="#64748b" font-size="9">Đồng hành Gala Thường Niên</text>
+
+    <!-- Sponsor 2 -->
+    <rect x="25" y="165" width="230" height="75" rx="12" fill="#f8fafc" stroke="#e2e8f0" />
+    <circle cx="55" cy="202" r="20" fill="#003B95" />
+    <text x="55" y="208" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">🥇</text>
+    <text x="85" y="191" fill="#0f172a" font-size="12" font-weight="bold">Ngân Hàng MB Bank</text>
+    <text x="85" y="205" fill="#003B95" font-size="10" font-weight="bold">Nhà Tài Trợ Vàng Hội Nghị B2B</text>
+    <text x="85" y="219" fill="#64748b" font-size="9">Đối tác giải pháp VietQR tự động</text>
+
+    <rect x="25" y="255" width="230" height="42" rx="12" fill="#003B95" />
+    <text x="140" y="281" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">Đăng Ký Gói Tài Trợ Sự Kiện</text>
+  </g>
+
+  <g transform="translate(380, 115)">
+    <rect x="0" y="0" width="380" height="110" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="36" fill="#fbbf24" font-size="15" font-weight="bold">1. Quyền Lợi Truyền Thông Đa Kênh</text>
+    <text x="24" y="62" fill="#cbd5e1" font-size="12">Logo và thương hiệu nhà tài trợ xuất hiện tại banner chính,</text>
+    <text x="24" y="80" fill="#cbd5e1" font-size="12">kỷ yếu đại biểu và các bản tin email marketing gửi 1000+ CEO.</text>
+
+    <rect x="0" y="130" width="380" height="110" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="166" fill="#38bdf8" font-size="15" font-weight="bold">2. Gian Hàng Trưng Bày Độc Quyền</text>
+    <text x="24" y="192" fill="#cbd5e1" font-size="12">Bố trí vị trí booth triển lãm trang trọng tại sảnh chính</text>
+    <text x="24" y="210" fill="#cbd5e1" font-size="12">của các kỳ Hội thảo và Diễn đàn Xúc tiến Thương mại.</text>
+
+    <rect x="0" y="260" width="380" height="95" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="296" fill="#4ade80" font-size="15" font-weight="bold">3. Vinh Danh Kỷ Niệm Chương &amp; Bằng Khen</text>
+    <text x="24" y="322" fill="#cbd5e1" font-size="12">Trao tặng bảng vàng tri ân trực tiếp trên sân khấu Gala.</text>
+  </g>
+
+</svg>

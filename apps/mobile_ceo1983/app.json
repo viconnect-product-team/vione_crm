@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "CEO 1983",
+    "slug": "ceo1983",
+    "owner": "unicom-vibe-coding-team",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0F19"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "vn.ceo1983.app",
+      "buildNumber": "7",
+      "infoPlist": {
+        "NSCameraUsageDescription": "CEO 1983 cần quyền truy cập camera để quét mã QR check-in sự kiện và kết nối hội viên.",
+        "NSPhotoLibraryUsageDescription": "CEO 1983 cần quyền truy cập thư viện ảnh để tải lên avatar và tài liệu hội viên.",
+        "NSFaceIDUsageDescription": "Xác thực sinh trắc học Face ID / Touch ID để bảo mật đăng nhập tài khoản CEO 1983.",
+        "NFCReaderUsageDescription": "Đọc thẻ danh thiếp hội viên NFC 1-chạm kết nối và giao lưu doanh nhân."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0B0F19"
+      },
+      "package": "vn.ceo1983.app",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "scheme": "ceo1983",
+    "plugins": [],
+    "extra": {
+      "eas": {
+        "projectId": "2349b0a7-b576-40f5-abe1-0a1f7a75407d"
+      }
+    }
+  }
+}

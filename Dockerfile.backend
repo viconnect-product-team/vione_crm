@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1.4
+FROM node:22-alpine AS builder
+WORKDIR /app
+RUN apk add --no-cache libc6-compat
+RUN npm install -g turbo
+
+COPY . .
+RUN turbo prune @vibe/vione_app_be --docker
+
+# Add lockfile and package.json's of isolated subworkspace
+FROM node:22-alpine AS installer
+WORKDIR /app
+RUN apk add --no-cache python3 make g++ openssl
+# First install dependencies
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/package-lock.json ./package-lock.json
+RUN npm ci --ignore-scripts=false && npm rebuild bcrypt
+
+# Build the project
+COPY --from=builder /app/out/full/ .
+# Generate Prisma Client
+RUN cd packages/db && npx prisma generate
+RUN npx turbo run build --filter=@vibe/vione_app_be...
+
+FROM node:22-alpine AS runner
+WORKDIR /app
+RUN apk add --no-cache openssl
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --chown=appuser:appgroup --from=installer /app/packages/db/package.json ./packages/db/
+COPY --chown=appuser:appgroup --from=installer /app/packages/db/prisma ./packages/db/prisma
+COPY --chown=appuser:appgroup --from=installer /app/packages/db/index.js ./packages/db/
+
+COPY --chown=appuser:appgroup --from=installer /app/apps/vione_app_be/package.json ./apps/vione_app_be/
+COPY --chown=appuser:appgroup --from=installer /app/apps/vione_app_be/dist ./apps/vione_app_be/dist
+COPY --chown=appuser:appgroup --from=installer /app/node_modules ./node_modules
+
+COPY --chown=appuser:appgroup docker-entrypoint.s[h] ./
+RUN chmod +x docker-entrypoint.sh 2>/dev/null || true
+
+# Pre-create uploads directory and set permissions for appuser
+RUN mkdir -p /app/uploads/avatars /app/uploads/documents /tmp/uploads/avatars /tmp/uploads/documents \
+    && chown -R appuser:appgroup /app/uploads /tmp/uploads \
+    && chmod -R 775 /app/uploads /tmp/uploads
+
+USER appuser
+
+EXPOSE 4000
+CMD ["sh", "-c", "if [ -f docker-entrypoint.sh ]; then ./docker-entrypoint.sh; fi; if [ -f apps/vione_app_be/dist/src/main.js ]; then node apps/vione_app_be/dist/src/main; else node apps/vione_app_be/dist/main; fi"]

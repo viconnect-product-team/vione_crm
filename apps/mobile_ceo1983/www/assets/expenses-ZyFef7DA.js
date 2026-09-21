@@ -1,0 +1,1 @@
+import{j as e}from"./index-DBZKjGg0.js";const i=({error:t})=>e.jsx("div",{role:"alert",className:"p-6 text-sm text-destructive",children:t?.message||"Đã xảy ra lỗi khi tải dữ liệu chi tiêu."});export{i as errorComponent};

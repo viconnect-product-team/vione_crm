@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS invoices_invoice_no_key ON public.invoices (invoice_no);

@@ -1,0 +1,1 @@
+import{j as e,A as t}from"./index-DBZKjGg0.js";const o=({error:r})=>e.jsx(t,{children:e.jsx("div",{className:"rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-sm text-destructive",children:r.message})});export{o as errorComponent};

@@ -1,0 +1,32 @@
+{
+  "name": "ViOne — Hội viên Hiệp hội Doanh nghiệp",
+  "short_name": "ViOne Hội viên",
+  "description": "Ứng dụng hội viên: thẻ hội viên, sự kiện, cơ hội kinh doanh và ưu đãi.",
+  "start_url": "/m",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a1834",
+  "theme_color": "#0a1834",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

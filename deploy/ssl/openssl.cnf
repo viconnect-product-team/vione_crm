@@ -1,0 +1,30 @@
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+x509_extensions = v3_req
+
+[dn]
+C = VN
+ST = Hanoi
+L = Hanoi
+O = CEO 1983 Association & ViOne
+OU = Dev Infrastructure
+CN = 14.225.217.232
+
+[v3_req]
+subjectAltName = @alt_names
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+
+[alt_names]
+IP.1 = 14.225.217.232
+IP.2 = 127.0.0.1
+DNS.1 = localhost
+DNS.2 = 14-225-217-232.sslip.io
+DNS.3 = *.14-225-217-232.sslip.io
+DNS.4 = 14.225.217.232.sslip.io
+DNS.5 = *.14.225.217.232.sslip.io
+DNS.6 = *.ceo1983.com

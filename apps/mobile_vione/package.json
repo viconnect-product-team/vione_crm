@@ -1,0 +1,33 @@
+{
+  "name": "@vibe/mobile_vione",
+  "version": "1.0.0",
+  "description": "ViOne Connect Mobile App Wrapper (Android APK & iOS IPA)",
+  "main": "index.js",
+  "scripts": {
+    "sync": "npx cap sync",
+    "sync:android": "npx cap sync android",
+    "sync:ios": "npx cap sync ios",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios",
+    "build:static": "npm run build --prefix ../vione_app_fe && npx cap sync",
+    "build:apk": "npx eas-cli build --profile preview --platform android",
+    "build:apk:fast": "npx cap copy android && cd android && gradlew.bat assembleDebug",
+    "build:apk:dev": "npx eas-cli build --profile development --platform android",
+    "build:apk:local": "npm run build:static && cd android && gradlew.bat assembleDebug",
+    "build:apk:release": "npm run build:static && cd android && gradlew.bat assembleRelease",
+    "build:aab": "npx eas-cli build --profile production --platform android",
+    "build:ipa": "npx eas-cli build --profile production --platform ios --non-interactive",
+    "build:ios:dev": "npx eas-cli build --profile development --platform ios",
+    "build:ios:preview": "npx eas-cli build --profile preview --platform ios",
+    "build:ios:prod": "npx eas-cli build --profile production --platform ios --non-interactive",
+    "build:ios:submit": "npx eas-cli build --profile production --platform ios --auto-submit --non-interactive",
+    "submit:ios": "npx eas-cli submit --platform ios",
+    "eas:login": "npx eas-cli login",
+    "eas:whoami": "npx eas-cli whoami",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

@@ -1,0 +1,19 @@
+FROM node:22-alpine AS runner
+WORKDIR /app
+RUN apk add --no-cache openssl
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --chown=appuser:appgroup apps/vione_app_fe/.output ./apps/vione_app_fe/.output
+COPY --chown=appuser:appgroup apps/vione_app_fe/docker-entrypoint.sh ./apps/vione_app_fe/
+
+RUN chmod +x ./apps/vione_app_fe/docker-entrypoint.sh || true
+USER appuser
+
+EXPOSE 8080
+WORKDIR /app/apps/vione_app_fe
+
+ENV VITE_APP_SCOPE=association_app
+ENV VITE_APP_NAME="CLB Doanh Nhân CEO 1983"
+ENV VITE_APP_DEFAULT_ROUTE=/association
+
+CMD ["sh", "-c", "if [ -f docker-entrypoint.sh ]; then ./docker-entrypoint.sh; else node .output/server/index.mjs; fi"]

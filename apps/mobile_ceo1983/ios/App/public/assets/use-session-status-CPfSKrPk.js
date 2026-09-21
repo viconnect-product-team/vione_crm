@@ -1,0 +1,1 @@
+import{r as u,s as a}from"./main-oKw2k0Js.js";function i(){const[n,t]=u.useState("checking");return u.useEffect(()=>{let e=!0;a.auth.getUser().then(({data:s})=>{e&&t(s.user?"authenticated":"anonymous")});const{data:r}=a.auth.onAuthStateChange((s,o)=>{t(o?.user?"authenticated":"anonymous")});return()=>{e=!1,r.subscription.unsubscribe()}},[]),n}export{i as u};

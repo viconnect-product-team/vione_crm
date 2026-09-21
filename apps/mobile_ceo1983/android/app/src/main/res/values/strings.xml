@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">CEO 1983</string>
+    <string name="title_activity_main">CEO 1983</string>
+    <string name="package_name">vn.ceo1983.app</string>
+    <string name="custom_url_scheme">vn.ceo1983.app</string>
+</resources>

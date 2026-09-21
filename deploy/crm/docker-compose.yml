@@ -1,0 +1,51 @@
+services:
+  crm-frontend:
+    image: ${ASSOCIATION_FE_IMAGE:-crm-frontend}:latest
+    container_name: crm-frontend-prod
+    restart: always
+    env_file:
+      - .env.crm
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+      - NITRO_HOST=0.0.0.0
+      - NEST_API_URL=http://crm-backend:4000
+      - VITE_APP_SCOPE=crm_platform
+      - VITE_APP_NAME="ViOne CRM Admin"
+      - VITE_APP_DEFAULT_ROUTE=/association
+    ports:
+      - "${ASSOCIATION_PORT_FRONTEND:-5004}:8080"
+    depends_on:
+      - crm-backend
+    networks:
+      - vione-network
+
+  crm-backend:
+    image: ${ASSOCIATION_BE_IMAGE:-crm-backend}:latest
+    container_name: crm-backend-prod
+    restart: always
+    env_file:
+      - .env.crm
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - APP_SCOPE=crm_platform
+    user: "0:0"
+    volumes:
+      - vione-uploads-data:/app/uploads
+    ports:
+      - "${ASSOCIATION_PORT_BACKEND:-5005}:4000"
+    networks:
+      vione-network:
+        aliases:
+          - backend
+          - crm-backend
+
+volumes:
+  vione-uploads-data:
+    name: vione-uploads-data
+
+networks:
+  vione-network:
+    name: vione-network
+    external: true

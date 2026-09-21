@@ -1,0 +1,1 @@
+ALTER TABLE public.votes ADD COLUMN IF NOT EXISTS options jsonb NOT NULL DEFAULT '[]'::jsonb;

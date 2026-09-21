@@ -1,0 +1,2090 @@
+{
+  "brand.name": {
+    "vi": "Hiệp hội Doanh nghiệp Việt Nam",
+    "en": "Vietnam Business Association"
+  },
+  "brand.full": {
+    "vi": "Tổng quan",
+    "en": "Dashboard"
+  },
+  "brand.tagline": {
+    "vi": "Nền tảng quản lý & kết nối",
+    "en": "Management & networking platform"
+  },
+  "auth.meta.title": {
+    "vi": "Đăng nhập — VBA Platform",
+    "en": "Sign in — VBA Platform"
+  },
+  "auth.backToLanding": {
+    "vi": "Quay lại Landing Page",
+    "en": "Back to Landing Page"
+  },
+  "auth.signInTitle": {
+    "vi": "Đăng nhập",
+    "en": "Sign in"
+  },
+  "auth.signUpTitle": {
+    "vi": "Tạo tài khoản",
+    "en": "Create account"
+  },
+  "auth.subtitle": {
+    "vi": "Cộng đồng doanh nhân tinh hoa",
+    "en": "Elite entrepreneur community"
+  },
+  "auth.emailPlaceholder": {
+    "vi": "Email",
+    "en": "Email"
+  },
+  "auth.passwordPlaceholder": {
+    "vi": "Mật khẩu",
+    "en": "Password"
+  },
+  "auth.processing": {
+    "vi": "Đang xử lý...",
+    "en": "Processing..."
+  },
+  "auth.signInButton": {
+    "vi": "Đăng nhập",
+    "en": "Sign in"
+  },
+  "auth.signUpButton": {
+    "vi": "Đăng ký",
+    "en": "Sign up"
+  },
+  "auth.signUpSuccess": {
+    "vi": "Đăng ký thành công! Kiểm tra email để xác nhận.",
+    "en": "Signed up successfully! Check your email to confirm."
+  },
+  "auth.forgotPassword": {
+    "vi": "Quên mật khẩu?",
+    "en": "Forgot password?"
+  },
+  "auth.divider": {
+    "vi": "hoặc",
+    "en": "or"
+  },
+  "auth.googleButton": {
+    "vi": "Tiếp tục với Google",
+    "en": "Continue with Google"
+  },
+  "auth.googleError": {
+    "vi": "Không thể đăng nhập với Google",
+    "en": "Could not sign in with Google"
+  },
+  "auth.switchToSignUp": {
+    "vi": "Chưa có tài khoản? Đăng ký",
+    "en": "No account? Sign up"
+  },
+  "auth.switchToSignIn": {
+    "vi": "Đã có tài khoản? Đăng nhập",
+    "en": "Already have an account? Sign in"
+  },
+  "auth.genericError": {
+    "vi": "Có lỗi xảy ra",
+    "en": "Something went wrong"
+  },
+  "auth.sessionExpired": {
+    "vi": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+    "en": "Your session has expired. Please sign in again."
+  },
+  "bc.mobile.auth.welcome": {
+    "vi": "Chào mừng trở lại",
+    "en": "Welcome back"
+  },
+  "bc.mobile.auth.subtitle": {
+    "vi": "Đăng nhập để tiếp tục kết nối và mở rộng mạng lưới của bạn.",
+    "en": "Sign in to continue connecting and growing your network."
+  },
+  "bc.mobile.auth.google": {
+    "vi": "Tiếp tục với Google",
+    "en": "Continue with Google"
+  },
+  "bc.mobile.auth.apple": {
+    "vi": "Tiếp tục với Apple",
+    "en": "Continue with Apple"
+  },
+  "bc.mobile.auth.or": {
+    "vi": "hoặc",
+    "en": "or"
+  },
+  "bc.mobile.auth.emailLabel": {
+    "vi": "Email hoặc số điện thoại",
+    "en": "Email or phone number"
+  },
+  "bc.mobile.auth.emailPlaceholder": {
+    "vi": "Nhập email hoặc số điện thoại",
+    "en": "Enter your email or phone number"
+  },
+  "bc.mobile.auth.passwordLabel": {
+    "vi": "Mật khẩu",
+    "en": "Password"
+  },
+  "bc.mobile.auth.passwordPlaceholder": {
+    "vi": "Nhập mật khẩu",
+    "en": "Enter your password"
+  },
+  "bc.mobile.auth.showPassword": {
+    "vi": "Hiện mật khẩu",
+    "en": "Show password"
+  },
+  "bc.mobile.auth.hidePassword": {
+    "vi": "Ẩn mật khẩu",
+    "en": "Hide password"
+  },
+  "bc.mobile.auth.remember": {
+    "vi": "Ghi nhớ đăng nhập",
+    "en": "Remember me"
+  },
+  "bc.mobile.auth.forgot": {
+    "vi": "Quên mật khẩu?",
+    "en": "Forgot password?"
+  },
+  "bc.mobile.auth.signIn": {
+    "vi": "Đăng nhập",
+    "en": "Sign in"
+  },
+  "bc.mobile.auth.processing": {
+    "vi": "Đang xử lý...",
+    "en": "Processing..."
+  },
+  "bc.mobile.auth.noAccount": {
+    "vi": "Chưa có tài khoản?",
+    "en": "Don’t have an account?"
+  },
+  "bc.mobile.auth.activate": {
+    "vi": "Kích hoạt Danh tính Doanh nghiệp",
+    "en": "Activate Business Identity"
+  },
+  "bc.mobile.auth.scanTitle": {
+    "vi": "Quét danh thiếp",
+    "en": "Scan a Business Card"
+  },
+  "bc.mobile.auth.scanSubtitle": {
+    "vi": "Xem nhanh hồ sơ và kết nối",
+    "en": "Quickly view profile and connect"
+  },
+  "bc.mobile.auth.appleError": {
+    "vi": "Không thể đăng nhập với Apple",
+    "en": "Could not sign in with Apple"
+  },
+  "bc.mobile.auth.googleError": {
+    "vi": "Không thể đăng nhập với Google",
+    "en": "Could not sign in with Google"
+  },
+  "bc.mobile.auth.retry": {
+    "vi": "Thử lại",
+    "en": "Try again"
+  },
+  "bc.mobile.auth.err.network": {
+    "vi": "Không có kết nối mạng ổn định.",
+    "en": "No stable network connection."
+  },
+  "bc.mobile.auth.err.networkHint": {
+    "vi": "Kiểm tra Wi-Fi hoặc dữ liệu di động rồi thử lại.",
+    "en": "Check your Wi-Fi or mobile data, then try again."
+  },
+  "bc.mobile.auth.err.denied": {
+    "vi": "Yêu cầu đăng nhập đã bị huỷ hoặc từ chối.",
+    "en": "The sign-in request was cancelled or denied."
+  },
+  "bc.mobile.auth.err.deniedHint": {
+    "vi": "Hãy chấp nhận yêu cầu cấp quyền để tiếp tục.",
+    "en": "Approve the permission request to continue."
+  },
+  "bc.mobile.auth.err.callback": {
+    "vi": "Không hoàn tất được bước quay lại ứng dụng.",
+    "en": "The return step to the app did not complete."
+  },
+  "bc.mobile.auth.err.callbackHint": {
+    "vi": "Phiên xác thực đã hết hiệu lực. Hãy bắt đầu đăng nhập lại.",
+    "en": "The sign-in attempt expired. Start signing in again."
+  },
+  "bc.mobile.auth.err.credentials": {
+    "vi": "Email hoặc mật khẩu chưa đúng.",
+    "en": "Email or password is incorrect."
+  },
+  "bc.mobile.auth.err.unconfirmed": {
+    "vi": "Tài khoản chưa xác nhận email. Hãy mở email xác nhận trước khi đăng nhập.",
+    "en": "This account is not confirmed yet. Open the confirmation email first."
+  },
+  "bc.mobile.auth.err.rateLimit": {
+    "vi": "Bạn đã thử quá nhiều lần.",
+    "en": "Too many attempts."
+  },
+  "bc.mobile.auth.err.rateLimitHint": {
+    "vi": "Vui lòng chờ ít phút rồi thử lại.",
+    "en": "Please wait a few minutes before trying again."
+  },
+  "bc.mobile.auth.connecting": {
+    "vi": "Đang kết nối...",
+    "en": "Connecting..."
+  },
+  "bc.mobile.auth.scanHint": {
+    "vi": "Đưa mã QR trên danh thiếp vào khung để tự động điền thông tin.",
+    "en": "Point the card's QR code at the frame to fill in your details."
+  },
+  "bc.mobile.auth.scanClose": {
+    "vi": "Đóng trình quét",
+    "en": "Close scanner"
+  },
+  "bc.mobile.auth.scanTorch": {
+    "vi": "Bật/tắt đèn pin",
+    "en": "Toggle flashlight"
+  },
+  "bc.mobile.auth.scanUnknown": {
+    "vi": "Mã này không chứa thông tin đăng nhập hợp lệ.",
+    "en": "This code has no usable sign-in information."
+  },
+  "bc.mobile.auth.scanDenied": {
+    "vi": "Bạn chưa cho phép truy cập camera.",
+    "en": "Camera permission was denied."
+  },
+  "bc.mobile.auth.scanUnsupported": {
+    "vi": "Thiết bị hoặc trình duyệt này không hỗ trợ quét QR.",
+    "en": "QR scanning is not supported on this device or browser."
+  },
+  "bc.mobile.auth.scanError": {
+    "vi": "Không mở được camera. Vui lòng thử lại.",
+    "en": "Could not open the camera. Please try again."
+  },
+  "bc.mobile.auth.scanFilled": {
+    "vi": "Đã điền email từ danh thiếp",
+    "en": "Email filled from the business card"
+  },
+  "bc.mobile.auth.language": {
+    "vi": "Ngôn ngữ",
+    "en": "Language"
+  },
+  "bc.mobile.auth.scanStarting": {
+    "vi": "Đang mở camera...",
+    "en": "Opening the camera..."
+  },
+  "bc.mobile.auth.scanScanning": {
+    "vi": "Đang tìm mã QR trên danh thiếp...",
+    "en": "Looking for the card's QR code..."
+  },
+  "bc.mobile.auth.scanReviewTitle": {
+    "vi": "Xác nhận thông tin danh thiếp",
+    "en": "Confirm business card details"
+  },
+  "bc.mobile.auth.scanReviewHint": {
+    "vi": "Kiểm tra thông tin quét được trước khi tự điền hoặc kích hoạt danh tính.",
+    "en": "Review the scanned details before we fill the form or open activation."
+  },
+  "bc.mobile.auth.scanFieldName": {
+    "vi": "Họ và tên",
+    "en": "Full name"
+  },
+  "bc.mobile.auth.scanFieldEmail": {
+    "vi": "Email",
+    "en": "Email"
+  },
+  "bc.mobile.auth.scanFieldCompany": {
+    "vi": "Công ty",
+    "en": "Company"
+  },
+  "bc.mobile.auth.scanFieldTitle": {
+    "vi": "Chức danh",
+    "en": "Job title"
+  },
+  "bc.mobile.auth.scanFieldPhone": {
+    "vi": "Điện thoại",
+    "en": "Phone"
+  },
+  "bc.mobile.auth.scanFieldWebsite": {
+    "vi": "Website",
+    "en": "Website"
+  },
+  "bc.mobile.auth.scanFieldEmpty": {
+    "vi": "Không có trên mã",
+    "en": "Not in the code"
+  },
+  "bc.mobile.auth.scanReviewLink": {
+    "vi": "Mã này mở trang danh tính trong ứng dụng.",
+    "en": "This code opens an identity page inside the app."
+  },
+  "bc.mobile.auth.scanConfirmFill": {
+    "vi": "Dùng thông tin này",
+    "en": "Use these details"
+  },
+  "bc.mobile.auth.scanConfirmOpen": {
+    "vi": "Mở trang danh tính",
+    "en": "Open identity page"
+  },
+  "bc.mobile.auth.scanRescan": {
+    "vi": "Quét lại",
+    "en": "Scan again"
+  },
+  "bc.mobile.auth.dismissError": {
+    "vi": "Đóng thông báo lỗi",
+    "en": "Dismiss error"
+  },
+  "bc.mobile.auth.signup.back": {
+    "vi": "Quay lại",
+    "en": "Back"
+  },
+  "bc.mobile.auth.signup.title": {
+    "vi": "Tạo tài khoản",
+    "en": "Create your account"
+  },
+  "bc.mobile.auth.signup.subtitle": {
+    "vi": "Đăng ký để kích hoạt Danh tính Doanh nghiệp và danh thiếp điện tử của bạn.",
+    "en": "Sign up to activate your Business Identity and digital card."
+  },
+  "bc.mobile.auth.signup.nameLabel": {
+    "vi": "Họ và tên",
+    "en": "Full name"
+  },
+  "bc.mobile.auth.signup.namePlaceholder": {
+    "vi": "Nguyễn Văn A",
+    "en": "Jane Doe"
+  },
+  "bc.mobile.auth.signup.emailLabel": {
+    "vi": "Email công việc",
+    "en": "Work email"
+  },
+  "bc.mobile.auth.signup.passwordPlaceholder": {
+    "vi": "Tạo mật khẩu",
+    "en": "Create a password"
+  },
+  "bc.mobile.auth.signup.passwordHint": {
+    "vi": "Tối thiểu 8 ký tự.",
+    "en": "At least 8 characters."
+  },
+  "bc.mobile.auth.signup.confirmLabel": {
+    "vi": "Xác nhận mật khẩu",
+    "en": "Confirm password"
+  },
+  "bc.mobile.auth.signup.confirmPlaceholder": {
+    "vi": "Nhập lại mật khẩu",
+    "en": "Re-enter password"
+  },
+  "bc.mobile.auth.signup.submit": {
+    "vi": "Tạo tài khoản",
+    "en": "Create account"
+  },
+  "bc.mobile.auth.signup.terms": {
+    "vi": "Khi tiếp tục, bạn đồng ý với điều khoản sử dụng và chính sách bảo mật của nền tảng.",
+    "en": "By continuing you agree to the platform terms of use and privacy policy."
+  },
+  "bc.mobile.auth.signup.haveAccount": {
+    "vi": "Đã có tài khoản?",
+    "en": "Already have an account?"
+  },
+  "bc.mobile.auth.signup.createAccount": {
+    "vi": "Tạo tài khoản mới",
+    "en": "Create a new account"
+  },
+  "bc.mobile.auth.signup.sentTitle": {
+    "vi": "Kiểm tra email của bạn",
+    "en": "Check your email"
+  },
+  "bc.mobile.auth.signup.sentSubtitle": {
+    "vi": "Chúng tôi đã gửi liên kết xác nhận. Mở liên kết để kích hoạt tài khoản và tiếp tục thiết lập danh tính.",
+    "en": "We sent a confirmation link. Open it to activate your account and continue identity setup."
+  },
+  "bc.mobile.auth.signup.toSignIn": {
+    "vi": "Về màn hình đăng nhập",
+    "en": "Back to sign in"
+  },
+  "bc.mobile.auth.signup.nameRequired": {
+    "vi": "Vui lòng nhập họ và tên.",
+    "en": "Please enter your full name."
+  },
+  "bc.mobile.auth.signup.emailRequired": {
+    "vi": "Vui lòng nhập email hợp lệ.",
+    "en": "Please enter a valid email."
+  },
+  "bc.mobile.auth.signup.passwordShort": {
+    "vi": "Mật khẩu phải có ít nhất 8 ký tự.",
+    "en": "Password must be at least 8 characters."
+  },
+  "bc.mobile.auth.signup.passwordMismatch": {
+    "vi": "Mật khẩu xác nhận không khớp.",
+    "en": "Passwords do not match."
+  },
+  "bc.mobile.activate.back": {
+    "vi": "Quay lại",
+    "en": "Back"
+  },
+  "bc.mobile.activate.title": {
+    "vi": "Kích hoạt Danh tính Doanh nghiệp",
+    "en": "Activate your Business Identity"
+  },
+  "bc.mobile.activate.subtitle": {
+    "vi": "Hoàn tất thông tin để tạo danh thiếp điện tử có thể chia sẻ.",
+    "en": "Complete your details to create a shareable digital card."
+  },
+  "bc.mobile.activate.step": {
+    "vi": "Bước",
+    "en": "Step"
+  },
+  "bc.mobile.activate.of": {
+    "vi": "trên",
+    "en": "of"
+  },
+  "bc.mobile.activate.step1Title": {
+    "vi": "Thông tin nghề nghiệp",
+    "en": "Professional details"
+  },
+  "bc.mobile.activate.step2Title": {
+    "vi": "Thông tin liên hệ",
+    "en": "Contact details"
+  },
+  "bc.mobile.activate.displayName": {
+    "vi": "Tên hiển thị",
+    "en": "Display name"
+  },
+  "bc.mobile.activate.jobTitle": {
+    "vi": "Chức danh",
+    "en": "Job title"
+  },
+  "bc.mobile.activate.companyName": {
+    "vi": "Doanh nghiệp",
+    "en": "Company"
+  },
+  "bc.mobile.activate.headline": {
+    "vi": "Giới thiệu ngắn",
+    "en": "Headline"
+  },
+  "bc.mobile.activate.email": {
+    "vi": "Email liên hệ",
+    "en": "Contact email"
+  },
+  "bc.mobile.activate.phone": {
+    "vi": "Số điện thoại",
+    "en": "Phone number"
+  },
+  "bc.mobile.activate.website": {
+    "vi": "Website",
+    "en": "Website"
+  },
+  "bc.mobile.activate.optional": {
+    "vi": "Không bắt buộc",
+    "en": "Optional"
+  },
+  "bc.mobile.activate.continue": {
+    "vi": "Tiếp tục",
+    "en": "Continue"
+  },
+  "bc.mobile.activate.finish": {
+    "vi": "Kích hoạt danh tính",
+    "en": "Activate identity"
+  },
+  "bc.mobile.activate.skip": {
+    "vi": "Để sau",
+    "en": "Skip for now"
+  },
+  "bc.mobile.activate.saving": {
+    "vi": "Đang lưu...",
+    "en": "Saving..."
+  },
+  "bc.mobile.activate.nameRequired": {
+    "vi": "Vui lòng nhập tên hiển thị.",
+    "en": "Please enter a display name."
+  },
+  "bc.mobile.activate.privacyNote": {
+    "vi": "Mặc định danh tính ở chế độ riêng tư. Bạn chọn thông tin nào được chia sẻ ở mục Quyền riêng tư.",
+    "en": "Your identity stays private by default. You choose what to share in Privacy settings."
+  },
+  "bc.mobile.activate.doneTitle": {
+    "vi": "Danh tính đã sẵn sàng",
+    "en": "Your identity is ready"
+  },
+  "bc.mobile.activate.doneSubtitle": {
+    "vi": "Bạn có thể chia sẻ danh thiếp điện tử ngay bây giờ.",
+    "en": "You can share your digital card right away."
+  },
+  "bc.mobile.activate.goToMe": {
+    "vi": "Mở danh thiếp của tôi",
+    "en": "Open my digital card"
+  },
+  "bc.mobile.activate.error": {
+    "vi": "Không lưu được danh tính. Vui lòng thử lại.",
+    "en": "Could not save your identity. Please try again."
+  },
+  "bc.mobile.auth.reset.back": {
+    "vi": "Quay lại",
+    "en": "Back"
+  },
+  "bc.mobile.auth.reset.title": {
+    "vi": "Khôi phục mật khẩu",
+    "en": "Recover your password"
+  },
+  "bc.mobile.auth.reset.subtitle": {
+    "vi": "Nhập email đăng ký. Chúng tôi sẽ gửi liên kết đặt lại mật khẩu cho bạn.",
+    "en": "Enter your registered email. We will send you a reset link."
+  },
+  "bc.mobile.auth.reset.send": {
+    "vi": "Gửi liên kết khôi phục",
+    "en": "Send recovery link"
+  },
+  "bc.mobile.auth.reset.sending": {
+    "vi": "Đang gửi...",
+    "en": "Sending..."
+  },
+  "bc.mobile.auth.reset.sentTitle": {
+    "vi": "Đã gửi hướng dẫn",
+    "en": "Instructions sent"
+  },
+  "bc.mobile.auth.reset.sentSubtitle": {
+    "vi": "Nếu email tồn tại trong hệ thống, bạn sẽ nhận được liên kết đặt lại mật khẩu trong vài phút.",
+    "en": "If the email exists in our system, you will receive a reset link within a few minutes."
+  },
+  "bc.mobile.auth.reset.stepsTitle": {
+    "vi": "Các bước tiếp theo",
+    "en": "Next steps"
+  },
+  "bc.mobile.auth.reset.step1": {
+    "vi": "Mở hộp thư email bạn vừa nhập.",
+    "en": "Open the inbox of the email you just entered."
+  },
+  "bc.mobile.auth.reset.step2": {
+    "vi": "Chạm vào liên kết đặt lại mật khẩu trong email.",
+    "en": "Tap the password reset link in the email."
+  },
+  "bc.mobile.auth.reset.step3": {
+    "vi": "Tạo mật khẩu mới rồi đăng nhập lại vào ứng dụng.",
+    "en": "Create a new password, then sign in again."
+  },
+  "bc.mobile.auth.reset.spamHint": {
+    "vi": "Chưa thấy email? Kiểm tra thư mục spam hoặc quảng cáo trước khi gửi lại.",
+    "en": "No email yet? Check your spam or promotions folder before resending."
+  },
+  "bc.mobile.auth.reset.resend": {
+    "vi": "Gửi lại liên kết",
+    "en": "Resend link"
+  },
+  "bc.mobile.auth.reset.backToSignIn": {
+    "vi": "Quay lại đăng nhập",
+    "en": "Back to sign in"
+  },
+  "bc.mobile.auth.reset.emptyEmail": {
+    "vi": "Vui lòng nhập email đăng ký.",
+    "en": "Please enter your registered email."
+  },
+  "bc.mobile.auth.reset.genericError": {
+    "vi": "Không gửi được liên kết khôi phục. Vui lòng thử lại.",
+    "en": "Could not send the recovery link. Please try again."
+  },
+  "nav.group.members": {
+    "vi": "HỘI VIÊN",
+    "en": "MEMBERS"
+  },
+  "nav.group.events": {
+    "vi": "SỰ KIỆN",
+    "en": "EVENTS"
+  },
+  "nav.group.sponsors": {
+    "vi": "TÀI TRỢ",
+    "en": "SPONSORSHIP"
+  },
+  "nav.group.finance": {
+    "vi": "TÀI CHÍNH",
+    "en": "FINANCE"
+  },
+  "nav.group.comm": {
+    "vi": "TRUYỀN THÔNG",
+    "en": "COMMUNICATION"
+  },
+  "nav.group.governance": {
+    "vi": "QUẢN TRỊ",
+    "en": "GOVERNANCE"
+  },
+  "nav.group.system": {
+    "vi": "HỆ THỐNG",
+    "en": "SYSTEM"
+  },
+  "nav.group.network": {
+    "vi": "KẾT NỐI",
+    "en": "NETWORKING"
+  },
+  "nav.group.bc": {
+    "vi": "BUSINESS CONNECT",
+    "en": "BUSINESS CONNECT"
+  },
+  "nav.bc.overview": {
+    "vi": "Tổng quan",
+    "en": "Overview"
+  },
+  "nav.bc.myCard": {
+    "vi": "Danh thiếp của tôi",
+    "en": "My Business Card"
+  },
+  "nav.bc.saved": {
+    "vi": "Danh thiếp đã lưu",
+    "en": "Saved Cards"
+  },
+  "nav.bc.connections": {
+    "vi": "Kết nối",
+    "en": "Connections"
+  },
+  "nav.bc.meetings": {
+    "vi": "Cuộc gặp",
+    "en": "Meetings"
+  },
+  "nav.group.platform": {
+    "vi": "NỀN TẢNG",
+    "en": "PLATFORM"
+  },
+  "nav.group.admin": {
+    "vi": "QUẢN TRỊ",
+    "en": "ADMINISTRATION"
+  },
+  "nav.platform": {
+    "vi": "Quản trị nền tảng",
+    "en": "Platform admin"
+  },
+  "nav.collapse": {
+    "vi": "Thu gọn menu",
+    "en": "Collapse menu"
+  },
+  "nav.expand": {
+    "vi": "Mở rộng menu",
+    "en": "Expand menu"
+  },
+  "assoc.switch.label": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "assoc.switch.active": {
+    "vi": "Đang quản lý",
+    "en": "Currently managing"
+  },
+  "assoc.switch.switched": {
+    "vi": "Đã chuyển hiệp hội",
+    "en": "Switched association"
+  },
+  "assoc.switch.empty": {
+    "vi": "Chưa thuộc hiệp hội nào",
+    "en": "No association yet"
+  },
+  "platform.title": {
+    "vi": "Quản trị nền tảng",
+    "en": "Platform administration"
+  },
+  "platform.subtitle": {
+    "vi": "Khai báo hiệp hội và chỉ định quản trị viên cho từng hiệp hội",
+    "en": "Declare associations and assign account admins per association"
+  },
+  "platform.tab.assoc": {
+    "vi": "Hiệp hội",
+    "en": "Associations"
+  },
+  "platform.tab.admins": {
+    "vi": "Quản trị viên hiệp hội",
+    "en": "Association admins"
+  },
+  "platform.backToApp": {
+    "vi": "Về ứng dụng",
+    "en": "Back to app"
+  },
+  "platform.signOut": {
+    "vi": "Đăng xuất",
+    "en": "Sign out"
+  },
+  "platform.assoc.count": {
+    "vi": "Tổng hiệp hội",
+    "en": "Total associations"
+  },
+  "platform.assoc.new": {
+    "vi": "Thêm hiệp hội",
+    "en": "New association"
+  },
+  "platform.assoc.name": {
+    "vi": "Tên hiệp hội",
+    "en": "Association name"
+  },
+  "platform.assoc.slug": {
+    "vi": "Mã định danh (slug)",
+    "en": "Slug"
+  },
+  "platform.assoc.members": {
+    "vi": "Thành viên",
+    "en": "Members"
+  },
+  "platform.assoc.admins": {
+    "vi": "Quản trị viên",
+    "en": "Admins"
+  },
+  "platform.assoc.created": {
+    "vi": "Ngày tạo",
+    "en": "Created"
+  },
+  "platform.admin.new": {
+    "vi": "Thêm quản trị viên",
+    "en": "New admin"
+  },
+  "platform.admin.assoc": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "platform.admin.email": {
+    "vi": "Email",
+    "en": "Email"
+  },
+  "platform.admin.fullName": {
+    "vi": "Họ tên",
+    "en": "Full name"
+  },
+  "platform.admin.password": {
+    "vi": "Mật khẩu khởi tạo",
+    "en": "Initial password"
+  },
+  "platform.admin.passwordHint": {
+    "vi": "Mật khẩu phải có ít nhất 8 ký tự",
+    "en": "Password must be at least 8 characters"
+  },
+  "platform.admin.edit": {
+    "vi": "Sửa quản trị viên",
+    "en": "Edit admin"
+  },
+  "platform.admin.passwordEdit": {
+    "vi": "Mật khẩu mới (để trống nếu giữ nguyên)",
+    "en": "New password (leave blank to keep)"
+  },
+  "platform.admin.empty": {
+    "vi": "Chưa có quản trị viên hiệp hội",
+    "en": "No association admins yet"
+  },
+  "platform.forbidden": {
+    "vi": "Bạn không có quyền truy cập trang này",
+    "en": "You do not have access to this page"
+  },
+  "nav.network": {
+    "vi": "Kết nối hội viên",
+    "en": "Member networking"
+  },
+  "nav.businessCards": {
+    "vi": "Danh thiếp số",
+    "en": "Business cards"
+  },
+  "nav.bcAdmin": {
+    "vi": "Quản trị danh thiếp",
+    "en": "Card administration"
+  },
+  "nav.marketplace": {
+    "vi": "Marketplace",
+    "en": "Marketplace"
+  },
+  "nav.opportunities": {
+    "vi": "Chia sẻ cơ hội",
+    "en": "Opportunity board"
+  },
+  "opp.title": {
+    "vi": "Chia sẻ cơ hội kinh doanh",
+    "en": "Business opportunities"
+  },
+  "opp.subtitle": {
+    "vi": "Đăng và khám phá cơ hội hợp tác, đầu tư, cung ứng giữa các hội viên",
+    "en": "Post and discover partnership, investment and supply opportunities between members"
+  },
+  "platform.tab.permissions": {
+    "vi": "Ma trận quyền",
+    "en": "Permissions matrix"
+  },
+  "perm.title": {
+    "vi": "Ma trận quyền truy cập",
+    "en": "Access permissions matrix"
+  },
+  "perm.subtitle": {
+    "vi": "Kiểm tra nhanh quyền của từng vai trò trên các chức năng chính",
+    "en": "Quickly review what each role can access across key features"
+  },
+  "perm.col.feature": {
+    "vi": "Chức năng",
+    "en": "Feature"
+  },
+  "perm.role.platform_admin": {
+    "vi": "Platform Admin",
+    "en": "Platform Admin"
+  },
+  "perm.role.admin": {
+    "vi": "Admin Hiệp hội",
+    "en": "Association Admin"
+  },
+  "perm.role.member": {
+    "vi": "Hội viên",
+    "en": "Member"
+  },
+  "perm.legend.full": {
+    "vi": "Toàn quyền",
+    "en": "Full access"
+  },
+  "perm.legend.scoped": {
+    "vi": "Trong hiệp hội",
+    "en": "Within association"
+  },
+  "perm.legend.own": {
+    "vi": "Dữ liệu cá nhân",
+    "en": "Own data only"
+  },
+  "perm.legend.none": {
+    "vi": "Không có quyền",
+    "en": "No access"
+  },
+  "nav.myperm": {
+    "vi": "Phân quyền của tôi",
+    "en": "My permissions"
+  },
+  "myperm.title": {
+    "vi": "Phân quyền của tôi",
+    "en": "My permissions"
+  },
+  "myperm.subtitle": {
+    "vi": "Vai trò và những thao tác bạn được phép thực hiện",
+    "en": "Your roles and the actions you are allowed to perform"
+  },
+  "myperm.roleCard.title": {
+    "vi": "Vai trò của bạn",
+    "en": "Your roles"
+  },
+  "myperm.assoc": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "myperm.role": {
+    "vi": "Vai trò",
+    "en": "Role"
+  },
+  "myperm.active": {
+    "vi": "Đang hoạt động",
+    "en": "Active"
+  },
+  "myperm.noAssoc": {
+    "vi": "Bạn chưa thuộc hiệp hội nào.",
+    "en": "You don't belong to any association yet."
+  },
+  "myperm.caps.title": {
+    "vi": "Bạn được phép làm gì",
+    "en": "What you can do"
+  },
+  "myperm.caps.subtitle": {
+    "vi": "Dựa trên vai trò cao nhất hiện tại của bạn",
+    "en": "Based on your highest current role"
+  },
+  "myperm.you.platform_admin": {
+    "vi": "Quản trị nền tảng",
+    "en": "Platform Admin"
+  },
+  "myperm.you.admin": {
+    "vi": "Quản trị viên hiệp hội",
+    "en": "Association Admin"
+  },
+  "myperm.you.member": {
+    "vi": "Hội viên",
+    "en": "Member"
+  },
+  "myperm.allowed": {
+    "vi": "Được phép",
+    "en": "Allowed"
+  },
+  "myperm.denied": {
+    "vi": "Không được phép",
+    "en": "Not allowed"
+  },
+  "platform.tab.aiaudit": {
+    "vi": "Nhật ký AI",
+    "en": "AI audit log"
+  },
+  "aiaudit.title": {
+    "vi": "Nhật ký yêu cầu Trợ lý AI",
+    "en": "AI request audit log"
+  },
+  "aiaudit.subtitle": {
+    "vi": "Lọc và xem chi tiết các yêu cầu AI theo hiệp hội, người dùng và thời gian",
+    "en": "Filter and inspect AI requests by association, user and time"
+  },
+  "aiaudit.filter.assoc": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "aiaudit.filter.allAssoc": {
+    "vi": "Tất cả hiệp hội",
+    "en": "All associations"
+  },
+  "aiaudit.filter.user": {
+    "vi": "Người dùng (email/tên/ID)",
+    "en": "User (email/name/ID)"
+  },
+  "aiaudit.filter.from": {
+    "vi": "Từ ngày",
+    "en": "From"
+  },
+  "aiaudit.filter.to": {
+    "vi": "Đến ngày",
+    "en": "To"
+  },
+  "aiaudit.filter.provider": {
+    "vi": "Nhà cung cấp",
+    "en": "Provider"
+  },
+  "aiaudit.filter.allProviders": {
+    "vi": "Tất cả provider",
+    "en": "All providers"
+  },
+  "aiaudit.filter.fallback": {
+    "vi": "Trạng thái",
+    "en": "Status"
+  },
+  "aiaudit.filter.allStatus": {
+    "vi": "Tất cả",
+    "en": "All"
+  },
+  "aiaudit.filter.fallbackOnly": {
+    "vi": "Chỉ fallback",
+    "en": "Fallback only"
+  },
+  "aiaudit.filter.realOnly": {
+    "vi": "Chỉ thành công",
+    "en": "Success only"
+  },
+  "aiaudit.filter.apply": {
+    "vi": "Áp dụng",
+    "en": "Apply"
+  },
+  "aiaudit.filter.reset": {
+    "vi": "Đặt lại",
+    "en": "Reset"
+  },
+  "aiaudit.col.time": {
+    "vi": "Thời gian",
+    "en": "Time"
+  },
+  "aiaudit.col.user": {
+    "vi": "Người dùng",
+    "en": "User"
+  },
+  "aiaudit.col.assoc": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "aiaudit.col.capability": {
+    "vi": "Năng lực",
+    "en": "Capability"
+  },
+  "aiaudit.col.provider": {
+    "vi": "Provider",
+    "en": "Provider"
+  },
+  "aiaudit.col.status": {
+    "vi": "Trạng thái",
+    "en": "Status"
+  },
+  "aiaudit.col.latency": {
+    "vi": "Độ trễ",
+    "en": "Latency"
+  },
+  "aiaudit.status.ok": {
+    "vi": "Thành công",
+    "en": "Success"
+  },
+  "aiaudit.status.fallback": {
+    "vi": "Fallback",
+    "en": "Fallback"
+  },
+  "aiaudit.empty": {
+    "vi": "Không có bản ghi nào",
+    "en": "No records found"
+  },
+  "aiaudit.count": {
+    "vi": "bản ghi",
+    "en": "records"
+  },
+  "aiaudit.detail.title": {
+    "vi": "Chi tiết yêu cầu AI",
+    "en": "AI request detail"
+  },
+  "aiaudit.detail.requestId": {
+    "vi": "Mã yêu cầu",
+    "en": "Request ID"
+  },
+  "aiaudit.detail.permission": {
+    "vi": "Cấp quyền",
+    "en": "Permission level"
+  },
+  "aiaudit.detail.model": {
+    "vi": "Mô hình",
+    "en": "Model"
+  },
+  "aiaudit.detail.fallbackReason": {
+    "vi": "Lý do fallback",
+    "en": "Fallback reason"
+  },
+  "aiaudit.detail.providerLatency": {
+    "vi": "Độ trễ LLM",
+    "en": "LLM latency"
+  },
+  "aiaudit.detail.totalLatency": {
+    "vi": "Tổng độ trễ",
+    "en": "Total latency"
+  },
+  "aiaudit.detail.sources": {
+    "vi": "Nguồn dữ liệu",
+    "en": "Data sources"
+  },
+  "aiaudit.detail.close": {
+    "vi": "Đóng",
+    "en": "Close"
+  },
+  "platform.tab.audit": {
+    "vi": "Nhật ký quyền",
+    "en": "Role audit log"
+  },
+  "platform.tab.renewalAudit": {
+    "vi": "Nhật ký gia hạn",
+    "en": "Renewal audit"
+  },
+  "renewalAudit.title": {
+    "vi": "Tra cứu nhật ký gia hạn",
+    "en": "Renewal audit lookup"
+  },
+  "renewalAudit.subtitle": {
+    "vi": "Tìm theo hội viên hoặc hiệp hội và xem lịch sử tất cả lần thanh toán gia hạn",
+    "en": "Search by member or association and review every renewal payment"
+  },
+  "renewalAudit.stat.payments": {
+    "vi": "Lần thanh toán",
+    "en": "Payments"
+  },
+  "renewalAudit.stat.noops": {
+    "vi": "Bấm lặp",
+    "en": "Duplicate clicks"
+  },
+  "renewalAudit.stat.failures": {
+    "vi": "Thất bại",
+    "en": "Failures"
+  },
+  "renewalAudit.event.payment": {
+    "vi": "Thanh toán thật",
+    "en": "Real payment"
+  },
+  "renewalAudit.event.noop": {
+    "vi": "Bấm lặp",
+    "en": "Idempotent no-op"
+  },
+  "renewalAudit.event.failure": {
+    "vi": "Thất bại",
+    "en": "Failure"
+  },
+  "renewalAudit.filter.association": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "renewalAudit.filter.allAssociations": {
+    "vi": "Tất cả hiệp hội",
+    "en": "All associations"
+  },
+  "renewalAudit.filter.event": {
+    "vi": "Loại sự kiện",
+    "en": "Event type"
+  },
+  "renewalAudit.filter.allEvents": {
+    "vi": "Tất cả sự kiện",
+    "en": "All events"
+  },
+  "renewalAudit.filter.from": {
+    "vi": "Từ ngày",
+    "en": "From"
+  },
+  "renewalAudit.filter.to": {
+    "vi": "Đến ngày",
+    "en": "To"
+  },
+  "renewalAudit.filter.member": {
+    "vi": "Hội viên",
+    "en": "Member"
+  },
+  "renewalAudit.filter.memberPlaceholder": {
+    "vi": "Tên, mã hội viên, mã tham chiếu hoặc số hóa đơn",
+    "en": "Name, member code, reference or invoice no."
+  },
+  "renewalAudit.action.search": {
+    "vi": "Tìm kiếm",
+    "en": "Search"
+  },
+  "renewalAudit.action.refresh": {
+    "vi": "Làm mới",
+    "en": "Refresh"
+  },
+  "renewalAudit.col.time": {
+    "vi": "Thời gian",
+    "en": "Time"
+  },
+  "renewalAudit.col.member": {
+    "vi": "Hội viên",
+    "en": "Member"
+  },
+  "renewalAudit.col.association": {
+    "vi": "Hiệp hội",
+    "en": "Association"
+  },
+  "renewalAudit.col.event": {
+    "vi": "Sự kiện",
+    "en": "Event"
+  },
+  "renewalAudit.col.amount": {
+    "vi": "Số tiền",
+    "en": "Amount"
+  },
+  "renewalAudit.col.invoice": {
+    "vi": "Hóa đơn",
+    "en": "Invoice"
+  },
+  "renewalAudit.col.term": {
+    "vi": "Hạn hội viên",
+    "en": "Membership term"
+  },
+  "renewalAudit.empty": {
+    "vi": "Không có bản ghi gia hạn nào khớp bộ lọc",
+    "en": "No renewal records match the filters"
+  },
+  "audit.title": {
+    "vi": "Nhật ký thay đổi quyền",
+    "en": "Role change audit log"
+  },
+  "audit.subtitle": {
+    "vi": "Lịch sử thời gian, người thực hiện và thay đổi vai trò khi cập nhật quyền tài khoản",
+    "en": "History of time, actor and role changes for account permission updates"
+  },
+  "audit.col.time": {
+    "vi": "Thời gian",
+    "en": "Time"
+  },
+  "audit.col.actor": {
+    "vi": "Người thực hiện",
+    "en": "Performed by"
+  },
+  "audit.col.target": {
+    "vi": "Tài khoản",
+    "en": "Account"
+  },
+  "audit.col.action": {
+    "vi": "Hành động",
+    "en": "Action"
+  },
+  "audit.col.change": {
+    "vi": "Thay đổi vai trò",
+    "en": "Role change"
+  },
+  "audit.empty": {
+    "vi": "Chưa có thay đổi quyền nào được ghi nhận",
+    "en": "No role changes recorded yet"
+  },
+  "audit.action.grant_association_admin": {
+    "vi": "Cấp quyền Admin hiệp hội",
+    "en": "Granted association admin"
+  },
+  "audit.action.change_admin_association": {
+    "vi": "Đổi hiệp hội quản lý",
+    "en": "Changed managed association"
+  },
+  "audit.action.revoke_association_admin": {
+    "vi": "Thu hồi quyền Admin hiệp hội",
+    "en": "Revoked association admin"
+  },
+  "opp.tab.browse": {
+    "vi": "Khám phá cơ hội",
+    "en": "Browse"
+  },
+  "opp.tab.mine": {
+    "vi": "Cơ hội của tôi",
+    "en": "My posts"
+  },
+  "opp.tab.interests": {
+    "vi": "Quan tâm nhận được",
+    "en": "Received interests"
+  },
+  "action.close": {
+    "vi": "Đóng",
+    "en": "Close"
+  },
+  "opp.action.new": {
+    "vi": "Đăng cơ hội",
+    "en": "Post opportunity"
+  },
+  "opp.action.interest": {
+    "vi": "Bày tỏ quan tâm",
+    "en": "Express interest"
+  },
+  "opp.action.close": {
+    "vi": "Đóng cơ hội",
+    "en": "Close"
+  },
+  "opp.action.reopen": {
+    "vi": "Mở lại",
+    "en": "Reopen"
+  },
+  "opp.action.delete": {
+    "vi": "Xoá",
+    "en": "Delete"
+  },
+  "opp.kpi.total": {
+    "vi": "Tổng cơ hội",
+    "en": "Total opportunities"
+  },
+  "opp.kpi.open": {
+    "vi": "Đang mở",
+    "en": "Open"
+  },
+  "opp.kpi.mine": {
+    "vi": "Của tôi",
+    "en": "Mine"
+  },
+  "opp.kpi.interests": {
+    "vi": "Quan tâm nhận được",
+    "en": "Interests received"
+  },
+  "opp.search": {
+    "vi": "Tìm cơ hội theo tiêu đề, ngành, khu vực...",
+    "en": "Search by title, industry, region..."
+  },
+  "opp.filter.all": {
+    "vi": "Tất cả loại",
+    "en": "All types"
+  },
+  "opp.type.partnership": {
+    "vi": "Hợp tác kinh doanh",
+    "en": "Partnership"
+  },
+  "opp.type.investment": {
+    "vi": "Kêu gọi đầu tư",
+    "en": "Investment"
+  },
+  "opp.type.supply": {
+    "vi": "Cần nhà cung cấp",
+    "en": "Supply needed"
+  },
+  "opp.type.demand": {
+    "vi": "Tìm khách hàng",
+    "en": "Demand"
+  },
+  "opp.type.distribution": {
+    "vi": "Phân phối",
+    "en": "Distribution"
+  },
+  "opp.type.other": {
+    "vi": "Khác",
+    "en": "Other"
+  },
+  "opp.status.open": {
+    "vi": "Đang mở",
+    "en": "Open"
+  },
+  "opp.status.closed": {
+    "vi": "Đã đóng",
+    "en": "Closed"
+  },
+  "opp.deadline": {
+    "vi": "Hạn chót",
+    "en": "Deadline"
+  },
+  "opp.budget": {
+    "vi": "Ngân sách dự kiến",
+    "en": "Estimated budget"
+  },
+  "opp.budgetOpen": {
+    "vi": "Thoả thuận",
+    "en": "Negotiable"
+  },
+  "opp.fromLabel": {
+    "vi": "Từ",
+    "en": "From"
+  },
+  "opp.empty.browse": {
+    "vi": "Chưa có cơ hội phù hợp.",
+    "en": "No matching opportunities."
+  },
+  "opp.empty.mine": {
+    "vi": "Bạn chưa đăng cơ hội nào.",
+    "en": "You haven't posted any opportunity yet."
+  },
+  "opp.empty.interests": {
+    "vi": "Chưa có ai bày tỏ quan tâm tới cơ hội của bạn.",
+    "en": "No one has expressed interest yet."
+  },
+  "opp.confirmDelete": {
+    "vi": "Xoá cơ hội này?",
+    "en": "Delete this opportunity?"
+  },
+  "opp.form.title": {
+    "vi": "Đăng cơ hội mới",
+    "en": "New opportunity"
+  },
+  "opp.form.titleField": {
+    "vi": "Tiêu đề cơ hội",
+    "en": "Opportunity title"
+  },
+  "opp.form.titlePh": {
+    "vi": "VD: Tìm đối tác phân phối nông sản hữu cơ",
+    "en": "e.g. Looking for distribution partner"
+  },
+  "opp.form.desc": {
+    "vi": "Mô tả chi tiết",
+    "en": "Description"
+  },
+  "opp.form.descPh": {
+    "vi": "Mô tả ngữ cảnh, mục tiêu, lợi ích cho đối tác...",
+    "en": "Describe context, goals, benefits..."
+  },
+  "opp.form.type": {
+    "vi": "Loại cơ hội",
+    "en": "Type"
+  },
+  "opp.form.deadline": {
+    "vi": "Hạn chót",
+    "en": "Deadline"
+  },
+  "opp.form.region": {
+    "vi": "Khu vực",
+    "en": "Region"
+  },
+  "opp.form.industry": {
+    "vi": "Ngành nghề",
+    "en": "Industry"
+  },
+  "opp.form.budgetMin": {
+    "vi": "Ngân sách tối thiểu (VND)",
+    "en": "Min budget (VND)"
+  },
+  "opp.form.budgetMax": {
+    "vi": "Ngân sách tối đa (VND)",
+    "en": "Max budget (VND)"
+  },
+  "opp.form.icon": {
+    "vi": "Biểu tượng",
+    "en": "Icon"
+  },
+  "opp.form.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel"
+  },
+  "opp.form.submit": {
+    "vi": "Đăng cơ hội",
+    "en": "Publish"
+  },
+  "opp.toast.created": {
+    "vi": "Đã đăng cơ hội thành công!",
+    "en": "Opportunity posted!"
+  },
+  "opp.toast.interest": {
+    "vi": "Đã gửi quan tâm tới người đăng!",
+    "en": "Interest sent to poster!"
+  },
+  "opp.interest.title": {
+    "vi": "Bày tỏ quan tâm",
+    "en": "Express interest"
+  },
+  "opp.interest.about": {
+    "vi": "Cơ hội",
+    "en": "Opportunity"
+  },
+  "opp.interest.contact": {
+    "vi": "Thông tin liên hệ",
+    "en": "Contact info"
+  },
+  "opp.interest.message": {
+    "vi": "Lời nhắn",
+    "en": "Message"
+  },
+  "opp.interest.messagePh": {
+    "vi": "Giới thiệu năng lực của bạn và lý do quan tâm tới cơ hội này...",
+    "en": "Introduce your capabilities and why you're interested..."
+  },
+  "opp.interest.submit": {
+    "vi": "Gửi quan tâm",
+    "en": "Send interest"
+  },
+  "opp.interest.count": {
+    "vi": "lượt quan tâm",
+    "en": "interests"
+  },
+  "opp.toast.updated": {
+    "vi": "Đã cập nhật cơ hội!",
+    "en": "Opportunity updated!"
+  },
+  "opp.edit.title": {
+    "vi": "Chỉnh sửa cơ hội",
+    "en": "Edit opportunity"
+  },
+  "opp.edit.subtitle": {
+    "vi": "Cập nhật thông tin cơ hội của bạn",
+    "en": "Update your opportunity info"
+  },
+  "opp.edit.save": {
+    "vi": "Lưu thay đổi",
+    "en": "Save changes"
+  },
+  "opp.edit.notOwner": {
+    "vi": "Bạn không có quyền chỉnh sửa cơ hội này.",
+    "en": "You don't have permission to edit this opportunity."
+  },
+  "perm.denied.title": {
+    "vi": "Bạn không có quyền thực hiện thao tác này",
+    "en": "You don't have permission to perform this action"
+  },
+  "perm.denied.adminOnly": {
+    "vi": "Chỉ Quản trị viên Hiệp hội mới có thể thêm, sửa hoặc xóa hội viên và doanh nghiệp. Vui lòng liên hệ quản trị viên nếu bạn cần quyền này.",
+    "en": "Only Association Admins can add, edit, or delete members and companies. Contact your administrator if you need access."
+  },
+  "opp.edit.status": {
+    "vi": "Trạng thái cơ hội",
+    "en": "Opportunity status"
+  },
+  "opp.edit.statusHint": {
+    "vi": "Đóng cơ hội khi không còn nhận quan tâm mới.",
+    "en": "Close the opportunity when no longer accepting new interests."
+  },
+  "opp.action.edit": {
+    "vi": "Chỉnh sửa",
+    "en": "Edit"
+  },
+  "opp.detail.notFound": {
+    "vi": "Không tìm thấy cơ hội.",
+    "en": "Opportunity not found."
+  },
+  "opp.detail.back": {
+    "vi": "Quay lại danh sách",
+    "en": "Back to list"
+  },
+  "opp.detail.about": {
+    "vi": "Mô tả chi tiết",
+    "en": "Description"
+  },
+  "opp.detail.interests": {
+    "vi": "Quan tâm nhận được",
+    "en": "Received interests"
+  },
+  "opp.detail.interestsPrivate": {
+    "vi": "Chỉ người đăng cơ hội mới xem được danh sách quan tâm.",
+    "en": "Only the poster can see the list of interests."
+  },
+  "opp.detail.summary": {
+    "vi": "Tóm tắt",
+    "en": "Summary"
+  },
+  "opp.detail.poster": {
+    "vi": "Người đăng",
+    "en": "Posted by"
+  },
+  "opp.detail.views": {
+    "vi": "Lượt xem",
+    "en": "Views"
+  },
+  "opp.detail.posted": {
+    "vi": "Ngày đăng",
+    "en": "Posted on"
+  },
+  "mk.title": {
+    "vi": "Marketplace hội viên",
+    "en": "Member marketplace"
+  },
+  "mk.subtitle": {
+    "vi": "Mua bán sản phẩm và dịch vụ giữa các hội viên trong hiệp hội",
+    "en": "Buy and sell products and services among association members"
+  },
+  "mk.tab.browse": {
+    "vi": "Khám phá",
+    "en": "Browse"
+  },
+  "mk.tab.mine": {
+    "vi": "Sản phẩm của tôi",
+    "en": "My listings"
+  },
+  "mk.action.new": {
+    "vi": "Đăng sản phẩm",
+    "en": "List product"
+  },
+  "mk.action.contact": {
+    "vi": "Liên hệ người bán",
+    "en": "Contact seller"
+  },
+  "mk.action.edit": {
+    "vi": "Chỉnh sửa",
+    "en": "Edit"
+  },
+  "mk.action.delete": {
+    "vi": "Xoá",
+    "en": "Delete"
+  },
+  "mk.action.markSold": {
+    "vi": "Đánh dấu đã bán",
+    "en": "Mark sold"
+  },
+  "mk.action.markActive": {
+    "vi": "Mở bán lại",
+    "en": "Reactivate"
+  },
+  "mk.kpi.total": {
+    "vi": "Tổng sản phẩm",
+    "en": "Total listings"
+  },
+  "mk.kpi.active": {
+    "vi": "Đang mở bán",
+    "en": "Active"
+  },
+  "mk.kpi.mine": {
+    "vi": "Sản phẩm của tôi",
+    "en": "My listings"
+  },
+  "mk.kpi.value": {
+    "vi": "Tổng giá trị",
+    "en": "Total value"
+  },
+  "mk.search": {
+    "vi": "Tìm sản phẩm, dịch vụ, người bán...",
+    "en": "Search products, services, sellers..."
+  },
+  "mk.filter.all": {
+    "vi": "Tất cả",
+    "en": "All"
+  },
+  "mk.cat.service": {
+    "vi": "Dịch vụ",
+    "en": "Services"
+  },
+  "mk.cat.product": {
+    "vi": "Sản phẩm",
+    "en": "Products"
+  },
+  "mk.cat.tech": {
+    "vi": "Công nghệ",
+    "en": "Technology"
+  },
+  "mk.cat.consult": {
+    "vi": "Tư vấn",
+    "en": "Consulting"
+  },
+  "mk.cat.realestate": {
+    "vi": "Bất động sản",
+    "en": "Real estate"
+  },
+  "mk.cat.other": {
+    "vi": "Khác",
+    "en": "Other"
+  },
+  "mk.status.active": {
+    "vi": "Đang mở bán",
+    "en": "Active"
+  },
+  "mk.status.sold": {
+    "vi": "Đã bán",
+    "en": "Sold"
+  },
+  "mk.status.draft": {
+    "vi": "Bản nháp",
+    "en": "Draft"
+  },
+  "mk.empty.browse": {
+    "vi": "Chưa có sản phẩm phù hợp.",
+    "en": "No matching products."
+  },
+  "mk.empty.mine": {
+    "vi": "Bạn chưa đăng sản phẩm nào.",
+    "en": "You haven't listed any products yet."
+  },
+  "mk.form.title": {
+    "vi": "Đăng sản phẩm mới",
+    "en": "New listing"
+  },
+  "mk.form.titleField": {
+    "vi": "Tên sản phẩm/dịch vụ",
+    "en": "Product / service name"
+  },
+  "mk.form.titlePh": {
+    "vi": "VD: Dịch vụ tư vấn pháp lý doanh nghiệp",
+    "en": "e.g. Corporate legal advisory"
+  },
+  "mk.form.desc": {
+    "vi": "Mô tả chi tiết",
+    "en": "Description"
+  },
+  "mk.form.descPh": {
+    "vi": "Mô tả lợi ích, phạm vi và điều kiện ưu đãi cho hội viên...",
+    "en": "Describe benefits, scope and member discounts..."
+  },
+  "mk.form.price": {
+    "vi": "Giá (VND)",
+    "en": "Price (VND)"
+  },
+  "mk.form.cat": {
+    "vi": "Danh mục",
+    "en": "Category"
+  },
+  "mk.form.icon": {
+    "vi": "Biểu tượng",
+    "en": "Icon"
+  },
+  "mk.form.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel"
+  },
+  "mk.form.submit": {
+    "vi": "Đăng sản phẩm",
+    "en": "Publish listing"
+  },
+  "mk.form.editTitle": {
+    "vi": "Chỉnh sửa sản phẩm",
+    "en": "Edit listing"
+  },
+  "mk.form.save": {
+    "vi": "Lưu thay đổi",
+    "en": "Save changes"
+  },
+  "mk.form.created": {
+    "vi": "Đã đăng sản phẩm",
+    "en": "Listing published"
+  },
+  "mk.form.updated": {
+    "vi": "Đã cập nhật sản phẩm",
+    "en": "Listing updated"
+  },
+  "mk.form.images": {
+    "vi": "Ảnh giới thiệu",
+    "en": "Showcase images"
+  },
+  "mk.form.imagesHint": {
+    "vi": "Tối đa 10 ảnh (JPG, PNG)",
+    "en": "Up to 10 images (JPG, PNG)"
+  },
+  "mk.form.pdf": {
+    "vi": "Tài liệu PDF",
+    "en": "PDF document"
+  },
+  "mk.form.pdfHint": {
+    "vi": "Tải lên brochure/hồ sơ năng lực (PDF)",
+    "en": "Upload brochure / profile (PDF)"
+  },
+  "mk.form.website": {
+    "vi": "Website",
+    "en": "Website"
+  },
+  "mk.form.facebook": {
+    "vi": "Facebook",
+    "en": "Facebook"
+  },
+  "mk.form.uploading": {
+    "vi": "Đang tải lên...",
+    "en": "Uploading..."
+  },
+  "mk.form.remove": {
+    "vi": "Xoá",
+    "en": "Remove"
+  },
+  "mk.form.viewPdf": {
+    "vi": "Xem tài liệu PDF",
+    "en": "View PDF document"
+  },
+  "mk.form.visitWebsite": {
+    "vi": "Truy cập website",
+    "en": "Visit website"
+  },
+  "mk.views": {
+    "vi": "lượt xem",
+    "en": "views"
+  },
+  "mk.postedBy": {
+    "vi": "Người đăng",
+    "en": "Listed by"
+  },
+  "mk.postedAt": {
+    "vi": "Đăng ngày",
+    "en": "Listed on"
+  },
+  "mk.confirmDelete": {
+    "vi": "Xoá sản phẩm này?",
+    "en": "Delete this listing?"
+  },
+  "mk.delete.title": {
+    "vi": "Xoá sản phẩm?",
+    "en": "Delete listing?"
+  },
+  "mk.delete.desc": {
+    "vi": "Hành động này không thể hoàn tác. Sản phẩm sẽ bị xoá vĩnh viễn khỏi hệ thống cùng toàn bộ dữ liệu liên quan.",
+    "en": "This action cannot be undone. The listing and all related data will be permanently removed."
+  },
+  "mk.delete.confirm": {
+    "vi": "Xoá vĩnh viễn",
+    "en": "Delete permanently"
+  },
+  "mk.delete.cancel": {
+    "vi": "Huỷ",
+    "en": "Cancel"
+  },
+  "mk.deleted": {
+    "vi": "Đã xoá sản phẩm",
+    "en": "Listing deleted"
+  },
+  "mk.select": {
+    "vi": "Chọn",
+    "en": "Select"
+  },
+  "mk.selectDone": {
+    "vi": "Xong",
+    "en": "Done"
+  },
+  "mk.selectAll": {
+    "vi": "Chọn tất cả",
+    "en": "Select all"
+  },
+  "mk.clearSel": {
+    "vi": "Bỏ chọn",
+    "en": "Clear"
+  },
+  "mk.deleteSelected": {
+    "vi": "Xoá đã chọn",
+    "en": "Delete selected"
+  },
+  "mk.bulkDelete.desc": {
+    "vi": "Hành động này không thể hoàn tác. Tất cả sản phẩm đã chọn cùng dữ liệu liên quan sẽ bị xoá vĩnh viễn.",
+    "en": "This action cannot be undone. All selected listings and related data will be permanently removed."
+  },
+  "mk.detail.back": {
+    "vi": "Quay lại Marketplace",
+    "en": "Back to Marketplace"
+  },
+  "mk.detail.about": {
+    "vi": "Mô tả sản phẩm",
+    "en": "Product description"
+  },
+  "mk.detail.seller": {
+    "vi": "Thông tin người bán",
+    "en": "Seller information"
+  },
+  "mk.detail.contactBtn": {
+    "vi": "Nhắn tin người bán",
+    "en": "Message seller"
+  },
+  "mk.detail.quoteBtn": {
+    "vi": "Yêu cầu báo giá",
+    "en": "Request quotation"
+  },
+  "mk.detail.notFound": {
+    "vi": "Không tìm thấy sản phẩm.",
+    "en": "Product not found."
+  },
+  "mk.detail.stats": {
+    "vi": "Thống kê",
+    "en": "Statistics"
+  },
+  "mk.detail.quotes": {
+    "vi": "Yêu cầu báo giá",
+    "en": "Quote requests"
+  },
+  "mk.detail.noQuotes": {
+    "vi": "Chưa có yêu cầu báo giá.",
+    "en": "No quote requests yet."
+  },
+  "mk.detail.relatedSellerInfo": {
+    "vi": "Hội viên kinh doanh trong cùng hiệp hội",
+    "en": "Verified association member"
+  },
+  "mk.detail.share": {
+    "vi": "Chia sẻ",
+    "en": "Share"
+  },
+  "mk.detail.shareCopied": {
+    "vi": "Đã sao chép liên kết",
+    "en": "Link copied to clipboard"
+  },
+  "mk.detail.related": {
+    "vi": "Sản phẩm liên quan",
+    "en": "Related listings"
+  },
+  "mk.quote.title": {
+    "vi": "Yêu cầu báo giá",
+    "en": "Request a quote"
+  },
+  "mk.quote.qty": {
+    "vi": "Số lượng",
+    "en": "Quantity"
+  },
+  "mk.quote.contact": {
+    "vi": "Thông tin liên hệ (email/điện thoại)",
+    "en": "Contact info (email/phone)"
+  },
+  "mk.quote.message": {
+    "vi": "Nội dung yêu cầu",
+    "en": "Message"
+  },
+  "mk.quote.messagePh": {
+    "vi": "Mô tả nhu cầu, thời gian giao, điều kiện thanh toán...",
+    "en": "Describe your needs, timeline, payment terms..."
+  },
+  "mk.quote.submit": {
+    "vi": "Gửi yêu cầu",
+    "en": "Send request"
+  },
+  "mk.quote.success": {
+    "vi": "Đã gửi yêu cầu báo giá đến người bán!",
+    "en": "Quote request sent to seller!"
+  },
+  "mk.qs.sent": {
+    "vi": "Đã gửi",
+    "en": "Sent"
+  },
+  "mk.qs.viewing": {
+    "vi": "Đang xem",
+    "en": "Viewing"
+  },
+  "mk.qs.confirmed": {
+    "vi": "Đã xác nhận",
+    "en": "Confirmed"
+  },
+  "mk.qs.rejected": {
+    "vi": "Đã từ chối",
+    "en": "Rejected"
+  },
+  "mk.qs.status": {
+    "vi": "Trạng thái",
+    "en": "Status"
+  },
+  "mk.qs.markViewing": {
+    "vi": "Đánh dấu đang xem",
+    "en": "Mark as viewing"
+  },
+  "mk.qs.confirm": {
+    "vi": "Xác nhận",
+    "en": "Confirm"
+  },
+  "mk.qs.reject": {
+    "vi": "Từ chối",
+    "en": "Reject"
+  },
+  "mk.qs.cancelled": {
+    "vi": "Đã huỷ",
+    "en": "Cancelled"
+  },
+  "mk.qs.cancel": {
+    "vi": "Huỷ yêu cầu",
+    "en": "Cancel request"
+  },
+  "mk.qs.cancelled.toast": {
+    "vi": "Đã huỷ yêu cầu báo giá.",
+    "en": "Quote request cancelled."
+  },
+  "mk.qs.cancel.confirm.title": {
+    "vi": "Huỷ yêu cầu báo giá?",
+    "en": "Cancel quote request?"
+  },
+  "mk.qs.cancel.confirm.desc": {
+    "vi": "Hành động này không thể hoàn tác. Người bán sẽ không còn thấy yêu cầu này và bạn sẽ cần gửi lại từ đầu nếu muốn tiếp tục.",
+    "en": "This action cannot be undone. The seller will no longer see this request and you will need to submit a new one if you wish to continue."
+  },
+  "mk.qs.cancel.confirm.keep": {
+    "vi": "Giữ lại yêu cầu",
+    "en": "Keep request"
+  },
+  "mk.qs.cancel.confirm.confirm": {
+    "vi": "Xác nhận huỷ",
+    "en": "Confirm cancel"
+  },
+  "mk.qs.cancel.reason.label": {
+    "vi": "Lý do huỷ (bắt buộc)",
+    "en": "Cancellation reason (required)"
+  },
+  "mk.qs.cancel.reason.min": {
+    "vi": "Vui lòng nhập ít nhất 10 ký tự.",
+    "en": "Please enter at least 10 characters."
+  },
+  "mk.qs.cancel.reason.ph": {
+    "vi": "Cho người bán biết vì sao bạn huỷ yêu cầu...",
+    "en": "Let the seller know why you are cancelling..."
+  },
+  "mk.qs.cancel.reason.shown": {
+    "vi": "Lý do huỷ",
+    "en": "Cancellation reason"
+  },
+  "mk.qs.remind": {
+    "vi": "Nhắc lại / Chuyển tiếp",
+    "en": "Remind / Follow up"
+  },
+  "mk.qs.reminded": {
+    "vi": "Đã gửi nhắc lại tới người mua.",
+    "en": "Reminder sent to buyer."
+  },
+  "mk.qs.reminders": {
+    "vi": "lần nhắc",
+    "en": "reminders"
+  },
+  "mk.qs.updated": {
+    "vi": "Đã cập nhật trạng thái yêu cầu.",
+    "en": "Quote status updated."
+  },
+  "mk.qs.delete": {
+    "vi": "Xóa",
+    "en": "Delete"
+  },
+  "mk.qs.confirmDelete": {
+    "vi": "Xóa yêu cầu báo giá này?",
+    "en": "Delete this quote request?"
+  },
+  "mk.qs.deleted": {
+    "vi": "Đã xóa yêu cầu báo giá.",
+    "en": "Quote request deleted."
+  },
+  "mk.quote.subtitle": {
+    "vi": "Người bán sẽ nhận được yêu cầu và phản hồi trực tiếp cho bạn.",
+    "en": "The seller will receive your request and respond to you directly."
+  },
+  "mk.quote.summaryLabel": {
+    "vi": "Sản phẩm yêu cầu",
+    "en": "Requested listing"
+  },
+  "mk.quote.sending": {
+    "vi": "Đang gửi...",
+    "en": "Sending..."
+  },
+  "mk.quote.successDesc": {
+    "vi": "Người bán sẽ liên hệ với bạn sớm nhất có thể.",
+    "en": "The seller will get back to you shortly."
+  },
+  "mk.quote.contactPh": {
+    "vi": "email@vidu.com / 0901...",
+    "en": "email@example.com / 0901..."
+  },
+  "mk.quote.contactHint": {
+    "vi": "Người bán dùng thông tin này để phản hồi bạn.",
+    "en": "The seller uses this to reply to you."
+  },
+  "mk.detail.alreadyRequested": {
+    "vi": "Bạn đã gửi yêu cầu báo giá",
+    "en": "You've already requested a quote"
+  },
+  "mk.detail.alreadyRequestedDesc": {
+    "vi": "Người bán đã nhận được yêu cầu của bạn.",
+    "en": "The seller has received your request."
+  },
+  "mk.detail.viewMyQuotes": {
+    "vi": "Xem báo giá của tôi",
+    "en": "View my quotes"
+  },
+  "mk.detail.ownListing": {
+    "vi": "Đây là tin đăng của bạn",
+    "en": "This is your listing"
+  },
+  "mk.detail.ownListingDesc": {
+    "vi": "Bạn không thể tự gửi báo giá cho tin của chính mình.",
+    "en": "You can't request a quote on your own listing."
+  },
+  "mk.detail.unavailable": {
+    "vi": "Tin đăng không còn khả dụng",
+    "en": "This listing is no longer available"
+  },
+  "mk.detail.unavailableDesc": {
+    "vi": "Sản phẩm đã bán hoặc ngừng nhận báo giá.",
+    "en": "This item has been sold or is no longer accepting quotes."
+  },
+  "mk.quote.requester": {
+    "vi": "Người gửi yêu cầu",
+    "en": "Requester"
+  },
+  "mk.myq.title": {
+    "vi": "Yêu cầu báo giá của tôi",
+    "en": "My quote requests"
+  },
+  "mk.myq.subtitle": {
+    "vi": "Theo dõi tiến độ các yêu cầu báo giá bạn đã gửi",
+    "en": "Track the progress of quote requests you sent"
+  },
+  "mk.myq.empty": {
+    "vi": "Bạn chưa gửi yêu cầu báo giá nào.",
+    "en": "You haven't sent any quote requests."
+  },
+  "mk.myq.nav": {
+    "vi": "Báo giá của tôi",
+    "en": "My quotes"
+  },
+  "mk.myq.product": {
+    "vi": "Sản phẩm",
+    "en": "Product"
+  },
+  "mk.myq.sentAt": {
+    "vi": "Gửi lúc",
+    "en": "Sent at"
+  },
+  "mk.myq.updatedAt": {
+    "vi": "Cập nhật",
+    "en": "Updated"
+  },
+  "mk.myq.viewProduct": {
+    "vi": "Xem sản phẩm",
+    "en": "View product"
+  },
+  "mk.myq.authTitle": {
+    "vi": "Vui lòng đăng nhập",
+    "en": "Please sign in"
+  },
+  "mk.myq.authDesc": {
+    "vi": "Bạn cần đăng nhập để xem các yêu cầu báo giá của mình.",
+    "en": "You need to sign in to view your quote requests."
+  },
+  "mk.myq.authCta": {
+    "vi": "Đăng nhập",
+    "en": "Sign in"
+  },
+  "mk.ws.title": {
+    "vi": "Không gian của tôi",
+    "en": "My workspace"
+  },
+  "mk.ws.subtitle": {
+    "vi": "Quản lý sản phẩm đã đăng và yêu cầu báo giá của bạn",
+    "en": "Manage your listings and quote requests"
+  },
+  "mk.ws.nav": {
+    "vi": "Không gian của tôi",
+    "en": "My workspace"
+  },
+  "mk.ws.tab.listings": {
+    "vi": "Sản phẩm của tôi",
+    "en": "My listings"
+  },
+  "mk.ws.tab.quotes": {
+    "vi": "Báo giá đã gửi",
+    "en": "My quotes"
+  },
+  "mk.ws.stat.published": {
+    "vi": "Đã đăng",
+    "en": "Published"
+  },
+  "mk.ws.stat.active": {
+    "vi": "Đang mở bán",
+    "en": "Active"
+  },
+  "mk.ws.stat.sold": {
+    "vi": "Đã bán",
+    "en": "Sold"
+  },
+  "mk.ws.stat.quotesSent": {
+    "vi": "Báo giá đã gửi",
+    "en": "Quotes sent"
+  },
+  "mk.ws.listings.empty": {
+    "vi": "Bạn chưa đăng sản phẩm nào.",
+    "en": "You haven't listed any products yet."
+  },
+  "mk.ws.listings.emptyCta": {
+    "vi": "Đăng sản phẩm",
+    "en": "List a product"
+  },
+  "mk.ws.views": {
+    "vi": "lượt xem",
+    "en": "views"
+  },
+  "mk.ws.view": {
+    "vi": "Xem",
+    "en": "View"
+  },
+  "mk.ws.identityTitle": {
+    "vi": "Không xác định được hồ sơ",
+    "en": "Profile not found"
+  },
+  "mk.ws.identityDesc": {
+    "vi": "Tài khoản của bạn chưa được liên kết hồ sơ hội viên nên không thể hiển thị dữ liệu cá nhân.",
+    "en": "Your account is not linked to a member profile, so personal data cannot be shown."
+  },
+  "mk.chat.prefill": {
+    "vi": "Chào bạn, mình quan tâm tới sản phẩm \"{title}\" ({price}) trên Marketplace. Bạn có thể tư vấn thêm giúp mình không?",
+    "en": "Hi, I'm interested in your listing \"{title}\" ({price}) on the Marketplace. Could you share more details?"
+  }
+}

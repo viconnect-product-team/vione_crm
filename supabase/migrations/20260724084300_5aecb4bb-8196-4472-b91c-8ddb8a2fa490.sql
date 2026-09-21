@@ -1,0 +1,2 @@
+ALTER TABLE public.member_business_cards ADD COLUMN IF NOT EXISTS qr_options jsonb;
+COMMENT ON COLUMN public.member_business_cards.qr_options IS 'QR customisation: { background: white|template|transparent, logoScale, logoOffsetX, logoOffsetY }. Null = defaults.';

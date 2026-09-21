@@ -1,0 +1,2262 @@
+@import "tailwindcss" source(none);
+@source "../src/**/*.{ts,tsx,js,jsx,html}";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-glow: var(--primary-glow);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --shadow-card: 0 1px 2px 0 oklch(0.2 0.05 265 / 0.04), 0 1px 3px 0 oklch(0.2 0.05 265 / 0.06);
+  --shadow-elevated:
+    0 4px 12px -2px oklch(0.2 0.05 265 / 0.08), 0 2px 6px -1px oklch(0.2 0.05 265 / 0.05);
+  --shadow-glow: 0 8px 32px -8px oklch(0.45 0.22 270 / 0.35);
+
+  --gradient-primary: linear-gradient(135deg, oklch(0.45 0.22 270), oklch(0.55 0.2 290));
+  --gradient-sidebar: linear-gradient(180deg, oklch(0.22 0.06 265), oklch(0.18 0.05 265));
+  --gradient-card: linear-gradient(135deg, oklch(0.55 0.2 285), oklch(0.45 0.22 270));
+}
+
+@keyframes subtle-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-subtle-bounce {
+  animation: subtle-bounce 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+:root {
+  --radius: 0.75rem;
+
+  --background: #FFFFFF;
+  --foreground: oklch(0.2 0.04 265);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.04 265);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.04 265);
+
+  /* Deep indigo brand */
+  --primary: oklch(0.45 0.22 270);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-glow: oklch(0.62 0.22 285);
+
+  --secondary: oklch(0.96 0.01 260);
+  --secondary-foreground: oklch(0.25 0.05 265);
+
+  --muted: oklch(0.965 0.008 260);
+  --muted-foreground: oklch(0.5 0.03 260);
+
+  --accent: oklch(0.95 0.03 285);
+  --accent-foreground: oklch(0.3 0.1 280);
+
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --success: oklch(0.65 0.16 155);
+  --success-foreground: oklch(0.99 0 0);
+
+  --warning: oklch(0.74 0.16 65);
+  --warning-foreground: oklch(0.2 0.04 265);
+
+  --info: oklch(0.65 0.15 240);
+  --info-foreground: oklch(0.99 0 0);
+
+  --border: oklch(0.92 0.01 260);
+  --input: oklch(0.92 0.01 260);
+  --ring: oklch(0.45 0.22 270);
+
+  /* Sidebar — Light mode */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: oklch(0.55 0.2 285);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: oklch(0.55 0.2 285);
+  --gradient-sidebar: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+
+  --chart-1: oklch(0.55 0.2 270);
+  --chart-2: oklch(0.65 0.18 340);
+  --chart-3: oklch(0.65 0.16 155);
+  --chart-4: oklch(0.74 0.16 65);
+  --chart-5: oklch(0.62 0.18 220);
+}
+
+.dark {
+  --background: oklch(0.16 0.03 265);
+  --foreground: oklch(0.97 0.005 260);
+  --card: oklch(0.2 0.04 265);
+  --card-foreground: oklch(0.97 0.005 260);
+  --popover: oklch(0.2 0.04 265);
+  --popover-foreground: oklch(0.97 0.005 260);
+  --primary: oklch(0.62 0.22 285);
+  --primary-foreground: oklch(0.15 0.03 265);
+  --secondary: oklch(0.26 0.04 265);
+  --secondary-foreground: oklch(0.97 0.005 260);
+  --muted: oklch(0.26 0.04 265);
+  --muted-foreground: oklch(0.7 0.03 260);
+  --accent: oklch(0.3 0.08 285);
+  --accent-foreground: oklch(0.97 0.005 260);
+  --border: oklch(1 0 0 / 22%);
+  --input: oklch(1 0 0 / 24%);
+  --ring: oklch(0.62 0.22 285);
+
+  /* State colours tuned for dark surfaces (AA on --card) */
+  --destructive: oklch(0.68 0.2 25);
+  --destructive-foreground: oklch(0.16 0.03 265);
+  --success: oklch(0.74 0.16 155);
+  --success-foreground: oklch(0.16 0.03 265);
+  --warning: oklch(0.82 0.15 75);
+  --warning-foreground: oklch(0.16 0.03 265);
+  --info: oklch(0.74 0.14 240);
+  --info-foreground: oklch(0.16 0.03 265);
+
+  --sidebar: oklch(0.14 0.03 265);
+  --sidebar-foreground: oklch(0.9 0.02 260);
+  --sidebar-primary: oklch(0.62 0.22 285);
+  --sidebar-primary-foreground: oklch(0.15 0.03 265);
+  --sidebar-accent: oklch(0.22 0.05 268);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.62 0.22 285);
+  --gradient-sidebar: linear-gradient(180deg, oklch(0.16 0.04 265), oklch(0.12 0.03 265));
+
+  --chart-1: oklch(0.68 0.19 285);
+  --chart-2: oklch(0.72 0.17 340);
+  --chart-3: oklch(0.74 0.16 155);
+  --chart-4: oklch(0.82 0.15 75);
+  --chart-5: oklch(0.72 0.16 220);
+}
+
+/* ------------------------------------------------------------------
+   High contrast — layered on top of .dark (html gets `dark hc`).
+   Keeps the indigo enterprise identity while pushing every
+   foreground/background pair well past WCAG AA.
+   ------------------------------------------------------------------ */
+.hc {
+  --background: oklch(0.1 0.02 265);
+  --foreground: oklch(1 0 0);
+  --card: oklch(0.14 0.03 265);
+  --card-foreground: oklch(1 0 0);
+  --popover: oklch(0.13 0.03 265);
+  --popover-foreground: oklch(1 0 0);
+
+  --primary: oklch(0.78 0.18 285);
+  --primary-foreground: oklch(0.1 0.02 265);
+  --primary-glow: oklch(0.86 0.14 290);
+
+  --secondary: oklch(0.22 0.04 265);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.2 0.04 265);
+  --muted-foreground: oklch(0.92 0.01 260);
+  --accent: oklch(0.3 0.09 285);
+  --accent-foreground: oklch(1 0 0);
+
+  --destructive: oklch(0.75 0.21 25);
+  --destructive-foreground: oklch(0.1 0.02 265);
+  --success: oklch(0.84 0.19 150);
+  --success-foreground: oklch(0.1 0.02 265);
+  --warning: oklch(0.9 0.17 90);
+  --warning-foreground: oklch(0.1 0.02 265);
+  --info: oklch(0.84 0.14 235);
+  --info-foreground: oklch(0.1 0.02 265);
+
+  --border: oklch(0.85 0.02 260);
+  --input: oklch(0.85 0.02 260);
+  --ring: oklch(0.9 0.16 290);
+
+  --sidebar: #000000;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #f2b45a;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1e1e1e;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #ffffff;
+  --sidebar-ring: #ffffff;
+  --gradient-sidebar: #000000;
+
+  --shadow-card: none;
+  --shadow-elevated: none;
+  --shadow-glow: none;
+}
+
+/* Flatten decorative effects and strengthen focus rings in high contrast */
+.hc *,
+.hc *::before,
+.hc *::after {
+  text-shadow: none !important;
+}
+.hc :focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+}
+.hc .vba-app {
+  background: var(--background);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* ============================================================
+   ViOne shared tone (Connect-app parity): navy base + warm gold.
+   Applied to surfaces that must match /connect-app — the member
+   (Hiệp hội) app shell and the public landing page. Overrides the
+   semantic tokens locally, so every component keeps using
+   bg-background / text-foreground / bg-primary as usual.
+   ============================================================ */
+.vione-tone {
+  color-scheme: dark;
+
+  /* ── Base surfaces ── */
+  --background: #08091a;          /* deep slate-navy */
+  --foreground: #eeedf5;
+  --card: #0d0e23;                /* midnight card */
+  --card-foreground: #eeedf5;
+  --popover: #11122a;
+  --popover-foreground: #eeedf5;
+
+  /* ── Brand: electric indigo + purple ── */
+  --primary: #7C6FE0;             /* indigo-violet */
+  --primary-foreground: #ffffff;
+  --primary-glow: #a393f5;        /* lighter purple glow */
+
+  /* ── Gradient accents (CSS variables for use in inline styles) ── */
+  --grad-hero: linear-gradient(135deg, #7C6FE0 0%, #a855f7 50%, #6366f1 100%);
+  --grad-cta: linear-gradient(135deg, #7C6FE0, #6366f1);
+
+  --secondary: #11132a;
+  --secondary-foreground: #eeedf5;
+  --muted: #11132a;
+  --muted-foreground: #8a8eb5;    /* cool slate muted */
+  --accent: #1a1d40;
+  --accent-foreground: #a393f5;
+
+  --success: #34d89b;
+  --success-foreground: #08091a;
+  --warning: #f59e0b;
+  --warning-foreground: #08091a;
+  --info: #60a5fa;
+  --info-foreground: #08091a;
+  --destructive: #f87171;
+  --destructive-foreground: #eeedf5;
+
+  --border: #1e2048;              /* indigo-tinted border */
+  --input: #1e2048;
+  --ring: #7C6FE0;
+
+  --sidebar: #0d0e23;
+  --sidebar-foreground: #eeedf5;
+  --sidebar-primary: #7C6FE0;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #11132a;
+  --sidebar-accent-foreground: #a393f5;
+  --sidebar-border: #1e2048;
+  --sidebar-ring: #7C6FE0;
+}
+
+/* ============================================================
+   Unified enterprise theme (navy / warm gold) for the member app.
+   Legacy .vba-* class names are kept as aliases so every screen
+/* ============================================================
+   CEO 1983 Official Enterprise Theme (Classic Navy & Warm Amber Gold)
+   Standardized 3-dominant-color system for Dark, Light, & Contrast.
+   Brand Colors: Cobalt Navy (#003B95 / #0A1128) & Warm Amber/Gold (#F59E0B / #D97706 / #EA580C)
+   ============================================================ */
+.vba-app {
+  --vba-bg: #070D1A;
+  --vba-bg-2: #050912;
+  --vba-surface: #0E172A;
+  --vba-surface-2: #14223E;
+  --vba-border: rgba(0, 59, 149, 0.35);
+  --vba-border-soft: rgba(245, 158, 11, 0.16);
+  --vba-border-accent: rgba(245, 158, 11, 0.45);
+  --vba-gold: #F59E0B;
+  --vba-gold-2: #FBBF24;
+  --vba-gold-soft: rgba(245, 158, 11, 0.15);
+  --vba-gold-glow: 0 6px 20px -6px rgba(245, 158, 11, 0.45);
+  --vba-navy: #2E3192;
+  --vba-navy-light: #25AAE1;
+  --vba-brand-orange: #F7941D;
+  --vba-text: #FFFFFF;
+  --vba-text-muted: #CBD5E1;
+  --vba-text-dim: #94A3B8;
+  --vba-success: #10B981;
+  --vba-danger: #EF4444;
+
+  background: #070D1A;
+  color: var(--vba-text);
+  min-height: 100dvh;
+  font-family: var(--font-sans);
+}
+
+/* High-contrast: strengthen borders and text separation */
+@media (prefers-contrast: more) {
+  .vba-app {
+    --vba-gold-glow: none;
+    --vba-text-muted: #FFFFFF;
+    --vba-border: #FBBF24;
+  }
+}
+
+/* Light mode tokens for .vba-app — Clean Executive White & Deep Navy with Royal Amber Accents */
+html:not(.dark) .vba-app {
+  --vba-bg: #FFFFFF;
+  --vba-bg-2: #F8FAFC;
+  --vba-surface: #FFFFFF;
+  --vba-surface-2: #F1F5F9;
+  --vba-border: rgba(0, 59, 149, 0.22);
+  --vba-border-soft: rgba(0, 59, 149, 0.12);
+  --vba-border-accent: rgba(217, 119, 6, 0.45);
+  --vba-gold: #D97706;
+  --vba-gold-2: #F59E0B;
+  --vba-gold-soft: rgba(217, 119, 6, 0.12);
+  --vba-gold-glow: 0 4px 14px -3px rgba(217, 119, 6, 0.3);
+  --vba-navy: #2E3192;
+  --vba-navy-light: #25AAE1;
+  --vba-brand-orange: #F7941D;
+  --vba-text: #0F172A;
+  --vba-text-muted: #334155;
+  --vba-text-dim: #64748B;
+  --vba-success: #10B981;
+  --vba-danger: #EF4444;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  background: #FFFFFF;
+  color: #0F172A;
+}
+
+html:not(.dark) .vba-card {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1.5px solid rgba(0, 59, 149, 0.18);
+  box-shadow: 0 4px 20px -2px rgba(0, 59, 149, 0.08), 0 1px 3px 0 rgba(217, 119, 6, 0.05);
+}
+
+html:not(.dark) .vba-gold-text {
+  background: linear-gradient(135deg, #B45309 0%, #D97706 50%, #EA580C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html:not(.dark) .vba-gold-grad {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  box-shadow: 0 2px 12px -2px rgba(217, 119, 6, 0.35);
+}
+
+/* High-contrast mode tokens for .vba-app — Pure Solid Black, Pure White, & Electric Gold */
+html.hc .vba-app {
+  --vba-bg: #000000;
+  --vba-bg-2: #000000;
+  --vba-surface: #000000;
+  --vba-surface-2: #0D0D0D;
+  --vba-border: #FACC15;
+  --vba-border-soft: #FFFFFF;
+  --vba-border-accent: #FEF08A;
+  --vba-gold: #FACC15;
+  --vba-gold-2: #FEF08A;
+  --vba-gold-soft: rgba(250, 204, 21, 0.20);
+  --vba-gold-glow: none;
+  --vba-text: #FFFFFF;
+  --vba-text-muted: #FFFFFF;
+  --vba-text-dim: #E2E8F0;
+  color: #FFFFFF;
+}
+
+html.hc .vba-card {
+  background: #000000;
+  color: #FFFFFF;
+  border: 2px solid #FACC15;
+  box-shadow: none;
+}
+
+html.hc .vba-gold-text {
+  background: none;
+  -webkit-text-fill-color: #FACC15;
+  color: #FACC15;
+  font-weight: 700;
+}
+
+html.hc .vba-gold-grad {
+  background: #FACC15;
+  color: #000000 !important;
+  font-weight: 800;
+  border: 2px solid #FFFFFF;
+  box-shadow: none;
+}
+
+.vba-gold-text {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FDE68A 45%, #F59E0B 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.vba-card {
+  background: linear-gradient(165deg, rgba(14, 23, 42, 0.95) 0%, rgba(10, 17, 34, 0.98) 100%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: #FFFFFF;
+  border: 1.5px solid rgba(245, 158, 11, 0.22);
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 59, 149, 0.25);
+}
+
+.vba-gold-grad {
+  background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
+  color: #071322 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px -2px rgba(245, 158, 11, 0.40);
+}
+
+/* Ensure ALL buttons and pills with brand navy / amber / sky background strictly have pure white text */
+.btn-navy,
+.bg-navy-brand,
+[class*="bg-[#003B95]"],
+[class*="bg-[#002B70]"],
+.btn-amber,
+.bg-amber-brand,
+[class*="bg-[#EA580C]"],
+.btn-sky,
+.vba-btn-primary,
+button.bg-sky-500,
+button.bg-sky-600,
+a.bg-sky-500,
+a.bg-sky-600,
+span.bg-sky-500,
+span.bg-sky-600,
+[class*="bg-sky-500"],
+[class*="bg-sky-600"] {
+  color: #FFFFFF !important;
+}
+
+.btn-navy *,
+.bg-navy-brand *,
+[class*="bg-[#003B95]"] *,
+[class*="bg-[#002B70]"] *,
+.btn-amber *,
+.bg-amber-brand *,
+[class*="bg-[#EA580C]"] *,
+.btn-sky *,
+.vba-btn-primary *,
+button.bg-sky-500 *,
+button.bg-sky-600 *,
+a.bg-sky-500 *,
+a.bg-sky-600 *,
+span.bg-sky-500 *,
+span.bg-sky-600 *,
+[class*="bg-sky-500"] *,
+[class*="bg-sky-600"] * {
+  color: #FFFFFF !important;
+}
+
+/* High-contrast: flatten gradients to solid, remove glows for clarity */
+@media (prefers-contrast: more) {
+  .vba-gold-text {
+    background: none;
+    -webkit-text-fill-color: var(--primary);
+    color: var(--primary);
+    filter: none;
+  }
+  .vba-gold-grad {
+    background: var(--primary);
+    box-shadow: none;
+  }
+}
+
+/* Keyboard focus ring for all interactive elements in the member app. */
+.vba-app a:focus-visible,
+.vba-app button:focus-visible,
+.vba-app [role="button"]:focus-visible,
+.vba-app input:not(.borderless-search-input):focus-visible,
+.vba-app select:focus-visible,
+.vba-app textarea:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 4px var(--vba-gold-soft);
+}
+
+.borderless-search-input,
+.borderless-search-input:focus,
+.borderless-search-input:focus-visible {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Pressed state for primary CTAs */
+.vba-gold-grad {
+  transition:
+    transform 0.12s ease-out,
+    filter 0.12s ease-out;
+}
+.vba-app a:active .vba-gold-grad,
+.vba-app button:active .vba-gold-grad,
+.vba-gold-grad:active {
+  transform: translateY(1px) scale(0.985);
+  filter: brightness(1.06);
+}
+
+@media (prefers-contrast: more) {
+  .vba-app a:focus-visible,
+  .vba-app button:focus-visible,
+  .vba-app [role="button"]:focus-visible,
+  .vba-app input:not(.borderless-search-input):focus-visible,
+  .vba-app select:focus-visible,
+  .vba-app textarea:focus-visible {
+    outline-width: 3px;
+    box-shadow:
+      0 0 0 5px var(--background),
+      0 0 0 7px var(--ring);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vba-gold-grad,
+  .vba-app a:active .vba-gold-grad,
+  .vba-gold-grad:active {
+    transition: none;
+    transform: none;
+  }
+}
+
+@keyframes vba-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes vba-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.vba-animate {
+  animation: vba-fade-in 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity;
+}
+
+/* ── Motion system ─────────────────────────────────────────────
+   Standardized durations (150 / 220 / 300ms) + ease-out.
+   Use these tokens instead of ad-hoc transition values. */
+:root {
+  --motion-fast: 150ms;
+  --motion-base: 220ms;
+  --motion-slow: 300ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes vba-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.vba-pop-in {
+  animation: vba-pop-in var(--motion-base) var(--motion-ease) both;
+}
+
+@keyframes vba-badge-pop {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.vba-badge-pop {
+  animation: vba-badge-pop var(--motion-base) var(--motion-ease) both;
+}
+
+@keyframes vba-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes vba-shine {
+  0% {
+    background-position: 200% 0;
+  }
+  60%,
+  100% {
+    background-position: -60% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vba-pop-in,
+  .vba-badge-pop {
+    animation: none;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Subtle scrollbar that blends with the dark sidebar */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--sidebar-foreground) 22%, transparent) transparent;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--sidebar-foreground) 22%, transparent);
+  border-radius: 9999px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--sidebar-foreground) 38%, transparent);
+}
+
+/* Accessibility: prevent iOS Safari's unintended auto-zoom on input focus
+   by keeping form controls at >=16px on touch devices, while leaving the
+   user free to pinch/browser-zoom intentionally. */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1rem);
+  }
+}
+
+/* PWA touch & viewport consistency
+   - Keep intentional zoom (pinch / browser zoom) working everywhere.
+   - Remove only the inconsistent double-tap-zoom delay on tappable controls,
+     not on the whole document, so pinch-to-zoom and text zoom stay intact. */
+html {
+  -webkit-text-size-adjust: 100%; /* stop iOS auto text inflation on rotate */
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 16px; /* Chuẩn hóa về 16px để tránh iOS tự động zoom input và giữ form mobile đều nhau */
+  }
+}
+
+body {
+  overscroll-behavior-y: contain; /* avoid stray scroll-chaining bounce */
+  -webkit-tap-highlight-color: transparent; /* consistent tap feedback */
+}
+button,
+a,
+[role="button"],
+label,
+summary,
+input[type="checkbox"],
+input[type="radio"] {
+  touch-action: manipulation; /* kills 300ms/double-tap-zoom on controls only */
+}
+
+/* ============================================================
+   Business Connect Mobile — Executive Minimal Luxury (BC-Mobile-0B)
+   Parallel token layer consumed ONLY by
+   src/components/business-connect/mobile/*. Never replaces --vba-*.
+   `.bc-app` carries tokens (safe on portal content such as the V
+   sheet); `.bc-app-viewport` adds page-level layout.
+   ============================================================ */
+/* High-contrast mode tokens for .bc-app (ViOne Connect) — Crisp Solid Black, High-Visibility White, Sapphire & Electric Gold */
+html.hc .bc-app {
+  --bc-bg-deep: rgb(0, 0, 0);
+  --bc-bg-primary: rgb(0, 0, 0);
+  --bc-bg-secondary: #050505;
+  --bc-surface: #0A0A0A;
+  --bc-surface-elevated: #111111;
+
+  --bc-mobile-bg: rgb(0, 0, 0);
+  --bc-mobile-bg-deep: rgb(0, 0, 0);
+  --bc-mobile-surface: #0A0A0A;
+  --bc-mobile-surface-2: #121212;
+  --bc-mobile-navy: rgb(0, 0, 0);
+  --bc-mobile-navy-deep: rgb(0, 0, 0);
+  --bc-mobile-app-gradient: rgb(0, 0, 0);
+  --bc-mobile-card-grad: #0A0A0A;
+
+  --bc-text-primary: #FFFFFF;
+  --bc-text-secondary: #FDE68A;
+  --bc-text-tertiary: #CBD5E1;
+  --bc-text-disabled: #94A3B8;
+
+  --bc-mobile-ivory: #FFFFFF;
+  --bc-mobile-text: #FFFFFF;
+  --bc-mobile-text-2: #FDE68A;
+  --bc-mobile-muted: #CBD5E1;
+  --bc-mobile-disabled: #94A3B8;
+
+  --bc-border-subtle: rgba(255, 255, 255, 0.15);
+  --bc-border-medium: rgba(216, 178, 130, 0.45);
+  --bc-border-gold: rgba(216, 178, 130, 0.45);
+  --bc-mobile-border: rgba(255, 255, 255, 0.12);
+  --bc-mobile-border-subtle: rgba(255, 255, 255, 0.06);
+  --bc-mobile-border-gold: #D8B282;
+  --bc-mobile-border-active: #F6E1C3;
+}
+
+.bc-app,
+.dark .bc-app {
+  /* ── Business Connect — Translucent Obsidian Dark Glass & Champagne Gold ──────────────────
+     Frosted Dark Glass (Đen mờ cao cấp) × Champagne Gold Gradient (Vàng đồng như nút ViOne). */
+
+  /* Backgrounds / surfaces — Executive Obsidian Navy & Frosted Dark Glass (Đen mờ cao cấp, xuyên thấu nhẹ nền vàng kim) */
+  --bc-bg-deep: #070B12;
+  --bc-bg-primary: #0B0F17;
+  --bc-bg-secondary: #0E1522;
+  --bc-surface: rgba(14, 21, 34, 0.55);
+  --bc-surface-elevated: rgba(19, 27, 41, 0.65);
+
+  --bc-mobile-bg: #0B0F17;
+  --bc-mobile-bg-deep: #070B12;
+  --bc-mobile-surface: rgba(14, 21, 34, 0.55);
+  --bc-mobile-surface-2: rgba(22, 32, 50, 0.65);
+  --bc-mobile-navy: rgba(14, 21, 34, 0.70);
+  --bc-mobile-navy-deep: #070B12;
+  --bc-mobile-app-gradient: linear-gradient(180deg, rgba(11, 15, 23, 0.85) 0%, rgba(7, 11, 18, 0.95) 100%);
+  --bc-mobile-card-grad: linear-gradient(165deg, rgba(19, 27, 41, 0.58) 0%, rgba(10, 16, 28, 0.68) 100%);
+
+  /* Text - High luminance white & vibrant champagne gold ViOne, no dim gray */
+  --bc-text-primary: #FFFFFF;
+  --bc-text-secondary: #F6E1C3;
+  --bc-text-tertiary: #FFFFFF;
+  --bc-text-disabled: #D8B282;
+
+  --bc-mobile-ivory: #FFFFFF;
+  --bc-mobile-text: #FFFFFF;
+  --bc-mobile-text-2: #F6E1C3;
+  --bc-mobile-muted: rgba(255, 255, 255, 0.85);
+  --bc-mobile-disabled: #D8B282;
+
+  /* Borders — quiet, subtle hairline; lights up brighter on click / tap */
+  --bc-border-subtle: rgba(255, 255, 255, 0.06);
+  --bc-border-medium: rgba(216, 178, 130, 0.20);
+  --bc-border-gold: rgba(216, 178, 130, 0.45);
+  --bc-mobile-border: rgba(255, 255, 255, 0.08);
+  --bc-mobile-border-subtle: rgba(255, 255, 255, 0.05);
+  --bc-mobile-border-gold: rgba(216, 178, 130, 0.45);
+  --bc-mobile-border-active: rgba(216, 178, 130, 0.70);
+  --bc-mobile-border-strong: rgba(246, 225, 195, 0.85);
+
+  /* Gold & Warm Highlights - Royal Bronze Gold */
+  --bc-gold-300: #F6E1C3;
+  --bc-gold-400: #E6C59E;
+  --bc-gold-500: #D8B282;
+  --bc-gold-600: #C29B69;
+  --bc-gold-700: #9E7445;
+
+  --bc-mobile-accent: #D8B282;
+  --bc-mobile-accent-strong: #F6E1C3;
+  --bc-mobile-accent-soft: rgba(216, 178, 130, 0.22);
+  --bc-mobile-accent-grad: linear-gradient(135deg, #F6E1C3 0%, #E6C59E 30%, #D8B282 65%, #C29B69 100%);
+  --bc-mobile-accent-grad-hover: linear-gradient(135deg, #FCF3E7 0%, #EED5B3 30%, #E2C095 65%, #CCA777 100%);
+  --bc-mobile-accent-grad-active: linear-gradient(135deg, #E6C59E 0%, #D8B282 35%, #C29B69 70%, #9E7445 100%);
+  --bc-mobile-accent-on: #000000;
+  --bc-mobile-shadow-cta: 0 4px 20px rgba(216, 178, 130, 0.35);
+  --bc-mobile-success: #10B981;
+  --bc-mobile-danger: #F43F5E;
+
+  /* Radius — soft rounded */
+  --bc-radius-sm: 10px;
+  --bc-radius-md: 14px;
+  --bc-radius-lg: 18px;
+  --bc-radius-xl: 22px;
+  --bc-radius-sheet: 26px;
+  --bc-mobile-radius-card: var(--bc-radius-lg);
+  --bc-mobile-radius-sheet: var(--bc-radius-sheet);
+
+  /* Glassmorphism & Shadow Depth */
+  --bc-mobile-shadow-surface: 0 8px 30px -4px rgba(0, 0, 0, 0.5), 0 0 1px rgba(216, 178, 130, 0.2);
+  --bc-mobile-shadow-gold: 0 0 25px rgba(216, 178, 130, 0.25);
+  --bc-mobile-shadow-nav: 0 -4px 25px rgba(0, 0, 0, 0.7);
+  --bc-mobile-shadow-v: 0 0 20px rgba(216, 178, 130, 0.35);
+
+  --bc-mobile-nav-h: 64px;
+  --bc-mobile-safe-top: env(safe-area-inset-top, 0px);
+  --bc-mobile-safe-top-compact: calc(max(env(safe-area-inset-top, 0px), 12px) + 4px);
+  --bc-mobile-safe-right: env(safe-area-inset-right, 0px);
+  --bc-mobile-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --bc-mobile-safe-left: env(safe-area-inset-left, 0px);
+
+  /* Header baseline grid */
+  --bc-mobile-header-h: 56px;
+  --bc-mobile-header-avatar: 48px;
+  --bc-mobile-header-action: 44px;
+  --bc-mobile-header-title: 24px;
+  --bc-mobile-header-gap: 8px;
+  --bc-mobile-header-icon: 20px;
+
+  font-family: var(--font-sans);
+  color-scheme: dark;
+}
+
+/* Dark theme: ONLY crisp pure white and signature ViOne champagne gold text */
+.dark .bc-app .text-slate-400,
+.dark .bc-app .text-slate-500,
+.dark .bc-app .text-slate-600,
+.dark .bc-app .text-gray-400,
+.dark .bc-app .text-gray-500,
+.dark .bc-app .text-gray-600,
+.dark .bc-app .text-neutral-400,
+.dark .bc-app .text-neutral-500,
+.dark .bc-app .text-muted-foreground,
+.dark .bc-app [class*="text-[var(--bc-mobile-muted)]"],
+.dark .bc-app .text-\[var\(--bc-mobile-muted\)\] {
+  color: #F6E1C3 !important;
+}
+
+.dark .bc-app .text-slate-200,
+.dark .bc-app .text-slate-300,
+.dark .bc-app .text-gray-200,
+.dark .bc-app .text-gray-300,
+.dark .bc-app .text-zinc-200,
+.dark .bc-app .text-zinc-300 {
+  color: #FFFFFF !important;
+}
+
+/* ============================================================
+   Light mode mobile text fixes — bc-app & vba-app
+   White / cream / yellow text in dark-hardcoded components must
+   switch to dark navy so it's readable on white card surfaces.
+   ============================================================ */
+
+html:not(.dark) .bc-app .text-white,
+html:not(.dark) .bc-app .text-slate-50,
+html:not(.dark) .bc-app .text-slate-100,
+html:not(.dark) .bc-app .text-slate-200,
+html:not(.dark) .bc-app .text-slate-300,
+html:not(.dark) .bc-app .text-gray-100,
+html:not(.dark) .bc-app .text-gray-200,
+html:not(.dark) .bc-app .text-gray-300,
+html:not(.dark) .bc-app .text-zinc-100,
+html:not(.dark) .bc-app .text-zinc-200,
+html:not(.dark) .bc-app .text-zinc-300,
+html:not(.dark) .bc-app .text-neutral-100,
+html:not(.dark) .bc-app .text-neutral-200,
+html:not(.dark) .bc-app .text-neutral-300 {
+  color: #000000 !important; /* Pure Crisp Black */
+}
+
+html:not(.dark) .bc-app .text-slate-400,
+html:not(.dark) .bc-app .text-slate-500,
+html:not(.dark) .bc-app .text-slate-600,
+html:not(.dark) .bc-app .text-gray-400,
+html:not(.dark) .bc-app .text-gray-500,
+html:not(.dark) .bc-app .text-neutral-400,
+html:not(.dark) .bc-app .text-neutral-500,
+html:not(.dark) .bc-app .text-muted-foreground {
+  color: #475569 !important; /* Crisp Slate Gray */
+}
+
+/* Gold/amber/yellow in light mode → bright gold & warm amber accents */
+html:not(.dark) .bc-app .text-amber-100,
+html:not(.dark) .bc-app .text-amber-200,
+html:not(.dark) .bc-app .text-amber-300,
+html:not(.dark) .bc-app .text-yellow-100,
+html:not(.dark) .bc-app .text-yellow-200,
+html:not(.dark) .bc-app .text-yellow-300 {
+  color: #D97706 !important; /* Bright Gold Amber */
+}
+
+/* vba-app light mode text */
+html:not(.dark) .vba-app {
+  --foreground: #000000;
+  --card-foreground: #000000;
+  --popover-foreground: #000000;
+  --muted-foreground: #64748B;
+}
+
+/* Light mode text overrides: ONLY apply for faint slate text on plain white backgrounds, NEVER touch .text-white */
+html:not(.dark) .vba-app :not([data-dark-card]):not([data-dark-card] *):not(.vba-member-card):not(.vba-member-card *):not(.dark-surface):not(.dark-surface *):not([class*="bg-"]):not(button):not(button *):not([class*="red"]):not([class*="blue"]) > .text-slate-50,
+html:not(.dark) .vba-app :not([data-dark-card]):not([data-dark-card] *):not(.vba-member-card):not(.vba-member-card *):not(.dark-surface):not(.dark-surface *):not([class*="bg-"]):not(button):not(button *):not([class*="red"]):not([class*="blue"]) > .text-slate-100,
+html:not(.dark) .vba-app :not([data-dark-card]):not([data-dark-card] *):not(.vba-member-card):not(.vba-member-card *):not(.dark-surface):not(.dark-surface *):not([class*="bg-"]):not(button):not(button *):not([class*="red"]):not([class*="blue"]) > .text-slate-200 {
+  color: #0F172A;
+}
+
+
+/* STRICT OVERRIDE: Dark cards and membership cards ALWAYS keep crisp white and silver text */
+.vba-member-card,
+[data-dark-card],
+.vba-member-card *,
+[data-dark-card] * {
+  color-scheme: dark;
+}
+
+html:not(.dark) .vba-app .vba-member-card .text-white,
+html:not(.dark) .vba-app [data-dark-card] .text-white,
+html:not(.dark) .vba-app .vba-member-card [data-card-white],
+html:not(.dark) .vba-app [data-dark-card] [data-card-white] {
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) .vba-app .vba-member-card .text-white\/90,
+html:not(.dark) .vba-app [data-dark-card] .text-white\/90 {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html:not(.dark) .vba-app .vba-member-card .text-white\/80,
+html:not(.dark) .vba-app [data-dark-card] .text-white\/80 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+html:not(.dark) .vba-app .vba-member-card .text-white\/70,
+html:not(.dark) .vba-app [data-dark-card] .text-white\/70 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+html:not(.dark) .vba-app .vba-member-card .text-white\/60,
+html:not(.dark) .vba-app [data-dark-card] .text-white\/60 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+html:not(.dark) .vba-app :not([data-dark-card]):not([data-dark-card] *):not(.vba-member-card):not(.vba-member-card *) > .text-slate-400,
+html:not(.dark) .vba-app :not([data-dark-card]):not([data-dark-card] *):not(.vba-member-card):not(.vba-member-card *) > .text-slate-500,
+html:not(.dark) .vba-app :not([data-dark-card]):not([data-dark-card] *):not(.vba-member-card):not(.vba-member-card *) > .text-muted-foreground {
+  color: #64748B;
+}
+
+/* Golden Pollen Fall Animation (Rụng phấn bling bling) */
+@keyframes vba-pollen-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.6) rotate(0deg);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translateY(-2px) scale(1) rotate(45deg);
+  }
+  80% {
+    opacity: 0.8;
+    transform: translateY(12px) scale(0.9) rotate(120deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.4) rotate(180deg);
+  }
+}
+
+@keyframes vba-bling-twinkle {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.25) rotate(180deg);
+    filter: drop-shadow(0 0 4px #FCD34D);
+  }
+}
+
+/* Member Perks 2s Glow & Shake Gift Box Animation */
+@keyframes vba-gift-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3), inset 0 0 10px rgba(251, 191, 36, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(251, 191, 36, 0.7), 0 0 60px rgba(245, 158, 11, 0.4), inset 0 0 20px rgba(255, 255, 255, 0.6);
+  }
+}
+
+@keyframes vba-gift-shake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translate(-3px, -2px) rotate(-3deg) scale(1.03);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translate(3px, 1px) rotate(3deg) scale(1.03);
+  }
+}
+
+@keyframes vba-ray-burst {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(0deg);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.3) rotate(90deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7) rotate(180deg);
+  }
+}
+
+.animate-pollen-1 {
+  animation: vba-pollen-fall 2.2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+.animate-pollen-2 {
+  animation: vba-pollen-fall 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite 0.7s;
+}
+.animate-pollen-3 {
+  animation: vba-pollen-fall 3.2s cubic-bezier(0.25, 1, 0.5, 1) infinite 1.4s;
+}
+.animate-bling {
+  animation: vba-bling-twinkle 1.8s ease-in-out infinite;
+}
+
+/* ── BLUE SNOWFALL SPARKLING ANIMATIONS (HIỆU ỨNG TUYẾT RƠI XANH LẤP LÁNH) ── */
+@keyframes blue-snow-fall-1 {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) translateX(0px) scale(0.6) rotate(0deg);
+  }
+  20% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(18px) translateX(6px) scale(1.1) rotate(120deg);
+  }
+}
+
+@keyframes blue-snow-fall-2 {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) translateX(4px) scale(0.5) rotate(0deg);
+  }
+  25% {
+    opacity: 0.9;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(16px) translateX(-6px) scale(1) rotate(-140deg);
+  }
+}
+
+@keyframes blue-snow-fall-3 {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) translateX(-3px) scale(0.4) rotate(0deg);
+  }
+  30% {
+    opacity: 0.95;
+  }
+  75% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) translateX(4px) scale(1.15) rotate(180deg);
+  }
+}
+
+@keyframes blue-sparkle-glow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+    filter: drop-shadow(0 0 2px rgba(56, 189, 248, 0.4));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.95));
+  }
+}
+
+.animate-blue-snow-1 {
+  animation: blue-snow-fall-1 2.4s ease-in-out infinite;
+}
+.animate-blue-snow-2 {
+  animation: blue-snow-fall-2 2.9s ease-in-out infinite 0.8s;
+}
+.animate-blue-snow-3 {
+  animation: blue-snow-fall-3 3.3s ease-in-out infinite 1.5s;
+}
+.animate-blue-sparkle {
+  animation: blue-sparkle-glow 1.6s ease-in-out infinite;
+}
+
+
+/* Light mode tokens for .bc-app (ViOne Connect) — Clean White & Pure Black */
+html:not(.dark) .bc-app {
+  --bc-bg-deep: #FAF8F5;
+  --bc-bg-primary: #FFFFFF;
+  --bc-bg-secondary: #FFFFFF;
+  --bc-surface: #FFFFFF;
+  --bc-surface-elevated: #FFFFFF;
+
+  --bc-mobile-bg: #FFFFFF;
+  --bc-mobile-bg-deep: #FAF8F5;
+  --bc-mobile-surface: #FFFFFF;
+  --bc-mobile-surface-2: #FAF8F5;
+  --bc-mobile-navy: #0F172A;
+  --bc-mobile-navy-deep: #020617;
+  --bc-mobile-app-gradient: #FFFFFF;
+  --bc-mobile-card-grad: #FFFFFF;
+
+  --bc-text-primary: #000000;
+  --bc-text-secondary: #334155;
+  --bc-text-tertiary: #64748B;
+  --bc-text-disabled: #94A3B8;
+
+  --bc-mobile-ivory: #000000;
+  --bc-mobile-text: #000000;
+  --bc-mobile-text-2: #334155;
+  --bc-mobile-muted: #64748B;
+  --bc-mobile-disabled: #94A3B8;
+
+  --bc-border-subtle: rgba(0, 0, 0, 0.08);
+  --bc-border-medium: rgba(0, 0, 0, 0.15);
+  --bc-border-gold: #D8B282;
+  --bc-mobile-border: rgba(0, 0, 0, 0.10);
+  --bc-mobile-border-subtle: rgba(0, 0, 0, 0.05);
+  --bc-mobile-border-gold: #D8B282;
+  --bc-mobile-border-active: #C29B69;
+  --bc-mobile-border-strong: rgba(216, 178, 130, 0.65);
+
+  --bc-gold-300: #F6E1C3;
+  --bc-gold-400: #E6C59E;
+  --bc-gold-500: #D8B282;
+  --bc-gold-600: #C29B69;
+  --bc-gold-700: #9E7445;
+
+  --bc-mobile-accent: #C29B69;
+  --bc-mobile-accent-strong: #9E7445;
+  --bc-mobile-accent-soft: rgba(216, 178, 130, 0.20);
+  --bc-mobile-accent-grad: linear-gradient(135deg, #F6E1C3 0%, #E6C59E 30%, #D8B282 65%, #C29B69 100%);
+  --bc-mobile-accent-grad-hover: linear-gradient(135deg, #FCF3E7 0%, #EED5B3 30%, #E2C095 65%, #CCA777 100%);
+  --bc-mobile-accent-grad-active: linear-gradient(135deg, #E6C59E 0%, #D8B282 35%, #C29B69 70%, #9E7445 100%);
+  --bc-mobile-accent-on: #000000;
+
+  --bc-mobile-shadow-surface: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --bc-mobile-shadow-gold: 0 4px 16px rgba(216, 178, 130, 0.30);
+  --bc-mobile-shadow-nav: 0 -4px 20px rgba(0, 0, 0, 0.05);
+
+  color-scheme: light;
+}
+
+/* ViOne Button & Active Tab Contrast Rules:
+   Buttons with gold gradient/accent must ALWAYS display crisp black text (#000000) and bold font in both light and dark themes */
+.bc-app .bc-cta-gold,
+.bc-app button.bc-cta-gold,
+.bc-app a.bc-cta-gold,
+.bc-app .bc-cta-gold *,
+.bc-app button.bc-cta-gold *,
+.bc-app a.bc-cta-gold *,
+.bc-app :not([class*="bg-clip-text"]):not(.text-transparent)[class*="bg-[var(--bc-mobile-accent-grad)]"],
+.bc-app :not([class*="bg-clip-text"]):not(.text-transparent)[class*="bg-[var(--bc-mobile-accent-grad)]"] :not([class*="bg-clip-text"]):not(.text-transparent),
+.bc-app .bg-gradient-to-r.from-amber-400,
+.bc-app .bg-amber-400,
+.bc-app .bg-amber-500,
+.bc-app [aria-pressed="true"].gold-active,
+.bc-app [aria-selected="true"].gold-active {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.bc-app-viewport {
+  background: transparent;
+  color: var(--bc-mobile-text);
+  min-height: 100dvh;
+  position: relative;
+  isolation: isolate;
+}
+
+.bc-app-viewport::before {
+  display: none;
+}
+
+
+/* Hide native scrollbars inside the connect-app shell; scrolling remains
+   gesture-driven (swipe up/down). WebKit + Firefox + IE/Edge covered.
+   Momentum + smooth touch scrolling tuned for iOS Safari and Android. */
+.bc-app {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+.bc-app ::-webkit-scrollbar,
+.bc-app::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Any nested scroll container (sheets, lists, dialogs) inherits momentum
+   scrolling and never rubber-bands the page behind it. */
+.bc-app [data-scrollable],
+.bc-app .overflow-y-auto,
+.bc-app .overflow-auto,
+.bc-app .overflow-y-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+
+/* Horizontal rails (chip rows, carousels) keep native swipe + snap. */
+.bc-app .overflow-x-auto,
+.bc-app .overflow-x-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+}
+
+/* Prevent iOS double-tap zoom / accidental text selection on tap targets. */
+.bc-app button,
+.bc-app [role="button"],
+.bc-app a,
+.bc-app [role="tab"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The page itself should not rubber-band behind the app shell, and must never
+   drift sideways when the user holds and drags horizontally. */
+.bc-app-viewport {
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  overflow-x: clip;
+  max-width: 100vw;
+  touch-action: pan-y;
+}
+
+/* Lock horizontal panning of the whole app: only opted-in rails scroll on X.
+   Document-level momentum scrolling stays native (no JS scroll hijacking),
+   with rubber-banding of the page behind the shell suppressed. */
+html:has(.bc-app-viewport),
+body:has(.bc-app-viewport) {
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  max-width: 100vw;
+}
+
+/* Fixed chrome (bottom nav, sheets) must stay on its own composited layer so
+   iOS does not re-rasterize it while the page scrolls underneath. */
+.bc-app .fixed,
+.bc-app [data-fixed-layer] {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Hide the document-level vertical scrollbar while on connect-app screens. */
+html:has(.bc-app-viewport),
+body:has(.bc-app-viewport) {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html:has(.bc-app-viewport)::-webkit-scrollbar,
+body:has(.bc-app-viewport)::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Content wider than the viewport must wrap/clip instead of pushing layout. */
+.bc-app-viewport > * {
+  min-width: 0;
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  .bc-app {
+    scroll-behavior: smooth;
+  }
+}
+
+
+/* One card background, one border colour, one divider colour for every
+   /connect-app surface — presentation only, no layout opinions.
+   Deep obsidian gradient matching section Hôm nay */
+@utility bc-card {
+  border: 1px solid var(--bc-mobile-border);
+  border-radius: var(--bc-mobile-radius-card);
+  background: linear-gradient(165deg, rgba(16, 23, 38, 0.82) 0%, rgba(9, 14, 24, 0.88) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Slightly raised variant (inputs, chips, nested rows). */
+@utility bc-card-soft {
+  border: 1px solid var(--bc-mobile-border);
+  border-radius: var(--bc-mobile-radius-card);
+  background: linear-gradient(165deg, rgba(20, 30, 48, 0.85) 0%, rgba(12, 18, 30, 0.90) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Any hairline separator inside the app follows the same border token. */
+.bc-app hr {
+  border-color: var(--bc-mobile-border);
+}
+
+/* Interactive elements in .bc-app: subtle hairline border, lights up brighter on click / tap */
+.bc-app button,
+.bc-app a[class*="border"],
+.bc-app [role="button"],
+.bc-app .bc-card-interactive,
+.bc-app li[class*="border"] > a,
+.bc-app li[class*="border"] > button {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, transform 0.1s ease;
+}
+
+.bc-app button:active,
+.bc-app a[class*="border"]:active,
+.bc-app [role="button"]:active,
+.bc-app .bc-card-interactive:active {
+  border-color: var(--bc-mobile-border-active) !important;
+  box-shadow: 0 0 12px rgba(216, 178, 130, 0.25) !important;
+}
+
+.bc-app input:focus,
+.bc-app textarea:focus {
+  border-color: var(--bc-mobile-border-active) !important;
+  box-shadow: 0 0 10px rgba(216, 178, 130, 0.2) !important;
+}
+
+/* Dark / high-contrast site modes reuse the same executive tokens: the
+   Business Connect visual language is dark by definition, not an inversion. */
+
+
+
+
+/* Form controls inside /connect-app always follow the navy/gold dark palette,
+   never the light cream/gray tone. */
+.bc-app input,
+.bc-app select,
+.bc-app textarea {
+  background-color: var(--bc-mobile-surface-2);
+  color: var(--bc-mobile-text);
+  border-color: var(--bc-mobile-border);
+  caret-color: var(--bc-mobile-accent);
+}
+
+.bc-app input::placeholder,
+.bc-app textarea::placeholder,
+.bc-app :is(input, textarea)::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: rgba(212, 195, 163, 0.35) !important;
+  opacity: 1 !important;
+}
+
+
+.bc-app select option,
+.bc-app select optgroup {
+  background-color: var(--bc-mobile-surface);
+  color: var(--bc-mobile-text);
+}
+
+.bc-app input:not([type="search"]):not(.mobile-search-input):focus-visible,
+.bc-app select:focus-visible,
+.bc-app textarea:focus-visible {
+  border-color: color-mix(in oklab, var(--bc-mobile-accent) 65%, transparent);
+  outline-color: color-mix(in oklab, var(--bc-mobile-accent) 65%, transparent);
+}
+
+.bc-app input[type="search"]:focus-visible,
+.bc-app input[type="search"]:focus,
+.bc-app .mobile-search-input:focus-visible,
+.bc-app .mobile-search-input:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.bc-app input:disabled,
+.bc-app select:disabled,
+.bc-app textarea:disabled {
+  background-color: color-mix(in oklab, var(--bc-mobile-surface) 80%, transparent);
+  color: var(--bc-mobile-muted);
+}
+
+.bc-app input[type="checkbox"],
+.bc-app input[type="radio"] {
+  accent-color: var(--bc-mobile-accent);
+}
+
+.bc-app input:-webkit-autofill,
+.bc-app input:-webkit-autofill:hover,
+.bc-app input:-webkit-autofill:focus,
+.bc-app textarea:-webkit-autofill,
+.bc-app select:-webkit-autofill {
+  -webkit-text-fill-color: var(--bc-mobile-text);
+  caret-color: var(--bc-mobile-accent);
+  box-shadow: 0 0 0 1000px var(--bc-mobile-surface-2) inset;
+  transition: background-color 9999s ease-out 0s;
+}
+
+
+
+/* Translucent card with subtle gradient & unified hairline border */
+@utility bc-translucent-card {
+  background: linear-gradient(165deg, rgba(19, 27, 41, 0.55) 0%, rgba(10, 16, 28, 0.68) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(216, 178, 130, 0.22);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.35);
+}
+
+html:not(.dark) .bc-translucent-card {
+  background: #FFFFFF;
+  border: 1px solid var(--bc-mobile-border);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+}
+
+html.hc .bc-translucent-card,
+html.hc .bc-card,
+html.hc .bc-card-soft {
+  background: rgb(0, 0, 0) !important;
+  border: 2px solid #FACC15 !important;
+  box-shadow: none !important;
+  color: #FFFFFF !important;
+}
+
+/* All mobile popups, bottom sheets, drawers, dialogs, and dropdown menus */
+html.dark [role="dialog"],
+html.dark [role="menu"],
+html.dark [role="listbox"],
+html.dark [data-vaul-drawer],
+html.dark [vaul-drawer],
+html.dark [data-radix-popper-content-wrapper] > [role="menu"],
+html.dark [data-radix-popper-content-wrapper] > div,
+html.dark .radix-dialog-content,
+html.dark .radix-dropdown-content,
+html.dark body > [data-radix-portal] [role="dialog"],
+html.dark body > [data-radix-portal] [role="menu"],
+html.dark body > [data-radix-portal] [role="listbox"],
+html.dark body > div[role="dialog"],
+html.dark body > div[role="menu"] {
+  background: linear-gradient(165deg, rgba(19, 27, 41, 0.80) 0%, rgba(14, 21, 34, 0.88) 50%, rgba(11, 15, 23, 0.90) 100%) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-color: rgba(216, 178, 130, 0.35) !important;
+}
+
+html.hc [role="dialog"],
+html.hc [role="menu"],
+html.hc [role="listbox"],
+html.hc [data-vaul-drawer],
+html.hc [vaul-drawer],
+html.hc [data-radix-popper-content-wrapper] > [role="menu"],
+html.hc [data-radix-popper-content-wrapper] > div,
+html.hc .radix-dialog-content,
+html.hc .radix-dropdown-content,
+html.hc body > [data-radix-portal] [role="dialog"],
+html.hc body > [data-radix-portal] [role="menu"],
+html.hc body > [data-radix-portal] [role="listbox"],
+html.hc body > div[role="dialog"],
+html.hc body > div[role="menu"] {
+  background: rgb(0, 0, 0) !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FACC15 !important;
+  box-shadow: none !important;
+}
+
+html:not(.dark) [role="dialog"],
+html:not(.dark) [role="menu"],
+html:not(.dark) [role="listbox"],
+html:not(.dark) [data-vaul-drawer],
+html:not(.dark) [vaul-drawer],
+html:not(.dark) [data-radix-popper-content-wrapper] > [role="menu"],
+html:not(.dark) [data-radix-popper-content-wrapper] > div,
+html:not(.dark) .radix-dialog-content,
+html:not(.dark) .radix-dropdown-content,
+html:not(.dark) body > [data-radix-portal] [role="dialog"],
+html:not(.dark) body > [data-radix-portal] [role="menu"],
+html:not(.dark) body > [data-radix-portal] [role="listbox"],
+html:not(.dark) body > div[role="dialog"],
+html:not(.dark) body > div[role="menu"] {
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-color: rgba(180, 83, 9, 0.25) !important;
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.10) !important;
+}
+
+/* Luxury gold text gradient matching Login "Chào mừng" title */
+@utility bc-gold-text {
+  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Luxury gold surface gradient matching Login "Chào mừng" palette */
+@utility bc-gold-gradient {
+  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
+}
+
+/* Universal ViOne gold gradient background class fix (strictly for non-clipped containers) */
+:not([class*="bg-clip-text"])[class*="bg-[var(--bc-mobile-accent-grad)]"],
+.bg-vione-gold-grad {
+  background-image: var(--bc-mobile-accent-grad);
+}
+
+[class*="bg-clip-text"] {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+}
+
+/* Warm-gold primary CTA surface (design parity for actions such as
+   "Chạm NFC để kết nối"). Hover/active stay on the same gold ramp. */
+@utility bc-cta-gold {
+  background-image: var(--bc-mobile-accent-grad);
+  color: var(--bc-mobile-accent-on);
+  box-shadow: var(--bc-mobile-shadow-cta);
+  transition:
+    background-image 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+
+  &:hover:not(:disabled) {
+    background-image: var(--bc-mobile-accent-grad-hover);
+  }
+
+  &:active:not(:disabled) {
+    background-image: var(--bc-mobile-accent-grad-active);
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    box-shadow: none;
+    background-image: none;
+    background-color: color-mix(in oklab, var(--bc-mobile-accent) 55%, var(--bc-mobile-surface));
+    color: color-mix(in oklab, var(--bc-mobile-accent-on) 80%, transparent);
+  }
+}
+
+/* Secondary CTA in the same gold family: outlined gold on the dark surface.
+   Used for paired actions (decline/withdraw) next to a primary gold CTA. */
+@utility bc-cta-gold-soft {
+  background-color: color-mix(in oklab, var(--bc-mobile-accent) 12%, transparent);
+  color: var(--bc-mobile-accent-strong);
+  border: 1px solid color-mix(in oklab, var(--bc-mobile-accent) 45%, transparent);
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    transform 150ms ease-out;
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in oklab, var(--bc-mobile-accent) 20%, transparent);
+    border-color: var(--bc-mobile-accent);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    background-color: color-mix(in oklab, var(--bc-mobile-accent) 8%, transparent);
+    border-color: color-mix(in oklab, var(--bc-mobile-accent) 30%, transparent);
+    color: color-mix(in oklab, var(--bc-mobile-accent-strong) 70%, var(--bc-mobile-surface));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-cta-gold-soft {
+    transition: none;
+
+    &:active:not(:disabled) {
+      transform: none;
+    }
+  }
+}
+
+
+
+@media (prefers-reduced-motion: reduce) {
+  .bc-cta-gold {
+    transition: none;
+  }
+  .bc-cta-gold:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* BC-Mobile-1B — nearly invisible content-state transition (160ms fade/rise).
+   Kept outside @utility: it is a state-change aid, not a design utility. */
+@keyframes bc-home-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.bc-home-enter {
+  animation: bc-home-enter 160ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bc-home-enter {
+    animation: none;
+  }
+}
+
+/* Keyboard focus ring for BC mobile interactive elements. */
+.bc-app a:focus-visible,
+.bc-app button:focus-visible,
+.bc-app [role="button"]:focus-visible,
+.bc-app [role="tab"]:focus-visible,
+.bc-app [role="link"]:focus-visible,
+.bc-app summary:focus-visible {
+  outline: 2px solid var(--bc-mobile-accent);
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Links: gold on hover/active, never the light-mode blue/gray. */
+.bc-app a:not(.bc-cta-gold):not(.bc-cta-gold-soft) {
+  transition:
+    color 150ms ease-out,
+    text-decoration-color 150ms ease-out;
+  text-underline-offset: 3px;
+}
+.bc-app a:not(.bc-cta-gold):not(.bc-cta-gold-soft):hover {
+  color: var(--bc-mobile-accent-strong);
+  text-decoration-color: color-mix(in oklab, var(--bc-mobile-accent) 70%, transparent);
+}
+.bc-app a:not(.bc-cta-gold):not(.bc-cta-gold-soft):active {
+  color: var(--bc-mobile-accent);
+}
+
+/* Secondary / icon buttons (anything not on the gold CTA ramp): subtle gold
+   tint on hover, deeper tint plus press feedback on active. */
+.bc-app button:not(.bc-cta-gold):not(.bc-cta-gold-soft):not(:disabled):hover,
+.bc-app [role="button"]:not(.bc-cta-gold):not(.bc-cta-gold-soft):not([aria-disabled="true"]):hover {
+  background-color: color-mix(in oklab, var(--bc-mobile-accent) 10%, transparent);
+  border-color: color-mix(in oklab, var(--bc-mobile-accent) 35%, transparent);
+  color: var(--bc-mobile-accent-strong);
+}
+.bc-app button:not(.bc-cta-gold):not(.bc-cta-gold-soft):not(:disabled):active,
+.bc-app [role="button"]:not(.bc-cta-gold):not(.bc-cta-gold-soft):not([aria-disabled="true"]):active {
+  background-color: color-mix(in oklab, var(--bc-mobile-accent) 18%, transparent);
+  transform: translateY(1px);
+}
+.bc-app button:disabled,
+.bc-app [role="button"][aria-disabled="true"] {
+  color: var(--bc-mobile-muted);
+}
+
+/* Contrast fix: replace harsh rectangular outline with rounded box-shadow that respects border-radius */
+.bc-app :is(a, button, [role="button"], [role="tab"], [role="link"], summary, [tabindex]):focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--bc-mobile-bg), 0 0 0 4px var(--bc-mobile-accent) !important;
+  --tw-ring-color: var(--bc-mobile-accent);
+  --tw-ring-offset-color: var(--bc-mobile-bg);
+}
+
+/* Chat, Search, and Seamless Capsule Inputs: completely remove all harsh rectangular outlines */
+.bc-app :is(.chat-input, .mobile-search-input, .no-focus-outline, textarea.chat-input, input.chat-input, input[type="search"]):focus,
+.bc-app :is(.chat-input, .mobile-search-input, .no-focus-outline, textarea.chat-input, input.chat-input, input[type="search"]):focus-visible,
+.chat-input:focus,
+.chat-input:focus-visible,
+.no-focus-outline:focus,
+.no-focus-outline:focus-visible,
+.mobile-search-input:focus,
+.mobile-search-input:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  --tw-ring-color: transparent !important;
+  --tw-ring-offset-width: 0px !important;
+}
+
+/* Form controls: remove border hover jitter + high-contrast focus and crisp placeholders */
+.bc-app :is(input:not(.chat-input):not(.no-focus-outline), select, textarea:not(.chat-input):not(.no-focus-outline)):focus-visible {
+  border-color: var(--bc-mobile-accent);
+}
+.bc-app :is(input, textarea)::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+.dark .bc-app :is(input, textarea)::placeholder,
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+/* Selected / active navigation and tabs keep a >=4.5:1 label color. */
+.bc-app [role="tab"][aria-selected="true"],
+.bc-app [aria-current="page"],
+.bc-app [data-state="active"][role="tab"] {
+  color: var(--bc-mobile-accent-strong);
+}
+
+/* Disabled controls stay legible but clearly inert. */
+.bc-app :is(button, [role="button"], input, select, textarea):is(:disabled, [aria-disabled="true"]) {
+  color: var(--bc-mobile-disabled);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Reduced motion: kill drawer/sheet animation inside the BC mobile shell. */
+@media (prefers-reduced-motion: reduce) {
+  .bc-app [data-vaul-drawer],
+  .bc-app [data-vaul-overlay],
+  .bc-app [data-vaul-drawer] *,
+  .bc-app {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bg-grid-pattern {
+  background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.8);
+    box-shadow: 0 0 0px #D8B282;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px #D8B282, 0 0 20px #D8B282;
+  }
+}
+
+.data-dot {
+  position: absolute;
+  background-color: #D8B282;
+  border-radius: 50%;
+  animation: pulse-dot infinite ease-in-out;
+  pointer-events: none;
+}
+
+.animate-spin-10 {
+  animation: spin 10s linear infinite;
+}
+
+.animate-spin-15-reverse {
+  animation: spin 15s linear infinite reverse;
+}
+
+.animate-spin-20 {
+  animation: spin 20s linear infinite;
+}
+
+.animate-\[spin_10s_linear_infinite\] {
+  animation: spin 10s linear infinite;
+}
+
+
+.animate-\[spin_15s_linear_infinite_reverse\] {
+  animation: spin 15s linear infinite reverse;
+}
+
+
+.animate-\[spin_20s_linear_infinite\] {
+  animation: spin 20s linear infinite;
+}
+
+/* Utility to force-enable motion regardless of OS prefers-reduced-motion.
+   Use by adding `class="force-motion"` to <html> or <body> when animations
+   are intentionally required (developer/devtools override). This preserves
+   existing reduced-motion behavior unless explicitly opted-in. */
+.force-motion {
+  scroll-behavior: smooth !important;
+}
+.force-motion *,
+.force-motion *::before,
+.force-motion *::after {
+  /* Undo 'animation: none' and ensure animations run */
+  animation: initial !important;
+  -webkit-animation: initial !important;
+  animation-play-state: running !important;
+  -webkit-animation-play-state: running !important;
+  transition: initial !important;
+}
+
+/* Re-apply common named animations that may be disabled under reduced-motion */
+.force-motion .vba-pop-in,
+.force-motion .vba-badge-pop {
+  animation: vba-pop-in var(--motion-base) var(--motion-ease) both !important;
+}
+.force-motion .bc-home-enter {
+  animation: bc-home-enter 160ms ease-out !important;
+}
+.force-motion .vba-animate {
+  animation: vba-fade-in 0.15s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+.force-motion .vba-shimmer,
+.force-motion .vba-shine,
+.force-motion .data-dot,
+.force-motion .animate-spin-10,
+.force-motion .animate-spin-15-reverse,
+.force-motion .animate-spin-20 {
+  /* Preserve existing infinite/long-running animations */
+  animation-play-state: running !important;
+}
+
+/* Ensure interactive transitions are restored when forcing motion */
+.force-motion .bc-cta-gold,
+.force-motion .bc-cta-gold-soft,
+.force-motion .vba-gold-grad {
+  transition: transform 150ms ease-out !important;
+}
+
+/* Luxury button and hover effects */
+.luxury-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes luxury-sheen {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-15deg);
+  }
+}
+
+.luxury-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.12) 30%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.12) 70%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-100%) skewX(-15deg);
+}
+
+.luxury-btn:hover::before {
+  animation: luxury-sheen 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.luxury-btn:hover {
+  transform: scale(1.02);
+  letter-spacing: 0.5px;
+}
+
+.luxury-btn:active {
+  transform: scale(0.98);
+}
+
+.luxury-btn .luxury-arrow {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-btn:hover .luxury-arrow {
+  transform: translateX(4px);
+}
+
+/* Luxury ambient glowing backgrounds */
+@keyframes ambient-drift-one {
+  0% {
+    transform: translate(-50%, -15%) scale(1) rotate(0deg);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-45%, -10%) scale(1.1) rotate(5deg);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(-50%, -15%) scale(1) rotate(0deg);
+    opacity: 0.55;
+  }
+}
+
+@keyframes ambient-drift-two {
+  0% {
+    transform: translate(15%, 15%) scale(1) rotate(0deg);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(10%, 10%) scale(1.06) rotate(-5deg);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(15%, 15%) scale(1) rotate(0deg);
+    opacity: 0.25;
+  }
+}
+
+.luxury-glow-1 {
+  position: fixed;
+  top: -25%;
+  left: 50%;
+  transform: translate(-50%, -15%);
+  width: 100vw;
+  height: 70vh;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--primary) 14%, transparent) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambient-drift-one 24s ease-in-out infinite;
+}
+
+.luxury-glow-2 {
+  position: fixed;
+  bottom: -20%;
+  right: -10%;
+  transform: translate(15%, 15%);
+  width: 70vw;
+  height: 70vh;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--primary) 8%, transparent) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambient-drift-two 28s ease-in-out infinite;
+}
+
+/* ── WARM LUXURY GOLD GRADIENT BUTTON ── */
+.btn-luxury-gold {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
+  color: #1b1206 !important;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(216, 178, 130, 0.3);
+  transition: all 0.25s ease;
+}
+
+.btn-luxury-gold:hover {
+  background: linear-gradient(135deg, #faecda 0%, #e2be90 45%, #cea877 70%, #9c7348 100%);
+  box-shadow: 0 4px 14px rgba(216, 178, 130, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-luxury-gold:active {
+  transform: scale(0.98);
+}
+
+/* ── ZALO-STYLE QR SCANNER LASER ANIMATION ── */
+@keyframes scanLaser {
+  0% {
+    top: 5%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 90%;
+    opacity: 1;
+  }
+  100% {
+    top: 5%;
+    opacity: 0.8;
+  }
+}
+
+.scanner-laser-line {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #D0A95C 20%, #FFE8B5 50%, #D0A95C 80%, transparent 100%);
+  box-shadow: 0 0 15px 2px rgba(208, 169, 92, 0.8), 0 0 30px 4px rgba(245, 158, 11, 0.4);
+  animation: scanLaser 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 20;
+}
+
+/* ── 3D CONSTELLATION ORBIT & PLANETARY ANIMATIONS ── */
+@keyframes orbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitReverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes floatingWave {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-orbit-spin {
+  animation: orbitSpin 42s linear infinite;
+}
+
+.animate-orbit-reverse {
+  animation: orbitReverse 42s linear infinite;
+}
+
+.paused-spin {
+  animation-play-state: paused !important;
+}
+
+.animate-spin-slow {
+  animation: orbitSpin 28s linear infinite;
+}
+
+/* ============================================================
+   LANDING PAGE LIGHT MODE OVERRIDES
+   Target: .bc-landing[data-theme="light"] and .ceo1983-landing[data-theme="light"]
+   Purpose: Fix white/amber text becoming invisible on light backgrounds
+   ============================================================ */
+
+/* BusinessConnect Landing - Light Mode Text Fixes (Deep, Rich, High-Contrast) */
+.bc-landing[data-theme="light"] .text-\[\#F6E1C3\],
+.bc-landing[data-theme="light"] .text-\[\#D8B282\],
+.bc-landing[data-theme="light"] .text-\[\#C29B69\],
+.bc-landing[data-theme="light"] .text-\[\#E8C898\] {
+  color: #7C2D12 !important;
+  font-weight: 600 !important;
+}
+
+.bc-landing[data-theme="light"] .text-white {
+  color: #0A0F1D !important;
+}
+
+.bc-landing[data-theme="light"] .text-slate-200,
+.bc-landing[data-theme="light"] .text-slate-300,
+.bc-landing[data-theme="light"] .text-slate-400 {
+  color: #334155 !important;
+}
+
+.bc-landing[data-theme="light"] .text-amber-300,
+.bc-landing[data-theme="light"] .text-amber-400,
+.bc-landing[data-theme="light"] .text-orange-300,
+.bc-landing[data-theme="light"] .text-orange-400,
+.bc-landing[data-theme="light"] .text-orange-500 {
+  color: #9A3412 !important;
+  font-weight: 700 !important;
+}
+
+/* CEO1983 Landing - Light Mode: Radiant Imperial Amber Gold & Deep Obsidian Contrast */
+.ceo1983-landing[data-theme="light"] .text-\[\#F6E1C3\],
+.ceo1983-landing[data-theme="light"] .text-\[\#D8B282\],
+.ceo1983-landing[data-theme="light"] .text-\[\#C4A07A\] {
+  color: #B45309 !important; /* Radiant Royal Amber Gold */
+  font-weight: 700 !important;
+}
+
+.ceo1983-landing[data-theme="light"] .text-white {
+  color: #0F172A !important; /* Deep Obsidian Slate */
+}
+
+.ceo1983-landing[data-theme="light"] .text-slate-200,
+.ceo1983-landing[data-theme="light"] .text-slate-300,
+.ceo1983-landing[data-theme="light"] .text-slate-400 {
+  color: #334155 !important; /* Crisp Slate for Subtitles */
+}
+
+.ceo1983-landing[data-theme="light"] .text-amber-300,
+.ceo1983-landing[data-theme="light"] .text-amber-400,
+.ceo1983-landing[data-theme="light"] .text-orange-400 {
+  color: #D97706 !important;
+  font-weight: 700 !important;
+}
+
+/* CEO1983 badges with hardcoded bg-white/10 border-white/40 in light mode */
+.ceo1983-landing[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(254, 243, 199, 0.85) !important;
+}
+
+.ceo1983-landing[data-theme="light"] .border-white\/40 {
+  border-color: rgba(217, 119, 6, 0.45) !important;
+}
+
+/* CEO1983 Light mode cards & gold gradients */
+.ceo1983-landing[data-theme="light"] .bc-cta-gold {
+  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%) !important;
+  color: #0A0D14 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.28) !important;
+}
+
+.ceo1983-landing[data-theme="light"] .border-\[\#D8B282\]\/30,
+.ceo1983-landing[data-theme="light"] .border-\[\#D8B282\]\/35,
+.ceo1983-landing[data-theme="light"] .border-\[\#D8B282\]\/40,
+.ceo1983-landing[data-theme="light"] .border-\[\#D8B282\]\/50 {
+  border-color: rgba(180, 83, 9, 0.38) !important;
+}
+
+.ceo1983-landing[data-theme="light"] .bg-\[\#D8B282\]\/15,
+.ceo1983-landing[data-theme="light"] .bg-\[\#D8B282\]\/20 {
+  background-color: rgba(254, 243, 199, 0.7) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BẮT BUỘC: QUY CHUẨN UI MOBILE & RULE APP HIỆP HỘI CEO 1983
+   1. Input tìm kiếm KHÔNG ĐƯỢC CÓ BORDERHOVER
+   2. Khi nhập liệu (bàn phím ảo mở), Footer / Bottom Bar KHÔNG được hiện lên trên bàn phím
+   3. Tương thích Safe Area Insets (đẩy header/footer tránh đè status bar & navigation bar)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Input tìm kiếm: Loại bỏ hoàn toàn border hover và border focus làm chớp/đổi viền */
+input[type="search"],
+input[placeholder*="Tìm kiếm"],
+input[placeholder*="Search"],
+.vba-search-input,
+.search-input {
+  transition: none !important;
+}
+
+input[type="search"]:hover,
+input[type="search"]:focus,
+input[type="search"]:active,
+input[placeholder*="Tìm kiếm"]:hover,
+input[placeholder*="Tìm kiếm"]:focus,
+input[placeholder*="Tìm kiếm"]:active,
+input[placeholder*="Search"]:hover,
+input[placeholder*="Search"]:focus,
+input[placeholder*="Search"]:active,
+.vba-search-input:hover,
+.vba-search-input:focus,
+.search-input:hover,
+.search-input:focus {
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 2. Ẩn Footer / Bottom Tab Bar khi bàn phím ảo hiển thị (khi người dùng focus vào ô input / textarea) */
+body:has(input:focus):not(:has(input[type="checkbox"]:focus)):not(:has(input[type="radio"]:focus)) .vba-bottom-bar,
+body:has(textarea:focus) .vba-bottom-bar,
+html:has(input:focus):not(:has(input[type="checkbox"]:focus)):not(:has(input[type="radio"]:focus)) .vba-bottom-bar,
+html:has(textarea:focus) .vba-bottom-bar,
+body:has([contenteditable="true"]:focus) .vba-bottom-bar,
+html:has([contenteditable="true"]:focus) .vba-bottom-bar {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(100%) !important;
+}
+
+
+

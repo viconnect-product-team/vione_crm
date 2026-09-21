@@ -1,0 +1,74 @@
+name: PR Integration Guardrails
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  mock-data-guardrail:
+    name: No mock *-data.ts leaks in routes
+    runs-on: ubuntu-latest
+    # Bind to the staging GitHub Environment — its scoped secrets shadow any
+    # repo-wide values so we CANNOT accidentally point CI at production.
+    environment: staging
+    env:
+      # Explicit opt-in read by src/__tests__/helpers/test-env.ts. If the URL
+      # ever resolves to the production host, the guard hard-fails.
+      SUPABASE_TEST_ENV: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Verify STAGING Supabase secrets are present (not production)
+        env:
+          STAGING_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          STAGING_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+          STAGING_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.STAGING_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          missing=()
+          [ -z "$STAGING_SUPABASE_URL" ] && missing+=("STAGING_SUPABASE_URL")
+          [ -z "$STAGING_SUPABASE_SERVICE_ROLE_KEY" ] && missing+=("STAGING_SUPABASE_SERVICE_ROLE_KEY")
+          [ -z "$STAGING_SUPABASE_PUBLISHABLE_KEY" ] && missing+=("STAGING_SUPABASE_PUBLISHABLE_KEY")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::error::Missing STAGING Supabase secrets: ${missing[*]}"
+            exit 1
+          fi
+          # Refuse to proceed if the staging URL points at the production host.
+          if echo "$STAGING_SUPABASE_URL" | grep -qi "wutbrzvqyyegkthtzgcd.supabase.co"; then
+            echo "::error::STAGING_SUPABASE_URL points at the PRODUCTION host. Aborting."
+            exit 1
+          fi
+
+      # Static import-graph gate — fails when a route imports a mock
+      # *-data.ts module without being on the KNOWN_VIOLATIONS ratchet,
+      # or when a data-loading route doesn't touch real Supabase.
+      - name: Routes must hit real Supabase (mock ratchet)
+        run: npx vitest run src/__tests__/routes-real-supabase.integration.test.ts
+
+      # Broader integration + e2e suite (RLS, auth, hardening) against STAGING.
+      # requireStagingSupabase() in tests double-checks the target host so a
+      # misconfigured secret can never write to production.
+      - name: Run integration & e2e tests (staging)
+        env:
+          SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.STAGING_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.STAGING_SUPABASE_PUBLISHABLE_KEY }}
+        run: npx vitest run

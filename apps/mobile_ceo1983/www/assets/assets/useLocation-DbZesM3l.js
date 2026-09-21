@@ -1,0 +1,1 @@
+import{b as u,r as a,aY as n,aZ as c}from"./index-BI--mQOZ.js";function l(i){const e=u(),r=a.useRef(void 0);return n(e.stores.location,s=>{const t=s;if(e.options.defaultStructuralSharing){const o=c(r.current,t);return r.current=o,o}return t})}export{l as u};

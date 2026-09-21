@@ -1,0 +1,1 @@
+import{j as r,A as o}from"./index-DBZKjGg0.js";const t=({error:e})=>r.jsx(o,{children:r.jsx("div",{className:"mx-auto max-w-md rounded-2xl border border-border bg-card p-10 text-center shadow-[var(--shadow-card)]",children:r.jsx("p",{className:"text-sm text-muted-foreground",children:e.message})})});export{t as errorComponent};

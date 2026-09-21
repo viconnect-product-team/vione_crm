@@ -1,0 +1,1 @@
+import{j as t}from"./main-oKw2k0Js.js";const n=()=>t.jsx("div",{className:"vba-app flex min-h-[100dvh] items-center justify-center p-6 text-center text-[var(--vba-text-muted)]",children:"Không tìm thấy thẻ hội viên."});export{n as notFoundComponent};

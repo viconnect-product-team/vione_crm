@@ -1,0 +1,1 @@
+import{C as e,D as a,E as r}from"./main-oKw2k0Js.js";const t=e({method:"GET"}).middleware([a]).handler(r("c45acc9f5a886402b32fcf493c56b62fd1b33ef95abf15e8f16536e34d07df5b")),d=e({method:"POST"}).middleware([a]).handler(r("2fe525d8e0f0bb834353e16267230d65300459634c5ec25ab50519a24005c48c"));export{t as l,d as r};

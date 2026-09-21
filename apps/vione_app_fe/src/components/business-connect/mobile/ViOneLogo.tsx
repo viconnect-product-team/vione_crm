@@ -1,0 +1,365 @@
+// BC-Mobile — ViOne wordmark logo (gold gradient).
+// Used in the Executive Home top-left header slot.
+
+export function ViOneLogo({
+  className,
+  wordmarkOnly = true,
+}: {
+  className?: string;
+  wordmarkOnly?: boolean;
+}) {
+  return (
+    <svg
+      width="54"
+      height="20"
+      viewBox="23.5 0 54 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="vl_p0" x1="29.3159" y1="18.3555" x2="59.1933" y2="-33.7855" gradientUnits="userSpaceOnUse">
+          <stop offset="0.06" stopColor="#AB6D3C"/>
+          <stop offset="0.3" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p1" x1="26.6353" y1="5.0762" x2="37.6201" y2="23.6586" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.02" stopColor="#AE7241"/>
+          <stop offset="0.19" stopColor="#CA9B6A"/>
+          <stop offset="0.35" stopColor="#E0BB8A"/>
+          <stop offset="0.5" stopColor="#F0D3A1"/>
+          <stop offset="0.65" stopColor="#F9E1AF"/>
+          <stop offset="0.78" stopColor="#FDE6B4"/>
+          <stop offset="0.84" stopColor="#FBE3B1"/>
+          <stop offset="0.88" stopColor="#F6DBA9"/>
+          <stop offset="0.92" stopColor="#EDCE9B"/>
+          <stop offset="0.95" stopColor="#E1BA86"/>
+          <stop offset="0.97" stopColor="#D1A26C"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p2" x1="8.31307" y1="20.227" x2="29.5575" y2="-16.8483" gradientUnits="userSpaceOnUse">
+          <stop offset="0.06" stopColor="#AB6D3C"/>
+          <stop offset="0.3" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p3" x1="6.40787" y1="10.7848" x2="14.2188" y2="23.9979" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.02" stopColor="#AE7241"/>
+          <stop offset="0.19" stopColor="#CA9B6A"/>
+          <stop offset="0.35" stopColor="#E0BB8A"/>
+          <stop offset="0.5" stopColor="#F0D3A1"/>
+          <stop offset="0.65" stopColor="#F9E1AF"/>
+          <stop offset="0.78" stopColor="#FDE6B4"/>
+          <stop offset="0.84" stopColor="#FBE3B1"/>
+          <stop offset="0.88" stopColor="#F6DBA9"/>
+          <stop offset="0.92" stopColor="#EDCE9B"/>
+          <stop offset="0.95" stopColor="#E1BA86"/>
+          <stop offset="0.97" stopColor="#D1A26C"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p4" x1="1.31605" y1="15.6178" x2="21.0611" y2="-4.27686" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p5" x1="22.3704" y1="1.45578" x2="-6.54727" y2="73.2682" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p6" x1="1.34961" y1="9.82099" x2="12.8321" y2="9.82099" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p7" x1="16.21" y1="18.2477" x2="16.21" y2="7.0061" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#BB7E46"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vl_p8" x1="77.0482" y1="12.8195" x2="67.2876" y2="12.8607" gradientUnits="userSpaceOnUse">
+          <stop offset="0.14" stopColor="#AB6D3C"/>
+          <stop offset="0.17" stopColor="#B27847"/>
+          <stop offset="0.29" stopColor="#CD9F6E"/>
+          <stop offset="0.41" stopColor="#E2BE8C"/>
+          <stop offset="0.53" stopColor="#F0D4A2"/>
+          <stop offset="0.64" stopColor="#F9E1AF"/>
+          <stop offset="0.74" stopColor="#FDE6B4"/>
+          <stop offset="0.85" stopColor="#FBE4B2"/>
+          <stop offset="0.89" stopColor="#F7DDAB"/>
+          <stop offset="0.92" stopColor="#EFD19F"/>
+          <stop offset="0.95" stopColor="#E3C08E"/>
+          <stop offset="0.97" stopColor="#D4AA79"/>
+          <stop offset="0.98" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p9" x1="31.7896" y1="12.8388" x2="76.4349" y2="12.8388" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#DAB88D"/>
+          <stop offset="0.31" stopColor="#EFDDBA"/>
+          <stop offset="1" stopColor="#E6BD86"/>
+        </linearGradient>
+        <linearGradient id="vl_p10" x1="68.8423" y1="12.8388" x2="77.1325" y2="12.8388" gradientUnits="userSpaceOnUse">
+          <stop offset="0.14" stopColor="#AB6D3C"/>
+          <stop offset="0.17" stopColor="#B27847"/>
+          <stop offset="0.29" stopColor="#CD9F6E"/>
+          <stop offset="0.41" stopColor="#E2BE8C"/>
+          <stop offset="0.53" stopColor="#F0D4A2"/>
+          <stop offset="0.64" stopColor="#F9E1AF"/>
+          <stop offset="0.74" stopColor="#FDE6B4"/>
+          <stop offset="0.85" stopColor="#FBE4B2"/>
+          <stop offset="0.89" stopColor="#F7DDAB"/>
+          <stop offset="0.92" stopColor="#EFD19F"/>
+          <stop offset="0.95" stopColor="#E3C08E"/>
+          <stop offset="0.97" stopColor="#D4AA79"/>
+          <stop offset="0.98" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p11" x1="65.3132" y1="19.6031" x2="65.3132" y2="6.8068" gradientUnits="userSpaceOnUse">
+          <stop offset="0.07" stopColor="#AB6D3C"/>
+          <stop offset="0.16" stopColor="#C18D5C"/>
+          <stop offset="0.35" stopColor="#ECCD9B"/>
+          <stop offset="0.44" stopColor="#FDE6B4"/>
+          <stop offset="0.56" stopColor="#FAE2B0"/>
+          <stop offset="0.66" stopColor="#F3D8A6"/>
+          <stop offset="0.75" stopColor="#E7C694"/>
+          <stop offset="0.84" stopColor="#D7AE7C"/>
+          <stop offset="0.93" stopColor="#C18E5D"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p12" x1="62.4336" y1="4.613" x2="62.4336" y2="22.4526" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AD703F"/>
+          <stop offset="0.01" stopColor="#C2905E"/>
+          <stop offset="0.03" stopColor="#D4AA79"/>
+          <stop offset="0.05" stopColor="#E3C08E"/>
+          <stop offset="0.07" stopColor="#EFD19F"/>
+          <stop offset="0.09" stopColor="#F7DDAB"/>
+          <stop offset="0.12" stopColor="#FBE4B2"/>
+          <stop offset="0.22" stopColor="#FDE6B4"/>
+          <stop offset="0.32" stopColor="#F9E1AF"/>
+          <stop offset="0.42" stopColor="#F0D4A2"/>
+          <stop offset="0.54" stopColor="#E1BE8C"/>
+          <stop offset="0.65" stopColor="#CD9F6D"/>
+          <stop offset="0.77" stopColor="#B27746"/>
+          <stop offset="0.8" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p13" x1="62.4351" y1="6.45052" x2="62.4351" y2="23.0002" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.04" stopColor="#BE8958"/>
+          <stop offset="0.1" stopColor="#D1A674"/>
+          <stop offset="0.16" stopColor="#E1BD8B"/>
+          <stop offset="0.22" stopColor="#EDCF9D"/>
+          <stop offset="0.3" stopColor="#F6DCAA"/>
+          <stop offset="0.41" stopColor="#FBE3B1"/>
+          <stop offset="0.65" stopColor="#FDE6B4"/>
+          <stop offset="0.8" stopColor="#FBE4B2"/>
+          <stop offset="0.85" stopColor="#F7DDAB"/>
+          <stop offset="0.89" stopColor="#EFD19F"/>
+          <stop offset="0.93" stopColor="#E3C08E"/>
+          <stop offset="0.95" stopColor="#D4AA79"/>
+          <stop offset="0.98" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p14" x1="59.5552" y1="19.6031" x2="59.5552" y2="6.8068" gradientUnits="userSpaceOnUse">
+          <stop offset="0.07" stopColor="#AB6D3C"/>
+          <stop offset="0.16" stopColor="#C18D5C"/>
+          <stop offset="0.35" stopColor="#ECCD9B"/>
+          <stop offset="0.44" stopColor="#FDE6B4"/>
+          <stop offset="0.56" stopColor="#FAE2B0"/>
+          <stop offset="0.66" stopColor="#F3D8A6"/>
+          <stop offset="0.75" stopColor="#E7C694"/>
+          <stop offset="0.84" stopColor="#D7AE7C"/>
+          <stop offset="0.93" stopColor="#C18E5D"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p15" x1="42.1977" y1="18.5591" x2="42.1977" y2="4.24761" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.45" stopColor="#FDE6B4"/>
+          <stop offset="0.69" stopColor="#FBE4B2"/>
+          <stop offset="0.78" stopColor="#F7DDAB"/>
+          <stop offset="0.84" stopColor="#EFD19F"/>
+          <stop offset="0.89" stopColor="#E3C08E"/>
+          <stop offset="0.93" stopColor="#D4AA79"/>
+          <stop offset="0.96" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p16" x1="41.0123" y1="8.75596" x2="41.0123" y2="23.0683" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.45" stopColor="#FDE6B4"/>
+          <stop offset="0.53" stopColor="#F7DEAC"/>
+          <stop offset="0.65" stopColor="#EACA98"/>
+          <stop offset="0.79" stopColor="#D3A877"/>
+          <stop offset="0.96" stopColor="#B47A49"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p17" x1="41.6045" y1="19.9188" x2="41.6045" y2="11.9445" gradientUnits="userSpaceOnUse">
+          <stop offset="0.29" stopColor="#AB6D3C"/>
+          <stop offset="0.48" stopColor="#FDE6B4"/>
+          <stop offset="0.7" stopColor="#FBE4B2"/>
+          <stop offset="0.79" stopColor="#F7DDAB"/>
+          <stop offset="0.84" stopColor="#EFD19F"/>
+          <stop offset="0.89" stopColor="#E3C08E"/>
+          <stop offset="0.93" stopColor="#D4AA79"/>
+          <stop offset="0.97" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p18" x1="41.6011" y1="5.99395" x2="41.6084" y2="11.6936" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.73" stopColor="#FDE6B4"/>
+          <stop offset="0.85" stopColor="#FBE4B2"/>
+          <stop offset="0.89" stopColor="#F7DDAB"/>
+          <stop offset="0.92" stopColor="#EFD19F"/>
+          <stop offset="0.94" stopColor="#E3C08E"/>
+          <stop offset="0.96" stopColor="#D4AA79"/>
+          <stop offset="0.98" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p19" x1="57.2535" y1="11.2401" x2="44.0073" y2="11.2401" gradientUnits="userSpaceOnUse">
+          <stop offset="0.14" stopColor="#AB6D3C"/>
+          <stop offset="0.17" stopColor="#B27847"/>
+          <stop offset="0.29" stopColor="#CD9F6E"/>
+          <stop offset="0.41" stopColor="#E2BE8C"/>
+          <stop offset="0.53" stopColor="#F0D4A2"/>
+          <stop offset="0.64" stopColor="#F9E1AF"/>
+          <stop offset="0.74" stopColor="#FDE6B4"/>
+          <stop offset="0.85" stopColor="#FBE4B2"/>
+          <stop offset="0.89" stopColor="#F7DDAB"/>
+          <stop offset="0.92" stopColor="#EFD19F"/>
+          <stop offset="0.95" stopColor="#E3C08E"/>
+          <stop offset="0.97" stopColor="#D4AA79"/>
+          <stop offset="0.98" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <linearGradient id="vl_p20" x1="31.7959" y1="11.2401" x2="76.4338" y2="11.2401" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#DAB88D"/>
+          <stop offset="0.31" stopColor="#EFDDBA"/>
+          <stop offset="1" stopColor="#E6BD86"/>
+        </linearGradient>
+        <linearGradient id="vl_p21" x1="42.8769" y1="11.2401" x2="60.3302" y2="11.2401" gradientUnits="userSpaceOnUse">
+          <stop offset="0.14" stopColor="#AB6D3C"/>
+          <stop offset="0.17" stopColor="#B27847"/>
+          <stop offset="0.29" stopColor="#CD9F6E"/>
+          <stop offset="0.41" stopColor="#E2BE8C"/>
+          <stop offset="0.53" stopColor="#F0D4A2"/>
+          <stop offset="0.64" stopColor="#F9E1AF"/>
+          <stop offset="0.74" stopColor="#FDE6B4"/>
+          <stop offset="0.85" stopColor="#FBE4B2"/>
+          <stop offset="0.89" stopColor="#F7DDAB"/>
+          <stop offset="0.92" stopColor="#EFD19F"/>
+          <stop offset="0.95" stopColor="#E3C08E"/>
+          <stop offset="0.97" stopColor="#D4AA79"/>
+          <stop offset="0.98" stopColor="#C2905E"/>
+          <stop offset="1" stopColor="#AB6D3C"/>
+        </linearGradient>
+        <clipPath id="vl_clip">
+          <rect width="77" height="20" fill="white"/>
+        </clipPath>
+      </defs>
+      <g clipPath="url(#vl_clip)">
+        <path d="M41.7143 6.07668C41.8586 6.16152 41.9837 6.23384 42.0939 6.29575C42.1263 6.28005 42.1577 6.26471 42.1877 6.24936C42.4104 6.13594 42.6191 6.14017 42.7879 6.18427C42.771 5.54963 42.2478 5.04004 41.6041 5.04004C40.9963 5.04004 40.4958 5.49442 40.4277 6.07932C40.6104 5.84578 40.9837 5.64629 41.7145 6.0765L41.7143 6.07668Z" fill="#FCE5B3"/>
+        <path d="M40.5697 6.78787C40.92 6.77976 41.6237 6.52312 42.0944 6.29575C41.9843 6.23384 41.8591 6.16152 41.7148 6.07668C40.9842 5.64646 40.611 5.84596 40.4281 6.0795C40.4229 6.1243 40.4199 6.16963 40.4199 6.21585C40.4199 6.42346 40.4745 6.61854 40.5696 6.78787H40.5697Z" fill="#D8AF7D"/>
+        <path d="M42.1876 6.24924C42.1576 6.26441 42.1261 6.27993 42.0938 6.29563C42.4069 6.47184 42.5942 6.56215 42.7218 6.60431C42.768 6.47343 42.7919 6.33214 42.7879 6.18468L42.7876 6.18415C42.6187 6.13988 42.4101 6.13582 42.1874 6.24924H42.1876Z" fill="#E7C692"/>
+        <path d="M40.5703 6.78778C40.7727 7.14779 41.1602 7.39138 41.6052 7.39138C42.1222 7.39138 42.5615 7.06259 42.7233 6.60433C42.5957 6.562 42.4083 6.47187 42.0952 6.29565C41.6244 6.52302 40.9206 6.77966 40.5705 6.78778H40.5703Z" fill="#C79564"/>
+        <path d="M39.028 5.04383L35.093 5.04013L31.8945 10.5385L33.8633 13.9227L39.028 5.04383Z" fill="url(#vl_p0)"/>
+        <path d="M31.8936 10.5384L28.6953 5.04004L24.7598 5.04374L29.9252 13.9226L31.8938 17.3068L33.8625 13.9226L31.8936 10.5384Z" fill="url(#vl_p1)"/>
+        <path d="M76.9978 12.7766C76.9978 11.5278 76.5526 10.4436 75.6623 9.52351C74.7721 8.60382 73.7004 8.1438 72.4473 8.1438C71.1158 8.1438 69.9958 8.61017 69.0874 9.54291C68.1789 10.4757 67.7246 11.595 67.7246 12.901C67.7246 13.5489 67.8394 14.1447 68.0692 14.6889C68.299 15.233 68.641 15.7304 69.0952 16.1813C70.0194 17.083 71.1238 17.5338 72.4082 17.5338C73.348 17.5338 74.2277 17.259 75.0476 16.7098C75.8673 16.1605 76.4104 15.4893 76.6766 14.6965H75.5701C74.9344 15.7444 73.7772 16.4454 72.4551 16.4454C70.4481 16.4454 68.8212 14.8305 68.8212 12.8387C68.8212 10.847 70.4482 9.23212 72.4551 9.23212C74.462 9.23212 76.089 10.847 76.089 12.8387C76.089 13.1642 76.0448 13.4794 75.9634 13.7792H76.8881C76.8881 13.7792 76.9793 13.5965 76.9978 13.0797C77.0013 12.9814 76.9978 12.8802 76.9978 12.7765V12.7766Z" fill="url(#vl_p8)"/>
+        <path d="M72.4562 9.23218C70.4492 9.23218 68.8223 10.847 68.8223 12.8388C68.8223 14.8306 70.4493 16.4454 72.4562 16.4454C73.7785 16.4454 74.9355 15.7444 75.5712 14.6965H74.3202C74.1114 14.935 73.8307 15.1229 73.4783 15.2601C73.1259 15.3975 72.7432 15.4661 72.3309 15.4661C71.7878 15.4661 71.301 15.3134 70.8702 15.0075C70.4394 14.7018 70.1458 14.2924 69.989 13.7793H75.9645C76.0459 13.4794 76.0901 13.1642 76.0901 12.8388C76.0901 10.8468 74.4631 9.23218 72.4562 9.23218ZM69.9578 11.8983C70.1143 11.3956 70.4303 10.9888 70.9054 10.6779C71.3804 10.3671 71.8894 10.2115 72.4326 10.2115C72.9757 10.2115 73.4847 10.3657 73.9285 10.674C74.3723 10.9823 74.6804 11.3905 74.8526 11.8983H69.9576H69.9578Z" fill="url(#vl_p9)"/>
+        <path d="M72.4562 9.23218C70.4492 9.23218 68.8223 10.847 68.8223 12.8388C68.8223 14.8306 70.4493 16.4454 72.4562 16.4454C73.7785 16.4454 74.9355 15.7444 75.5712 14.6965H74.3202C74.1114 14.935 73.8307 15.1229 73.4783 15.2601C73.1259 15.3975 72.7432 15.4661 72.3309 15.4661C71.7878 15.4661 71.301 15.3134 70.8702 15.0075C70.4394 14.7018 70.1458 14.2924 69.989 13.7793H75.9645C76.0459 13.4794 76.0901 13.1642 76.0901 12.8388C76.0901 10.8468 74.4631 9.23218 72.4562 9.23218ZM69.9578 11.8983C70.1143 11.3956 70.4303 10.9888 70.9054 10.6779C71.3804 10.3671 71.8894 10.2115 72.4326 10.2115C72.9757 10.2115 73.4847 10.3657 73.9285 10.674C74.3723 10.9823 74.6804 11.3905 74.8526 11.8983H69.9576H69.9578Z" fill="url(#vl_p10)"/>
+        <path d="M64.248 17.0393V17.5339H66.3784V17.0393L65.1996 16.5403L64.248 17.0393Z" fill="url(#vl_p11)"/>
+        <path d="M66.2831 11.3075C66.1839 10.7116 65.9803 10.2036 65.6723 9.78401C65.6357 9.71663 65.6044 9.67518 65.5783 9.65966L65.4451 9.52754C65.1267 9.18041 64.7428 8.91089 64.2938 8.71915C63.8447 8.5276 63.3853 8.43164 62.9154 8.43164C62.4455 8.43164 61.9393 8.48121 61.5252 8.71157C61.0927 8.95216 60.897 9.15554 60.6203 9.51308V8.71157H58.4902V17.0394L59.6691 16.5406V12.892C59.6691 12.878 59.6682 12.8643 59.6682 12.8502C59.6682 11.0866 60.9062 9.65701 62.4332 9.65701C63.9602 9.65701 65.1983 11.0866 65.1983 12.8502V16.5406L66.3771 17.0396V12.9634C66.3771 12.2326 66.3458 11.6809 66.2831 11.3077V11.3075Z" fill="url(#vl_p12)"/>
+        <path d="M62.435 9.65674C60.9078 9.65674 59.6699 11.0864 59.6699 12.8499C59.6699 12.8638 59.6706 12.8776 59.6708 12.8917V16.5403L60.6218 17.0393V16.2039H60.6224V13.2665C60.6224 13.0282 60.6275 12.8222 60.638 12.6485C60.6485 12.4749 60.6641 12.3026 60.6851 12.1315C60.732 11.7895 60.8287 11.5032 60.9748 11.2725C61.1209 11.0419 61.335 10.8555 61.6171 10.7128C61.8989 10.5703 62.181 10.499 62.4629 10.499C62.7447 10.499 63.0072 10.565 63.2657 10.6973C63.5241 10.8294 63.7316 11.0199 63.8882 11.2686C64.0553 11.5071 64.1623 11.8411 64.2094 12.2713C64.2355 12.3698 64.2485 12.5227 64.2485 12.73V17.0393L65.2 16.5403V12.8499C65.2 11.0864 63.962 9.65674 62.435 9.65674Z" fill="url(#vl_p13)"/>
+        <path d="M59.6691 16.5403L58.4902 17.0391V17.5339H60.6201V17.0393L59.6691 16.5403Z" fill="url(#vl_p14)"/>
+        <path d="M41.6054 16.5403L42.7901 17.2191V8.76528L41.6054 9.44385V16.5403Z" fill="url(#vl_p15)"/>
+        <path d="M41.6045 9.44388L40.4199 8.76514V17.2189L41.6045 16.5403V9.44388Z" fill="url(#vl_p16)"/>
+        <path d="M40.4199 17.2189V17.5554H42.7892V17.219L41.6045 16.5403L40.4199 17.2189Z" fill="url(#vl_p17)"/>
+        <path d="M42.7892 8.76519V8.42847H40.4199V8.76502L41.6045 9.44376L42.7892 8.76519Z" fill="url(#vl_p18)"/>
+        {/* Chữ O biểu tượng đặc quyền ViOne có điểm nứt cùng dấu chấm (thay thế chữ o liền cũ) */}
+        <g transform="translate(50.64, 11.24) scale(0.64) translate(-10.2, -10)">
+          <path d="M16.5093 3.42264C16.7526 3.56587 16.9636 3.68758 17.1493 3.792C17.2039 3.76572 17.257 3.73943 17.3075 3.71386C17.683 3.52283 18.0349 3.52971 18.3195 3.60414C18.291 2.53382 17.4086 1.6748 16.3234 1.6748C15.2987 1.6748 14.4547 2.44086 14.3398 3.4274C14.648 3.03353 15.2773 2.69715 16.5095 3.42264H16.5093Z" fill="#FCE5B3"/>
+          <path d="M14.5787 4.62191C15.1693 4.60832 16.356 4.17529 17.1497 3.79217C16.964 3.68775 16.753 3.56587 16.5097 3.42282C15.2775 2.69733 14.6482 3.0337 14.34 3.42758C14.3311 3.50307 14.3262 3.57963 14.3262 3.65741C14.3262 4.00754 14.4181 4.33651 14.5785 4.62191H14.5787Z" fill="#D8AF7D"/>
+          <path d="M17.3086 3.71382C17.2581 3.73957 17.205 3.76567 17.1504 3.79196C17.6784 4.08917 17.9944 4.24122 18.2096 4.31248C18.2875 4.09182 18.3276 3.85352 18.3212 3.60498L18.3205 3.6041C18.036 3.52949 17.6841 3.52261 17.3086 3.71382Z" fill="#E7C692"/>
+          <path d="M14.5781 4.62197C14.9195 5.2291 15.5729 5.63991 16.3232 5.63991C17.1949 5.63991 17.9357 5.08552 18.2083 4.31276C17.9931 4.2415 17.6773 4.08927 17.1491 3.79224C16.3552 4.17553 15.1685 4.60839 14.5781 4.62197Z" fill="#C79564"/>
+          {/* Removed inner 'v' letter from 'O' per user requirement */}
+          <path d="M1.34893 10.1175C1.34893 5.28355 5.29744 1.36472 10.168 1.36472C11.0964 1.36472 11.9911 1.50777 12.8314 1.77182C13.0699 1.33808 13.3875 0.95338 13.7662 0.637821C12.6553 0.225777 11.4526 0 10.197 0C4.5654 0 0 4.53107 0 10.1203C0 14.9537 3.41427 18.9951 7.97967 20L6.97748 18.2772C3.68441 17.0079 1.34893 13.8343 1.34893 10.1175Z" fill="url(#vl_p4)"/>
+          <path d="M19.5115 5.99902C19.2127 6.39995 18.8385 6.74197 18.4105 7.00603C18.7812 7.97316 18.9861 9.02127 18.9861 10.1175C18.9861 13.8058 16.6864 16.9589 13.4333 18.2476L12.4141 19.9999C16.9789 18.9948 20.393 14.9536 20.393 10.1203C20.393 8.65244 20.0777 7.25791 19.5113 5.99902H19.5115Z" fill="url(#vl_p5)"/>
+          <path d="M2.86916 11.2141C2.82348 10.9102 2.79824 10.5997 2.79131 10.2847C2.79007 10.2299 2.78705 10.1754 2.78705 10.1203C2.78705 6.05845 6.10482 2.76562 10.1976 2.76562C10.9603 2.76562 11.696 2.88028 12.3885 3.09265C12.4567 2.61993 12.6103 2.1749 12.8321 1.77185C11.9918 1.5078 11.0971 1.36475 10.1687 1.36475C5.29812 1.36475 1.34961 5.28357 1.34961 10.1175C1.34961 13.8344 3.68509 17.0078 6.97816 18.2772L5.57644 15.8679C4.1486 14.7355 3.15121 13.0914 2.86916 11.2143V11.2141Z" fill="url(#vl_p6)"/>
+          <path d="M18.9864 10.1176C18.9864 9.02134 18.7815 7.97307 18.4108 7.0061C18.0224 7.24582 17.59 7.42168 17.1274 7.51675C17.4363 8.32637 17.6069 9.20355 17.6069 10.1204C17.6069 10.1756 17.6039 10.23 17.6027 10.2848C17.5957 10.5998 17.5705 10.9105 17.5248 11.2144C17.2428 13.091 16.2457 14.7349 14.8182 15.8672L13.4336 18.2475C16.6867 16.959 18.9864 13.8057 18.9864 10.1174V10.1176Z" fill="url(#vl_p7)"/>
+          {/* Nối liền đáy chữ O tròn hoàn chỉnh theo yêu cầu */}
+          <path d="M5.5 15.8 C 6.8 17.0 8.4 17.6 10.2 17.6 C 12.0 17.6 13.6 17.0 14.9 15.8 L 16.8 18.6 C 14.8 20.0 12.6 20.7 10.2 20.7 C 7.7 20.7 5.5 20.0 3.5 18.6 Z" fill="url(#vl_p0)"/>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
+/** Biểu tượng chữ "O" / Huy hiệu hoàng gia ViOne độc lập */
+export function ViOneEmblem({ className = "w-14 h-14" }: { className?: string }) {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 20.4 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient id="vlem_p2" x1="8.31307" y1="20.227" x2="29.5575" y2="-16.8483" gradientUnits="userSpaceOnUse">
+          <stop offset="0.06" stopColor="#AB6D3C"/>
+          <stop offset="0.3" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vlem_p3" x1="6.40787" y1="10.7848" x2="14.2188" y2="23.9979" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.02" stopColor="#AE7241"/>
+          <stop offset="0.19" stopColor="#CA9B6A"/>
+          <stop offset="0.35" stopColor="#E0BB8A"/>
+          <stop offset="0.5" stopColor="#F0D3A1"/>
+          <stop offset="0.65" stopColor="#F9E1AF"/>
+          <stop offset="0.78" stopColor="#FDE6B4"/>
+          <stop offset="0.84" stopColor="#FBE3B1"/>
+          <stop offset="0.88" stopColor="#F6DBA9"/>
+          <stop offset="0.92" stopColor="#EDCE9B"/>
+          <stop offset="0.95" stopColor="#E1BA86"/>
+          <stop offset="0.97" stopColor="#D1A26C"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vlem_p4" x1="1.31605" y1="15.6178" x2="21.0611" y2="-4.27686" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vlem_p5" x1="22.3704" y1="1.45578" x2="-6.54727" y2="73.2682" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vlem_p6" x1="1.34961" y1="9.82099" x2="12.8321" y2="9.82099" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#AB6D3C"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+        <linearGradient id="vlem_p7" x1="16.21" y1="18.2477" x2="16.21" y2="7.0061" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#BB7E46"/>
+          <stop offset="0.27" stopColor="#FDE6B4"/>
+          <stop offset="1" stopColor="#BB7E47"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <path d="M16.5093 3.42264C16.7526 3.56587 16.9636 3.68758 17.1493 3.792C17.2039 3.76572 17.257 3.73943 17.3075 3.71386C17.683 3.52283 18.0349 3.52971 18.3195 3.60414C18.291 2.53382 17.4086 1.6748 16.3234 1.6748C15.2987 1.6748 14.4547 2.44086 14.3398 3.4274C14.648 3.03353 15.2773 2.69715 16.5095 3.42264H16.5093Z" fill="#FCE5B3"/>
+        <path d="M14.5787 4.62191C15.1693 4.60832 16.356 4.17529 17.1497 3.79217C16.964 3.68775 16.753 3.56587 16.5097 3.42282C15.2775 2.69733 14.6482 3.0337 14.34 3.42758C14.3311 3.50307 14.3262 3.57963 14.3262 3.65741C14.3262 4.00754 14.4181 4.33651 14.5785 4.62191H14.5787Z" fill="#D8AF7D"/>
+        <path d="M17.3086 3.71382C17.2581 3.73957 17.205 3.76567 17.1504 3.79196C17.6784 4.08917 17.9944 4.24122 18.2096 4.31248C18.2875 4.09182 18.3276 3.85352 18.3212 3.60498L18.3205 3.6041C18.036 3.52949 17.6841 3.52261 17.3086 3.71382Z" fill="#E7C692"/>
+        <path d="M14.5781 4.62197C14.9195 5.2291 15.5729 5.63991 16.3232 5.63991C17.1949 5.63991 17.9357 5.08552 18.2083 4.31276C17.9931 4.2415 17.6773 4.08927 17.1491 3.79224C16.3552 4.17553 15.1685 4.60839 14.5781 4.62197Z" fill="#C79564"/>
+        {/* Removed inner 'v' letter from 'O' per user requirement */}
+        <path d="M1.34893 10.1175C1.34893 5.28355 5.29744 1.36472 10.168 1.36472C11.0964 1.36472 11.9911 1.50777 12.8314 1.77182C13.0699 1.33808 13.3875 0.95338 13.7662 0.637821C12.6553 0.225777 11.4526 0 10.197 0C4.5654 0 0 4.53107 0 10.1203C0 14.9537 3.41427 18.9951 7.97967 20L6.97748 18.2772C3.68441 17.0079 1.34893 13.8343 1.34893 10.1175Z" fill="url(#vlem_p4)"/>
+        <path d="M19.5115 5.99902C19.2127 6.39995 18.8385 6.74197 18.4105 7.00603C18.7812 7.97316 18.9861 9.02127 18.9861 10.1175C18.9861 13.8058 16.6864 16.9589 13.4333 18.2476L12.4141 19.9999C16.9789 18.9948 20.393 14.9536 20.393 10.1203C20.393 8.65244 20.0777 7.25791 19.5113 5.99902H19.5115Z" fill="url(#vlem_p5)"/>
+        <path d="M2.86916 11.2141C2.82348 10.9102 2.79824 10.5997 2.79131 10.2847C2.79007 10.2299 2.78705 10.1754 2.78705 10.1203C2.78705 6.05845 6.10482 2.76562 10.1976 2.76562C10.9603 2.76562 11.696 2.88028 12.3885 3.09265C12.4567 2.61993 12.6103 2.1749 12.8321 1.77185C11.9918 1.5078 11.0971 1.36475 10.1687 1.36475C5.29812 1.36475 1.34961 5.28357 1.34961 10.1175C1.34961 13.8344 3.68509 17.0078 6.97816 18.2772L5.57644 15.8679C4.1486 14.7355 3.15121 13.0914 2.86916 11.2143V11.2141Z" fill="url(#vlem_p6)"/>
+        <path d="M18.9864 10.1176C18.9864 9.02134 18.7815 7.97307 18.4108 7.0061C18.0224 7.24582 17.59 7.42168 17.1274 7.51675C17.4363 8.32637 17.6069 9.20355 17.6069 10.1204C17.6069 10.1756 17.6039 10.23 17.6027 10.2848C17.5957 10.5998 17.5705 10.9105 17.5248 11.2144C17.2428 13.091 16.2457 14.7349 14.8182 15.8672L13.4336 18.2475C16.6867 16.959 18.9864 13.8057 18.9864 10.1174V10.1176Z" fill="url(#vlem_p7)"/>
+        {/* Nối liền đáy chữ O tròn hoàn chỉnh theo yêu cầu */}
+        <path d="M5.5 15.8 C 6.8 17.0 8.4 17.6 10.2 17.6 C 12.0 17.6 13.6 17.0 14.9 15.8 L 16.8 18.6 C 14.8 20.0 12.6 20.7 10.2 20.7 C 7.7 20.7 5.5 20.0 3.5 18.6 Z" fill="url(#vlem_p2)"/>
+      </g>
+    </svg>
+  );
+}

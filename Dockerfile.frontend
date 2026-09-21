@@ -1,0 +1,14 @@
+FROM node:22-alpine AS runner
+WORKDIR /app
+RUN apk add --no-cache openssl
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+COPY --chown=appuser:appgroup apps/vione_app_fe/.output ./apps/vione_app_fe/.output
+COPY --chown=appuser:appgroup apps/vione_app_fe/docker-entrypoint.sh ./apps/vione_app_fe/
+
+RUN chmod +x ./apps/vione_app_fe/docker-entrypoint.sh || true
+USER appuser
+
+EXPOSE 4000
+WORKDIR /app/apps/vione_app_fe
+CMD ["sh", "-c", "if [ -f docker-entrypoint.sh ]; then ./docker-entrypoint.sh; else node .output/server/index.mjs; fi"]

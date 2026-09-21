@@ -1,0 +1,48 @@
+services:
+  ceo1983-frontend:
+    image: ${ASSOCIATION_FE_IMAGE:-ceo1983-frontend}:latest
+    container_name: ceo1983-frontend-prod
+    restart: always
+    env_file:
+      - .env.association
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+      - NITRO_HOST=0.0.0.0
+      - NEST_API_URL=http://ceo1983-backend:4000
+      - VITE_APP_SCOPE=association_app
+      - VITE_APP_NAME="CLB Doanh Nhân CEO 1983"
+      - VITE_APP_DEFAULT_ROUTE=/association
+    ports:
+      - "127.0.0.1:${ASSOCIATION_PORT_FRONTEND:-5002}:8080"
+    depends_on:
+      - ceo1983-backend
+    networks:
+      - vione-network
+
+  ceo1983-backend:
+    image: ${ASSOCIATION_BE_IMAGE:-ceo1983-backend}:latest
+    container_name: ceo1983-backend-prod
+    restart: always
+    env_file:
+      - .env.association
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - APP_SCOPE=association_app
+    user: "0:0"
+    volumes:
+      - vione-uploads-data:/app/uploads
+    ports:
+      - "127.0.0.1:${ASSOCIATION_PORT_BACKEND:-5003}:4000"
+    networks:
+      - vione-network
+
+volumes:
+  vione-uploads-data:
+    name: vione-uploads-data
+
+networks:
+  vione-network:
+    name: vione-network
+    external: true

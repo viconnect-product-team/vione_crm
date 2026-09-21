@@ -1,0 +1,80 @@
+name: vione-standalone
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: runner
+    container_name: vione-standalone-backend-local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+      - PORT=4000
+    ports:
+      - "4012:4000"
+    networks:
+      - vione-standalone-network
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: vione-standalone-frontend-local
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=5000
+      - HOST=0.0.0.0
+      - NITRO_HOST=0.0.0.0
+      - NODE_ENV=production
+    ports:
+      - "5010:5000"
+    depends_on:
+      - backend
+    networks:
+      - vione-standalone-network
+
+  db:
+    image: postgres:15
+    container_name: vione-standalone-db-local
+    restart: always
+    environment:
+      POSTGRES_USER: app1
+      POSTGRES_PASSWORD: "5^S0CEpvYwC1(#YN1UoJ"
+      POSTGRES_DB: vione_standalone_app
+    ports:
+      - "6433:5432"
+    volumes:
+      - postgres_standalone_data:/var/lib/postgresql/data
+    networks:
+      - vione-standalone-network
+
+  minio:
+    image: minio/minio:latest
+    container_name: vione-standalone-minio-local
+    restart: always
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9060:9000"
+      - "9061:9001"
+    volumes:
+      - vione-standalone-minio-data-local:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - vione-standalone-network
+
+networks:
+  vione-standalone-network:
+    driver: bridge
+
+volumes:
+  postgres_standalone_data:
+  vione-standalone-minio-data-local:

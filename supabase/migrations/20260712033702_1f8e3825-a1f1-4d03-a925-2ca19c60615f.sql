@@ -1,0 +1,1 @@
+ALTER TABLE public.attendees ADD COLUMN IF NOT EXISTS ticket_type text;
