@@ -15,11 +15,9 @@
     "outDir": "./dist",
     "ignoreDeprecations": "5.0",
     "baseUrl": "./",
+    "rootDir": "src",
     "paths": {
-      "@vibe/db": ["../../packages/db/index.ts"],
-      "@vibe/db/*": ["../../packages/db/*"],
-      "@vibe/shared": ["../../packages/shared/index.ts"],
-      "@vibe/shared/*": ["../../packages/shared/*"]
+      "@vibe/db": ["../../packages/db/index.d.ts"]
     },
     "incremental": true,
     "skipLibCheck": true,
@@ -28,5 +26,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "test", "**/*spec.ts", "check_roles.ts"]
 }
