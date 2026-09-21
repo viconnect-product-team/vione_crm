@@ -5,10 +5,11 @@ cd /root/ssl-proxy
 
 # 1. Mở các cổng trên UFW nếu có UFW
 if command -v ufw >/dev/null 2>&1; then
-    echo "[UFW] Mở cổng 5443, 5444, 5445 trên tường lửa Ubuntu..."
+    echo "[UFW] Mở cổng 5443, 5444, 5445, 5446 trên tường lửa Ubuntu..."
     ufw allow 5443/tcp >/dev/null 2>&1 || true
     ufw allow 5444/tcp >/dev/null 2>&1 || true
     ufw allow 5445/tcp >/dev/null 2>&1 || true
+    ufw allow 5446/tcp >/dev/null 2>&1 || true
     ufw reload >/dev/null 2>&1 || true
 fi
 
@@ -16,6 +17,7 @@ fi
 iptables -I INPUT -p tcp --dport 5443 -j ACCEPT 2>/dev/null || true
 iptables -I INPUT -p tcp --dport 5444 -j ACCEPT 2>/dev/null || true
 iptables -I INPUT -p tcp --dport 5445 -j ACCEPT 2>/dev/null || true
+iptables -I INPUT -p tcp --dport 5446 -j ACCEPT 2>/dev/null || true
 
 # 3. Chuẩn hóa tệp tin cấu hình (xóa bỏ \r nếu có)
 sed -i 's/\r$//' nginx.conf docker-compose.ssl.yml 2>/dev/null || true
@@ -45,3 +47,7 @@ curl -k -s -I https://127.0.0.1:5444/ 2>&1 | head -n 5 || echo "Lỗi kết nố
 
 echo "--- TEST NỘI BỘ HTTPS 5445 (VIONE APP MẠNG XÃ HỘI) ---"
 curl -k -s -I https://127.0.0.1:5445/ 2>&1 | head -n 5 || echo "Lỗi kết nối https 5445 nội bộ"
+
+echo "--- TEST NỘI BỘ HTTPS 5446 (VIONE ENTERPRISE CRM) ---"
+curl -k -s -I https://127.0.0.1:5446/ 2>&1 | head -n 5 || echo "Lỗi kết nối https 5446 nội bộ"
+

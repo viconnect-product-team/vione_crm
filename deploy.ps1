@@ -28,8 +28,11 @@ $bound["EnableHttps"] = $EnableHttps
 
 Write-Host "`n=================================================================" -ForegroundColor Green
 Write-Host "TRIEN KHAI VIONE PLATFORM THANH CONG!" -ForegroundColor Green
-Write-Host "1. ViOne App Mang Xa Hoi (HTTPS) : https://14.225.217.232:5445" -ForegroundColor Yellow
+Write-Host "1. ViOne Connect App (HTTPS)     : https://14.225.217.232:5445" -ForegroundColor Yellow
 Write-Host "   -> Mien sslip.io (PWA/SSL)    : https://dev-vione.14-225-217-232.sslip.io:5445" -ForegroundColor Yellow
-Write-Host "   -> Tuyen duong chinh          : /connect-app" -ForegroundColor Yellow
-Write-Host "2. Database CRM ViOne Co Lap     : vione_standalone_app (113.20.107.184:6432)" -ForegroundColor Cyan
+Write-Host "   -> Tuyen duong chinh          : /connect-app (hoac /landing)" -ForegroundColor Yellow
+Write-Host "2. ViOne Enterprise CRM (HTTPS)  : https://14.225.217.232:5446" -ForegroundColor Cyan
+Write-Host "   -> Mien sslip.io (PWA/SSL)    : https://dev-vione-crm.14-225-217-232.sslip.io:5446" -ForegroundColor Cyan
+Write-Host "   -> Tuyen duong chinh          : / (hoac /members, /events, /fees)" -ForegroundColor Cyan
+Write-Host "3. Database CRM ViOne Co Lap     : vione_standalone_app (113.20.107.184:6432)" -ForegroundColor White
 Write-Host "=================================================================" -ForegroundColor Green

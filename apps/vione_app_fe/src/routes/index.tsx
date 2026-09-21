@@ -166,8 +166,15 @@ function Index() {
     try {
       if (hasCallback) return;
       const search = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const isCrmPort =
+        typeof window !== "undefined" &&
+        (window.location.port === "5446" || window.location.hostname.includes("crm"));
+      if (isCrmPort && typeof window !== "undefined") {
+        sessionStorage.setItem("crm_portal", "1");
+      }
       const isCrmPortal =
         search?.get("portal") === "crm" ||
+        isCrmPort ||
         (typeof window !== "undefined" && sessionStorage.getItem("crm_portal") === "1");
       const isCeo1983 =
         typeof window !== "undefined" &&
@@ -190,7 +197,8 @@ function Index() {
   // to the origin "/". While we resolve, hold render to avoid a content flash.
   // On the plain app host (no tenant landing), an anonymous visitor should be
   // sent to /landing instead of flashing the empty admin dashboard.
-  const status = usePostLoginRedirect(!tenant && !tenantHost);
+  const isDedicatedCrm = typeof window !== "undefined" && (window.location.port === "5446" || window.location.hostname.includes("crm"));
+  const status = usePostLoginRedirect(!tenant && !tenantHost && !isDedicatedCrm);
   // Hold render until we know the session status so a logged-in member never
   // flashes (or gets stuck on) TenantNotFound before the role redirect fires.
   if (status === "checking" || status === "redirecting") return <RedirectGuard />;
@@ -267,11 +275,15 @@ function usePostLoginRedirect(redirectAnonToLanding = false) {
       const isCrmPortal =
         typeof window !== "undefined" &&
         (new URLSearchParams(window.location.search).get("portal") === "crm" ||
-          sessionStorage.getItem("crm_portal") === "1");
-
-
+          sessionStorage.getItem("crm_portal") === "1" ||
+          window.location.port === "5446" ||
+          window.location.hostname.includes("crm"));
 
       if (authStatus === 'out') {
+        if (isCrmPortal) {
+          setStatus("idle");
+          return;
+        }
         if (redirectAnonToLanding) {
           setStatus("redirecting");
           navigate({ to: "/landing" });

@@ -1,4 +1,4 @@
-﻿param (
+param (
     [string]$ServerIp = "14.225.217.232",
     [string]$ServerUser = "root",
     [string]$RemotePath = "~/ssl-proxy"
@@ -27,14 +27,16 @@ $files = @(
 $scpArgs = $files + "${ServerUser}@${ServerIp}:${RemotePath}/"
 scp @scpArgs
 
-# 3. Kích hoạt Nginx SSL proxy và mở firewall cổng 5443, 5444, 5445 qua SSH
-Write-Host "`n[3/3] Kích hoạt Nginx SSL Proxy và mở tường lửa cổng 5443, 5444, 5445..." -ForegroundColor Cyan
+# 3. Kich hoat Nginx SSL proxy va mo firewall cong 5443, 5444, 5445, 5446 qua SSH
+Write-Host "`n[3/3] Kich hoat Nginx SSL Proxy va mo tuong lua cong 5443, 5444, 5445, 5446..." -ForegroundColor Cyan
 $cmd = 'sed -i "s/\r$//" ~/ssl-proxy/setup-ssl.sh; bash ~/ssl-proxy/setup-ssl.sh'
 ssh "${ServerUser}@${ServerIp}" $cmd
 
 Write-Host "`n=================================================================" -ForegroundColor Green
-Write-Host "KÍCH HOẠT HTTPS ĐỘC LẬP CHO TOÀN BỘ 3 HỆ THỐNG HOÀN TẤT!" -ForegroundColor Green
-Write-Host "1. Web CRM Quản trị & Landing (HTTPS)  : https://${ServerIp}:5443 (Domain: https://dev-crm.14-225-217-232.sslip.io:5443)" -ForegroundColor Yellow
-Write-Host "2. App Hiệp Hội CEO 1983 (HTTPS)       : https://${ServerIp}:5444 (Domain: https://dev-app.14-225-217-232.sslip.io:5444)" -ForegroundColor Yellow
-Write-Host "3. ViOne App Mạng Xã Hội (HTTPS)       : https://${ServerIp}:5445 (Domain: https://dev-vione.14-225-217-232.sslip.io:5445)" -ForegroundColor Yellow
+Write-Host "KICH HOAT HTTPS DOC LAP CHO TOAN BO CAC HE THONG HOAN TAT!" -ForegroundColor Green
+Write-Host "1. Web CRM Quan tri CEO 1983 (HTTPS)   : https://${ServerIp}:5443 (Domain: https://dev-crm.14-225-217-232.sslip.io:5443)" -ForegroundColor Yellow
+Write-Host "2. App Hiep Hoi CEO 1983 (HTTPS)       : https://${ServerIp}:5444 (Domain: https://dev-app.14-225-217-232.sslip.io:5444)" -ForegroundColor Yellow
+Write-Host "3. ViOne Connect App (HTTPS)           : https://${ServerIp}:5445 (Domain: https://dev-vione.14-225-217-232.sslip.io:5445)" -ForegroundColor Yellow
+Write-Host "4. ViOne Enterprise CRM (HTTPS)        : https://${ServerIp}:5446 (Domain: https://dev-vione-crm.14-225-217-232.sslip.io:5446)" -ForegroundColor Cyan
 Write-Host "=================================================================" -ForegroundColor Green
+

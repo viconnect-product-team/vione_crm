@@ -7,6 +7,7 @@ services:
       - "5443:5443"
       - "5444:5444"
       - "5445:5445"
+      - "5446:5446"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./server.crt:/etc/nginx/ssl/server.crt:ro
