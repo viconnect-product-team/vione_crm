@@ -1,1 +1,0 @@
-import{j as o}from"./index-BI--mQOZ.js";import{C as t}from"./Ceo1983CinematicInteractiveWorldLanding-F8mo5Axu.js";import"./club-application.functions-DQZC4y9e.js";import"./proxy-BYmh5_6D.js";import"./zap-Clu1bOD_.js";import"./arrow-right-C3bUzsc9.js";function a(){return o.jsx(t,{})}export{a as component};

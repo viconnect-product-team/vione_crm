@@ -1,9 +1,0 @@
-node_modules
-.expo
-android/
-android/**
-ios/Pods
-ios/build
-ios/DerivedData
-*.log
-.idea

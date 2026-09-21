@@ -1,1 +1,0 @@
-import{j as o}from"./index-DBZKjGg0.js";import{N as t}from"./NetworkSectionView-DfSjwItQ.js";import"./error-messages-D_YS79uH.js";import"./user-round-DNAo8f8l.js";const r=()=>o.jsx(t,{section:"incoming"});export{r as component};

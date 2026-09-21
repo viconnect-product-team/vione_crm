@@ -1,1 +1,0 @@
-import{ar as c}from"./index-DBZKjGg0.js";const r=["mk.cat.service","mk.cat.product","mk.cat.tech","mk.cat.consult","mk.cat.realestate","mk.cat.other"];function m(t){return c.find(a=>a.id===t)}export{r as C,m as g};

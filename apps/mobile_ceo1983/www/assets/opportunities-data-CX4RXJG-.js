@@ -1,1 +1,0 @@
-import{aq as e}from"./index-B6UtnINT.js";const n=["opp.type.partnership","opp.type.investment","opp.type.supply","opp.type.demand","opp.type.distribution","opp.type.other"];function s(p){return e.find(t=>t.id===p)}const r=["💡","🚀","🌱","⚙️","🌍","🏙️","🤝","📈","💼","🏭","🛒","✈️"];export{r as I,n as O,s as g};

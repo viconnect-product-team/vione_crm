@@ -1,1 +1,0 @@
-import{j as o}from"./index-B6UtnINT.js";import{N as t}from"./NetworkSectionView-Czw5XhyN.js";import"./error-messages-D_YS79uH.js";import"./user-round-B6VwToKv.js";const p=()=>o.jsx(t,{section:"sent"});export{p as component};

@@ -1,1 +1,0 @@
-import{j as e}from"./index-BI--mQOZ.js";import{S as t}from"./verify-BQ60gvXJ.js";const m=({error:r})=>e.jsx(t,{children:e.jsx("div",{className:"text-center text-slate-400",children:r.message})});export{m as errorComponent};

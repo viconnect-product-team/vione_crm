@@ -1,1 +1,0 @@
-import{z as u,aM as i,r as h}from"./index-DBZKjGg0.js";function f(s,e){const c=u(),t=i({strict:!1})[s],o=t==null||t===""?e:String(t),l=h.useCallback(r=>{c({search:(n=>{const a={...n};return r==null||r===""||r===e?delete a[s]:a[s]=r,a}),replace:!0,resetScroll:!1})},[c,s,e]);return[o,l]}export{f as u};

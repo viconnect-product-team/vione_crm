@@ -48,3 +48,9 @@ credentials/
 # Uploads and temporary media
 uploads/
 **/uploads/**
+
+# Android Build & Gradle
+.gradle/
+build/
+**/build/
+local.properties
