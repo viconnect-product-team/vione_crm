@@ -100,6 +100,7 @@ import { Route as MEventsRouteImport } from './routes/m.events'
 import { Route as MCheckinRouteImport } from './routes/m.checkin'
 import { Route as MCardRouteImport } from './routes/m.card'
 import { Route as MBusinessCardsRouteImport } from './routes/m.business-cards'
+import { Route as LandingVioneRouteImport } from './routes/landing.vione'
 import { Route as LandingCeo1983RouteImport } from './routes/landing.ceo1983'
 import { Route as LandingBussinessConnectRouteImport } from './routes/landing.bussiness-connect'
 import { Route as LandingBusinessConnectRouteImport } from './routes/landing.business-connect'
@@ -697,6 +698,11 @@ const MBusinessCardsRoute = MBusinessCardsRouteImport.update({
   id: '/business-cards',
   path: '/business-cards',
   getParentRoute: () => MRoute,
+} as any)
+const LandingVioneRoute = LandingVioneRouteImport.update({
+  id: '/vione',
+  path: '/vione',
+  getParentRoute: () => LandingRoute,
 } as any)
 const LandingCeo1983Route = LandingCeo1983RouteImport.update({
   id: '/ceo1983',
@@ -1568,6 +1574,7 @@ export interface FileRoutesByFullPath {
   '/landing/business-connect': typeof LandingBusinessConnectRoute
   '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
   '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
+  '/landing/vione': typeof LandingVioneRoute
   '/m/business-cards': typeof MBusinessCardsRoute
   '/m/card': typeof MCardRoute
   '/m/checkin': typeof MCheckinRoute
@@ -1778,6 +1785,7 @@ export interface FileRoutesByTo {
   '/landing/business-connect': typeof LandingBusinessConnectRoute
   '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
   '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
+  '/landing/vione': typeof LandingVioneRoute
   '/m/business-cards': typeof MBusinessCardsRoute
   '/m/card': typeof MCardRoute
   '/m/checkin': typeof MCheckinRoute
@@ -2006,6 +2014,7 @@ export interface FileRoutesById {
   '/landing/business-connect': typeof LandingBusinessConnectRoute
   '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
   '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
+  '/landing/vione': typeof LandingVioneRoute
   '/m/business-cards': typeof MBusinessCardsRoute
   '/m/card': typeof MCardRoute
   '/m/checkin': typeof MCheckinRoute
@@ -2242,6 +2251,7 @@ export interface FileRouteTypes {
     | '/landing/business-connect'
     | '/landing/bussiness-connect'
     | '/landing/ceo1983'
+    | '/landing/vione'
     | '/m/business-cards'
     | '/m/card'
     | '/m/checkin'
@@ -2452,6 +2462,7 @@ export interface FileRouteTypes {
     | '/landing/business-connect'
     | '/landing/bussiness-connect'
     | '/landing/ceo1983'
+    | '/landing/vione'
     | '/m/business-cards'
     | '/m/card'
     | '/m/checkin'
@@ -2679,6 +2690,7 @@ export interface FileRouteTypes {
     | '/landing/business-connect'
     | '/landing/bussiness-connect'
     | '/landing/ceo1983'
+    | '/landing/vione'
     | '/m/business-cards'
     | '/m/card'
     | '/m/checkin'
@@ -3516,6 +3528,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/m/business-cards'
       preLoaderRoute: typeof MBusinessCardsRouteImport
       parentRoute: typeof MRoute
+    }
+    '/landing/vione': {
+      id: '/landing/vione'
+      path: '/vione'
+      fullPath: '/landing/vione'
+      preLoaderRoute: typeof LandingVioneRouteImport
+      parentRoute: typeof LandingRoute
     }
     '/landing/ceo1983': {
       id: '/landing/ceo1983'
@@ -5037,6 +5056,7 @@ interface LandingRouteChildren {
   LandingBusinessConnectRoute: typeof LandingBusinessConnectRoute
   LandingBussinessConnectRoute: typeof LandingBussinessConnectRoute
   LandingCeo1983Route: typeof LandingCeo1983RouteWithChildren
+  LandingVioneRoute: typeof LandingVioneRoute
   LandingIndexRoute: typeof LandingIndexRoute
   LandingCeoV1Route: typeof LandingCeoV1Route
 }
@@ -5045,6 +5065,7 @@ const LandingRouteChildren: LandingRouteChildren = {
   LandingBusinessConnectRoute: LandingBusinessConnectRoute,
   LandingBussinessConnectRoute: LandingBussinessConnectRoute,
   LandingCeo1983Route: LandingCeo1983RouteWithChildren,
+  LandingVioneRoute: LandingVioneRoute,
   LandingIndexRoute: LandingIndexRoute,
   LandingCeoV1Route: LandingCeoV1Route,
 }

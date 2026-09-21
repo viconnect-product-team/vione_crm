@@ -18,6 +18,27 @@ export type LandingTemplateMeta = {
 
 export const LANDING_TEMPLATES_CATALOG: LandingTemplateMeta[] = [
   {
+    id: "vione-gold-white",
+    name: "ViOne Connect — Vàng Đồng Ánh Kim & Trắng Tinh Khiết",
+    versionLabel: "Official ViOne 5.0",
+    category: "b2b",
+    categoryName: "Hệ Sinh Thái ViOne",
+    tagline: "Sắc vàng đồng vương giả & Trắng ngọc trai — Kết nối kinh doanh 5.0",
+    description:
+      "Giao diện chuẩn nhận diện ViOne với tone màu vàng đồng sáng ánh kim như logo icon ViOne, nền trắng ngọc trai, text đen thanh lịch. Tích hợp trọn vẹn 3 trụ cột: ViOne Connect App, Hệ thống CRM Doanh nghiệp cô lập và Danh thiếp Titanium NFC 1-chạm.",
+    tags: ["ViOne Official", "Vàng Đồng Ánh Kim", "Trắng & Đen", "Hợp Nhất CRM", "NFC 1-Chạm"],
+    themeColor: "#DFB76C",
+    badge: "Mặc định ViOne",
+    previewRoute: "/landing?template=vione-gold-white",
+    recommendedFor: "Hệ sinh thái ViOne Connect, viconnect.vn, doanh nghiệp thành viên và đối tác chiến lược.",
+    features: [
+      "Tone vàng đồng sang trọng (#DFB76C, #D4AF37) kết hợp nền trắng ngọc trai & chữ đen",
+      "Hiệu ứng chữ đa dạng: Morphing text, Gold shimmer, Kinetic counters, Floating badges",
+      "Cổng chuyển trực tiếp vào Hệ thống CRM Doanh nghiệp cô lập 163 bảng dữ liệu",
+      "Khu vực tải ứng dụng ViOne Connect (Android APK trực tiếp & iOS TestFlight)",
+    ],
+  },
+  {
     id: "b2b-v1",
     name: "B2B Ecosystem Standard",
     versionLabel: "Template V1",
@@ -251,7 +272,7 @@ export const ACTIVE_LANDING_TEMPLATE_STORAGE_KEY = "vione_active_landing_templat
 export const LANDING_TEMPLATE_CHANGE_EVENT = "vione-landing-template-changed";
 
 export function getActiveLandingTemplateId(): string {
-  if (typeof window === "undefined") return "b2b-v1";
+  if (typeof window === "undefined") return "vione-gold-white";
   try {
     const saved = localStorage.getItem(ACTIVE_LANDING_TEMPLATE_STORAGE_KEY);
     if (saved && LANDING_TEMPLATES_CATALOG.some((t) => t.id === saved)) {
@@ -260,7 +281,7 @@ export function getActiveLandingTemplateId(): string {
   } catch {
     /* ignore */
   }
-  return "b2b-v1";
+  return "vione-gold-white";
 }
 
 export function setActiveLandingTemplateId(templateId: string): void {

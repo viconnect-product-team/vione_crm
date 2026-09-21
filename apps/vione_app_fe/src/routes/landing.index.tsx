@@ -11,6 +11,7 @@ import { BusinessConnectLandingV8 } from "@/components/landing/BusinessConnectLa
 import { Ceo1983Landing } from "@/components/landing/Ceo1983Landing";
 import { Ceo1983BlueWhiteLanding } from "@/components/landing/Ceo1983BlueWhiteLanding";
 import { Ceo1983CinematicLanding } from "@/components/landing/Ceo1983CinematicLanding";
+import { ViOneGoldWhiteLanding } from "@/components/landing/ViOneGoldWhiteLanding";
 import {
   getActiveLandingTemplateId,
   LANDING_TEMPLATE_CHANGE_EVENT,
@@ -19,13 +20,13 @@ import {
 export const Route = createFileRoute("/landing/")({
   head: () => ({
     meta: [
-      { title: "ViOne — Hệ điều hành kết nối kinh doanh | Business Connection OS" },
+      { title: "ViOne Connect — Hệ Điều Hành Kết Nối Kinh Doanh & CRM Doanh Nghiệp" },
       {
         name: "description",
         content:
-          "Nền tảng hợp nhất quản lý hiệp hội, doanh nghiệp & kết nối giao thương đa chiều bằng AI và NFC.",
+          "Hệ sinh thái kết nối kinh doanh 5.0: Ứng dụng ViOne Connect, Nền tảng CRM Doanh nghiệp cô lập và Danh thiếp số Titanium NFC 1-chạm.",
       },
-      { property: "og:title", content: "ViOne — Business Connection OS" },
+      { property: "og:title", content: "ViOne Connect — Business Connection OS & Enterprise CRM" },
     ],
   }),
   component: ViOneLandingPage,
@@ -36,7 +37,10 @@ function ViOneLandingPage() {
     if (typeof window !== "undefined") {
       const urlParam = new URLSearchParams(window.location.search).get("template");
       if (urlParam) {
-        // Map shorthand aliases like v1..v8, ceo1983, ceo1983-bluewhite
+        // Map shorthand aliases like v1..v8, ceo1983, ceo1983-bluewhite, vione
+        if (urlParam === "vione" || urlParam === "vione-gold" || urlParam === "viconnect" || urlParam === "gold") {
+          return "vione-gold-white";
+        }
         if (urlParam.startsWith("v")) return `b2b-${urlParam}`;
         if (urlParam === "ceo1983") return "ceo1983-official";
         if (urlParam === "ceo1983-bw" || urlParam === "ceo1983-bluewhite") return "ceo1983-bluewhite";
@@ -66,6 +70,11 @@ function ViOneLandingPage() {
   }, []);
 
   switch (templateId) {
+    case "vione-gold-white":
+    case "vione":
+    case "gold-white":
+    case "viconnect":
+      return <ViOneGoldWhiteLanding />;
     case "b2b-v2":
     case "v2":
       return <BusinessConnectLandingV2 />;
@@ -99,7 +108,8 @@ function ViOneLandingPage() {
       return <Ceo1983BlueWhiteLanding />;
     case "b2b-v1":
     case "v1":
-    default:
       return <BusinessConnectLanding />;
+    default:
+      return <ViOneGoldWhiteLanding />;
   }
 }
