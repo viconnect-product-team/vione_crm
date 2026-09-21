@@ -8,15 +8,15 @@ $ErrorActionPreference = "Stop"
 $DEPLOY_DIR = $PSScriptRoot
 
 Write-Host "=================================================================" -ForegroundColor Magenta
-Write-Host "TRIỂN KHAI NGINX REVERSE PROXY HTTPS / SSL LÊN DEV SERVER..." -ForegroundColor Magenta
+Write-Host "TRIEN KHAI NGINX REVERSE PROXY HTTPS / SSL LEN DEV SERVER..." -ForegroundColor Magenta
 Write-Host "=================================================================" -ForegroundColor Magenta
 
-# 1. Tạo thư mục trên server
-Write-Host "`n[1/3] Tạo thư mục $RemotePath trên máy chủ $ServerIp..." -ForegroundColor Cyan
+# 1. Tao thu muc tren server
+Write-Host "`n[1/3] Tao thu muc $RemotePath tren may chu $ServerIp..." -ForegroundColor Cyan
 ssh "${ServerUser}@${ServerIp}" "mkdir -p $RemotePath"
 
-# 2. Đồng bộ các tệp tin cấu hình, chứng chỉ SSL và kịch bản thực thi
-Write-Host "`n[2/3] Đồng bộ cấu hình SSL cho Web CRM (5443), CEO 1983 (5444) và ViOne App (5445)..." -ForegroundColor Cyan
+# 2. Dong bo cac tep tin cau hinh, chung chi SSL va kich ban thuc thi
+Write-Host "`n[2/3] Dong bo cau hinh SSL cho Web CRM (5443), CEO 1983 (5444), ViOne App (5445), ViOne CRM (5446)..." -ForegroundColor Cyan
 $files = @(
     (Resolve-Path "$DEPLOY_DIR/nginx.conf").Path,
     (Resolve-Path "$DEPLOY_DIR/server.crt").Path,
@@ -39,4 +39,3 @@ Write-Host "2. App Hiep Hoi CEO 1983 (HTTPS)       : https://${ServerIp}:5444 (D
 Write-Host "3. ViOne Connect App (HTTPS)           : https://${ServerIp}:5445 (Domain: https://dev-vione.14-225-217-232.sslip.io:5445)" -ForegroundColor Yellow
 Write-Host "4. ViOne Enterprise CRM (HTTPS)        : https://${ServerIp}:5446 (Domain: https://dev-vione-crm.14-225-217-232.sslip.io:5446)" -ForegroundColor Cyan
 Write-Host "=================================================================" -ForegroundColor Green
-
