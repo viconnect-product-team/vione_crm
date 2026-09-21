@@ -1,4 +1,4 @@
-﻿param (
+param (
     [switch]$SkipBuild,
     [switch]$SkipWebBuild,
     [switch]$FrontendOnly,
@@ -66,15 +66,15 @@ try {
             }
         }
 
-        Write-Host "`n[1/5] Khởi tạo quy trình Build Docker Images cho ViOne Connect CEO 1983..." -ForegroundColor Cyan
+        Write-Host "`n[1/5] Khởi tạo quy trình Build Docker Images cho ViOne Connect Standalone..." -ForegroundColor Cyan
         if ($buildBE) {
-            Invoke-CheckedCommand -Description "Xây dựng Backend Image (vione-backend)" -Action {
-                docker build -t vione-backend:latest -f Dockerfile.backend .
+            Invoke-CheckedCommand -Description "Xây dựng Backend Image (vione-standalone-backend)" -Action {
+                docker build -t vione-standalone-backend:latest -t vione-backend:latest -f Dockerfile.backend .
             }
         }
         if ($buildFE) {
-            Invoke-CheckedCommand -Description "Xây dựng Frontend Image (vione-frontend)" -Action {
-                docker build --no-cache -t vione-frontend:latest -f "$DEPLOY_DIR/Dockerfile.frontend" .
+            Invoke-CheckedCommand -Description "Xây dựng Frontend Image (vione-standalone-frontend)" -Action {
+                docker build --no-cache -t vione-standalone-frontend:latest -t vione-frontend:latest -f "$DEPLOY_DIR/Dockerfile.frontend" .
             }
         }
 
@@ -105,12 +105,12 @@ try {
         Write-Host "`n[2/5] Xuất và nén Gzip (.tar.gz) tốc độ cao cho ViOne Connect..." -ForegroundColor Cyan
         if ($buildBE) {
             Invoke-CheckedCommand -Description "Xuất & Nén Backend Image (.tar.gz)" -Action {
-                Save-And-Compress-DockerImage -ImageName "vione-backend:latest" -OutGzPath "vione-backend.tar.gz"
+                Save-And-Compress-DockerImage -ImageName "vione-standalone-backend:latest" -OutGzPath "vione-backend.tar.gz"
             }
         }
         if ($buildFE) {
             Invoke-CheckedCommand -Description "Xuất & Nén Frontend Image (.tar.gz)" -Action {
-                Save-And-Compress-DockerImage -ImageName "vione-frontend:latest" -OutGzPath "vione-frontend.tar.gz"
+                Save-And-Compress-DockerImage -ImageName "vione-standalone-frontend:latest" -OutGzPath "vione-frontend.tar.gz"
             }
         }
     } else {
@@ -145,13 +145,13 @@ try {
 
     $remoteLoadCmd = ""
     if ($buildBE -and (Test-Path "vione-backend.tar.gz")) {
-        $remoteLoadCmd += "docker load -i vione-backend.tar.gz; rm -f vione-backend.tar.gz; "
+        $remoteLoadCmd += "docker load -i vione-backend.tar.gz; docker tag vione-backend:latest vione-standalone-backend:latest 2>/dev/null || true; rm -f vione-backend.tar.gz; "
     }
     if ($buildFE -and (Test-Path "vione-frontend.tar.gz")) {
-        $remoteLoadCmd += "docker load -i vione-frontend.tar.gz; rm -f vione-frontend.tar.gz; "
+        $remoteLoadCmd += "docker load -i vione-frontend.tar.gz; docker tag vione-frontend:latest vione-standalone-frontend:latest 2>/dev/null || true; rm -f vione-frontend.tar.gz; "
     }
 
-    $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env 2>/dev/null || true; touch .env; sed -i 's/\r//g' .env docker-compose.yml; docker network create vione-network 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop frontend backend 2>/dev/null || true; docker rm -f vione-frontend-prod vione-backend-prod vibe_frontend_prod vibe_backend_prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate frontend backend minio"
+    $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env 2>/dev/null || true; touch .env; sed -i 's/\r//g' .env docker-compose.yml; docker network create vione-standalone-network 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop frontend backend 2>/dev/null || true; docker rm -f vione-standalone-frontend-prod vione-standalone-backend-prod vione-frontend-prod vione-backend-prod vibe_frontend_prod vibe_backend_prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate frontend backend minio"
 
     Invoke-CheckedCommand -Description "Thực thi cấu trúc container độc lập ViOne Connect" -Action {
         ssh "${SERVER_USER}@${SERVER_IP}" $REMOTE_CMD
