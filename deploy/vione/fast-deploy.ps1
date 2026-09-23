@@ -1,4 +1,4 @@
-﻿param (
+param (
     [switch]$SkipBuild,
     [switch]$SkipWebBuild,
     [switch]$FrontendOnly,
@@ -32,11 +32,22 @@ $ErrorActionPreference = "Stop"
 function Invoke-CheckedCommand {
     param(
         [Parameter(Mandatory = $true)] [string]$Description,
-        [Parameter(Mandatory = $true)] [scriptblock]$Action
+        [Parameter(Mandatory = $true)] [scriptblock]$Action,
+        [int]$MaxRetries = 1
     )
-    & $Action
-    if ($LASTEXITCODE -ne 0) {
-        throw "Loi: Tien trinh [$Description] that bai voi ma loi $LASTEXITCODE"
+    $attempt = 1
+    while ($true) {
+        & $Action
+        if ($LASTEXITCODE -eq 0) {
+            break
+        }
+        if ($attempt -lt $MaxRetries) {
+            Write-Host "`n[Canh bao] Tien trinh [$Description] tam thoi chua phan hoi (ma loi $LASTEXITCODE). Tu dong thu lai sau 3s (Lan $attempt/$MaxRetries)..." -ForegroundColor Yellow
+            Start-Sleep -Seconds 3
+            $attempt++
+        } else {
+            throw "Loi: Tien trinh [$Description] that bai voi ma loi $LASTEXITCODE sau $attempt lan thu."
+        }
     }
 }
 
@@ -51,7 +62,7 @@ try {
                 Write-Host "`n[0/5] Bo qua Build Frontend (Web) cuc bo (-SkipWebBuild)..." -ForegroundColor Yellow
             } else {
                 Write-Host "`n[0/5] Build Frontend ViOne Connect (Web) cuc bo voi Scope = vione_app..." -ForegroundColor Cyan
-                $env:NODE_OPTIONS = "--max-old-space-size=4096"
+                $env:NODE_OPTIONS = "--max-old-space-size=8192"
                 $env:VITE_APP_SCOPE = "vione_app"
                 $env:VITE_APP_NAME = "ViOne Connect"
                 if ($EnableHttps) {
@@ -122,10 +133,12 @@ try {
         Write-Host "`n[1-2/5] BO QUA quy trinh Build va dong goi (SkipBuild)..." -ForegroundColor Yellow
     }
 
+    $SSH_OPTS = @("-o", "ConnectTimeout=30", "-o", "ServerAliveInterval=15", "-o", "ServerAliveCountMax=3")
+
     Write-Host "`n[3/5] Khoi tao thu muc va dong bo tep tin doc lap len may chu ha tang ($SERVER_IP)..." -ForegroundColor Cyan
 
-    Invoke-CheckedCommand -Description "Tao thu muc remote tren server" -Action {
-        ssh "${SERVER_USER}@${SERVER_IP}" "mkdir -p $REMOTE_PATH"
+    Invoke-CheckedCommand -Description "Tao thu muc remote tren server" -MaxRetries 3 -Action {
+        ssh @SSH_OPTS "${SERVER_USER}@${SERVER_IP}" "mkdir -p $REMOTE_PATH"
     }
 
     # Dam bao co tep tin .env cuc bo
@@ -141,8 +154,8 @@ try {
         if ($buildFE -and (Test-Path "vione-frontend.tar.gz")) { $filesToUpload += (Resolve-Path "vione-frontend.tar.gz").Path }
     }
 
-    $scpArgs = $filesToUpload + "${SERVER_USER}@${SERVER_IP}:${REMOTE_PATH}/"
-    Invoke-CheckedCommand -Description "Chuyen giao tep tin qua SCP" -Action {
+    $scpArgs = @() + $SSH_OPTS + $filesToUpload + "${SERVER_USER}@${SERVER_IP}:${REMOTE_PATH}/"
+    Invoke-CheckedCommand -Description "Chuyen giao tep tin qua SCP" -MaxRetries 3 -Action {
         scp @scpArgs
     }
 
@@ -150,16 +163,16 @@ try {
 
     $remoteLoadCmd = ""
     if ($buildBE -and (Test-Path "vione-backend.tar.gz")) {
-        $remoteLoadCmd += "docker load -i vione-backend.tar.gz; docker tag vione-backend:latest vione-standalone-backend:latest 2>/dev/null || true; rm -f vione-backend.tar.gz; "
+        $remoteLoadCmd += "docker load -i vione-backend.tar.gz; docker tag vione-standalone-backend:latest vione-backend:latest 2>/dev/null || true; rm -f vione-backend.tar.gz; "
     }
     if ($buildFE -and (Test-Path "vione-frontend.tar.gz")) {
-        $remoteLoadCmd += "docker load -i vione-frontend.tar.gz; docker tag vione-frontend:latest vione-standalone-frontend:latest 2>/dev/null || true; rm -f vione-frontend.tar.gz; "
+        $remoteLoadCmd += "docker load -i vione-frontend.tar.gz; docker tag vione-standalone-frontend:latest vione-frontend:latest 2>/dev/null || true; rm -f vione-frontend.tar.gz; "
     }
 
     $REMOTE_CMD = "cd $REMOTE_PATH; cp -f .env.production .env 2>/dev/null || true; touch .env; sed -i 's/\r//g' .env docker-compose.yml; docker network create vione-network 2>/dev/null || true; docker volume create vione-standalone-minio-data 2>/dev/null || true; docker volume create vione-standalone-uploads-data 2>/dev/null || true; $remoteLoadCmd docker compose -f docker-compose.yml stop frontend backend minio 2>/dev/null || true; docker rm -f vione-frontend-prod vione-backend-prod vione-standalone-frontend-prod vione-standalone-backend-prod vione-standalone-minio-prod 2>/dev/null || true; docker compose -f docker-compose.yml up -d --force-recreate frontend backend minio"
 
-    Invoke-CheckedCommand -Description "Thuc thi cau truc container doc lap ViOne Connect" -Action {
-        ssh "${SERVER_USER}@${SERVER_IP}" $REMOTE_CMD
+    Invoke-CheckedCommand -Description "Thuc thi cau truc container doc lap ViOne Connect" -MaxRetries 3 -Action {
+        ssh @SSH_OPTS "${SERVER_USER}@${SERVER_IP}" $REMOTE_CMD
     }
 
     Write-Host "`n[5/5] Don dep bo nho dem tam thoi tai may cuc bo..." -ForegroundColor Cyan

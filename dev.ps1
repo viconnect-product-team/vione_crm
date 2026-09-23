@@ -3,7 +3,8 @@ param (
     [switch]$Fe,
     [switch]$Be,
     [switch]$Full,
-    [switch]$Down
+    [switch]$Down,
+    [switch]$NoDocker
 )
 
 # =========================================================================
@@ -11,7 +12,6 @@ param (
 # Khoi dong moi truong dev cuc bo doc lap cho ViOne
 # =========================================================================
 
-$ErrorActionPreference = "Stop"
 $ROOT_DIR = $PSScriptRoot
 
 Write-Host "=================================================================" -ForegroundColor Cyan
@@ -20,16 +20,40 @@ Write-Host "=================================================================" -
 
 if ($Down) {
     Write-Host "`n[DOCKER] Dung tat ca container ViOne Local..." -ForegroundColor Yellow
-    docker compose -f "$ROOT_DIR\docker-compose.local.yml" down
-    Write-Host "-> Da dung dich vu." -ForegroundColor Green
+    try {
+        docker compose -f "$ROOT_DIR\docker-compose.local.yml" down 2>$null
+        Write-Host "-> Da dung dich vu." -ForegroundColor Green
+    } catch {
+        Write-Host "-> Khong the ket noi Docker engine de dung dich vu." -ForegroundColor DarkGray
+    }
     return
 }
 
-if ($Docker -or $Full -or (-not $Fe -and -not $Be)) {
-    Write-Host "`n[1/2] Khoi chay ha tang Docker cuc bo (Database & MinIO isolated)..." -ForegroundColor Yellow
-    docker compose -f "$ROOT_DIR\docker-compose.local.yml" up -d
-    Write-Host "  -> PostgreSQL Local : localhost:6433 (Database: vione_standalone_local)" -ForegroundColor Green
-    Write-Host "  -> MinIO Storage    : localhost:9060 (Console: localhost:9061)" -ForegroundColor Green
+# Kiem tra Docker engine neu can khoi chay
+$shouldRunDocker = ($Docker -or ($Full -and -not $NoDocker))
+if ($shouldRunDocker) {
+    Write-Host "`n[1/2] Kiem tra ha tang Docker cuc bo..." -ForegroundColor Yellow
+    $dockerRunning = $false
+    try {
+        $null = docker info 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $dockerRunning = $true
+        }
+    } catch {
+        $dockerRunning = $false
+    }
+
+    if ($dockerRunning) {
+        Write-Host "  -> Docker Desktop dang chay, khoi dong container Database & MinIO..." -ForegroundColor Green
+        docker compose -f "$ROOT_DIR\docker-compose.local.yml" up -d
+        Write-Host "  -> PostgreSQL Local : localhost:6433 (Database: vione_standalone_local)" -ForegroundColor Green
+        Write-Host "  -> MinIO Storage    : localhost:9060 (Console: localhost:9061)" -ForegroundColor Green
+    } else {
+        Write-Host "  [!] Docker Desktop chua khoi chay tren may." -ForegroundColor Yellow
+        Write-Host "  -> Tu dong su dung co so du lieu & storage cau hinh trong .env (.env hien tai: Remote PostgreSQL)" -ForegroundColor DarkCyan
+    }
+} else {
+    Write-Host "`n[1/2] Bo qua Docker cuc bo (Su dung cau hinh san co trong .env)..." -ForegroundColor DarkCyan
 }
 
 if ($Fe) {
@@ -38,19 +62,8 @@ if ($Fe) {
 } elseif ($Be) {
     Write-Host "`n[2/2] Khoi chay Backend ViOne Dev Server..." -ForegroundColor Cyan
     npm run dev:be
-} elseif ($Full) {
-    Write-Host "`n[2/2] Khoi chay song song Backend + Frontend (Turbo)..." -ForegroundColor Cyan
-    npm run dev
 } else {
-    Write-Host "`n=================================================================" -ForegroundColor Green
-    Write-Host "Ha tang ViOne Local da san sang!" -ForegroundColor Green
-    Write-Host "Cac lenh phat trien huu ich:" -ForegroundColor White
-    Write-Host "  - Chay Frontend : .\dev.ps1 -Fe (hoac npm run dev:fe)" -ForegroundColor Yellow
-    Write-Host "  - Chay Backend  : .\dev.ps1 -Be (hoac npm run dev:be)" -ForegroundColor Yellow
-    Write-Host "  - Chay ca hai   : .\dev.ps1 -Full" -ForegroundColor Yellow
-    Write-Host "  - Build APK     : .\build-apk.ps1" -ForegroundColor Yellow
-    Write-Host "  - Build IPA     : .\build-ipa.ps1" -ForegroundColor Yellow
-    Write-Host "  - Trien khai    : .\deploy.ps1" -ForegroundColor Yellow
-    Write-Host "  - Dung Docker   : .\dev.ps1 -Down" -ForegroundColor Yellow
-    Write-Host "=================================================================" -ForegroundColor Green
+    Write-Host "`n[2/2] Khoi chay song song Backend + Frontend (Turbo Dev)..." -ForegroundColor Cyan
+    npx turbo run dev
 }
+

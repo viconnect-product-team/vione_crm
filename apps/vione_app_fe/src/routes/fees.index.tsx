@@ -1257,7 +1257,7 @@ function FeeRow({
           <div className="min-w-0">
             <TruncatedText
               text={memberName}
-              maxWidth="max-w-[200px]"
+              maxWidth="max-w-[300px]"
               className="font-semibold text-foreground group-hover:text-primary"
             />
             <div className="text-[11px] text-muted-foreground">

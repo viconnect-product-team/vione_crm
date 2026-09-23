@@ -22,8 +22,12 @@ import {
   Trash2,
   TrendingUp,
   Upload,
+  Download,
+  FileSpreadsheet,
   X,
 } from "lucide-react";
+import { exportProductsToExcel, type ParsedProductItem } from "@/lib/marketplace-excel";
+import { ProductExcelModal } from "@/components/dashboard/ProductExcelModal";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { PageHeader, StatCard, Card, Pill } from "@/components/dashboard/PageKit";
 import {
@@ -968,7 +972,32 @@ function MarketplaceContent({ all, reload }: { all: Product[]; reload: () => voi
   const [pinnedOnly, setPinnedOnly] = useState(false);
   const [pinned, setPinned] = useState<Set<string>>(new Set());
   const [showModal, setShowModal] = useState(false);
+  const [showExcelModal, setShowExcelModal] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
+  const createFn = useServerFn(createProductFn);
+
+  const handleImportExcelProducts = async (importedItems: ParsedProductItem[]) => {
+    for (const item of importedItems) {
+      await createFn({
+        data: {
+          sellerId: user?.id || CURRENT_USER_ID,
+          title: item.title,
+          description: item.description || item.title,
+          price: item.price,
+          originalPrice: item.originalPrice,
+          memberPrice: item.memberPrice,
+          unit: item.unit,
+          category: item.category,
+          company: item.company,
+          sellerName: item.sellerName,
+          sellerPhone: item.sellerPhone,
+          websiteUrl: item.websiteUrl,
+          emoji: "🛍️",
+        },
+      });
+    }
+    reload();
+  };
   const [deleting, setDeleting] = useState<Product | null>(null);
   const [deletePending, setDeletePending] = useState(false);
   const [selectMode, setSelectMode] = useState(false);
@@ -1111,6 +1140,24 @@ function MarketplaceContent({ all, reload }: { all: Product[]; reload: () => voi
               <FileText className="h-4 w-4" />
               {t("mk.myq.nav")}
             </Link>
+            <button
+              type="button"
+              onClick={() => exportProductsToExcel(visible)}
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 text-sm font-semibold text-foreground hover:bg-secondary cursor-pointer"
+              title="Xuất file Excel danh sách sản phẩm"
+            >
+              <Download className="h-4 w-4 text-emerald-600" />
+              Xuất Excel
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowExcelModal(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2 text-sm font-semibold text-foreground hover:bg-secondary cursor-pointer"
+              title="Nhập danh sách sản phẩm từ file Excel"
+            >
+              <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
+              Nhập Excel
+            </button>
             <button
               onClick={() => setShowModal(true)}
               className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
@@ -1536,6 +1583,11 @@ function MarketplaceContent({ all, reload }: { all: Product[]; reload: () => voi
       {editing && (
         <ProductModal product={editing} onClose={() => setEditing(null)} onSaved={reload} />
       )}
+      <ProductExcelModal
+        open={showExcelModal}
+        onClose={() => setShowExcelModal(false)}
+        onImportProducts={handleImportExcelProducts}
+      />
 
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
         <AlertDialogContent>

@@ -376,40 +376,6 @@ export function NetworkHome({
           <NetworkSkeleton />
         ) : network.coreError ? (
           <NetworkError onRetry={network.retry} />
-        ) : people.length === 0 ? (
-          network.searching ? (
-            <NetworkSearchEmpty onClear={clearSearch} />
-          ) : filtering ? (
-            <NetworkFilterEmpty onReset={() => setFilter("all")} />
-          ) : (
-            <>
-              <NetworkEmpty onOpenV={openV} />
-              {/* AI Match và Gợi ý đối tác khi danh bạ còn trống */}
-              <div className="mt-6 border-t border-[var(--bc-mobile-border)] pt-5">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-[var(--bc-mobile-accent)]" />
-                    <h2 className="text-[13px] font-bold uppercase tracking-wider text-[var(--bc-mobile-text)]">
-                      Gợi ý kết nối phù hợp cho bạn
-                    </h2>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleTabChange("suggestions")}
-                    className="text-[12px] font-semibold text-[var(--bc-mobile-accent)] hover:underline flex items-center gap-0.5 cursor-pointer"
-                  >
-                    Xem tất cả ({recommendations.length})
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <NetworkAiMatchStrip
-                  peopleById={peopleById}
-                  allowedIds={allowedIds}
-                  onViewAll={() => handleTabChange("suggestions")}
-                />
-              </div>
-            </>
-          )
         ) : (
           <>
 
@@ -418,26 +384,26 @@ export function NetworkHome({
               <>
                 {/* ViOne Dynamic AI Copilot Banner */}
                 {!narrowed && (
-                  <div className="mb-4 p-4 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-36 h-36 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+                  <div className="mb-4 p-4 rounded-2xl border border-amber-300/60 dark:border-amber-500/30 bg-gradient-to-r from-amber-50 via-amber-100/35 to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-xs dark:shadow-xl relative overflow-hidden transition-colors">
+                    <div className="absolute top-0 right-0 w-36 h-36 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
                     <div className="flex items-start justify-between gap-3 relative z-10">
                       <div className="flex items-start gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#F6E1C3] to-[#D8B282] p-0.5 shadow-md shrink-0 flex items-center justify-center">
-                          <Sparkles className="h-5 w-5 text-slate-950" />
+                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#F6E1C3] to-[#D8B282] p-0.5 shadow-xs shrink-0 flex items-center justify-center">
+                          <Sparkles className="h-5 w-5 text-amber-900" />
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[11.5px] font-extrabold uppercase tracking-wider text-amber-300">ViOne AI Copilot Matcher</span>
-                            <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-400/20 text-amber-200 border border-amber-400/40">Dynamic %</span>
+                            <span className="text-[11.5px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300">ViOne AI Copilot Matcher</span>
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500/15 dark:bg-amber-400/20 text-amber-900 dark:text-amber-200 border border-amber-500/30 dark:border-amber-400/40">Dynamic %</span>
                           </div>
-                          <p className="text-[13.5px] font-bold text-white mt-0.5">Tìm kiếm đối tác theo năng lực & chức danh</p>
-                          <p className="text-[11.5px] text-slate-300 mt-0.5 line-clamp-1">Ví dụ: "Tôi cần tìm 1 người có khả năng gọi vốn quỹ đầu tư..."</p>
+                          <p className="text-[13.5px] font-bold text-slate-900 dark:!text-white mt-0.5">Tìm kiếm đối tác theo năng lực & chức danh</p>
+                          <p className="text-[11.5px] text-slate-600 dark:!text-slate-300 mt-0.5 line-clamp-1">Ví dụ: "Tôi cần tìm 1 người có khả năng gọi vốn quỹ đầu tư..."</p>
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleTabChange("suggestions")}
-                        className="shrink-0 px-3.5 py-2 rounded-xl bg-[linear-gradient(135deg,#FFF3C4_0%,#FEE180_30%,#F5C443_65%,#EDB028_100%)] text-black text-xs font-black uppercase tracking-wider shadow-md hover:brightness-105 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                        className="shrink-0 px-3.5 py-2 rounded-xl bg-[linear-gradient(135deg,#FFF3C4_0%,#FEE180_30%,#F5C443_65%,#EDB028_100%)] text-slate-950 border border-amber-400/50 text-xs font-black uppercase tracking-wider shadow-xs hover:brightness-105 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                       >
                         <span>Khám phá AI</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -503,8 +469,58 @@ export function NetworkHome({
                   </div>
                 ) : null}
 
+                {/* Khoảnh khắc mạng lưới (Feed cuộc gặp) ngay dưới thanh ghi nhanh */}
+                {!narrowed ? (
+                  <section className="mt-6">
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <h2 className="min-w-0 truncate text-[10px] font-medium tracking-[1px] uppercase text-[var(--bc-mobile-muted)]">
+                        {t("bc.mobile.network.moments.title")}
+                      </h2>
+                      {feed.items.length > 0 && (
+                        <span className="text-[11px] text-[var(--bc-mobile-muted)]">
+                          {feed.items.length} khoảnh khắc
+                        </span>
+                      )}
+                    </div>
+                    {feed.items.length > 0 ? (
+                      <ul
+                        aria-label={t("bc.mobile.network.moments.title")}
+                        aria-busy={feed.isLoadingMore}
+                        className="space-y-3"
+                      >
+                        {feed.items.map((item) => (
+                          <NetworkFeedCard
+                            key={item.momentId}
+                            item={item}
+                            person={peopleById.get(item.personId) ?? null}
+                          />
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-5 text-center shadow-xs">
+                        <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[var(--bc-mobile-accent)]">
+                          <Sparkles className="h-5 w-5" />
+                        </div>
+                        <p className="mt-2 text-[13px] font-semibold text-[var(--bc-mobile-text)]">
+                          Chưa có khoảnh khắc nào gần đây
+                        </p>
+                        <p className="mt-1 text-[11.5px] text-[var(--bc-mobile-muted)]">
+                          Ghi lại các cuộc gặp gỡ, trao đổi và hợp tác đầu tiên của bạn để lưu giữ hành trình.
+                        </p>
+                        <Link
+                          to="/connect-app/moment"
+                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-1.5 text-xs font-bold text-slate-950 shadow-sm transition hover:opacity-90"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          <span>Ghi khoảnh khắc ngay</span>
+                        </Link>
+                      </div>
+                    )}
+                  </section>
+                ) : null}
+
                 {/* Danh sách người trong Network */}
-                <section className="mt-6">
+                <section className="mt-7">
                   <div className="mb-3 flex items-center justify-between gap-3">
                     <h2 className="min-w-0 truncate text-[10px] font-medium tracking-[1px] uppercase text-[var(--bc-mobile-muted)]">
                       {t("bc.mobile.network.people")}
@@ -521,7 +537,13 @@ export function NetworkHome({
                   </div>
 
                   {people.length === 0 ? (
-                    <NetworkFilterEmpty onReset={() => setFilter("all")} />
+                    network.searching ? (
+                      <NetworkSearchEmpty onClear={clearSearch} />
+                    ) : filtering ? (
+                      <NetworkFilterEmpty onReset={() => setFilter("all")} />
+                    ) : (
+                      <NetworkEmpty onOpenV={openV} />
+                    )
                   ) : (
                     <ul
                       aria-label={t("bc.mobile.network.list.label")}
@@ -534,30 +556,6 @@ export function NetworkHome({
                     </ul>
                   )}
                 </section>
-
-                {/* Khoảnh khắc mạng lưới khi không tìm kiếm */}
-                {!narrowed && feed.items.length > 0 ? (
-                  <section className="mt-8">
-                    <div className="mb-3 flex items-center justify-between gap-3">
-                      <h2 className="min-w-0 truncate text-[10px] font-medium tracking-[1px] uppercase text-[var(--bc-mobile-muted)]">
-                        {t("bc.mobile.network.moments.title")}
-                      </h2>
-                    </div>
-                    <ul
-                      aria-label={t("bc.mobile.network.moments.title")}
-                      aria-busy={feed.isLoadingMore}
-                      className="space-y-3"
-                    >
-                      {feed.items.map((item) => (
-                        <NetworkFeedCard
-                          key={item.momentId}
-                          item={item}
-                          person={peopleById.get(item.personId) ?? null}
-                        />
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
               </>
             )}
 

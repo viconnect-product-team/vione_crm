@@ -27,8 +27,8 @@ const USE_REMOTE_SERVER = true;
 // Cấu hình URL server dev cho ViOne Connect (100% HTTPS Cổng 5445):
 const REMOTE_URL = 'https://14.225.217.232:5445/connect-app';
 
-// Chạy 100% bảo mật HTTPS
-const CLEARTEXT = false;
+// Cho phép cleartext khi cần tải tài nguyên phụ
+const CLEARTEXT = true;
 
 const config: CapacitorConfig = {
   appId: 'ViOneBusinessConnect',

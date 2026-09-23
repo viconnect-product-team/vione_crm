@@ -922,7 +922,7 @@ function CompanyTable({
                       <div className="min-w-0">
                         <TruncatedText
                           text={m.name}
-                          maxWidth="max-w-[220px]"
+                          maxWidth="max-w-[300px]"
                           className="font-semibold text-foreground"
                         />
                         <div className="truncate text-[11px] text-muted-foreground">

@@ -887,16 +887,16 @@ function OpportunitiesScreen() {
                 </div>
 
                 {/* Footer action */}
-                <div className="p-2.5 pt-0 flex items-center justify-between gap-1 border-t border-slate-100 dark:border-white/5 mt-1">
+                <div className="p-2.5 pt-1.5 flex items-center justify-between gap-1 border-t border-slate-100 dark:border-white/5">
                   <span className="text-[10px] text-slate-400">
                     {o.time ? new Date(o.time).toLocaleDateString("vi-VN") : "Hôm nay"}
                   </span>
                   {checkIsMine(o) ? (
-                    <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                    <span className="h-7 px-2.5 rounded-lg bg-amber-500/10 text-[10.5px] font-bold text-amber-600 dark:text-amber-400 flex items-center justify-center">
                       Của bạn
                     </span>
                   ) : o.interested ? (
-                    <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="h-7 px-2.5 rounded-lg bg-emerald-500/10 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-center gap-0.5">
                       <Check className="h-3 w-3 stroke-[2.5]" /> Đã quan tâm
                     </span>
                   ) : (
@@ -908,7 +908,7 @@ function OpportunitiesScreen() {
                       }}
                       disabled={busy === o.id}
                       style={{ color: "#ffffff" }}
-                      className="rounded-lg bg-[#003B95] hover:bg-[#002B70] px-2.5 py-1 text-[10.5px] font-bold text-white shadow-2xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+                      className="h-7 px-2.5 rounded-lg bg-[#003B95] hover:bg-[#002B70] text-[10.5px] font-bold text-white shadow-2xs transition active:scale-95 cursor-pointer disabled:opacity-50 flex items-center justify-center"
                     >
                       {busy === o.id ? "..." : "Quan tâm"}
                     </button>
@@ -971,7 +971,7 @@ function OpportunitiesScreen() {
                             e.stopPropagation();
                             handleOpenOppDetail(o);
                           }}
-                          className="inline-flex items-center gap-1 rounded-full bg-amber-500/90 hover:bg-amber-400 text-slate-950 backdrop-blur-md px-2.5 py-1 text-[10px] font-extrabold shadow-sm border border-amber-300/40 cursor-pointer transition"
+                          className="inline-flex items-center gap-1 rounded-full bg-amber-500/90 hover:bg-amber-400 text-slate-950 backdrop-blur-md px-2.5 py-0.5 text-[10px] font-extrabold shadow-sm border border-amber-300/40 cursor-pointer transition h-6"
                           title="Xem danh sách người quan tâm"
                         >
                           <Users className="h-3 w-3" />
@@ -1044,65 +1044,40 @@ function OpportunitiesScreen() {
                   </div>
                 </div>
 
-                {/* 2. 3-COLUMN METADATA BAR (IMAGE 3 LAYOUT) */}
-                <div className="grid grid-cols-3 divide-x divide-slate-100 dark:divide-white/10 bg-slate-50/70 dark:bg-white/[0.02] p-3 text-center border-b border-slate-100 dark:border-white/5">
-                  <div className="px-1.5 flex flex-col items-center justify-start">
-                    <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-0.5">
-                      <Calendar className="h-3 w-3 text-[#003B95] dark:text-amber-400 shrink-0" />
-                      <span>NGÀY ĐĂNG</span>
-                    </div>
-                    <p className="text-[11.5px] font-bold text-slate-800 dark:text-slate-100 leading-snug">
-                      {o.time ? new Date(o.time).toLocaleDateString("vi-VN") : "Hôm nay"}
-                    </p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                      {fmt.rel(o.time)}
-                    </p>
+                {/* 2. MODERN SLEEK CHIP STRIP */}
+                <div className="flex items-center justify-between gap-2 px-4 py-2.5 bg-slate-50/80 dark:bg-white/[0.02] border-b border-slate-100 dark:border-white/5 text-xs">
+                  <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 text-[11px]">
+                    <Calendar className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400 shrink-0" />
+                    <span>{o.time ? new Date(o.time).toLocaleDateString("vi-VN") : "Hôm nay"}</span>
+                    <span className="text-slate-400">({fmt.rel(o.time)})</span>
                   </div>
-
-                  <div className="px-1.5 flex flex-col items-center justify-start">
-                    <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-0.5">
-                      <Sparkles className="h-3 w-3 text-amber-500 shrink-0" />
-                      <span>GIÁ TRỊ DEAL</span>
-                    </div>
-                    <p className="text-[11.5px] font-black text-amber-600 dark:text-amber-400 leading-snug whitespace-normal break-words text-center">
-                      {formatSmartPrice(o.value)}
-                    </p>
-                    <p className="text-[9.5px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      Từ CRM CEO 1983
-                    </p>
+                  <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-bold text-[11.5px] bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                    <Sparkles className="h-3 w-3 shrink-0" />
+                    <span>{formatSmartPrice(o.value)}</span>
                   </div>
-
-                  <div className="px-1.5 flex flex-col items-center justify-start">
-                    <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-0.5">
-                      <MapPin className="h-3 w-3 text-[#003B95] dark:text-amber-400 shrink-0" />
-                      <span>ĐỊA BÀN</span>
-                    </div>
-                    <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-200 line-clamp-2 leading-snug">
-                      Toàn quốc & B2B
-                    </p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                      Hội viên CLB
-                    </p>
+                  <div className="hidden sm:flex items-center gap-1 text-slate-500 text-[11px]">
+                    <MapPin className="h-3 w-3 text-slate-400 shrink-0" />
+                    <span>Toàn quốc</span>
                   </div>
                 </div>
 
                 {/* 3. CARD ACTION FOOTER */}
-                <div className="px-4 py-3 flex items-center justify-between gap-2">
+                <div className="px-4 py-2.5 flex items-center justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <span className="truncate text-[11px] font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1">
-                      <User className="h-3 w-3 shrink-0" />
-                      <span className="truncate">Người đăng: {o.posterName || o.contactName || o.company || "Hội viên CLB"}</span>
+                    <span className="truncate text-[11px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <User className="h-3.5 w-3.5 shrink-0 text-[#003B95] dark:text-amber-400" />
+                      <span className="truncate font-semibold text-slate-700 dark:text-slate-200">{o.posterName || o.contactName || o.company || "Hội viên CLB"}</span>
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       type="button"
                       onClick={(evt) => {
                         evt.stopPropagation();
                         handleOpenOppDetail(o);
                       }}
-                      className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-amber-500/50 hover:text-[#003B95] dark:hover:text-amber-400 transition active:scale-95 cursor-pointer"
+                      className="h-8.5 px-3 rounded-xl border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:border-amber-500/50 hover:text-[#003B95] dark:hover:text-amber-400 transition active:scale-95 cursor-pointer flex items-center justify-center"
                     >
                       Xem chi tiết
                     </button>
@@ -1114,24 +1089,25 @@ function OpportunitiesScreen() {
                           e.stopPropagation();
                           handleOpenOppDetail(o);
                         }}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500/15 border border-amber-500/30 px-3 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 transition active:scale-95 cursor-pointer"
+                        className="h-8.5 px-3 rounded-xl bg-amber-500/15 border border-amber-500/30 text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-500/25 transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
                       >
-                        <Users className="h-3.5 w-3.5" />
+                        <Users className="h-3.5 w-3.5 shrink-0" />
                         <span>Cơ hội của bạn</span>
                       </button>
                     ) : o.interested ? (
-                      <span className="inline-flex items-center gap-1 rounded-xl bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                      <span className="h-8.5 px-3 rounded-xl bg-emerald-500/10 text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-center gap-1 border border-emerald-500/20">
                         <Check className="h-3.5 w-3.5 stroke-[2.5]" /> Đã quan tâm
                       </span>
                     ) : (
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           interest(o.id);
                         }}
                         disabled={busy === o.id}
                         style={{ color: "#ffffff" }}
-                        className="rounded-xl bg-[#003B95] hover:bg-[#002B70] px-3.5 py-1.5 text-xs font-bold text-white shadow-sm active:scale-95 transition cursor-pointer disabled:opacity-50"
+                        className="h-8.5 px-3.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-xs font-bold text-white shadow-xs active:scale-95 transition cursor-pointer disabled:opacity-50 flex items-center justify-center"
                       >
                         {busy === o.id ? "Đang gửi..." : "Quan tâm"}
                       </button>
@@ -1204,36 +1180,31 @@ function OpportunitiesScreen() {
         );
       })()}
 
-      {/* FOOTER BANNER: CHIA SẺ CƠ HỘI CEO 1983 */}
-      <div className="mx-4 mt-7 rounded-3xl overflow-hidden shadow-xl border border-amber-400/40 bg-gradient-to-br from-[#061536] via-[#0A255C] to-[#040E24] text-white p-5 relative">
-        <div className="relative z-10 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-500/30 to-amber-600/30 border border-amber-400/40 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-300 shadow-xs">
-              <Handshake className="h-3 w-3 text-amber-400" />
-              GIAO THƯƠNG THƯỢNG ĐỈNH
-            </span>
-            <span className="text-[10px] font-bold text-slate-300">
-              CLB DOANH NHÂN CEO 1983
-            </span>
+      {/* ── FOOTER BANNER: COMPACT MODERN STRIP ── */}
+      <div className="mx-4 mt-6 mb-2">
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 py-3 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-xl bg-[#003B95]/10 dark:bg-amber-400/10 grid place-items-center shrink-0">
+              <Handshake className="h-4 w-4 text-[#003B95] dark:text-amber-400" />
+            </div>
+            <div>
+              <div className="text-xs font-black text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">
+                <span>Chia sẻ cơ hội kinh doanh</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-[9px] font-bold">B2B</span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Nhịp cầu giao thương kết nối doanh nghiệp thành viên vươn xa
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-base sm:text-lg font-black leading-tight text-white tracking-wide">
-              CHIA SẺ CƠ HỘI · KẾT NỐI THÀNH CÔNG
-            </h3>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              Mỗi cơ hội được chia sẻ là một nhịp cầu giao thương đưa doanh nghiệp cùng vươn xa và bứt phá thịnh vượng.
-            </p>
-          </div>
-          <div className="pt-1 flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setCreateModalOpen(true)}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 px-4 py-2 text-xs font-black shadow-md transition active:scale-95 cursor-pointer"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              <span>Chia sẻ cơ hội mới</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setCreateModalOpen(true)}
+            className="h-8 px-3.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer shrink-0"
+          >
+            <Plus className="h-3.5 w-3.5 text-amber-300" />
+            <span>Đăng cơ hội mới</span>
+          </button>
         </div>
       </div>
 

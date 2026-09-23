@@ -38,7 +38,11 @@ import {
   Volume2,
   VolumeX,
   Share2,
+  Download,
+  FileSpreadsheet,
 } from "lucide-react";
+import { exportProductsToExcel, type ParsedProductItem } from "@/lib/marketplace-excel";
+import { ProductExcelModal } from "@/components/dashboard/ProductExcelModal";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { MemberHeader } from "@/components/member/MemberShell";
@@ -282,10 +286,38 @@ function ProductsScreen() {
   } | null>(null);
   const [companyCatFilter, setCompanyCatFilter] = useState<string>("all");
   const [wishlistCartOpen, setWishlistCartOpen] = useState(false);
+  const [excelImportOpen, setExcelImportOpen] = useState(false);
+
+  const handleImportExcelProducts = async (importedItems: ParsedProductItem[]) => {
+    for (const item of importedItems) {
+      const payload = {
+        name: item.title,
+        title: item.title,
+        description: item.description || item.title,
+        price: item.price,
+        originalPrice: item.originalPrice || item.price,
+        memberPrice: item.memberPrice || item.price,
+        unit: item.unit || "Gói",
+        currency: "VND",
+        category: item.categoryName || "Dịch vụ",
+        status: "active",
+        imageUrl: item.imageUrl || null,
+        imageUrls: item.imageUrl ? [item.imageUrl] : [],
+        company: item.company || member?.title || "CLB Doanh Nhân CEO 1983",
+        sellerId: user?.id || (member as any)?.userId || (member as any)?.id || "ceo1983",
+      };
+      try {
+        await fetchNestApi("/products", { method: "POST", body: JSON.stringify(payload) });
+      } catch {
+        await fetchNestApi("/marketplace/products", { method: "POST", body: JSON.stringify(payload) }).catch(() => {});
+      }
+    }
+    reload();
+  };
 
   // Lock body scroll when modal is open to ensure 100% stable centering on mobile
   useEffect(() => {
-    if (quoteProduct || postModalOpen || editingProduct || viewingCompany || viewingQuotesProduct || wishlistCartOpen) {
+    if (quoteProduct || postModalOpen || editingProduct || viewingCompany || viewingQuotesProduct || wishlistCartOpen || excelImportOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -293,7 +325,7 @@ function ProductsScreen() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [quoteProduct, postModalOpen, editingProduct, viewingCompany, viewingQuotesProduct, wishlistCartOpen]);
+  }, [quoteProduct, postModalOpen, editingProduct, viewingCompany, viewingQuotesProduct, wishlistCartOpen, excelImportOpen]);
 
   // Form states for posting product with full CRM pricing fields & Company storefront
   const [formPhoto, setFormPhoto] = useState("");
@@ -754,16 +786,16 @@ function ProductsScreen() {
               <button
                 type="button"
                 onClick={() => handleOpenProductQuotes(p)}
-                className="flex-1 py-1.5 px-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-[11px] font-bold text-amber-700 dark:text-amber-300 text-center flex items-center justify-center gap-1 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition cursor-pointer"
+                className="flex-1 h-8.5 px-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700/80 text-[11px] font-bold text-amber-700 dark:text-amber-300 text-center flex items-center justify-center gap-1.5 hover:bg-amber-100 dark:hover:bg-amber-900/60 transition cursor-pointer shrink-0"
                 title="Xem danh sách người quan tâm & yêu cầu báo giá"
               >
-                <Users className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
-                <span>Người quan tâm</span>
+                <Users className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                <span className="truncate">Người quan tâm</span>
               </button>
               <button
                 type="button"
                 onClick={(e) => startEditProduct(p, e)}
-                className="py-1.5 px-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition active:scale-95 cursor-pointer flex items-center gap-1"
+                className="h-8.5 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] font-semibold text-slate-700 dark:text-slate-200 transition active:scale-95 cursor-pointer flex items-center justify-center gap-1 shrink-0"
                 title="Chỉnh sửa sản phẩm"
               >
                 <Pencil className="h-3 w-3 text-blue-500" />
@@ -772,10 +804,10 @@ function ProductsScreen() {
               <button
                 type="button"
                 onClick={(e) => handleDeleteProduct(p.id, e)}
-                className="py-1.5 px-2 rounded-xl border border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-semibold text-rose-600 transition active:scale-95 cursor-pointer flex items-center"
+                className="h-8.5 w-8.5 rounded-xl border border-rose-200 dark:border-rose-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-semibold text-rose-600 transition active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
                 title="Xóa sản phẩm"
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>
           ) : (
@@ -784,16 +816,16 @@ function ProductsScreen() {
                 type="button"
                 onClick={() => handleOpenQuoteModal(p)}
                 style={{ color: "#ffffff" }}
-                className="flex-1 py-2 px-2.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                className="flex-1 h-8.5 px-3 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-[11px] font-bold shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <Send className="h-3 w-3 text-amber-300" />
-                <span>Nhận báo giá VIP</span>
+                <Send className="h-3 w-3 text-amber-300 shrink-0" />
+                <span className="truncate">Nhận báo giá VIP</span>
               </button>
               {isAdmin && (
                 <button
                   type="button"
                   onClick={() => handleOpenProductQuotes(p)}
-                  className="py-2 px-2.5 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 text-xs font-semibold hover:bg-amber-100 transition cursor-pointer"
+                  className="h-8.5 w-8.5 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 hover:bg-amber-100 transition cursor-pointer flex items-center justify-center shrink-0"
                   title="Xem yêu cầu báo giá (Quyền Admin)"
                 >
                   <Users className="h-3.5 w-3.5" />
@@ -1010,6 +1042,26 @@ function ProductsScreen() {
               ))}
             </div>
           )}
+
+          <button
+            type="button"
+            onClick={() => exportProductsToExcel(allProducts)}
+            className="h-10 px-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 flex items-center gap-1.5 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
+            title="Xuất danh sách sản phẩm ra file Excel"
+          >
+            <Download className="h-4 w-4 text-emerald-600" />
+            <span className="hidden sm:inline">Xuất Excel</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setExcelImportOpen(true)}
+            className="h-10 px-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 flex items-center gap-1.5 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer whitespace-nowrap"
+            title="Nhập danh sách sản phẩm từ file Excel"
+          >
+            <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
+            <span className="hidden sm:inline">Nhập Excel</span>
+          </button>
 
           <button
             type="button"
@@ -1452,40 +1504,40 @@ function ProductsScreen() {
         )}
       </div>
 
-      {/* ── FOOTER BANNER: MARKETPLACE AFFILIATE 5.0 ── */}
-      <div className="mt-8 px-4">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#002B70] via-[#003B95] to-[#0A4BB5] p-5 text-white shadow-xl">
-          <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      {/* ── FOOTER BANNER: COMPACT MODERN STRIP ── */}
+      <div className="mt-6 mb-4 px-4">
+        <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 py-3 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-xl bg-[#003B95]/10 dark:bg-amber-400/10 grid place-items-center shrink-0">
+              <Store className="h-4 w-4 text-[#003B95] dark:text-amber-400" />
+            </div>
             <div>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-blue-950 text-[10px] font-black uppercase tracking-wider mb-2 shadow-xs">
-                Sàn Giao Thương & Tiếp Thị Liên Kết 5.0
-              </span>
-              <h4 className="text-base sm:text-lg font-black tracking-tight">
-                CEO 1983 Marketplace - Kết Nối B2B Đỉnh Cao
-              </h4>
-              <p className="text-xs text-blue-100/80 max-w-md mt-1 leading-relaxed">
-                Hơn 100+ doanh nghiệp thành viên tin dùng. Cơ chế Affiliate hoa hồng minh bạch, kết nối trực tiếp cung - cầu, chiết khấu đặc quyền hội viên.
+              <div className="text-xs font-black text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">
+                <span>CEO 1983 Marketplace</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[9px] font-bold">5.0</span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Sàn giao thương B2B & liên kết giá trị doanh nghiệp hội viên
               </p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <Link
-                to="/association/perks"
-                className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-blue-950 text-xs font-black shadow-md transition active:scale-95 whitespace-nowrap flex items-center gap-1.5"
-              >
-                <Sparkles className="h-3.5 w-3.5 text-blue-950" />
-                <span>Ưu Đãi VIP</span>
-              </Link>
-              <button
-                type="button"
-                onClick={() => setPostModalOpen(true)}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white text-xs font-bold transition active:scale-95 whitespace-nowrap cursor-pointer"
-              >
-                Đăng Sản Phẩm
-              </button>
-            </div>
           </div>
-          <div className="absolute -right-10 -bottom-10 w-44 h-44 bg-white/5 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute -left-10 -top-10 w-44 h-44 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => exportProductsToExcel(allProducts)}
+              className="h-8 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
+            >
+              <Download className="h-3.5 w-3.5 text-emerald-600" />
+              <span>Xuất Excel</span>
+            </button>
+            <Link
+              to="/association/perks"
+              className="h-8 px-3 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-xs font-bold flex items-center gap-1.5 shadow-xs transition active:scale-95"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-amber-300" />
+              <span>Ưu đãi VIP</span>
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -2359,6 +2411,12 @@ function ProductsScreen() {
         </div>,
         document.body
       )}
+
+      <ProductExcelModal
+        open={excelImportOpen}
+        onClose={() => setExcelImportOpen(false)}
+        onImportProducts={handleImportExcelProducts}
+      />
     </div>
   );
 }

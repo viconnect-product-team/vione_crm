@@ -76,6 +76,18 @@ export class ConnectAppService implements OnModuleInit {
         ADD COLUMN IF NOT EXISTS visibility VARCHAR(32) DEFAULT 'friends';
       `);
       await this.prisma.$executeRawUnsafe(`
+        ALTER TABLE public.business_relationship_moments DROP CONSTRAINT IF EXISTS brm_target_xor;
+        ALTER TABLE public.business_relationship_moments ADD CONSTRAINT brm_target_xor CHECK (
+          (target_kind = 'connection' AND target_user_id IS NOT NULL AND target_card_id IS NULL AND target_guest_id IS NULL) OR
+          (target_kind = 'saved_card' AND target_card_id IS NOT NULL AND target_user_id IS NULL AND target_guest_id IS NULL) OR
+          (target_kind = 'guest_contact' AND target_guest_id IS NOT NULL AND target_user_id IS NULL AND target_card_id IS NULL) OR
+          (target_kind = 'general' AND target_user_id IS NULL AND target_card_id IS NULL AND target_guest_id IS NULL)
+        );
+        ALTER TABLE public.business_relationship_moments DROP CONSTRAINT IF EXISTS business_relationship_moments_target_kind_check;
+        ALTER TABLE public.business_relationship_moments ADD CONSTRAINT business_relationship_moments_target_kind_check
+          CHECK (target_kind = ANY (ARRAY['connection'::text, 'saved_card'::text, 'guest_contact'::text, 'general'::text]));
+      `).catch(() => {});
+      await this.prisma.$executeRawUnsafe(`
         ALTER TABLE public.business_relationship_moment_comments
         ADD COLUMN IF NOT EXISTS photo_url TEXT;
       `);
@@ -462,13 +474,12 @@ export class ConnectAppService implements OnModuleInit {
         SELECT association_id, 'member' as role, false as is_default, user_id FROM public.members WHERE user_id = ${userId}::uuid AND status = 'active'
       ) m
       JOIN public.associations a ON m.association_id = a.id
-      WHERE a.id = ${ceoAssocId}::uuid
     `.catch(() => []) as any[];
 
     if (memberships.length === 0) {
       const defaultAssoc = await this.prisma.$queryRaw<any[]>`
         SELECT id, name, logo_url, banner_url, tagline, about FROM public.associations
-        WHERE id = ${ceoAssocId}::uuid LIMIT 1
+        ORDER BY (id = ${ceoAssocId}::uuid) DESC, created_at ASC LIMIT 1
       `.catch(() => []);
 
       if (defaultAssoc.length > 0) {
@@ -1966,6 +1977,7 @@ export class ConnectAppService implements OnModuleInit {
           m.owner_user_id = ${userId}::uuid 
           OR (m.target_user_id = ${userId}::uuid AND COALESCE(m.visibility, 'friends') != 'private')
           OR (COALESCE(m.visibility, 'friends') = 'public')
+          OR (m.target_kind = 'general' AND COALESCE(m.visibility, 'friends') != 'private')
           OR (
             COALESCE(m.visibility, 'friends') = 'friends'
             AND m.owner_user_id IN (
@@ -2026,6 +2038,7 @@ export class ConnectAppService implements OnModuleInit {
           m.owner_user_id = ${userId}::uuid 
           OR (m.target_user_id = ${userId}::uuid AND COALESCE(m.visibility, 'friends') != 'private')
           OR (COALESCE(m.visibility, 'friends') = 'public')
+          OR (m.target_kind = 'general' AND COALESCE(m.visibility, 'friends') != 'private')
           OR (
             COALESCE(m.visibility, 'friends') = 'friends'
             AND m.owner_user_id IN (
@@ -4648,46 +4661,66 @@ export class ConnectAppService implements OnModuleInit {
   async prepareMoment(userId: string, input: any) {
     const { personId, occurredAt, eventName, placeLabel, note, photoCount, clientToken, visibility = 'friends' } = input;
 
-    const m = /^([ucg]):([0-9a-fA-F-]{36})$/.exec(personId);
-    if (!m) throw new ForbiddenException('relationship_not_authorized');
-    const namespace = m[1];
-    const targetId = m[2].toLowerCase();
-
-    let targetKind = 'connection';
+    let targetKind = 'general';
     let targetUserId: string | null = null;
     let targetCardId: string | null = null;
     let targetGuestId: string | null = null;
 
-    if (namespace === 'u') {
-      if (targetId === userId) throw new ForbiddenException('relationship_not_authorized');
-      const rows = await this.prisma.$queryRaw<any[]>`
-        SELECT id FROM public.user_connections
-        WHERE status = 'accepted'::public.global_connection_status
-          AND ((requester_user_id = ${userId}::uuid AND recipient_user_id = ${targetId}::uuid)
-            OR (requester_user_id = ${targetId}::uuid AND recipient_user_id = ${userId}::uuid))
-        LIMIT 1
-      `.catch(() => []);
-      if (rows.length === 0) throw new ForbiddenException('relationship_not_authorized');
-      targetKind = 'connection';
-      targetUserId = targetId;
-    } else if (namespace === 'g') {
-      const rows = await this.prisma.$queryRaw<any[]>`
-        SELECT id FROM public.guest_contacts
-        WHERE owner_user_id = ${userId}::uuid AND id = ${targetId}::uuid
-        LIMIT 1
-      `.catch(() => []);
-      if (rows.length === 0) throw new ForbiddenException('relationship_not_authorized');
-      targetKind = 'guest_contact';
-      targetGuestId = targetId;
+    if (personId && personId !== 'general' && personId !== 'all') {
+      let normPersonId = String(personId).trim();
+      try {
+        normPersonId = decodeURIComponent(normPersonId);
+      } catch {}
+      if (/^[0-9a-fA-F-]{36}$/.test(normPersonId)) {
+        normPersonId = `u:${normPersonId}`;
+      } else if (!/^([ucg]):/.test(normPersonId)) {
+        const match = normPersonId.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+        if (match) {
+          normPersonId = `u:${match[0]}`;
+        }
+      }
+
+      const m = /^([ucg]):([0-9a-fA-F-]{36})$/.exec(normPersonId);
+      if (!m) {
+        targetKind = 'general';
+      } else {
+        const namespace = m[1];
+        const targetId = m[2].toLowerCase();
+
+        if (namespace === 'u') {
+          if (targetId === userId) {
+            targetKind = 'general';
+          } else {
+            const rows = await this.prisma.$queryRaw<any[]>`
+              SELECT id FROM public.user_connections
+              WHERE status = 'accepted'::public.global_connection_status
+                AND ((requester_user_id = ${userId}::uuid AND recipient_user_id = ${targetId}::uuid)
+                  OR (requester_user_id = ${targetId}::uuid AND recipient_user_id = ${userId}::uuid))
+              LIMIT 1
+            `.catch(() => []);
+            targetKind = rows.length > 0 ? 'connection' : 'general';
+            targetUserId = targetId;
+          }
+        } else if (namespace === 'g') {
+          const rows = await this.prisma.$queryRaw<any[]>`
+            SELECT id FROM public.guest_contacts
+            WHERE owner_user_id = ${userId}::uuid AND id = ${targetId}::uuid
+            LIMIT 1
+          `.catch(() => []);
+          targetKind = rows.length > 0 ? 'guest_contact' : 'general';
+          targetGuestId = targetId;
+        } else {
+          const rows = await this.prisma.$queryRaw<any[]>`
+            SELECT id FROM public.saved_business_cards
+            WHERE owner_user_id = ${userId}::uuid AND target_card_id = ${targetId}::uuid AND archived = false
+            LIMIT 1
+          `.catch(() => []);
+          targetKind = rows.length > 0 ? 'saved_card' : 'general';
+          targetCardId = targetId;
+        }
+      }
     } else {
-      const rows = await this.prisma.$queryRaw<any[]>`
-        SELECT id FROM public.saved_business_cards
-        WHERE owner_user_id = ${userId}::uuid AND target_card_id = ${targetId}::uuid AND archived = false
-        LIMIT 1
-      `.catch(() => []);
-      if (rows.length === 0) throw new ForbiddenException('relationship_not_authorized');
-      targetKind = 'saved_card';
-      targetCardId = targetId;
+      targetKind = 'general';
     }
 
     const existingRows = await this.prisma.$queryRaw<any[]>`
@@ -7475,9 +7508,7 @@ export class ConnectAppService implements OnModuleInit {
 
     const assocs = await this.prisma.$queryRaw<any[]>`
       SELECT id, name, logo_url, tagline FROM public.associations
-      WHERE id = 'c1983000-0000-4000-8000-000000001983'::uuid
       ORDER BY name ASC
-      LIMIT 1
     `.catch(() => [] as any[]);
 
     const requests = await this.prisma.$queryRaw<any[]>`
@@ -7506,6 +7537,60 @@ export class ConnectAppService implements OnModuleInit {
           requestedAt: req?.createdAt ?? null,
         };
       });
+  }
+
+  async listAllCommunities() {
+    const assocs = await this.prisma.$queryRaw<any[]>`
+      SELECT id, name, slug, logo_url, banner_url, tagline, about, created_at FROM public.associations
+      ORDER BY created_at ASC
+    `.catch(() => [] as any[]);
+
+    const memberships = await this.prisma.$queryRaw<any[]>`
+      SELECT association_id, role FROM public.memberships
+    `.catch(() => [] as any[]);
+
+    const members = await this.prisma.$queryRaw<any[]>`
+      SELECT association_id FROM public.members WHERE status = 'active'
+    `.catch(() => [] as any[]);
+
+    return assocs.map(a => {
+      const aId = String(a.id);
+      const mRows = memberships.filter(m => String(m.association_id) === aId);
+      const activeMembers = members.filter(m => String(m.association_id) === aId);
+      const memberCount = Math.max(mRows.length, activeMembers.length);
+      const adminCount = mRows.filter(m => m.role === 'admin' || m.role === 'association_admin').length;
+
+      return {
+        id: aId,
+        name: String(a.name),
+        slug: a.slug || null,
+        logoUrl: a.logo_url || null,
+        bannerUrl: a.banner_url || null,
+        tagline: a.tagline || null,
+        about: a.about || null,
+        memberCount,
+        adminCount,
+        createdAt: a.created_at ? new Date(a.created_at).toISOString() : new Date().toISOString(),
+      };
+    });
+  }
+
+  async updateCommunity(communityId: string, data: any) {
+    if (data.name) {
+      await this.prisma.$executeRaw`
+        UPDATE public.associations
+        SET name = ${data.name}, slug = COALESCE(${data.slug || null}, slug), tagline = COALESCE(${data.tagline || null}, tagline), about = COALESCE(${data.about || null}, about), updated_at = now()
+        WHERE id = ${communityId}::uuid
+      `;
+    }
+    return { success: true };
+  }
+
+  async deleteCommunity(communityId: string) {
+    await this.prisma.$executeRaw`
+      DELETE FROM public.associations WHERE id = ${communityId}::uuid
+    `;
+    return { success: true };
   }
 
   async requestCommunityJoin(userId: string, input: { communityId: string; note?: string | null }) {
@@ -9910,7 +9995,18 @@ export class ConnectAppService implements OnModuleInit {
   }
 
   async getMyDmThreadDetail(userId: string, threadId: string) {
-    let targetThreadId = threadId;
+    let targetThreadId = String(threadId || '').trim();
+    try {
+      targetThreadId = decodeURIComponent(targetThreadId);
+    } catch {}
+    if (!/^[0-9a-fA-F-]{36}$/.test(targetThreadId)) {
+      const match = targetThreadId.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+      if (match) {
+        targetThreadId = match[0];
+      } else {
+        return { ok: false, error: 'not_found' };
+      }
+    }
 
     let threadRows = await this.prisma.$queryRaw<any[]>`
       SELECT id, user1_id, user2_id, last_message_at, last_message_body

@@ -91,7 +91,10 @@ function mapEndpoint(endpoint: string): string {
     // Public endpoints pass through as-is
   }
 
-  const clean = mapped.startsWith("/") ? mapped : `/${mapped}`;
+  let clean = mapped.startsWith("/") ? mapped : `/${mapped}`;
+  if (clean.length > 1 && clean.endsWith("/")) {
+    clean = clean.replace(/\/+$/, "");
+  }
   return clean.startsWith("/api") ? clean : `/api${clean}`;
 }
 
@@ -129,6 +132,10 @@ export function resolveMediaUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   const trimmed = url.trim();
   if (!trimmed || isDeadAvatarUrl(trimmed)) return null;
+
+  if (trimmed.startsWith("/upload/")) {
+    return `/api${trimmed}`;
+  }
 
   // Tự động chuyển đổi sang Origin hiện tại để tránh lỗi Mixed Content hoặc vỡ ảnh khi mang cổng nội bộ khác
   if (typeof window !== "undefined") {
@@ -230,19 +237,25 @@ export function resolveMediaUrl(url: string | null | undefined): string | null {
     return publicBase ? `${publicBase}/api/upload/file/${cleanPath}` : `/api/upload/file/${cleanPath}`;
   }
 
-  // 8. Nếu là bare filename (không chứa /) có đuôi file ảnh/tài liệu, hoặc UUID
+  // 8. Nếu là bare filename (không chứa /) có đuôi file ảnh/tài liệu
   if (!trimmed.includes("/") && /\.(jpg|jpeg|png|webp|gif|svg|pdf|docx|xlsx)$/i.test(trimmed)) {
-    return publicBase ? `${publicBase}/api/upload/file/avatars/${trimmed}` : `/api/upload/file/avatars/${trimmed}`;
-  }
-  if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}/.test(trimmed)) {
     return publicBase ? `${publicBase}/api/upload/file/avatars/${trimmed}` : `/api/upload/file/avatars/${trimmed}`;
   }
 
   return trimmed;
 }
 
-function transformUrls(obj: any): any {
+const MEDIA_EXT_REGEX = /\.(jpg|jpeg|png|webp|gif|svg|pdf|docx|xlsx)$/i;
+
+function transformUrls(obj: any, parentKey?: string): any {
   if (obj === null || obj === undefined) return obj;
+
+  // Bảo vệ không biến đổi các trường mã định danh (ID, UUID, slug, code, role, v.v.)
+  if (parentKey && /^(id|.*Id|.*Ref|.*Code|.*Slug|.*Status|.*Type|.*Role|.*Token|.*Key)$/i.test(parentKey)) {
+    if (!/(url|photo|avatar|image|banner|logo|cover|file|attachment|media)/i.test(parentKey)) {
+      return obj;
+    }
+  }
 
   if (typeof obj === "string") {
     // If it's already a media URL or upload path, resolve it cleanly
@@ -255,8 +268,7 @@ function transformUrls(obj: any): any {
       obj.startsWith("api/upload/") ||
       obj.startsWith("avatars/") ||
       obj.startsWith("/avatars/") ||
-      (!obj.includes("/") && /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(obj)) ||
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}/.test(obj) ||
+      (!obj.includes("/") && MEDIA_EXT_REGEX.test(obj)) ||
       obj.includes("backend:4000") ||
       (typeof window !== "undefined" &&
         window.location.hostname !== "localhost" &&
@@ -268,13 +280,13 @@ function transformUrls(obj: any): any {
   }
 
   if (Array.isArray(obj)) {
-    return obj.map(transformUrls);
+    return obj.map((item) => transformUrls(item, parentKey));
   }
 
   if (typeof obj === "object") {
     const res: any = {};
     for (const key of Object.keys(obj)) {
-      res[key] = transformUrls(obj[key]);
+      res[key] = transformUrls(obj[key], key);
     }
     return res;
   }

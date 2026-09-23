@@ -937,11 +937,11 @@ function OpportunitiesPage() {
                           params={{ id: opp.id }}
                           className="font-semibold text-foreground text-xs hover:text-primary hover:underline block"
                         >
-                          <TruncatedText text={opp.title} maxWidth="max-w-[240px]" />
+                          <TruncatedText text={opp.title} maxWidth="max-w-[300px]" />
                         </Link>
                         <TruncatedText
                           text={opp.description}
-                          maxWidth="max-w-[240px]"
+                          maxWidth="max-w-[300px]"
                           className="text-[11px] text-muted-foreground"
                         />
                       </td>
@@ -956,13 +956,13 @@ function OpportunitiesPage() {
                         >
                           <TruncatedText
                             text={opp.posterName || poster?.name || `Hội viên #${opp.posterId.slice(0, 6)}`}
-                            maxWidth="max-w-[160px]"
+                            maxWidth="max-w-[300px]"
                           />
                         </Link>
                         <div className="text-[11px] text-muted-foreground">
                           <TruncatedText
                             text={poster?.email || poster?.contact || "Hội viên"}
-                            maxWidth="max-w-[160px]"
+                            maxWidth="max-w-[300px]"
                           />
                         </div>
                       </td>
@@ -974,12 +974,12 @@ function OpportunitiesPage() {
                             <div className="font-semibold text-foreground text-xs">
                               <TruncatedText
                                 text={`${opp.contactName || "Người liên hệ"}${opp.contactTitle ? ` (${opp.contactTitle})` : ""}`}
-                                maxWidth="max-w-[160px]"
+                                maxWidth="max-w-[300px]"
                               />
                             </div>
                             {opp.company && (
                               <div className="text-[11px] text-muted-foreground">
-                                <TruncatedText text={opp.company} maxWidth="max-w-[160px]" />
+                                <TruncatedText text={opp.company} maxWidth="max-w-[300px]" />
                               </div>
                             )}
                             {opp.contactPhone && (
@@ -999,13 +999,13 @@ function OpportunitiesPage() {
                           <div>
                             <div className="flex items-center gap-1 text-xs font-semibold text-emerald-500">
                               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                              <TruncatedText text={opp.claimedByName} maxWidth="max-w-[150px]" />
+                              <TruncatedText text={opp.claimedByName} maxWidth="max-w-[300px]" />
                             </div>
                             {(opp.claimedCompany || opp.claimedPhone) && (
                               <div className="text-[11px] text-muted-foreground">
                                 <TruncatedText
                                   text={[opp.claimedCompany, opp.claimedPhone].filter(Boolean).join(" • ")}
-                                  maxWidth="max-w-[150px]"
+                                  maxWidth="max-w-[300px]"
                                 />
                               </div>
                             )}
@@ -1026,10 +1026,10 @@ function OpportunitiesPage() {
                       {/* Ngành & Khu vực */}
                       <td className="px-4 py-3 border-b border-border text-xs">
                         <div className="font-medium text-foreground">
-                          <TruncatedText text={opp.industry} maxWidth="max-w-[140px]" />
+                          <TruncatedText text={opp.industry} maxWidth="max-w-[300px]" />
                         </div>
                         <div className="text-[11px] text-muted-foreground">
-                          <TruncatedText text={opp.region} maxWidth="max-w-[140px]" />
+                          <TruncatedText text={opp.region} maxWidth="max-w-[300px]" />
                         </div>
                       </td>
 

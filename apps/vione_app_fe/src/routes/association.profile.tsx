@@ -48,10 +48,12 @@ import {
   Users2,
   BookOpen,
   Headphones,
+  Bot,
 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { MemberHeader } from "@/components/member/MemberShell";
 import { isEventThemeEnabled, setEventThemeEnabled } from "@/components/member/SeasonalEventHeader";
+import { isVoiceAiEnabled, setVoiceAiEnabled } from "@/components/ai/VoiceNavAssistant";
 import { UserGuideModal } from "@/components/member/UserGuideModal";
 import { ContactSupportModal } from "@/components/member/ContactSupportModal";
 import { PrivacySettingsModal } from "@/components/member/PrivacySettingsModal";
@@ -169,6 +171,7 @@ export default function ProfileScreen() {
   const [postLikes, setPostLikes] = useState<Record<string, number>>({ post1: 24, post2: 41 });
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   const [eventThemeEnabled, setEventThemeState] = useState(() => isEventThemeEnabled());
+  const [voiceAiEnabled, setVoiceAiState] = useState(() => isVoiceAiEnabled());
   const [userGuideOpen, setUserGuideOpen] = useState(false);
   const [contactSupportOpen, setContactSupportOpen] = useState(false);
   const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
@@ -1597,6 +1600,62 @@ export default function ProfileScreen() {
             <span
               className={`pointer-events-none inline-block h-5.5 w-5.5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                 eventThemeEnabled ? "translate-x-5.5" : "translate-x-0"
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* ── TRỢ LÝ ĐIỀU KHIỂN GIỌNG NÓI AI (VOICE AI NAVIGATION ASSISTANT SWITCH) ── */}
+      <div className="mx-4 mt-4 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-50/70 to-indigo-50/50 dark:from-[#0f1d38]/80 dark:to-[#16203a]/80 p-4 shadow-xs">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25">
+              <Bot className="h-5 w-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="text-[13px] font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>{isEn ? "AI Voice Assistant" : "Trợ lý Điều khiển Giọng nói AI"}</span>
+                {voiceAiEnabled ? (
+                  <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded-md bg-blue-600 text-white">
+                    {isEn ? "Active" : "Đang bật"}
+                  </span>
+                ) : (
+                  <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                    {isEn ? "Disabled" : "Đang tắt"}
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                {voiceAiEnabled
+                  ? (isEn ? "Robot icon floating on screen to navigate by voice command" : "Hiển thị Robot thông minh trên màn hình để ra lệnh mở các danh mục")
+                  : (isEn ? "Voice AI assistant is hidden" : "Đang ẩn robot trợ lý giọng nói")}
+              </p>
+            </div>
+          </div>
+
+          {/* Switch Toggle */}
+          <button
+            type="button"
+            role="switch"
+            aria-checked={voiceAiEnabled}
+            onClick={() => {
+              const next = !voiceAiEnabled;
+              setVoiceAiState(next);
+              setVoiceAiEnabled(next);
+              toast.success(
+                next
+                  ? (isEn ? "AI Voice Assistant Activated! 🤖" : "Đã bật Trợ lý Giọng nói AI! 🤖")
+                  : (isEn ? "AI Voice Assistant Disabled" : "Đã tắt Trợ lý Giọng nói AI")
+              );
+            }}
+            className={`relative inline-flex h-6.5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+              voiceAiEnabled ? "bg-blue-600" : "bg-slate-300 dark:bg-slate-700"
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5.5 w-5.5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                voiceAiEnabled ? "translate-x-5.5" : "translate-x-0"
               }`}
             />
           </button>

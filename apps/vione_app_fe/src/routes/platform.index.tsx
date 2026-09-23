@@ -9,6 +9,7 @@ import { CrudModal, type CrudField, type CrudValues } from "@/components/dashboa
 import { useServerData } from "@/hooks/use-server-data";
 import { useRole } from "@/hooks/use-role";
 import { useT } from "@/lib/i18n";
+import { fetchNestApi } from "@/lib/api-client";
 import {
   createAssociationFn,
   deleteAssociationFn,
@@ -23,19 +24,42 @@ export const Route = createFileRoute("/platform/")({
 
 function PlatformAssociationsPage() {
   const t = useT();
-  const { isPlatformAdmin, loading: roleLoading } = useRole();
+  const { isAdmin, isPlatformAdmin, loading: roleLoading } = useRole();
 
   const fetchAssocs = useServerFn(listAssociationsFn);
   const createAssoc = useServerFn(createAssociationFn);
   const updateAssoc = useServerFn(updateAssociationFn);
   const deleteAssoc = useServerFn(deleteAssociationFn);
 
+  const loadAssocs = async (): Promise<PlatformAssociation[]> => {
+    try {
+      const res = await fetchNestApi<any[]>("/communities/all");
+      if (Array.isArray(res)) {
+        return res.map((a: any) => ({
+          id: a.id || a.communityId,
+          name: a.name,
+          slug: a.slug ?? null,
+          memberCount: a.memberCount ?? 0,
+          adminCount: a.adminCount ?? 0,
+          createdAt: a.createdAt || new Date().toISOString(),
+        }));
+      }
+    } catch {
+      /* fallback sang server function */
+    }
+    try {
+      return await fetchAssocs();
+    } catch {
+      return [];
+    }
+  };
+
   const {
     data: assocs,
     loading: aLoading,
     reload: reloadAssocs,
   } = useServerData<PlatformAssociation[]>(
-    () => (isPlatformAdmin ? fetchAssocs() : Promise.resolve([])),
+    () => (isAdmin ? loadAssocs() : Promise.resolve([])),
     [],
   );
 
@@ -44,11 +68,11 @@ function PlatformAssociationsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isPlatformAdmin) reloadAssocs();
+    if (isAdmin) reloadAssocs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlatformAdmin]);
+  }, [isAdmin]);
 
-  if (!roleLoading && !isPlatformAdmin) {
+  if (!roleLoading && !isAdmin) {
     return (
       <PlatformShell>
         <Card className="p-10 text-center text-sm text-muted-foreground">
@@ -73,10 +97,24 @@ function PlatformAssociationsPage() {
     setSubmitting(true);
     try {
       if (editing) {
-        await updateAssoc({ data: { id: editing.id, ...(v as object) } as never });
+        try {
+          await fetchNestApi(`/communities/${editing.id}`, {
+            method: "PATCH",
+            body: v,
+          });
+        } catch {
+          await updateAssoc({ data: { id: editing.id, ...(v as object) } as never });
+        }
         toast.success(t("common.updated"));
       } else {
-        await createAssoc({ data: v as never });
+        try {
+          await fetchNestApi("/communities", {
+            method: "POST",
+            body: v,
+          });
+        } catch {
+          await createAssoc({ data: v as never });
+        }
         toast.success(t("common.created"));
       }
       setAssocOpen(false);
@@ -92,7 +130,11 @@ function PlatformAssociationsPage() {
   const onDeleteAssoc = async (a: PlatformAssociation) => {
     if (!confirm(`${a.name}?`)) return;
     try {
-      await deleteAssoc({ data: { id: a.id } });
+      try {
+        await fetchNestApi(`/communities/${a.id}`, { method: "DELETE" });
+      } catch {
+        await deleteAssoc({ data: { id: a.id } });
+      }
       toast.success(t("common.deletedToast"));
       reloadAssocs();
     } catch (e) {

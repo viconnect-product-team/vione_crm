@@ -144,7 +144,9 @@ export function MomentComposer({ personId }: { personId: string }) {
     atLocal: defaultReminderAt(7),
     label: "",
   });
-  const [visibility, setVisibility] = useState<"friends" | "public" | "private">("friends");
+  const [visibility, setVisibility] = useState<"friends" | "public" | "private">(
+    personId === "general" ? "public" : "friends",
+  );
   const [photos, setPhotos] = useState<PhotoDraft[]>([]);
   // Tiến trình xử lý ảnh phía trình duyệt (nén/xoay/strip EXIF) và tải lên máy chủ.
   const [processing, setProcessing] = useState<{ done: number; total: number } | null>(null);
@@ -449,11 +451,14 @@ export function MomentComposer({ personId }: { personId: string }) {
           ? t("bc.mobile.moment.savedToast.withPhotos", { count: savedPhotoCount })
           : t("bc.mobile.moment.savedBanner"),
     });
+    // Reset và refetch ngay lập tức để khoảnh khắc mới xuất hiện ngay trên bảng tin mạng lưới
+    queryClient.resetQueries({ queryKey: ["bc-mobile", "network-feed"] });
+    void queryClient.refetchQueries({ queryKey: ["bc-mobile", "network-feed"] });
+    queryClient.invalidateQueries({ queryKey: ["bc-mobile"] });
     queryClient.invalidateQueries({ queryKey: ["bc-mobile", "person-journey"] });
-    // BC-Mobile-6A — a new moment is a fresh interaction: refresh suggestions.
     queryClient.invalidateQueries({ queryKey: ["bc-mobile", "rel-intel"] });
     if (personId === "general") {
-      await navigate({ to: "/connect-app" });
+      await navigate({ to: "/connect-app/network" });
     } else {
       await navigate({
         to: "/connect-app/network/$personId",
@@ -492,7 +497,7 @@ export function MomentComposer({ personId }: { personId: string }) {
 
       let prep: any;
       try {
-        prep = await fetchNestApi<any>("/connect-app/moment/", {
+        prep = await fetchNestApi<any>("/connect-app/moment", {
           method: "POST",
           body: JSON.stringify(payload),
         });

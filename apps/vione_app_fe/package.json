@@ -10,7 +10,7 @@
     "predev": "node scripts/gen-routes.mjs",
     "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite dev",
     "prebuild": "node scripts/gen-routes.mjs",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite build",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "prebuild:dev": "node scripts/gen-routes.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",

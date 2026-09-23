@@ -56,79 +56,167 @@ import { useTheme } from "@/lib/theme";
 
 type Item = { key: TKey; icon: LucideIcon; to?: string; label?: string };
 
-const overview: Item[] = [{ key: "nav.dashboard", icon: LayoutDashboard, to: "/" }];
-const members: Item[] = [
-  { key: "nav.members", icon: Users, to: "/members" },
-  { key: "nav.companies", icon: Building2, to: "/companies" },
-  { key: "nav.memberSeg", icon: Tags, to: "/segments" },
-  { key: "nav.renewal", icon: RefreshCw, to: "/renewal" },
-];
-const events: Item[] = [
-  { key: "nav.events", icon: Calendar, to: "/events" },
-  { key: "eventsOverview.title", icon: Calendar, to: "/events-overview" },
-  { key: "nav.eventReg", icon: ClipboardList, to: "/event-registrations" },
-  { key: "nav.checkin", icon: ScanLine, to: "/checkin" },
-  { key: "checkinQr.title", icon: QrCodeIcon, to: "/checkin-qr" },
-];
-const sponsors: Item[] = [
-  { key: "nav.sponsors", icon: Handshake, to: "/sponsors" },
-  { key: "nav.sponsorPkg", icon: Package, to: "/sponsor-packages" },
-  { key: "nav.sponsorReport", icon: FileBarChart, to: "/sponsor-report" },
-];
-const finance: Item[] = [
-  { key: "nav.fee", icon: Wallet, to: "/fees" },
-  { key: "nav.income", icon: ArrowDownCircle, to: "/income" },
-  { key: "nav.expenses" as TKey, icon: ArrowUpCircle, to: "/expenses" },
-  { key: "nav.financeReport", icon: PieChart, to: "/finance-report" },
-];
-const comm: Item[] = [
-  { key: "nav.notify", icon: Bell, to: "/notifications" },
-  { key: "nav.email", icon: Mail, to: "/email-marketing" },
-  { key: "nav.news", icon: Newspaper, to: "/news" },
-  { key: "nav.perks", icon: Gift, to: "/perks" },
-  { key: "nav.benefits", icon: Award, to: "/benefits" },
-];
-const governance: Item[] = [
-  { key: "nav.governance", icon: Vote, to: "/voting" },
-  { key: "nav.meeting", icon: Users2, to: "/meetings" },
-  { key: "nav.documents", icon: FolderOpen, to: "/documents" },
-];
-const network: Item[] = [
-  { key: "nav.network", icon: MessageSquare, to: "/network" },
-  { key: "nav.businessCards", icon: IdCard, to: "/business-cards" },
-  { key: "nav.marketplace", icon: Store, to: "/marketplace" },
-  { key: "nav.opportunities", icon: Sparkles, to: "/opportunities" },
-];
-const businessConnect: Item[] = [
-  { key: "nav.bc.overview", icon: LayoutDashboard, to: "/business-connect" },
-  { key: "nav.bc.myCard", icon: IdCard, to: "/business-connect/my-card" },
-  { key: "nav.bc.saved", icon: Bookmark, to: "/business-connect/saved-cards" },
-  { key: "nav.bc.connections", icon: Handshake, to: "/business-connect/connections" },
-  { key: "nav.bc.meetings", icon: Users2, to: "/business-connect/meetings" },
+const overview: Item[] = [{ key: "nav.dashboard", icon: LayoutDashboard, to: "/", label: "Bảng Điều Khiển Tổng Quan" }];
+
+// 1. MẠNG LƯỚI VIONE CONNECT (Hệ sinh thái kết nối số)
+const vioneConnectSuite: Item[] = [
   {
-    key: "nav.landingTemplates" as TKey,
-    icon: LayoutTemplate,
-    to: "/admin/landing-templates",
-    label: "Template Landing",
-  },
-];
-const system: Item[] = [
-  { key: "nav.settings", icon: Settings, to: "/settings" },
-  { key: "nav.activity", icon: History, to: "/activity" },
-];
-const platform: Item[] = [{ key: "nav.platform", icon: ShieldCheck, to: "/platform" }];
-const admin: Item[] = [
-  {
-    key: "nav.bcAdmin",
+    key: "nav.vioneNfc" as TKey,
     icon: IdCard,
     to: "/admin/business-cards",
-    label: "Quản lý Thẻ Doanh Nhân",
+    label: "Thẻ Thông Minh NFC & QR",
   },
   {
-    key: "nav.landingTemplates" as TKey,
+    key: "nav.vioneMoments" as TKey,
+    icon: Sparkles,
+    to: "/news",
+    label: "Khoảnh Khắc Doanh Nhân",
+  },
+  {
+    key: "nav.vioneCommunities" as TKey,
+    icon: Building2,
+    to: "/platform",
+    label: "Cộng Đồng & Chi Hội B2B",
+  },
+  {
+    key: "nav.vioneIntroductions" as TKey,
+    icon: Handshake,
+    to: "/business-connect/connections",
+    label: "Kết Nối B2B & Lời Giới Thiệu",
+  },
+  {
+    key: "nav.vioneAi" as TKey,
+    icon: Sparkles,
+    to: "/ai",
+    label: "AI Matchmaking Doanh Nghiệp",
+  },
+  {
+    key: "nav.vioneNetwork" as TKey,
+    icon: Users,
+    to: "/network",
+    label: "Mạng Lưới ViOne Connect",
+  },
+];
+
+// 2. GIAO THƯƠNG & B2B DEALS
+const vioneCommerce: Item[] = [
+  {
+    key: "nav.vioneMarketplace" as TKey,
+    icon: Store,
+    to: "/marketplace",
+    label: "Sàn Marketplace B2B",
+  },
+  {
+    key: "nav.vioneOpportunities" as TKey,
+    icon: FileBarChart,
+    to: "/opportunities",
+    label: "Cơ Hội Giao Thương & Deals",
+  },
+  {
+    key: "nav.vioneQuotes" as TKey,
+    icon: ClipboardList,
+    to: "/marketplace/my-quotes",
+    label: "Yêu Cầu Báo Giá VIP",
+  },
+];
+
+// 3. DOANH NGHIỆP & HỘI VIÊN VIONE
+const vioneMembers: Item[] = [
+  {
+    key: "nav.vioneMemberList" as TKey,
+    icon: Users,
+    to: "/members",
+    label: "Doanh Nhân & Thành Viên",
+  },
+  {
+    key: "nav.vioneCompanyList" as TKey,
+    icon: Building2,
+    to: "/companies",
+    label: "Hồ Sơ Doanh Nghiệp",
+  },
+  {
+    key: "nav.vioneCardTiers" as TKey,
+    icon: Tags,
+    to: "/segments",
+    label: "Hạng Thẻ (Gold / Titanium)",
+  },
+  {
+    key: "nav.vioneRenew" as TKey,
+    icon: RefreshCw,
+    to: "/renewal",
+    label: "Gia Hạn Thẻ & Dịch Vụ",
+  },
+];
+
+// 4. SỰ KIỆN & XÚC TIẾN THƯƠNG MẠI
+const vioneEvents: Item[] = [
+  {
+    key: "nav.vioneEventList" as TKey,
+    icon: Calendar,
+    to: "/events",
+    label: "Lịch Sự Kiện B2B",
+  },
+  {
+    key: "nav.vioneEventReg" as TKey,
+    icon: ClipboardList,
+    to: "/event-registrations",
+    label: "Đăng Ký & Khách Mời",
+  },
+  {
+    key: "nav.vioneCheckin" as TKey,
+    icon: QrCodeIcon,
+    to: "/checkin-qr",
+    label: "Soát Vé NFC & QR Pass",
+  },
+];
+
+// 5. TÀI CHÍNH & TĂNG TRƯỞNG
+const vioneFinance: Item[] = [
+  {
+    key: "nav.vioneRevenue" as TKey,
+    icon: Wallet,
+    to: "/fees",
+    label: "Doanh Thu & Phí Dịch Vụ",
+  },
+  {
+    key: "nav.vioneCashflow" as TKey,
+    icon: ArrowDownCircle,
+    to: "/income",
+    label: "Sổ Quỹ Thu - Chi",
+  },
+  {
+    key: "nav.vioneGrowthReport" as TKey,
+    icon: PieChart,
+    to: "/finance-report",
+    label: "Báo Cáo Tăng Trưởng",
+  },
+];
+
+// 6. CẤU HÌNH & BẢO MẬT
+const vioneSystem: Item[] = [
+  {
+    key: "nav.vioneSettings" as TKey,
+    icon: Settings,
+    to: "/settings",
+    label: "Cài Đặt Nền Tảng",
+  },
+  {
+    key: "nav.vioneLandingTpl" as TKey,
     icon: LayoutTemplate,
     to: "/admin/landing-templates",
-    label: "Template Landing",
+    label: "Landing Page Doanh Nghiệp",
+  },
+  {
+    key: "nav.vioneAudit" as TKey,
+    icon: History,
+    to: "/activity",
+    label: "Nhật Ký Kiểm Toán",
+  },
+  {
+    key: "nav.vionePermissions" as TKey,
+    icon: ShieldCheck,
+    to: "/platform/permissions",
+    label: "Ma Trận Phân Quyền",
   },
 ];
 
@@ -226,7 +314,7 @@ function Group({
   onNavigate,
   badges,
 }: {
-  label?: TKey;
+  label?: string;
   items: Item[];
   pathname: string | undefined;
   collapsed: boolean;
@@ -234,14 +322,15 @@ function Group({
   badges?: Record<string, number>;
 }) {
   const t = useT();
+  const displayLabel = label ? (label.startsWith("nav.") ? t(label as TKey) : label) : undefined;
   return (
     <div className={collapsed ? "px-2.5" : "px-3"}>
-      {label &&
+      {displayLabel &&
         (collapsed ? (
           <div className="mx-2 mb-1.5 mt-1 h-px bg-sidebar-border/50" />
         ) : (
-          <div className="mb-1 px-3 text-[10.5px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/45">
-            {t(label)}
+          <div className="mb-1.5 px-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-sidebar-foreground/50 flex items-center justify-between">
+            <span>{displayLabel}</span>
           </div>
         ))}
       <div className="space-y-[3px]">
@@ -385,11 +474,14 @@ export function Sidebar({
         )}
         {!isCollapsed && (
           <div className="min-w-0 flex-1 leading-tight">
-            <div className="truncate text-[13px] font-semibold text-sidebar-foreground">
-              {brandName}
+            <div className="truncate text-[13.5px] font-extrabold tracking-wide text-sidebar-foreground flex items-center gap-1.5">
+              <span>ViOne Connect</span>
+              <span className="rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[9px] font-black px-1.5 py-0.5 border border-amber-500/30">
+                CRM 5.0
+              </span>
             </div>
-            <div className="truncate text-[11px] text-sidebar-foreground/60">
-              {t("brand.tagline")}
+            <div className="truncate text-[10px] font-semibold text-sidebar-foreground/60 uppercase tracking-wider mt-0.5">
+              Hệ Điều Hành Doanh Nhân
             </div>
           </div>
         )}
@@ -431,106 +523,60 @@ export function Sidebar({
           collapsed={isCollapsed}
           onNavigate={onNavigate}
         />
-        {canViewMembers && (
-          <Group
-            label="nav.group.members"
-            items={members}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewEvents && (
-          <Group
-            label="nav.group.events"
-            items={events}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewSponsors && (
-          <Group
-            label="nav.group.sponsors"
-            items={sponsors}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewFinance && (
-          <Group
-            label="nav.group.finance"
-            items={finance}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewComm && (
-          <Group
-            label="nav.group.comm"
-            items={comm}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-            badges={badges}
-          />
-        )}
-        {canViewGovernance && (
-          <Group
-            label="nav.group.governance"
-            items={governance}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewNetwork && (
-          <Group
-            label="nav.group.network"
-            items={network}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewBusinessConnect && (
-          <Group
-            label="nav.group.bc"
-            items={businessConnect}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {canViewSystem && (
-          <Group
-            label="nav.group.system"
-            items={system}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {(isAdmin || isPlatformAdmin) && (
-          <Group
-            label="nav.group.admin"
-            items={admin}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
-        {isPlatformAdmin && (
-          <Group
-            label="nav.group.platform"
-            items={platform}
-            pathname={pathname}
-            collapsed={isCollapsed}
-            onNavigate={onNavigate}
-          />
-        )}
+
+        {/* 1. MẠNG LƯỚI VIONE CONNECT */}
+        <Group
+          label="MẠNG LƯỚI VIONE CONNECT"
+          items={vioneConnectSuite}
+          pathname={pathname}
+          collapsed={isCollapsed}
+          onNavigate={onNavigate}
+        />
+
+        {/* 2. GIAO THƯƠNG & B2B DEALS */}
+        <Group
+          label="GIAO THƯƠNG & B2B DEALS"
+          items={vioneCommerce}
+          pathname={pathname}
+          collapsed={isCollapsed}
+          onNavigate={onNavigate}
+        />
+
+        {/* 3. DOANH NGHIỆP & HỘI VIÊN VIONE */}
+        <Group
+          label="DOANH NGHIỆP & THÀNH VIÊN"
+          items={vioneMembers}
+          pathname={pathname}
+          collapsed={isCollapsed}
+          onNavigate={onNavigate}
+        />
+
+        {/* 4. SỰ KIỆN & XÚC TIẾN */}
+        <Group
+          label="SỰ KIỆN & CHECK-IN B2B"
+          items={vioneEvents}
+          pathname={pathname}
+          collapsed={isCollapsed}
+          onNavigate={onNavigate}
+        />
+
+        {/* 5. TÀI CHÍNH & TĂNG TRƯỞNG */}
+        <Group
+          label="TÀI CHÍNH & DOANH THU"
+          items={vioneFinance}
+          pathname={pathname}
+          collapsed={isCollapsed}
+          onNavigate={onNavigate}
+        />
+
+        {/* 6. CẤU HÌNH & BẢO MẬT */}
+        <Group
+          label="CẤU HÌNH & HỆ THỐNG"
+          items={vioneSystem}
+          pathname={pathname}
+          collapsed={isCollapsed}
+          onNavigate={onNavigate}
+        />
       </div>
 
       {/* Theme switcher & Enterprise bar — có thể thu nhỏ cố định hoặc phóng to */}

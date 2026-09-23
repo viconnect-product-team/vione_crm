@@ -608,8 +608,8 @@ function EventsPage() {
                         EV-{e.id.slice(0, 6).toUpperCase()}
                       </td>
                       <td className="px-4 py-3 border-b border-border">
-                        <TruncatedText text={e.name} maxWidth="max-w-[240px]" className="font-semibold text-foreground text-xs" />
-                        <TruncatedText text={e.description} maxWidth="max-w-[240px]" className="text-[11px] text-muted-foreground" />
+                        <TruncatedText text={e.name} maxWidth="max-w-[300px]" className="font-semibold text-foreground text-xs" />
+                        <TruncatedText text={e.description} maxWidth="max-w-[300px]" className="text-[11px] text-muted-foreground" />
                       </td>
                       <td className="px-4 py-3 text-xs border-b border-border">
                         <div className="font-medium text-foreground">
@@ -617,7 +617,7 @@ function EventsPage() {
                         </div>
                         <div className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
                           <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
-                          <TruncatedText text={e.location || "Online"} maxWidth="max-w-[180px]" />
+                          <TruncatedText text={e.location || "Online"} maxWidth="max-w-[300px]" />
                         </div>
                       </td>
                       <td className="px-4 py-3 border-b border-border">

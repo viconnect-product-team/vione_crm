@@ -1,9 +1,18 @@
 {
-	"appId": "vn.ceo1983.app",
-	"appName": "CEO 1983",
+	"appId": "ViOneBusinessConnect",
+	"appName": "ViOne Connect",
 	"webDir": "www",
 	"server": {
-		"url": "http://14.225.217.232:5002",
-		"cleartext": true
+		"url": "https://14.225.217.232:5445/connect-app",
+		"cleartext": true,
+		"androidScheme": "https",
+		"allowNavigation": [
+			"14.225.217.232*",
+			"14.225.217.232:5445*",
+			"*.14-225-217-232.sslip.io*",
+			"*.sslip.io*",
+			"vione.vn*",
+			"*.vione.vn*"
+		]
 	}
 }

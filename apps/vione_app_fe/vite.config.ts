@@ -15,6 +15,16 @@ export default defineConfig({
         http: 'node:http',
       },
     },
+    build: {
+      sourcemap: false,
+      chunkSizeWarningLimit: 2500,
+      rollupOptions: {
+        maxParallelFileOps: 2,
+      },
+    },
+    ssr: {
+      external: ['jspdf', 'xlsx'],
+    },
     server: {
       port: 5173,
       watch: {
@@ -30,8 +40,9 @@ export default defineConfig({
       },
       proxy: {
         '/upload': {
-          target: 'http://localhost:4000/api',
+          target: 'http://localhost:4000',
           changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/upload/, '/api/upload'),
         },
         '/api': {
           target: 'http://localhost:4000',

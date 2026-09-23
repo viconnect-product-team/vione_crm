@@ -314,76 +314,120 @@ function EventPosterCard({
     <div
       role="listitem"
       onClick={() => onSelect(event)}
-      className="group relative w-full h-64 sm:h-72 rounded-[26px] overflow-hidden border-2 border-[#C9A86A]/75 dark:border-amber-500/60 shadow-xl bg-slate-950 cursor-pointer select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+      className="group relative w-full rounded-[24px] overflow-hidden border-2 border-[#C9A86A]/75 dark:border-amber-500/50 shadow-xl bg-white dark:bg-[#0B132B] cursor-pointer select-none transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl flex flex-col sm:flex-row items-stretch"
     >
-      {/* Cover Banner Image */}
-      <img
-        src={displayImg}
-        alt={event.title}
-        loading="lazy"
-        onError={(evt) => {
-          const target = evt.currentTarget;
-          if (target.src !== fallbackImg) {
-            target.src = fallbackImg;
-          }
-        }}
-        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/35 pointer-events-none transition-opacity group-hover:opacity-85" />
+      {/* ── LEFT HALF: NỬA ẢNH DÀI TỚI HẾT NỘI DUNG (POSTER IMAGE EXTENDS TO FULL CONTENT HEIGHT) ── */}
+      <div className="w-full sm:w-[44%] md:w-[42%] relative self-stretch min-h-[220px] sm:min-h-full overflow-hidden bg-slate-950 shrink-0 flex flex-col justify-between">
+        <img
+          src={displayImg}
+          alt={event.title}
+          loading="lazy"
+          onError={(evt) => {
+            const target = evt.currentTarget;
+            if (target.src !== fallbackImg) {
+              target.src = fallbackImg;
+            }
+          }}
+          className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-95"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/35 pointer-events-none transition-opacity group-hover:opacity-80" />
 
-      {/* Top Left: Badge Tiêu Điểm Thượng Đỉnh (Chuẩn 100% như ảnh mẫu) */}
-      <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5 rounded-full bg-[#FDF3D8] text-[#4A3205] border border-amber-300/60 px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wide shadow-md">
-        <TopIcon className="h-3.5 w-3.5 fill-[#4A3205] text-[#4A3205]" />
-        <span>{topBadgeInfo.text}</span>
-      </div>
+        {/* Top Left: Badge Tiêu Điểm / Chủ đề sự kiện */}
+        <div className="relative z-10 m-3 flex items-center gap-1.5 self-start rounded-full bg-[#FDF3D8]/95 backdrop-blur-md text-[#4A3205] border border-amber-300/60 px-3 py-1 text-[10.5px] font-black uppercase tracking-wide shadow-md">
+          <TopIcon className="h-3.5 w-3.5 fill-[#4A3205] text-[#4A3205]" />
+          <span>{topBadgeInfo.text}</span>
+        </div>
 
-      {/* Dải điều khiển ở đáy thẻ (Bottom Bar): Countdown Timer + Category + Status + Bookmark */}
-      {/* TUYỆT ĐỐI KHÔNG CÓ CÁI BADGE NGÀY BỊ THỪA Ở GÓC DƯỚI BÊN TRÁI NÀY! */}
-      <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
-        {/* 1. Countdown Timer Pill */}
-        <div className="rounded-full bg-black/75 backdrop-blur-md px-3.5 py-1.5 border border-white/15 shadow-lg flex items-center gap-1.5 text-white font-mono font-bold text-[12px] shrink-0">
+        {/* Bottom Left: Countdown Timer Pill on Poster Image */}
+        <div className="relative z-10 m-3 self-start rounded-full bg-black/75 backdrop-blur-md px-3 py-1.5 border border-white/15 shadow-lg flex items-center gap-1.5 text-white font-mono font-bold text-[11.5px]">
           <Clock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
           <EventCountdownBanner event={event} index={index} whiteText={true} />
         </div>
+      </div>
 
-        <div className="flex items-center gap-1.5 shrink-0">
-          {/* 2. Category Pill */}
-          <span className="rounded-full bg-[#F59E0B] text-slate-950 font-black text-[11px] px-3.5 py-1.5 uppercase tracking-wider shadow-lg border border-amber-300 truncate">
-            {agenda.category}
+      {/* ── RIGHT HALF: NỘI DUNG ĐẦY ĐỦ CỦA SỰ KIỆN (EVENT METADATA & ACTIONS) ── */}
+      <div className="flex-1 p-4 sm:p-5 flex flex-col justify-between bg-white dark:bg-[#0B132B] border-t sm:border-t-0 sm:border-l border-amber-500/20">
+        <div className="space-y-2">
+          {/* Top Bar: Category Pill + Status Pill + Bookmark */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 font-black text-[10.5px] px-2.5 py-0.5 uppercase tracking-wider border border-amber-500/30">
+                {agenda.category}
+              </span>
+
+              {registered ? (
+                <span className="rounded-full bg-blue-50 text-[#003B95] dark:bg-blue-950/60 dark:text-blue-300 font-black text-[11px] px-2.5 py-0.5 border border-blue-200 dark:border-blue-800 flex items-center gap-1">
+                  <Check className="h-3 w-3 stroke-[3]" />
+                  Đã đăng ký
+                </span>
+              ) : isFree ? (
+                <span className="rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-black text-[11px] px-2.5 py-0.5 border border-emerald-200 dark:border-emerald-800">
+                  Miễn phí
+                </span>
+              ) : (
+                <span className="rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 font-black text-[11px] px-2.5 py-0.5 border border-amber-200 dark:border-amber-800">
+                  {new Intl.NumberFormat("vi-VN").format(price)} đ
+                </span>
+              )}
+            </div>
+
+            {/* Bookmark Button */}
+            <button
+              type="button"
+              onClick={(evt) => {
+                evt.stopPropagation();
+                onToggleBookmark(event.id);
+              }}
+              className={`grid h-8 w-8 place-items-center rounded-full transition-all active:scale-95 cursor-pointer shadow-xs shrink-0 ${
+                isBookmarked
+                  ? "bg-amber-500 text-white shadow-amber-500/30"
+                  : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300"
+              }`}
+              title={isBookmarked ? "Bỏ đánh dấu" : "Đánh dấu sự kiện"}
+            >
+              <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? "fill-white text-white" : ""}`} />
+            </button>
+          </div>
+
+          {/* Event Title */}
+          <div>
+            <h3 className="text-[15px] sm:text-[16.5px] font-black text-slate-900 dark:text-white leading-snug line-clamp-2 group-hover:text-[#003B95] dark:group-hover:text-amber-400 transition-colors">
+              {event.title}
+            </h3>
+            {agenda.subtitle && (
+              <p className="text-[11.5px] text-amber-600 dark:text-amber-400/90 font-bold uppercase tracking-wider mt-1 line-clamp-1">
+                {agenda.subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Date & Time */}
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300 text-[12px] font-medium pt-1">
+            <Calendar className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400 shrink-0" />
+            <span className="font-semibold text-slate-800 dark:text-slate-100">
+              {event.time ? `${event.time} | ` : ""}
+              Ngày {event.date ? formatDisplayDate(event.date) : `${event.day || 27}/${event.month || 9}/2026`}
+            </span>
+          </div>
+
+          {/* Location */}
+          <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[11.5px]">
+            <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+            <span className="line-clamp-1">{event.place || "Trung tâm Hội nghị Quốc gia, Hà Nội"}</span>
+          </div>
+        </div>
+
+        {/* Bottom CTA Action Bar */}
+        <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+          <span className="text-[11.5px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1">
+            <Users className="h-3.5 w-3.5 text-slate-400" />
+            <span>{agenda.audience || "Hội viên CLB & Doanh nhân"}</span>
           </span>
 
-          {/* 3. Status Pill: Đã đăng ký / Miễn phí / Giá vé */}
-          {registered ? (
-            <span className="rounded-full bg-white text-[#003B95] font-black text-[11.5px] px-3.5 py-1.5 shadow-lg border border-slate-200 flex items-center gap-1 shrink-0">
-              <Check className="h-3.5 w-3.5 stroke-[3]" />
-              Đã đăng ký
-            </span>
-          ) : isFree ? (
-            <span className="rounded-full bg-white text-emerald-600 font-black text-[11.5px] px-3.5 py-1.5 shadow-lg border border-emerald-200 flex items-center gap-1 shrink-0">
-              Miễn phí
-            </span>
-          ) : (
-            <span className="rounded-full bg-white text-amber-600 font-black text-[11.5px] px-3.5 py-1.5 shadow-lg border border-amber-200 shrink-0">
-              {new Intl.NumberFormat("vi-VN").format(price)} đ
-            </span>
-          )}
-
-          {/* 4. Bookmark Button */}
-          <button
-            type="button"
-            onClick={(evt) => {
-              evt.stopPropagation();
-              onToggleBookmark(event.id);
-            }}
-            className={`grid h-8 w-8 place-items-center rounded-full backdrop-blur-md transition-all active:scale-95 cursor-pointer shadow-lg shrink-0 ${
-              isBookmarked
-                ? "bg-white text-slate-950 border border-white"
-                : "bg-black/60 hover:bg-black/80 text-white border border-white/25"
-            }`}
-            title={isBookmarked ? "Bỏ đánh dấu" : "Đánh dấu sự kiện"}
-          >
-            <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? "fill-slate-950 text-slate-950" : "text-white"}`} />
-          </button>
+          <span className="inline-flex items-center gap-1 text-[12px] font-black text-[#003B95] dark:text-amber-400 group-hover:translate-x-0.5 transition-transform">
+            <span>Chi tiết sự kiện</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </span>
         </div>
       </div>
     </div>
@@ -675,6 +719,7 @@ function EventsScreen() {
     attendeePosition?: string;
     qrUrl: string;
   } | null>(null);
+  const [allTicketsModalOpen, setAllTicketsModalOpen] = useState(false);
 
 
   // Form registration state
@@ -1166,37 +1211,264 @@ function EventsScreen() {
         )}
       </div>
 
-      {/* 5. Footer: Banner đẹp phong cách CEO 1983 */}
-      <div className="mx-4 mt-7 rounded-3xl overflow-hidden shadow-xl border border-amber-400/40 bg-gradient-to-br from-[#061536] via-[#0A255C] to-[#040E24] text-white p-5 relative">
-        <div className="relative z-10 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-500/30 to-amber-600/30 border border-amber-400/40 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-amber-300 shadow-xs">
-              <Sparkles className="h-3 w-3 text-amber-400" />
-              CLB DOANH NHÂN CEO 1983
-            </span>
-            <span className="text-[10px] font-bold text-slate-300">
-              Hotline: 0983.19.83.83
-            </span>
+      {/* 5. Footer: Thiết kế tối giản, thanh lịch, chuẩn xu hướng hiện đại */}
+      <div className="mx-4 mt-6 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-3.5 sm:p-4 text-slate-800 dark:text-slate-100 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="flex items-center gap-2.5">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[#003B95]/10 dark:bg-blue-500/15 text-[#003B95] dark:text-amber-400 shrink-0">
+              <Sparkles className="h-4.5 w-4.5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                CLB Doanh Nhân CEO 1983 · Kết Nối Thịnh Vượng
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Kế thừa giá trị, kiến tạo tương lai và đồng hành phát triển bền vững.
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-base sm:text-lg font-black leading-tight text-white tracking-wide">
-              KẾ THỪA GIÁ TRỊ · KIẾN TẠO TƯƠNG LAI
-            </h3>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              Mạng lưới kết nối thượng đỉnh của các nhà lãnh đạo và doanh nhân tiêu biểu. Đồng hành cùng nhau phát triển vững bền.
-            </p>
-          </div>
-          <div className="pt-1 flex items-center gap-2">
-            <Link
-              to="/association/messages"
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 px-4 py-2 text-xs font-black shadow-md transition active:scale-95 cursor-pointer"
-            >
-              <span>Liên hệ Ban Thư Ký</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
+          <Link
+            to="/association/messages"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white px-3.5 py-2 text-xs font-bold shadow-xs transition active:scale-95 shrink-0 cursor-pointer"
+          >
+            <span>Liên hệ Ban Thư Ký</span>
+            <ArrowRight className="h-3.5 w-3.5 text-amber-300" />
+          </Link>
         </div>
       </div>
+
+      {/* ── NÚT RUNG LẮC NỔI GÓC DƯỚI BÊN PHẢI ĐỂ MỞ DANH SÁCH VÉ QR ── */}
+      <div className="fixed bottom-22 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-1 pointer-events-auto">
+        <button
+          type="button"
+          onClick={() => setAllTicketsModalOpen(true)}
+          className="animate-qr-vibrate group relative flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#003B95] via-[#0B2F64] to-[#001D4A] p-3 sm:px-4 sm:py-3 text-white shadow-[0_8px_25px_rgba(0,59,149,0.45)] border-2 border-amber-400/90 hover:border-amber-300 hover:shadow-[0_10px_30px_rgba(245,158,11,0.5)] transition-all cursor-pointer active:scale-95"
+          title="Mở danh sách vé sự kiện & mã QR"
+        >
+          <div className="relative grid h-8 w-8 place-items-center rounded-full bg-amber-400 text-blue-950 shadow-xs shrink-0">
+            <QrCode className="h-5 w-5" />
+            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+            </span>
+          </div>
+          <div className="hidden sm:flex flex-col text-left pr-1">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-300">
+              Vé QR Của Tôi
+            </span>
+            <span className="text-[12px] font-extrabold text-white leading-tight">
+              {registeredEvents.length > 0 ? `${registeredEvents.length} vé đã đăng ký` : "Xem vé sự kiện"}
+            </span>
+          </div>
+          {registeredEvents.length > 0 && (
+            <span className="sm:hidden absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-black grid place-items-center shadow-md">
+              {registeredEvents.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* ── MODAL DANH SÁCH TẤT CẢ VÉ SỰ KIỆN ĐÃ ĐĂNG KÝ (PHÂN BIỆT RÕ RÀNG TỪNG SỰ KIỆN) ── */}
+      <Dialog open={allTicketsModalOpen} onOpenChange={setAllTicketsModalOpen}>
+        <DialogContent className="max-w-lg max-h-[88vh] overflow-y-auto p-0 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xl">
+          <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+            <div className="flex items-center gap-2.5">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <Ticket className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-extrabold text-slate-900 dark:text-white">
+                  Danh sách vé sự kiện của bạn
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  {registeredEvents.length > 0
+                    ? `Hiện bạn đang có ${registeredEvents.length} vé tham gia sự kiện`
+                    : "Chưa có vé sự kiện nào được đăng ký"}
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAllTicketsModalOpen(false)}
+              className="grid h-8 w-8 place-items-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="p-4 sm:p-5 space-y-4">
+            {registeredEvents.length === 0 ? (
+              <div className="py-12 text-center space-y-3">
+                <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400">
+                  <Ticket className="h-8 w-8" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    Bạn chưa có vé tham dự sự kiện nào
+                  </h4>
+                  <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                    Hãy duyệt danh sách sự kiện và đăng ký để nhận mã vé điện tử & QR check-in nhé!
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAllTicketsModalOpen(false)}
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#003B95] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#002B70] transition cursor-pointer"
+                >
+                  <Calendar className="h-3.5 w-3.5" />
+                  <span>Khám phá sự kiện ngay</span>
+                </button>
+              </div>
+            ) : (
+              registeredEvents.map((e, idx) => {
+                const evIdx = events.findIndex((x) => x.id === e.id);
+                const invoiceCode = `REG-${e.id.slice(0, 8).toUpperCase()}`;
+                const lucky = `#${(1000 + (evIdx >= 0 ? evIdx : 1) * 337) % 9000 + 1000}`;
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(invoiceCode)}`;
+                const isFree = isEventFree(e);
+                const agenda = getEventAgenda(e, evIdx >= 0 ? evIdx : idx);
+
+                const borderColors = [
+                  "border-l-[#003B95] border-t-blue-100 dark:border-t-blue-900/30",
+                  "border-l-purple-600 border-t-purple-100 dark:border-t-purple-900/30",
+                  "border-l-emerald-600 border-t-emerald-100 dark:border-t-emerald-900/30",
+                  "border-l-amber-500 border-t-amber-100 dark:border-t-amber-900/30",
+                ];
+                const badgeBgs = [
+                  "bg-blue-600 text-white",
+                  "bg-purple-600 text-white",
+                  "bg-emerald-600 text-white",
+                  "bg-amber-600 text-white",
+                ];
+
+                return (
+                  <div
+                    key={e.id}
+                    className={`relative rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden border-l-4 ${
+                      borderColors[idx % borderColors.length]
+                    }`}
+                  >
+                    {/* Header phân biệt rõ ràng vé sự kiện số mấy */}
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-2xs ${
+                            badgeBgs[idx % badgeBgs.length]
+                          }`}
+                        >
+                          Sự kiện #{idx + 1}
+                        </span>
+                        <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 truncate max-w-[200px] sm:max-w-xs">
+                          {agenda.category || "HỘI NGHỊ DOANH NHÂN"}
+                        </span>
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                        <Check className="h-3 w-3 stroke-[2.5]" /> Đã xác nhận
+                      </span>
+                    </div>
+
+                    {/* Nội dung vé & thông tin sự kiện */}
+                    <div className="p-4 flex flex-col sm:flex-row items-center gap-4">
+                      {/* Cột QR Code với scan badge */}
+                      <div className="flex flex-col items-center gap-1.5 shrink-0">
+                        <div className="relative p-2 rounded-2xl bg-white border border-slate-200 dark:border-slate-700 shadow-xs">
+                          <img
+                            src={qrUrl}
+                            alt={`Mã QR vé ${e.title}`}
+                            className="h-28 w-28 object-contain"
+                          />
+                          <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 border-t-2 border-dashed border-rose-500/40 pointer-events-none" />
+                        </div>
+                        <span className="text-[9.5px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wide">
+                          Quét check-in
+                        </span>
+                      </div>
+
+                      {/* Cột thông tin sự kiện và vé */}
+                      <div className="flex-1 min-w-0 space-y-2 text-center sm:text-left">
+                        <div>
+                          <h4 className="text-sm font-black text-slate-900 dark:text-white line-clamp-2 leading-snug">
+                            {e.title}
+                          </h4>
+                          <p className="text-[10.5px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                            {agenda.subtitle}
+                          </p>
+                        </div>
+
+                        {/* Metadata chip strip */}
+                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 text-[11px] text-slate-600 dark:text-slate-300">
+                          <span className="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg font-medium">
+                            <Clock className="h-3 w-3 text-[#003B95] dark:text-amber-400" />
+                            {e.time || "08:00"} · Ngày {e.date ? formatDisplayDate(e.date) : `${e.day} ${e.month}, 2026`}
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg font-medium truncate max-w-[180px]">
+                            <MapPin className="h-3 w-3 text-rose-500" />
+                            {e.place || "Hà Nội"}
+                          </span>
+                        </div>
+
+                        {/* Ticket Code & Lucky number */}
+                        <div className="flex items-center justify-center sm:justify-start gap-3 pt-1 border-t border-slate-100 dark:border-slate-800">
+                          <div>
+                            <span className="text-[9.5px] text-slate-400 block font-medium">MÃ VÉ</span>
+                            <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
+                              {invoiceCode}
+                            </span>
+                          </div>
+                          <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+                          <div>
+                            <span className="text-[9.5px] text-slate-400 block font-medium">SỐ MAY MẮN</span>
+                            <span className="font-mono text-xs font-extrabold text-amber-600 dark:text-amber-400">
+                              {lucky}
+                            </span>
+                          </div>
+                          <div className="h-6 w-px bg-slate-200 dark:bg-slate-700" />
+                          <div>
+                            <span className="text-[9.5px] text-slate-400 block font-medium">LOẠI VÉ</span>
+                            <span className="text-xs font-bold text-[#003B95] dark:text-blue-400">
+                              {isFree ? "Miễn phí" : "VIP Pass"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Full Screen Ticket Action */}
+                        <div className="pt-2 flex items-center justify-center sm:justify-start gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAllTicketsModalOpen(false);
+                              setTicketPassModal({
+                                eventTitle: e.title,
+                                ticketCode: invoiceCode,
+                                luckyNumber: lucky,
+                                ticketType: isFree ? "Vé Miễn Phí (Standard)" : "VIP Standard Pass",
+                                ticketCount: 1,
+                                isFree,
+                                date: e.date ? formatDisplayDate(e.date) : `${e.day} ${e.month}, 2026`,
+                                time: e.time || "08:00",
+                                location: e.place || "Hà Nội",
+                                attendeeName: member?.name || user?.name || "Hội viên CEO 1983",
+                                attendeePhone: member?.phone || "",
+                                attendeeCompany: (member as any)?.companyName || "CLB Doanh Nhân CEO 1983",
+                                attendeePosition: member?.title || "Hội viên chính thức",
+                                qrUrl,
+                              });
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer"
+                          >
+                            <QrCode className="h-3.5 w-3.5" />
+                            <span>Mở thẻ vé toàn màn hình</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* MODAL 1: XEM CHI TIẾT SỰ KIỆN (IMAGE 4 POSTER & HIGHLIGHTS) */}
       {selectedEvent && (() => {

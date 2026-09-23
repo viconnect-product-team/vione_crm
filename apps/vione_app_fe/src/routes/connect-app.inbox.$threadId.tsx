@@ -3,7 +3,7 @@
 // Hỗ trợ Menu ..., Thu hồi, Trả lời (Reply quote), Thả cảm xúc (Reactions), Đính kèm file/ảnh MinIO và Real-time Sync.
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute, useParams, useNavigate } from "@tanstack/react-router";
 import {
   Check,
   CheckCheck,
@@ -251,7 +251,31 @@ function ThreadPage() {
   const t = useT();
   const { lang } = useLang();
   const locale = lang === "en" ? "en-GB" : "vi-VN";
-  const { threadId } = useParams({ from: "/connect-app/inbox/$threadId" });
+  const { threadId: rawThreadId } = useParams({ from: "/connect-app/inbox/$threadId" });
+  const navigate = useNavigate();
+
+  const cleanThreadId = useMemo(() => {
+    let tid = String(rawThreadId || "").trim();
+    try {
+      tid = decodeURIComponent(tid);
+    } catch {}
+    if (/^[0-9a-fA-F-]{36}$/.test(tid)) return tid;
+    const match = tid.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+    if (match) return match[0];
+    return tid;
+  }, [rawThreadId]);
+
+  useEffect(() => {
+    if (rawThreadId && cleanThreadId && rawThreadId !== cleanThreadId) {
+      void navigate({
+        to: "/connect-app/inbox/$threadId",
+        params: { threadId: cleanThreadId },
+        replace: true,
+      });
+    }
+  }, [rawThreadId, cleanThreadId, navigate]);
+
+  const threadId = cleanThreadId;
   const viewerUserId = useViewerUserId();
 
   const query = useDmThread(threadId);

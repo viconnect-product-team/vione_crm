@@ -9,7 +9,7 @@ import type {
   CommunityEventsTabDTO,
   CommunityInterestLevel,
 } from "@/lib/business-connect/mobile/community-activity.types";
-import { communityKeys } from "@/hooks/use-community";
+import { communityKeys, sanitizeCommunityId } from "@/hooks/use-community";
 import { useViewerUserId } from "@/hooks/use-viewer-user-id";
 import { fetchNestApi } from "@/lib/api-client";
 
@@ -28,7 +28,8 @@ export const communityActivityKeys = {
     ["bc-mobile", "community-activity-preview", viewer, communityId] as const,
 };
 
-export function useCommunityEvents(communityId: string, tab: CommunityEventsTabDTO) {
+export function useCommunityEvents(rawCommunityId: string, tab: CommunityEventsTabDTO) {
+  const communityId = sanitizeCommunityId(rawCommunityId);
   const viewerId = useViewerUserId();
   const viewerKey = viewerId ?? "viewer-pending";
   const result = useInfiniteQuery({
@@ -159,7 +160,8 @@ export function useCommunityEventDetail(communityId: string, eventRef: string) {
   };
 }
 
-export function useCommunityOpportunities(communityId: string, rawQuery: string) {
+export function useCommunityOpportunities(rawCommunityId: string, rawQuery: string) {
+  const communityId = sanitizeCommunityId(rawCommunityId);
   const viewerId = useViewerUserId();
   const viewerKey = viewerId ?? "viewer-pending";
   const query = rawQuery.trim();
@@ -308,7 +310,8 @@ export function useCommunityOpportunityDetail(communityId: string, opportunityRe
   };
 }
 
-export function useCommunityActivityPreview(communityId: string) {
+export function useCommunityActivityPreview(rawCommunityId: string) {
+  const communityId = sanitizeCommunityId(rawCommunityId);
   const viewerId = useViewerUserId();
   const viewerKey = viewerId ?? "viewer-pending";
   const query = useQuery({

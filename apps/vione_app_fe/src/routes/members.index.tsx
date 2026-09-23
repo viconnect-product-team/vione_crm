@@ -32,6 +32,7 @@ import { downloadCsv } from "@/lib/csv";
 import { useUrlState } from "@/hooks/use-url-state";
 import { Pagination, SortHeader } from "@/components/dashboard/DataTablePagination";
 import { useTableControls } from "@/hooks/use-table-controls";
+import { TruncatedText } from "@/components/dashboard/TruncatedText";
 import {
   type IndustryKey,
   type Member,
@@ -920,10 +921,8 @@ function MembersPage() {
                       <div className="flex items-center gap-3">
                         <Avatar m={m} className="h-9 w-9 text-[11px]" />
                         <div className="min-w-0">
-                          <div className="truncate font-semibold text-foreground">{m.name}</div>
-                          <div className="truncate text-[11px] text-muted-foreground">
-                            {m.email || m.contact}
-                          </div>
+                          <TruncatedText text={m.name} maxWidth="max-w-[300px]" className="font-semibold text-foreground" />
+                          <TruncatedText text={m.email || m.contact || ""} maxWidth="max-w-[300px]" className="text-[11px] text-muted-foreground" />
                         </div>
                       </div>
                     </td>

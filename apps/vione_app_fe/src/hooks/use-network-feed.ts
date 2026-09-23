@@ -16,7 +16,8 @@ export function useNetworkFeed() {
   const query = useInfiniteQuery({
     queryKey: networkFeedKeys.list(viewerId ?? "viewer-pending"),
     enabled: viewerId !== null,
-    staleTime: 30_000,
+    staleTime: 0,
+    refetchOnMount: "always",
     initialPageParam: null as string | null,
     queryFn: async ({ pageParam }) => {
       try {

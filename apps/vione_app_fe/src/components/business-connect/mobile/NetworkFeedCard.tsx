@@ -28,7 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useFmt, useT, type TKey } from "@/lib/i18n";
-import { fetchNestApi } from "@/lib/api-client";
+import { fetchNestApi, resolveMediaUrl } from "@/lib/api-client";
 import { useNetworkRowConnect } from "@/hooks/use-network-row-connect";
 import { ConnectConfirmDialog } from "./ConnectConfirmDialog";
 import { networkFeedKeys } from "@/hooks/use-network-feed";
@@ -71,8 +71,9 @@ function PhotoGrid({
   onImageClick?: (index: number) => void;
 }) {
   if (urls.length === 0) return null;
+  const resolved = urls.map((u) => resolveMediaUrl(u) || u);
 
-  if (urls.length === 1) {
+  if (resolved.length === 1) {
     return (
       <button
         type="button"
@@ -80,7 +81,7 @@ function PhotoGrid({
         className="mt-3 block w-full text-left cursor-pointer overflow-hidden rounded-xl group focus:outline-none"
       >
         <img
-          src={urls[0]}
+          src={resolved[0]}
           alt={alt}
           loading="lazy"
           className="aspect-[16/10] w-full rounded-xl object-cover ring-1 ring-[var(--bc-mobile-border)] transition-transform duration-200 group-hover:scale-[1.01] active:scale-[0.99]"
@@ -89,8 +90,8 @@ function PhotoGrid({
     );
   }
 
-  const shown = urls.slice(0, 3);
-  const extra = urls.length - shown.length;
+  const shown = resolved.slice(0, 3);
+  const extra = resolved.length - shown.length;
   return (
     <div className="mt-3 grid grid-cols-3 gap-1.5">
       {shown.map((url, i) => (

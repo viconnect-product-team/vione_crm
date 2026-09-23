@@ -2258,5 +2258,84 @@ html:has([contenteditable="true"]:focus) .vba-bottom-bar {
   transform: translateY(100%) !important;
 }
 
+/* CRM Table Column Auto-expand up to 300px with Ellipsis & Ant Design Tooltip integration */
+.crm-cell-truncate {
+  max-width: 300px;
+  width: max-content;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* QR Ticket Floating Icon Vibration Animation */
+@keyframes qr-vibrate {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: rotate(-7deg) scale(1.06);
+  }
+  20%, 40%, 60%, 80% {
+    transform: rotate(7deg) scale(1.06);
+  }
+}
+
+.animate-qr-vibrate {
+  animation: qr-vibrate 2.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  transform-origin: center center;
+}
+
+/* AI Voice Assistant Robot Wobble Animation */
+@keyframes robot-wobble {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  15% {
+    transform: translateY(-5px) rotate(-8deg) scale(1.05);
+  }
+  30% {
+    transform: translateY(-2px) rotate(8deg) scale(1.05);
+  }
+  45% {
+    transform: translateY(-6px) rotate(-6deg) scale(1.04);
+  }
+  60% {
+    transform: translateY(-1px) rotate(6deg) scale(1.03);
+  }
+  75% {
+    transform: translateY(-3px) rotate(-3deg) scale(1.02);
+  }
+  90% {
+    transform: translateY(0) rotate(2deg) scale(1);
+  }
+}
+
+.animate-robot-wobble {
+  animation: robot-wobble 2.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes robot-listening {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7), 0 0 15px rgba(59, 130, 246, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 16px rgba(245, 158, 11, 0), 0 0 35px rgba(239, 68, 68, 0.8);
+    transform: scale(1.08);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 0 15px rgba(59, 130, 246, 0.5);
+    transform: scale(1);
+  }
+}
+
+.animate-robot-listening {
+  animation: robot-listening 1.4s ease-in-out infinite;
+}
+
+
 
 

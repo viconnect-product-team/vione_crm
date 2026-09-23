@@ -74,7 +74,24 @@ export function useMyCommunities(enabled = true) {
   };
 }
 
-export function useCommunityDetail(communityId: string) {
+export function sanitizeCommunityId(id: string): string {
+  if (!id) return "c1983000-0000-4000-8000-000000001983";
+  let decoded = String(id).trim();
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch {}
+  if (/^[0-9a-fA-F-]{36}$/.test(decoded)) {
+    return decoded;
+  }
+  const uuidMatch = decoded.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+  if (uuidMatch) {
+    return uuidMatch[0];
+  }
+  return "c1983000-0000-4000-8000-000000001983";
+}
+
+export function useCommunityDetail(rawCommunityId: string) {
+  const communityId = sanitizeCommunityId(rawCommunityId);
   const viewerId = useViewerUserId();
   let user: any = null;
   try {
@@ -107,10 +124,11 @@ export function useCommunityDetail(communityId: string) {
 }
 
 export function useCommunityMembers(
-  communityId: string,
+  rawCommunityId: string,
   rawQuery: string,
   roleFilter: CommunityMemberRoleFilter = "all",
 ) {
+  const communityId = sanitizeCommunityId(rawCommunityId);
   const viewerId = useViewerUserId();
   const viewerKey = viewerId ?? "viewer-pending";
   const query = rawQuery.trim();
