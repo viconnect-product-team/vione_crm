@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ViOneGoldWhiteLanding } from "@/components/landing/ViOneGoldWhiteLanding";
+import { ViOneLandingWebOfficial } from "@/components/landing/ViOneLandingWebOfficial";
 
 const TITLE = "ViOne Connect — Hệ Điều Hành Kết Nối Kinh Doanh & CRM Hợp Nhất";
 const DESC =
@@ -24,5 +24,5 @@ export const Route = createFileRoute("/landing/vione")({
 });
 
 function ViOneOfficialLandingPage() {
-  return <ViOneGoldWhiteLanding />;
+  return <ViOneLandingWebOfficial />;
 }

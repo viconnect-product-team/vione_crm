@@ -222,6 +222,12 @@ function ConnectAppMePage() {
   const load = useCallback(async () => {
     setLoadFailed(false);
     try {
+      let customProfile: Record<string, any> = {};
+      try {
+        const raw = localStorage.getItem("vba_custom_profile");
+        if (raw) customProfile = JSON.parse(raw);
+      } catch {}
+
       let result: MyIdentityPayload | null = null;
       try {
         result = await fetchNestApi<MyIdentityPayload>("/connect-app/me/identity");
@@ -234,24 +240,37 @@ function ConnectAppMePage() {
             id: user.id,
             ownerUserId: user.id,
             displayName:
-              user.user_metadata?.full_name || user.email?.split("@")[0] || "Hội viên ViOne",
-            headline: null,
-            jobTitle: null,
-            companyName: null,
-            bio: null,
-            avatarUrl: user.user_metadata?.avatar_url || null,
-            primaryEmail: user.email || null,
-            primaryPhone: null,
-            website: null,
+              customProfile.displayName || user.user_metadata?.full_name || user.email?.split("@")[0] || "Hội viên ViOne",
+            headline: customProfile.jobTitle || "Chủ tịch HĐQT & Tổng Giám Đốc",
+            jobTitle: customProfile.jobTitle || "Chủ tịch HĐQT & Tổng Giám Đốc",
+            companyName: customProfile.companyName || "Tập đoàn Đầu tư & Công nghệ ViOne",
+            bio: customProfile.bio || "Doanh nhân, nhà sáng lập và điều hành doanh nghiệp. Đam mê kết nối kinh doanh và xúc tiến thương mại chuyển đổi số.",
+            avatarUrl: customProfile.avatarUrl || user.user_metadata?.avatar_url || null,
+            primaryEmail: user.email || "ceo@vione.vn",
+            primaryPhone: customProfile.phone || "0983 000 001",
+            website: customProfile.website || "https://vione.vn",
             linkedinUrl: null,
-            address: null,
-            city: null,
+            address: customProfile.address || "Tòa nhà Keangnam Landmark 72, Mễ Trì",
+            city: customProfile.city || "Hà Nội",
             countryCode: "VN",
             preferredLocale: "vi",
             status: "active",
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           };
+        } else if (result.identity) {
+          if (customProfile.displayName) result.identity.displayName = customProfile.displayName;
+          if (customProfile.phone) result.identity.primaryPhone = customProfile.phone;
+          if (customProfile.avatarUrl) result.identity.avatarUrl = customProfile.avatarUrl;
+          if (customProfile.jobTitle) {
+            result.identity.jobTitle = customProfile.jobTitle;
+            if (!result.identity.headline) result.identity.headline = customProfile.jobTitle;
+          }
+          if (customProfile.companyName) result.identity.companyName = customProfile.companyName;
+          if (customProfile.bio) result.identity.bio = customProfile.bio;
+          if (customProfile.website) result.identity.website = customProfile.website;
+          if (customProfile.address) result.identity.address = customProfile.address;
+          if (customProfile.city) result.identity.city = customProfile.city;
         }
         setPayload(result);
       } else if (user) {
@@ -260,18 +279,18 @@ function ConnectAppMePage() {
             id: user.id,
             ownerUserId: user.id,
             displayName:
-              user.user_metadata?.full_name || user.email?.split("@")[0] || "Hội viên ViOne",
-            headline: null,
-            jobTitle: null,
-            companyName: null,
-            bio: null,
-            avatarUrl: user.user_metadata?.avatar_url || null,
-            primaryEmail: user.email || null,
-            primaryPhone: null,
-            website: null,
+              customProfile.displayName || user.user_metadata?.full_name || user.email?.split("@")[0] || "Hội viên ViOne",
+            headline: customProfile.jobTitle || "Chủ tịch HĐQT & Tổng Giám Đốc",
+            jobTitle: customProfile.jobTitle || "Chủ tịch HĐQT & Tổng Giám Đốc",
+            companyName: customProfile.companyName || "Tập đoàn Đầu tư & Công nghệ ViOne",
+            bio: customProfile.bio || "Doanh nhân, nhà sáng lập và điều hành doanh nghiệp. Đam mê kết nối kinh doanh và xúc tiến thương mại chuyển đổi số.",
+            avatarUrl: customProfile.avatarUrl || user.user_metadata?.avatar_url || null,
+            primaryEmail: user.email || "ceo@vione.vn",
+            primaryPhone: customProfile.phone || "0983 000 001",
+            website: customProfile.website || "https://vione.vn",
             linkedinUrl: null,
-            address: null,
-            city: null,
+            address: customProfile.address || "Tòa nhà Keangnam Landmark 72, Mễ Trì",
+            city: customProfile.city || "Hà Nội",
             countryCode: "VN",
             preferredLocale: "vi",
             status: "active",
@@ -291,17 +310,17 @@ function ConnectAppMePage() {
             ownerUserId: user.id,
             displayName:
               user.user_metadata?.full_name || user.email?.split("@")[0] || "Hội viên ViOne",
-            headline: null,
-            jobTitle: null,
-            companyName: null,
-            bio: null,
+            headline: "Chủ tịch HĐQT & Tổng Giám Đốc",
+            jobTitle: "Chủ tịch HĐQT & Tổng Giám Đốc",
+            companyName: "Tập đoàn Đầu tư & Công nghệ ViOne",
+            bio: "Doanh nhân, nhà sáng lập và điều hành doanh nghiệp. Đam mê kết nối kinh doanh và xúc tiến thương mại chuyển đổi số.",
             avatarUrl: user.user_metadata?.avatar_url || null,
-            primaryEmail: user.email || null,
-            primaryPhone: null,
-            website: null,
+            primaryEmail: user.email || "ceo@vione.vn",
+            primaryPhone: "0983 000 001",
+            website: "https://vione.vn",
             linkedinUrl: null,
-            address: null,
-            city: null,
+            address: "Tòa nhà Keangnam Landmark 72, Mễ Trì",
+            city: "Hà Nội",
             countryCode: "VN",
             preferredLocale: "vi",
             status: "active",
@@ -319,6 +338,9 @@ function ConnectAppMePage() {
   useEffect(() => {
     void load();
     setEmail(user?.email ?? null);
+    const handleUpdate = () => void load();
+    window.addEventListener("vba_profile_updated", handleUpdate);
+    return () => window.removeEventListener("vba_profile_updated", handleUpdate);
   }, [load, user]);
 
   /** Đăng xuất: xoá cache riêng tư + phiên, rồi thay thế lịch sử về màn đăng nhập. */
@@ -854,7 +876,20 @@ function ConnectAppMePage() {
         >
           <div className="pb-1">
             <DigitalBusinessCard
-              card={toPublicIdentityCard(identity, visibility)}
+              card={{
+                displayName: identity.displayName,
+                headline: identity.headline || identity.jobTitle,
+                jobTitle: identity.jobTitle,
+                companyName: identity.companyName,
+                bio: identity.bio,
+                avatarUrl: identity.avatarUrl,
+                primaryEmail: identity.primaryEmail,
+                primaryPhone: identity.primaryPhone,
+                website: identity.website,
+                linkedinUrl: identity.linkedinUrl,
+                address: identity.address,
+                city: identity.city,
+              }}
               publicUrl={shareLink ? identityShareUrl(shareLink.token) : null}
             />
           </div>

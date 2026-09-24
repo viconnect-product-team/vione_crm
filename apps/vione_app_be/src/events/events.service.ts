@@ -172,6 +172,15 @@ export class EventsService {
     const rawType = String(r.type ?? 'forum').toLowerCase();
     const type = ['forum', 'workshop', 'networking', 'training'].includes(rawType) ? rawType : 'forum';
 
+    const fallbackImages: Record<string, string> = {
+      forum: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&auto=format&fit=crop&q=80',
+      workshop: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&auto=format&fit=crop&q=80',
+      networking: 'https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&auto=format&fit=crop&q=80',
+      training: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1200&auto=format&fit=crop&q=80',
+      default: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1200&auto=format&fit=crop&q=80',
+    };
+    const resolvedImage = r.image_url || r.imageUrl || r.image || r.banner_url || r.cover_url || fallbackImages[type] || fallbackImages.default;
+
     return {
       id: r.id,
       name: r.name,
@@ -185,6 +194,10 @@ export class EventsService {
       registered: r.registered ?? 0,
       status,
       type,
+      image: resolvedImage,
+      imageUrl: resolvedImage,
+      bannerUrl: resolvedImage,
+      coverUrl: resolvedImage,
       qrFields: r.qr_fields ?? ['registration_code'],
       createdAt: r.created_at,
       updatedAt: r.updated_at,

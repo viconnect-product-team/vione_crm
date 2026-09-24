@@ -82,6 +82,14 @@ const TYPE_COVER: Record<EventItem["type"], string> = {
   training: "linear-gradient(135deg, oklch(0.55 0.15 155), oklch(0.60 0.14 195))",
 };
 
+const EVENT_FALLBACK_IMAGES: Record<string, string> = {
+  forum: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1000&auto=format&fit=crop&q=80",
+  workshop: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1000&auto=format&fit=crop&q=80",
+  networking: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1000&auto=format&fit=crop&q=80",
+  training: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=1000&auto=format&fit=crop&q=80",
+  default: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1000&auto=format&fit=crop&q=80",
+};
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -608,8 +616,18 @@ function EventsPage() {
                         EV-{e.id.slice(0, 6).toUpperCase()}
                       </td>
                       <td className="px-4 py-3 border-b border-border">
-                        <TruncatedText text={e.name} maxWidth="max-w-[300px]" className="font-semibold text-foreground text-xs" />
-                        <TruncatedText text={e.description} maxWidth="max-w-[300px]" className="text-[11px] text-muted-foreground" />
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={(e as any).imageUrl || (e as any).image || (e as any).bannerUrl || (e as any).coverUrl || EVENT_FALLBACK_IMAGES[e.type] || EVENT_FALLBACK_IMAGES.default}
+                            alt=""
+                            className="h-10 w-10 shrink-0 rounded-lg object-cover border border-border shadow-xs"
+                            onError={(evt) => { evt.currentTarget.src = EVENT_FALLBACK_IMAGES.default; }}
+                          />
+                          <div>
+                            <TruncatedText text={e.name} maxWidth="max-w-[280px]" className="font-semibold text-foreground text-xs" />
+                            <TruncatedText text={e.description} maxWidth="max-w-[280px]" className="text-[11px] text-muted-foreground" />
+                          </div>
+                        </div>
                       </td>
                       <td className="px-4 py-3 text-xs border-b border-border">
                         <div className="font-medium text-foreground">
@@ -809,22 +827,18 @@ function EventCard({
 }) {
   const t = useT();
   const fmt = useFmt();
+  const eventImg = (e as any).imageUrl || (e as any).image || (e as any).bannerUrl || (e as any).coverUrl || EVENT_FALLBACK_IMAGES[e.type] || EVENT_FALLBACK_IMAGES.default;
+
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow)]">
-      <div className="relative h-32 overflow-hidden" style={{ background: TYPE_COVER[e.type] ?? TYPE_COVER.forum }}>
-        {(e as any).imageUrl || (e as any).image ? (
-          <img
-            src={(e as any).imageUrl || (e as any).image}
-            alt={e.name}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className="absolute inset-0 opacity-20"
-            style={{ background: "radial-gradient(circle at 80% 20%, white, transparent 60%)" }}
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+      <div className="relative h-36 overflow-hidden" style={{ background: TYPE_COVER[e.type] ?? TYPE_COVER.forum }}>
+        <img
+          src={eventImg}
+          alt={e.name}
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onError={(evt) => { evt.currentTarget.src = EVENT_FALLBACK_IMAGES.default; }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
         <div className="absolute left-3 top-3">
           <StatusPill status={getEffectiveStatus(e)} />
         </div>
@@ -884,6 +898,8 @@ function EventCard({
 function FeaturedCard({ event: e, onOpen }: { event: EventItem; onOpen: () => void }) {
   const t = useT();
   const fmt = useFmt();
+  const featImg = (e as any).imageUrl || (e as any).image || (e as any).bannerUrl || (e as any).coverUrl || EVENT_FALLBACK_IMAGES[e.type] || EVENT_FALLBACK_IMAGES.default;
+
   return (
     <button
       type="button"
@@ -891,13 +907,15 @@ function FeaturedCard({ event: e, onOpen }: { event: EventItem; onOpen: () => vo
       className="mb-5 block w-full overflow-hidden rounded-3xl border border-border text-left shadow-[var(--shadow-card)] transition hover:shadow-[var(--shadow-glow)]"
     >
       <div className="relative grid gap-0 md:grid-cols-[1.1fr_1fr]">
-        <div className="relative min-h-[180px] p-6" style={{ background: TYPE_COVER[e.type] }}>
-          <div
-            className="absolute inset-0 opacity-25"
-            style={{ background: "radial-gradient(circle at 85% 15%, white, transparent 55%)" }}
-            aria-hidden="true"
+        <div className="relative min-h-[180px] p-6 overflow-hidden" style={{ background: TYPE_COVER[e.type] }}>
+          <img
+            src={featImg}
+            alt={e.name}
+            className="absolute inset-0 h-full w-full object-cover opacity-60"
+            onError={(evt) => { evt.currentTarget.src = EVENT_FALLBACK_IMAGES.default; }}
           />
-          <div className="relative flex h-full flex-col">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="relative z-10 flex h-full flex-col">
             <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-background/85 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">
               <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> {t("events.featured")}
             </span>

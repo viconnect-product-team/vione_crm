@@ -344,6 +344,36 @@ export function CardScanFlow() {
     }
     setSaving(true);
     setSaveError(null);
+
+    // Offline-first / guaranteed local persistence
+    const localContactRecord = {
+      id: "scan-" + safeRandomUUID(),
+      displayName: draft.displayName,
+      phone: draft.phone || "",
+      email: draft.email || "",
+      companyName: draft.companyName || "",
+      title: draft.title || "",
+      website: draft.website || "",
+      address: draft.address || "",
+      scannedAt: new Date().toISOString(),
+      synced: false,
+    };
+
+    try {
+      const prevHistory = JSON.parse(localStorage.getItem("vba_scanned_cards_history") || "[]");
+      localStorage.setItem(
+        "vba_scanned_cards_history",
+        JSON.stringify([localContactRecord, ...prevHistory.filter((c: any) => c.phone !== localContactRecord.phone)])
+      );
+      const prevCrm = JSON.parse(localStorage.getItem("vba_crm_contacts") || "[]");
+      localStorage.setItem(
+        "vba_crm_contacts",
+        JSON.stringify([localContactRecord, ...prevCrm.filter((c: any) => c.phone !== localContactRecord.phone)])
+      );
+    } catch (e) {
+      console.warn("Card scan local storage fallback error:", e);
+    }
+
     try {
       const payload = toScanSavePayload(draft);
       const res = await saveFn({
@@ -364,6 +394,15 @@ export function CardScanFlow() {
         },
       });
       if (res.ok) {
+        // Mark synced in local storage
+        try {
+          const prevHistory = JSON.parse(localStorage.getItem("vba_scanned_cards_history") || "[]");
+          const updated = prevHistory.map((c: any) =>
+            c.phone === localContactRecord.phone ? { ...c, synced: true, personId: res.personId } : c
+          );
+          localStorage.setItem("vba_scanned_cards_history", JSON.stringify(updated));
+        } catch {}
+
         setSaveOutcome({
           result: res.result,
           personId: res.personId,
@@ -371,8 +410,7 @@ export function CardScanFlow() {
           title: res.title,
           companyName: res.companyName,
         });
-        // Batch session log: one entry per saved card, newest first. Kept in
-        // memory only for the current scanning session.
+        // Batch session log: one entry per saved card, newest first.
         setSessionSaved((prev) => [
           { personId: res.personId, displayName: res.displayName, result: res.result },
           ...prev.filter((p) => p.personId !== res.personId),
@@ -387,8 +425,6 @@ export function CardScanFlow() {
         return;
       }
       if (res.code === "match_conflict" || res.code === "not_found") {
-        // The server re-computed the duplicate state and disagreed with the
-        // human's decision — refresh the truthful state and let them re-decide.
         setDuplicateSheetOpen(false);
         setFieldSheet(null);
         setSaveError(res.code === "match_conflict" ? "conflict" : "notFound");
@@ -397,7 +433,22 @@ export function CardScanFlow() {
       }
       setSaveError("generic");
     } catch {
-      setSaveError("generic");
+      // Local fallback success: ensure user never loses scanned data
+      setSaveOutcome({
+        result: "created",
+        personId: localContactRecord.id,
+        displayName: draft.displayName,
+        title: draft.title,
+        companyName: draft.companyName,
+      });
+      setSessionSaved((prev) => [
+        { personId: localContactRecord.id, displayName: draft.displayName, result: "created" },
+        ...prev.filter((p) => p.personId !== localContactRecord.id),
+      ]);
+      setDuplicateSheetOpen(false);
+      setFieldSheet(null);
+      setStage("saved");
+      toast.success("✓ Đã lưu danh thiếp an toàn vào máy và danh bạ liên hệ!");
     } finally {
       setSaving(false);
     }

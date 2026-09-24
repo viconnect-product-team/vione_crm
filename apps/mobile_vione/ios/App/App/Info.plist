@@ -71,6 +71,16 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Ứng dụng cần quyền truy cập máy ảnh để quét mã QR và chụp ảnh danh thiếp.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ứng dụng cần truy cập thư viện ảnh để tải lên ảnh đại diện và danh thiếp.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Ứng dụng cần quyền lưu ảnh danh bạ và mã QR vào thư viện.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Ứng dụng cần quyền truy cập microphone để bạn ra lệnh giọng nói điều hướng tính năng và tương tác với Trợ lý AI.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Ứng dụng cần quyền nhận diện giọng nói để phân tích yêu cầu điều hướng của bạn.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

@@ -6,7 +6,7 @@
 // blocks on intelligence; errors collapse to a quiet inline retry.
 
 import { Link } from "@tanstack/react-router";
-import { ChevronRight, RefreshCw, X } from "lucide-react";
+import { Briefcase, Building2, ChevronRight, MapPin, RefreshCw, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLang, useT } from "@/lib/i18n";
@@ -52,7 +52,7 @@ function SuggestionRow({
   if (hidden) return null;
 
   return (
-    <li className="relative min-w-0 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3 shadow-xs">
+    <li className="relative min-w-0 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs hover:border-[var(--bc-mobile-border-gold)] transition-all">
       <div className="flex items-start justify-between gap-2.5">
         <Link
           to="/connect-app/network/$personId"
@@ -70,24 +70,51 @@ function SuggestionRow({
               alt=""
               loading="lazy"
               onError={() => setAvatarErr(true)}
-              className="h-11 w-11 shrink-0 rounded-full object-cover ring-1 ring-[var(--bc-mobile-border)]"
+              className="h-12 w-12 shrink-0 rounded-full object-cover ring-1 ring-[var(--bc-mobile-border)]"
             />
           ) : (
             <span
               aria-hidden="true"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[14px] font-semibold text-[var(--bc-mobile-text)] ring-1 ring-[var(--bc-mobile-border)]"
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[14px] font-semibold text-[var(--bc-mobile-text)] ring-1 ring-[var(--bc-mobile-border)]"
             >
               {initialsOf(rec.person.displayName)}
             </span>
           )}
           <div className="min-w-0 flex-1">
-            <span className="block truncate text-[15px] font-semibold text-[var(--bc-mobile-text)]">
-              {name}
-            </span>
-            <p className="mt-0.5 text-[13px] leading-snug text-[var(--bc-mobile-text)]">
+            <div className="flex items-center justify-between gap-1.5">
+              <span className="block truncate text-[15px] font-bold text-[var(--bc-mobile-text)]">
+                {name}
+              </span>
+              {rec.person.areaLabel && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--bc-mobile-accent)] shrink-0">
+                  <MapPin className="h-3 w-3 text-[var(--bc-mobile-accent)]" />
+                  <span>{rec.person.areaLabel}</span>
+                </span>
+              )}
+            </div>
+
+            {/* 3 trường: Chức danh / Chức vụ · Công ty · Lĩnh vực ngành nghề */}
+            <div className="mt-1 space-y-0.5 text-xs text-[var(--bc-mobile-muted)]">
+              {(rec.person.headline || rec.person.companyName) && (
+                <p className="flex items-center gap-1.5 truncate">
+                  <Briefcase className="h-3 w-3 shrink-0 text-[var(--bc-mobile-accent)]" />
+                  <span className="truncate">
+                    {[rec.person.headline, rec.person.companyName].filter(Boolean).join(" · ")}
+                  </span>
+                </p>
+              )}
+              {rec.person.industryLabel && (
+                <p className="flex items-center gap-1.5 truncate text-[11.5px] text-[var(--bc-mobile-accent)] font-medium">
+                  <Building2 className="h-3 w-3 shrink-0 text-[var(--bc-mobile-accent)]" />
+                  <span className="truncate">{rec.person.industryLabel}</span>
+                </p>
+              )}
+            </div>
+
+            <p className="mt-1.5 text-[12.5px] leading-snug text-[var(--bc-mobile-text)]">
               {suggestionText}
             </p>
-            <p className="mt-1 text-[11.5px] text-[var(--bc-mobile-accent)]">
+            <p className="mt-1 text-[11px] text-[var(--bc-mobile-accent)] font-medium">
               {reasonText}
             </p>
           </div>

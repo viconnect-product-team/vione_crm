@@ -275,7 +275,7 @@ export function getActiveLandingTemplateId(): string {
   if (typeof window === "undefined") return "vione-gold-white";
   try {
     const saved = localStorage.getItem(ACTIVE_LANDING_TEMPLATE_STORAGE_KEY);
-    if (saved && LANDING_TEMPLATES_CATALOG.some((t) => t.id === saved)) {
+    if (saved && saved !== "b2b-v1" && LANDING_TEMPLATES_CATALOG.some((t) => t.id === saved)) {
       return saved;
     }
   } catch {

@@ -21,6 +21,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 export const VOICE_AI_STORAGE_KEY = "vione_voice_ai_enabled";
 export const VOICE_AI_EVENT_NAME = "vione-voice-ai-toggle";
@@ -90,7 +91,7 @@ const CATEGORIES: NavCategory[] = [
   {
     id: "trade",
     name: "Cơ hội giao thương",
-    route: "/connect-app",
+    route: "/association/products/trade",
     icon: Handshake,
     keywords: [
       "giao thương",
@@ -267,6 +268,7 @@ export function VoiceNavAssistant() {
   const [matchedCat, setMatchedCat] = useState<NavCategory | null>(null);
   const [isSupported, setIsSupported] = useState(true);
 
+  const { user, status } = useAuth();
   const recognitionRef = useRef<any>(null);
   const navigate = useNavigate();
   const routerState = useRouterState();
@@ -377,7 +379,16 @@ export function VoiceNavAssistant() {
     }
   };
 
-  const startListening = () => {
+  const startListening = async () => {
+    // Kích hoạt xin quyền Microphone native nếu chưa được cấp
+    if (typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (micErr) {
+        console.warn("Yêu cầu quyền truy cập micro:", micErr);
+      }
+    }
+
     if (!recognitionRef.current) {
       toast.info("Trình duyệt này không hỗ trợ Speech Recognition. Bạn có thể chọn nhanh bên dưới.");
       return;
@@ -439,7 +450,19 @@ export function VoiceNavAssistant() {
     });
   };
 
-  if (!enabled) return null;
+  // Chỉ hiển thị Trợ lý AI khi người dùng đã đăng nhập thành công vào app và không ở trang đăng nhập/auth
+  const pathname = (currentPath || "").toLowerCase();
+  const isAuthOrPublicPage =
+    pathname.includes("/login") ||
+    pathname === "/auth" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/reset-password" ||
+    pathname.startsWith("/landing") ||
+    pathname.startsWith("/card/") ||
+    pathname.startsWith("/b/");
+
+  if (!enabled || !user || status !== "in" || isAuthOrPublicPage) return null;
 
   return (
     <>

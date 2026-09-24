@@ -34,6 +34,22 @@ export class MembersController {
     return this.membersService.getMyMember(req.user.id);
   }
 
+  @Patch('me')
+  async updateMyMemberPatch(@Request() req: any, @Body() body: any) {
+    if (body.coverUrl && !body.name && !body.avatar) {
+      return this.membersService.updateMyCover(req.user.id, body.coverUrl);
+    }
+    if (body.coverUrl) {
+      await this.membersService.updateMyCover(req.user.id, body.coverUrl).catch(() => null);
+    }
+    return this.membersService.updateMyProfile(req.user.id, body);
+  }
+
+  @Put('me')
+  async updateMyMemberPut(@Request() req: any, @Body() body: any) {
+    return this.updateMyMemberPatch(req, body);
+  }
+
   @Patch('me/cover')
   async updateMyCoverPatch(@Request() req: any, @Body() body: { coverUrl: string }) {
     return this.membersService.updateMyCover(req.user.id, body.coverUrl);

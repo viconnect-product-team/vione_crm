@@ -8,8 +8,14 @@ export interface VioneUser {
   username?: string;
   name?: string;
   avatar_url?: string;
+  role?: string;
+  department?: string;
+  boardName?: string;
+  title?: string;
+  phone?: string;
   /** Alias cho các nơi dùng user.user_metadata.full_name */
-  user_metadata?: { full_name?: string; avatar_url?: string };
+  user_metadata?: { full_name?: string; avatar_url?: string; [key: string]: any };
+  [key: string]: any;
 }
 
 export interface VioneSession {

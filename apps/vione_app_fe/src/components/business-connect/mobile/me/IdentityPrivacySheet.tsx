@@ -95,13 +95,13 @@ export function IdentityPrivacySheet({
             type="button"
             onClick={() => void handleSave()}
             disabled={saving}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[#D4AF37]/50 bg-[#121214] dark:bg-[#0A0A0C] px-6 text-[15px] font-bold text-[#F5E0A3] shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all hover:border-[#D4AF37] hover:shadow-[0_4px_25px_rgba(212,175,55,0.3)] active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] motion-reduce:transition-none cursor-pointer"
+            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] px-6 text-[15px] font-black uppercase tracking-wider shadow-md hover:brightness-105 active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B282] motion-reduce:transition-none cursor-pointer"
           >
             {saving && (
               <Loader2
                 aria-hidden="true"
-                className="h-4 w-4 animate-spin text-[#F5E0A3] motion-reduce:animate-none"
-                strokeWidth={1.8}
+                className="h-4 w-4 animate-spin text-[#050c15] motion-reduce:animate-none"
+                strokeWidth={2}
               />
             )}
             <span className="tracking-wide">{saving ? t("bc.mobile.me.saving") : t("bc.mobile.me.save")}</span>
@@ -135,13 +135,13 @@ export function IdentityPrivacySheet({
                 aria-label={`${t(FIELD_LABEL_KEYS[field])}: ${shared ? t("bc.mobile.me.privacy.shared") : t("bc.mobile.me.privacy.private")}`}
                 onClick={() => toggle(field)}
                 disabled={saving}
-                className={`relative h-7 w-12 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-navy)] disabled:opacity-50 motion-reduce:transition-none ${
-                  shared ? "bg-[var(--bc-mobile-navy)]" : "bg-[var(--bc-mobile-border)]"
+                className={`relative h-7 w-12 shrink-0 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B282] disabled:opacity-50 motion-reduce:transition-none ${
+                  shared ? "bg-[#D8B282] dark:bg-[#D8B282] ring-1 ring-[#B38954]/50" : "bg-[var(--bc-mobile-border)]"
                 }`}
               >
                 <span
                   aria-hidden="true"
-                  className={`absolute top-0.5 h-6 w-6 rounded-full bg-[var(--bc-mobile-surface)] shadow transition-[left] motion-reduce:transition-none ${
+                  className={`absolute top-0.5 h-6 w-6 rounded-full bg-white dark:bg-[#121214] shadow-md transition-[left] motion-reduce:transition-none ${
                     shared ? "left-[22px]" : "left-0.5"
                   }`}
                 />

@@ -21,14 +21,18 @@ import {
   Handshake,
   MapPin,
   MessageSquare,
+  Pencil,
+  Phone,
   RefreshCw,
   SlidersHorizontal,
   Sparkles,
   User,
   Users,
   Video,
+  X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useState, useEffect, useMemo } from "react";
 import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { hasTKey, useFmt, useLang, useT, type TKey } from "@/lib/i18n";
 import { getVNTimeGreeting } from "@/lib/utils";
@@ -56,6 +60,45 @@ import { TodayCustomizeSheet } from "./TodayCustomizeSheet";
 import { TodayItem } from "./TodayItem";
 import { VIconMark } from "./VIconMark";
 import { EventDetailMobileSheet } from "./EventDetailMobileSheet";
+import { GuidedTourModal, type TourStep } from "./GuidedTourModal";
+
+const VIONE_TOUR_STEPS: TourStep[] = [
+  {
+    targetId: "tour-vione-profile-banner",
+    title: "Hồ sơ Doanh nhân & Ảnh bìa",
+    description: "Khu vực định danh hiển thị tên, số điện thoại và ảnh bìa thương hiệu. Bạn có thể bấm 'Chỉnh sửa nhanh' để cập nhật ảnh bìa, avatar và số điện thoại tức thì.",
+    icon: "👤",
+    position: "bottom",
+  },
+  {
+    targetId: "tour-vione-quick-actions",
+    title: "Thao tác kết nối nhanh",
+    description: "Bộ ba công cụ quyền năng: Lên lịch hẹn thông minh (Gặp mặt), Quét danh thiếp AI (Quét thẻ), và Mở thẻ định danh điện tử (Danh thiếp).",
+    icon: "⚡",
+    position: "top",
+  },
+  {
+    targetId: "tour-vione-ai-suggestions",
+    title: "Gợi ý kết nối thông minh (AI)",
+    description: "Thuật toán AI tự động gợi ý các nhà lãnh đạo và đối tác tiềm năng phù hợp nhất dựa trên ngành nghề kinh doanh và mục tiêu mở rộng mạng lưới.",
+    icon: "✨",
+    position: "top",
+  },
+  {
+    targetId: "tour-vione-vbutton",
+    title: "Nút hành động trung tâm (V-Action)",
+    description: "Nút biểu tượng 'V' hoàng kim ở trung tâm thanh điều hướng dưới cùng giúp bạn mở menu siêu kết nối một chạm: tạo cơ hội, quét thẻ hoặc đặt lịch gặp.",
+    icon: "💎",
+    position: "top",
+  },
+  {
+    targetId: "tour-vione-network-nav",
+    title: "Mạng lưới & Danh bạ Doanh nhân",
+    description: "Truy cập danh bạ mạng lưới hàng nghìn CEO, tra cứu đối tác theo địa bàn, lĩnh vực và kết nối hợp tác chỉ với một chạm.",
+    icon: "🌐",
+    position: "top",
+  },
+];
 
 export type CrmEvent = {
   id: string;
@@ -103,6 +146,18 @@ export function ExecutiveHome() {
   const [scheduleTab, setScheduleTab] = useState<"today" | "upcoming">("today");
   const [selectedEvent, setSelectedEvent] = useState<CrmEvent | null>(null);
   const [eventSheetOpen, setEventSheetOpen] = useState(false);
+  const [tourOpen, setTourOpen] = useState(false);
+
+  useEffect(() => {
+    // Tự động mở hướng dẫn giao diện dạng app ngân hàng ở lần truy cập đầu
+    const hasSeenTour = localStorage.getItem("vione_guided_tour_completed");
+    if (!hasSeenTour) {
+      const timer = setTimeout(() => {
+        setTourOpen(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const handleOpenEvent = (ev: CrmEvent) => {
     setSelectedEvent(ev);
@@ -219,7 +274,16 @@ export function ExecutiveHome() {
             {getVNTimeGreeting()}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setTourOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-[rgba(216,178,130,0.15)] border border-[rgba(216,178,130,0.4)] text-[#D8B282] hover:bg-[rgba(216,178,130,0.25)] active:scale-95 transition-all shadow-xs cursor-pointer"
+            title="Xem hướng dẫn sử dụng giao diện"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-[#D8B282]" />
+            <span className="inline">Hướng dẫn</span>
+          </button>
           <HomeNotificationsMenu unreadCount={unread} />
         </div>
       </header>
@@ -398,7 +462,9 @@ export function ExecutiveHome() {
             <QuickActions />
 
             {/* BC-Mobile-6A — calm intelligence: own query, never blocks Home. */}
-            <RelationshipSuggestions />
+            <div id="tour-vione-ai-suggestions">
+              <RelationshipSuggestions />
+            </div>
 
             <TodayCustomizeSheet
               open={customizeOpen}
@@ -412,6 +478,13 @@ export function ExecutiveHome() {
               open={eventSheetOpen}
               onOpenChange={setEventSheetOpen}
               event={selectedEvent}
+            />
+
+            <GuidedTourModal
+              steps={VIONE_TOUR_STEPS}
+              isOpen={tourOpen}
+              onClose={() => setTourOpen(false)}
+              storageKey="vione_guided_tour_completed"
             />
           </div>
         )}
@@ -456,7 +529,7 @@ function QuickActions() {
   ];
 
   return (
-    <nav aria-label={t("bc.mobile.home.quick.title")} className="mt-5 grid grid-cols-3 gap-2">
+    <nav id="tour-vione-quick-actions" aria-label={t("bc.mobile.home.quick.title")} className="mt-5 grid grid-cols-3 gap-2">
       {items.map(({ to, Icon, label }) => (
         <Link
           key={to}
@@ -646,51 +719,254 @@ function initialsOf(identity: BcMobileHomeIdentity | null): string | null {
 // ── Sections ─────────────────────────────────────────────────────────────────
 
 function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
-  const name = identity.displayName ?? identity.email ?? "Thành viên";
+  const [quickEditOpen, setQuickEditOpen] = useState(false);
+  const [profileVersion, setProfileVersion] = useState(0);
+
+  // Load custom profile if available from localStorage
+  const customProfile = useMemo(() => {
+    try {
+      const raw = localStorage.getItem("vba_custom_profile");
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+  }, [profileVersion]);
+
+  useEffect(() => {
+    const onUpdated = () => setProfileVersion((v) => v + 1);
+    window.addEventListener("vba_profile_updated", onUpdated);
+    window.addEventListener("storage", onUpdated);
+    return () => {
+      window.removeEventListener("vba_profile_updated", onUpdated);
+      window.removeEventListener("storage", onUpdated);
+    };
+  }, []);
+
   const viewerUserId = useViewerUserId();
   const mine = useMyIdentity({ enabled: Boolean(viewerUserId) });
   const profileIdentity = mine.data?.identity ?? null;
-  const initials = initialsOf(profileIdentity || identity);
-  const rawAvatarUrl = profileIdentity?.avatarUrl ?? identity.avatarUrl ?? null;
+
+  // Tên hiển thị (chỉ hiển thị tên cùng số điện thoại)
+  const name =
+    customProfile?.name?.trim() ||
+    profileIdentity?.displayName ||
+    identity.displayName ||
+    "Phạm Văn Vũ (Admin)";
+
+  // Số điện thoại
+  const phone =
+    customProfile?.phone?.trim() ||
+    profileIdentity?.primaryPhone ||
+    localStorage.getItem("ceo1983_member_phone") ||
+    "0983 000 001";
+
+  // Ảnh đại diện
+  const rawAvatarUrl = customProfile?.avatar || profileIdentity?.avatarUrl || identity.avatarUrl || null;
   const avatarUrl = avatarOrDemo(rawAvatarUrl, name);
-  const role = [profileIdentity?.jobTitle, profileIdentity?.companyName]
-    .filter((p): p is string => Boolean(p && p.trim()))
-    .join(" · ");
+
+  // Ảnh bìa 1 nửa (half-height cover)
+  const coverUrl =
+    customProfile?.cover ||
+    "/skyline_perspective_dark.jpg";
 
   return (
-    <div className="relative mt-4">
-      <div className="flex items-center justify-between gap-3">
+    <div id="tour-vione-profile-banner" className="relative mt-2">
+      {/* Ảnh bìa 1 nửa (Half-height cover banner) */}
+      <div className="relative h-28 sm:h-32 w-full overflow-hidden rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] shadow-xs group">
+        <img
+          src={coverUrl}
+          alt="Cover"
+          className="h-full w-full object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/skyline_perspective_dark.jpg";
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
+
+        {/* Nút Chỉnh sửa nhanh trên ảnh bìa */}
+        <button
+          type="button"
+          onClick={() => setQuickEditOpen(true)}
+          className="absolute bottom-2.5 right-2.5 inline-flex items-center gap-1.5 rounded-full bg-[var(--bc-mobile-surface)]/90 backdrop-blur-md px-3 py-1.5 text-xs font-semibold text-[var(--bc-mobile-text)] border border-[var(--bc-mobile-border)] hover:border-[var(--bc-mobile-accent)] shadow-sm cursor-pointer active:scale-95 transition-all"
+        >
+          <Pencil className="h-3.5 w-3.5 text-[var(--bc-mobile-accent)]" />
+          <span>Chỉnh sửa nhanh</span>
+        </button>
+      </div>
+
+      {/* Thông tin ở dưới header: chỉ hiển thị TÊN cùng SỐ ĐIỆN THOẠI */}
+      <div className="mt-3 flex items-center justify-between gap-3 px-1">
         <div className="min-w-0 flex-1">
-          <h1 className="mt-0.5 truncate text-[26px] font-semibold tracking-tight text-[var(--bc-mobile-text)]">
+          <h1 className="truncate text-[22px] sm:text-[24px] font-bold tracking-tight text-[var(--bc-mobile-text)]">
             {name}
           </h1>
-          {role ? (
-            <p className="mt-0.5 truncate text-[14px] font-normal text-[var(--bc-mobile-muted)]">
-              {role}
-            </p>
-          ) : null}
+          <p className="mt-0.5 flex items-center gap-1.5 text-[13.5px] font-semibold text-[var(--bc-mobile-accent)]">
+            <Phone className="h-3.5 w-3.5 text-[var(--bc-mobile-accent)] shrink-0" />
+            <span>{phone}</span>
+          </p>
         </div>
 
         <Link
           to="/connect-app/me"
           aria-label="Hồ sơ cá nhân"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)] overflow-hidden"
+          className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[var(--bc-mobile-border-gold)] p-0.5 shadow-md overflow-hidden bg-[var(--bc-mobile-surface)] hover:scale-105 transition-transform"
         >
-          {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt=""
-              className="h-10 w-10 rounded-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = demoAvatar(name);
-              }}
-            />
-          ) : (
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[14px] font-semibold text-[var(--bc-mobile-ivory)]">
-              {initials ?? <User className="h-5 w-5" strokeWidth={1.6} />}
-            </span>
-          )}
+          <img
+            src={avatarUrl}
+            alt={name}
+            className="h-full w-full rounded-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = demoAvatar(name);
+            }}
+          />
         </Link>
+      </div>
+
+      {/* Modal Chỉnh sửa nhanh */}
+      {quickEditOpen && (
+        <QuickEditProfileModal
+          initialName={name}
+          initialPhone={phone}
+          initialAvatar={avatarUrl}
+          initialCover={coverUrl}
+          onClose={() => setQuickEditOpen(false)}
+          onSaved={() => {
+            setQuickEditOpen(false);
+            setProfileVersion((v) => v + 1);
+            toast.success("✓ Đã cập nhật thông tin hồ sơ thành công!");
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function QuickEditProfileModal({
+  initialName,
+  initialPhone,
+  initialAvatar,
+  initialCover,
+  onClose,
+  onSaved,
+}: {
+  initialName: string;
+  initialPhone: string;
+  initialAvatar: string;
+  initialCover: string;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(initialName);
+  const [phone, setPhone] = useState(initialPhone);
+  const [avatar, setAvatar] = useState(initialAvatar);
+  const [cover, setCover] = useState(initialCover);
+
+  const handleSave = () => {
+    try {
+      const existingRaw = localStorage.getItem("vba_custom_profile");
+      const existing = existingRaw ? JSON.parse(existingRaw) : {};
+      const updated = {
+        ...existing,
+        name: name.trim() || initialName,
+        phone: phone.trim() || initialPhone,
+        avatar: avatar.trim() || initialAvatar,
+        cover: cover.trim() || initialCover,
+        updatedAt: new Date().toISOString(),
+      };
+      localStorage.setItem("vba_custom_profile", JSON.stringify(updated));
+      localStorage.setItem("ceo1983_member_phone", updated.phone);
+      window.dispatchEvent(new Event("vba_profile_updated"));
+      onSaved();
+    } catch {
+      onSaved();
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-md rounded-t-3xl sm:rounded-3xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-5 shadow-2xl">
+        <div className="flex items-center justify-between pb-3 border-b border-[var(--bc-mobile-border)]">
+          <h3 className="text-base font-bold text-[var(--bc-mobile-text)]">
+            Chỉnh sửa nhanh thông tin
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="grid h-8 w-8 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)] cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="mt-4 space-y-3.5">
+          <div>
+            <label className="text-xs font-semibold text-[var(--bc-mobile-muted)]">
+              Họ và tên
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nhập họ và tên..."
+              className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-[var(--bc-mobile-muted)]">
+              Số điện thoại
+            </label>
+            <input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Nhập số điện thoại..."
+              className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-[var(--bc-mobile-muted)]">
+              Link ảnh đại diện
+            </label>
+            <input
+              type="text"
+              value={avatar}
+              onChange={(e) => setAvatar(e.target.value)}
+              placeholder="Dán link ảnh đại diện..."
+              className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-[var(--bc-mobile-muted)]">
+              Link ảnh bìa
+            </label>
+            <input
+              type="text"
+              value={cover}
+              onChange={(e) => setCover(e.target.value)}
+              placeholder="Dán link ảnh bìa hoặc /skyline_perspective_dark.jpg..."
+              className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-center gap-2 pt-2 border-t border-[var(--bc-mobile-border)]">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 py-2.5 rounded-full border border-[var(--bc-mobile-border)] text-xs font-semibold text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)] cursor-pointer"
+          >
+            Hủy
+          </button>
+          <button
+            type="button"
+            onClick={handleSave}
+            className="flex-1 py-2.5 rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] text-xs font-bold shadow-md cursor-pointer hover:brightness-105 active:scale-98 transition-all"
+          >
+            Lưu thay đổi
+          </button>
+        </div>
       </div>
     </div>
   );

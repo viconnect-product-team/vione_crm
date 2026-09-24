@@ -68,6 +68,7 @@ export function BusinessConnectBottomNav({ onVPress }: { onVPress: () => void })
     return (
       <Link
         key={tab.to}
+        id={tab.to === "/connect-app/network" ? "tour-vione-network-nav" : undefined}
         to={tab.to}
         activeOptions={{ exact: tab.exact ?? false }}
         className="group relative flex min-h-[52px] flex-col items-center justify-center gap-1 rounded-xl outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 select-none transition-colors duration-150 motion-reduce:transition-none cursor-pointer"
@@ -105,7 +106,7 @@ export function BusinessConnectBottomNav({ onVPress }: { onVPress: () => void })
       >
         {renderTab(HOME_TAB)}
         {renderTab(NETWORK_TAB)}
-        <div className="relative flex items-center justify-center">
+        <div id="tour-vione-vbutton" className="relative flex items-center justify-center">
           <VButton onClick={onVPress} className="-mt-[20px]" />
         </div>
         {renderTab(COMMUNITY_TAB)}

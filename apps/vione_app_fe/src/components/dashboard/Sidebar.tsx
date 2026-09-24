@@ -466,10 +466,10 @@ export function Sidebar({
           />
         ) : (
           <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[11px] font-bold text-primary-foreground"
-            style={{ background: "var(--gradient-card)" }}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-black text-slate-950 shadow-md border border-amber-400/50"
+            style={{ background: "linear-gradient(135deg, #FFF3C4 0%, #F59E0B 55%, #B45309 100%)" }}
           >
-            VBA
+            V1
           </div>
         )}
         {!isCollapsed && (

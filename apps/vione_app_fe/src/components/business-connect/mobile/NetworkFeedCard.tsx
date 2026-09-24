@@ -615,17 +615,22 @@ function FeedActionRow({
 
       {/* Dialog xác nhận xoá khoảnh khắc */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="border border-[#2a364a] bg-[#0c131f]/95 backdrop-blur-xl text-[#f1f5f9]">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#f87171]">Xác nhận xoá khoảnh khắc</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#94a3b8]">
+        <AlertDialogContent className="max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl text-foreground">
+          <AlertDialogHeader className="space-y-2">
+            <AlertDialogTitle className="text-base font-bold text-destructive flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </span>
+              <span>Xác nhận xoá khoảnh khắc</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Bạn có chắc chắn muốn xoá khoảnh khắc này? Hành động này sẽ xoá vĩnh viễn hình ảnh, bình luận và lượt thích đi kèm.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter className="mt-4 flex gap-2 sm:justify-end">
             <AlertDialogCancel
               disabled={deleting}
-              className="border-[#334155] bg-[#1e293b] text-[#cbd5e1] hover:bg-[#334155]"
+              className="rounded-xl border border-border bg-secondary/50 text-foreground hover:bg-secondary text-xs sm:text-sm font-semibold px-4 py-2"
             >
               Huỷ
             </AlertDialogCancel>
@@ -635,7 +640,7 @@ function FeedActionRow({
                 e.preventDefault();
                 void handleDeleteMoment();
               }}
-              className="bg-[#ef4444] text-white hover:bg-[#dc2626]"
+              className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs sm:text-sm font-semibold px-4 py-2 shadow-xs"
             >
               {deleting ? "Đang xoá..." : "Xoá vĩnh viễn"}
             </AlertDialogAction>

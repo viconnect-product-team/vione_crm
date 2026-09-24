@@ -100,7 +100,8 @@ function PlatformAssociationsPage() {
         try {
           await fetchNestApi(`/communities/${editing.id}`, {
             method: "PATCH",
-            body: v,
+            body: JSON.stringify(v),
+            headers: { "Content-Type": "application/json" },
           });
         } catch {
           await updateAssoc({ data: { id: editing.id, ...(v as object) } as never });
@@ -110,7 +111,8 @@ function PlatformAssociationsPage() {
         try {
           await fetchNestApi("/communities", {
             method: "POST",
-            body: v,
+            body: JSON.stringify(v),
+            headers: { "Content-Type": "application/json" },
           });
         } catch {
           await createAssoc({ data: v as never });

@@ -347,6 +347,23 @@ const QUICK_PROMPTS = [
   { label: "👥 Phát triển hội viên", query: "Tìm trưởng ban thành viên để thẩm định và gia nhập cộng đồng doanh nhân" },
 ];
 
+// Vietnamese diacritics removal and NLP search normalizer
+function normalizeVietnamese(str: string): string {
+  return (str || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase()
+    .trim();
+}
+
+const VI_STOP_WORDS = new Set([
+  "toi", "can", "tim", "nguoi", "mot", "co", "kha", "nang", "muon", "ve", "cho", "o", "lam",
+  "duoc", "va", "cac", "nhung", "la", "voi", "trong", "tai", "ra", "vao", "nhu", "de", "ai",
+  "giup", "biet", "chuyen", "bac", "anh", "chi", "em", "ban", "minh", "hien", "dang"
+]);
+
 export function DynamicAiMatcherPanel({ initialQuery = "" }: { initialQuery?: string } = {}) {
   const navigate = useNavigate();
   const openThread = useDmOpenThread();
@@ -386,30 +403,34 @@ export function DynamicAiMatcherPanel({ initialQuery = "" }: { initialQuery?: st
     setActiveChip(prompt.label);
   };
 
-  // Dynamic AI Matching Algorithm: analyzes roles, departments, companies, skills, talents
+  // Dynamic AI Matching Algorithm with diacritics stripping & stop-word elimination
   const matchedResults = useMemo(() => {
-    const q = query.toLowerCase().trim();
-    if (!q) {
-      // Default top suggestions
-      return AI_KNOWLEDGE_ACCOUNTS.map((acc, idx) => ({
+    const rawQ = query.trim();
+    if (!rawQ) {
+      // Default: Only show 3 top curated daily suggestions rather than all 16
+      return AI_KNOWLEDGE_ACCOUNTS.slice(0, 3).map((acc, idx) => ({
         account: acc,
-        matchScore: 98 - idx * 3,
-        reason: `Lãnh đạo chủ chốt Ban ${acc.department.replace("Ban ", "")} với hơn 15 năm kinh nghiệm điều hành thực chiến.`,
+        matchScore: 98 - idx * 2,
+        reason: `Lãnh đạo chủ chốt Ban ${acc.department.replace("Ban ", "")} với hơn 15 năm kinh nghiệm thực chiến.`,
         highlightSkill: acc.talents[0] || acc.skills[0],
-        icebreaker: `Chào anh/chị ${acc.name}, tôi theo dõi hồ sơ của anh/chị tại ${acc.association} và rất ấn tượng với thế mạnh về ${acc.talents[0] || acc.industry}. Tôi rất mong muốn được kết nối và trao đổi cơ hội hợp tác B2B.`,
+        icebreaker: `Chào anh/chị ${acc.name}, tôi theo dõi hồ sơ của anh/chị tại ${acc.association} và rất ấn tượng với thế mạnh về ${acc.talents[0] || acc.industry}. Rất mong được kết nối trao đổi cơ hội hợp tác B2B.`,
       }));
     }
 
-    const keywords = q
-      .replace(/[.,?!:;]/g, " ")
+    const normQ = normalizeVietnamese(rawQ);
+    const rawWords = normQ
+      .replace(/[.,?!:;()\-—_/\\+]/g, " ")
       .split(/\s+/)
       .filter((w) => w.length > 1);
+
+    const keywords = rawWords.filter((w) => !VI_STOP_WORDS.has(w));
+    const effectiveKeywords = keywords.length > 0 ? keywords : rawWords;
 
     const scored = AI_KNOWLEDGE_ACCOUNTS.map((acc) => {
       let score = 50;
       let matchedFactors: string[] = [];
 
-      const searchCorpus = [
+      const searchCorpusNorm = normalizeVietnamese([
         acc.name,
         acc.executiveRole,
         acc.department,
@@ -419,56 +440,53 @@ export function DynamicAiMatcherPanel({ initialQuery = "" }: { initialQuery?: st
         acc.headline,
         ...acc.skills,
         ...acc.talents,
-      ]
-        .join(" ")
-        .toLowerCase();
+      ].join(" "));
 
-      keywords.forEach((kw) => {
-        if (searchCorpus.includes(kw)) {
+      effectiveKeywords.forEach((kw) => {
+        if (searchCorpusNorm.includes(kw)) {
           score += 12;
-          // Specific high-value bonus
-          if (acc.talents.some((t) => t.toLowerCase().includes(kw))) {
+          if (acc.talents.some((t) => normalizeVietnamese(t).includes(kw))) {
             score += 10;
             matchedFactors.push(`Thế mạnh: ${kw}`);
           }
-          if (acc.skills.some((s) => s.toLowerCase().includes(kw))) {
+          if (acc.skills.some((s) => normalizeVietnamese(s).includes(kw))) {
             score += 8;
             matchedFactors.push(`Kỹ năng: ${kw}`);
           }
-          if (acc.industry.toLowerCase().includes(kw)) {
+          if (normalizeVietnamese(acc.industry).includes(kw)) {
             score += 9;
             matchedFactors.push(`Ngành: ${acc.industry}`);
           }
-          if (acc.department.toLowerCase().includes(kw)) {
+          if (normalizeVietnamese(acc.department).includes(kw)) {
             score += 10;
             matchedFactors.push(`Ban: ${acc.department}`);
           }
         }
       });
 
-      // Cap score between 65% and 99%
+      const hasMatch = matchedFactors.length > 0 || score > 50;
       const finalScore = Math.min(99, Math.max(65, score));
 
-      // Dynamic AI Synthesis of Reason
-      let reason = `AI đánh giá hồ sơ phù hợp cao dựa trên vị trí ${acc.executiveRole} tại ${acc.department} và kinh nghiệm sâu trong ngành ${acc.industry}.`;
+      let reason = `AI đánh giá hồ sơ phù hợp dựa trên vai trò ${acc.executiveRole} tại ${acc.department} và lĩnh vực ${acc.industry}.`;
       if (matchedFactors.length > 0) {
-        reason = `AI nhận diện tài khoản đáp ứng trực tiếp yêu cầu nhờ năng lực ${matchedFactors.slice(0, 2).join(", ")}.`;
+        reason = `AI nhận diện tài khoản đáp ứng trực tiếp yêu cầu nhờ ${matchedFactors.slice(0, 2).join(", ")}.`;
       }
 
-      // Dynamic Icebreaker Generator
-      const icebreaker = `Kính chào anh/chị ${acc.name}, qua phân tích của ViOne AI Copilot, tôi biết anh/chị là ${acc.executiveRole} chuyên về ${acc.talents[0] || acc.skills[0]}. Hiện tôi đang có nhu cầu về "${query.slice(0, 60)}...", rất mong có cơ hội được thỉnh giáo và kết nối sâu hơn cùng anh/chị.`;
+      const icebreaker = `Kính chào anh/chị ${acc.name}, qua phân tích của ViOne AI Copilot, tôi biết anh/chị là ${acc.executiveRole} chuyên về ${acc.talents[0] || acc.skills[0]}. Tôi đang có nhu cầu về "${rawQ.slice(0, 50)}...", rất mong được giao lưu kết nối cùng anh/chị.`;
 
       return {
         account: acc,
         matchScore: finalScore,
+        hasMatch,
         reason,
         highlightSkill: acc.talents[0] || acc.skills[0],
         icebreaker,
       };
     });
 
-    // Sort descending by matchScore
-    return scored.sort((a, b) => b.matchScore - a.matchScore);
+    // Only return accounts that genuinely match the query
+    const filtered = scored.filter((item) => item.hasMatch);
+    return filtered.sort((a, b) => b.matchScore - a.matchScore);
   }, [query]);
 
   const handleCopyIcebreaker = (text: string, id: string) => {
@@ -578,15 +596,27 @@ export function DynamicAiMatcherPanel({ initialQuery = "" }: { initialQuery?: st
       <div className="flex items-center justify-between text-xs text-[var(--bc-mobile-muted)] pb-2 mb-3 border-b border-[var(--bc-mobile-border)]">
         <span className="font-bold flex items-center gap-1 text-[var(--bc-mobile-text)]">
           <TrendingUp className="w-3.5 h-3.5 text-emerald-500" />
-          <span>Top đối tác khớp yêu cầu:</span>
+          <span>{query.trim() ? `Kết quả khớp nhu cầu (${matchedResults.length}):` : "Đề xuất tiêu biểu hôm nay:"}</span>
         </span>
         <span className="font-mono text-[11px] font-bold text-[var(--bc-mobile-accent)]">
-          {matchedResults.length} hồ sơ đã quét
+          {query.trim() ? `${matchedResults.length} đối tác phù hợp` : "3 đề xuất chọn lọc"}
         </span>
       </div>
 
-      {/* Dynamic Matched Candidates Cards */}
+      {/* Dynamic Matched Candidates Cards or Empty State */}
       <div className="space-y-3.5">
+        {matchedResults.length === 0 ? (
+          <div className="p-6 text-center rounded-2xl border border-dashed border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] dark:bg-black/20">
+            <Bot className="w-8 h-8 text-[var(--bc-mobile-accent)] mx-auto mb-2 opacity-80" />
+            <p className="text-sm font-bold text-[var(--bc-mobile-text)] dark:text-white">
+              Chưa tìm thấy đối tác khớp chính xác
+            </p>
+            <p className="text-xs text-[var(--bc-mobile-muted)] dark:text-slate-400 mt-1 max-w-xs mx-auto">
+              Hãy thử tìm kiếm với các từ khóa về ngành nghề, kỹ năng hoặc bấm vào các gợi ý có sẵn ở trên.
+            </p>
+          </div>
+        ) : null}
+
         {matchedResults.map(({ account, matchScore, reason, highlightSkill, icebreaker }) => (
           <div
             key={account.id}

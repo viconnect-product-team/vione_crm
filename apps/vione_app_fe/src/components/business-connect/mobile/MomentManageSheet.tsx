@@ -803,21 +803,26 @@ export function MomentManageSheet({
 
       {/* Delete Confirmation Alert Dialog */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="border border-[#2a364a] bg-[#0c131f]/95 backdrop-blur-xl text-[#f1f5f9]">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-[#f87171]">Xác nhận xoá khoảnh khắc</AlertDialogTitle>
-            <AlertDialogDescription className="text-[#94a3b8]">
+        <AlertDialogContent className="max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl text-foreground">
+          <AlertDialogHeader className="space-y-2">
+            <AlertDialogTitle className="text-base font-bold text-destructive flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                <Trash2 className="h-4 w-4" />
+              </span>
+              <span>Xác nhận xoá khoảnh khắc</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Bạn có chắc chắn muốn xoá khoảnh khắc này? Hành động này sẽ xoá vĩnh viễn hình ảnh, bình luận và lượt thích đi kèm.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-[#2a364a] text-[#f1f5f9] hover:bg-[#1a2332]">
+          <AlertDialogFooter className="mt-4 flex gap-2 sm:justify-end">
+            <AlertDialogCancel className="rounded-xl border border-border bg-secondary/50 text-foreground hover:bg-secondary text-xs sm:text-sm font-semibold px-4 py-2">
               Hủy
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={deleting}
-              className="bg-red-600 text-white hover:bg-red-700 focus:ring-red-600"
+              className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs sm:text-sm font-semibold px-4 py-2 shadow-xs"
             >
               {deleting ? "Đang xoá..." : "Xoá vĩnh viễn"}
             </AlertDialogAction>

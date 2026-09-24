@@ -1487,7 +1487,13 @@ function CardRow({
   };
 
   const published = card.status === "published";
-  const resolvedAvatar = card.avatarUrl ? resolveMediaUrl(card.avatarUrl) || card.avatarUrl : null;
+  const cachedCardAvatar =
+    typeof window !== "undefined" && card.id
+      ? localStorage.getItem(`vba_card_avatar_${card.id}`) ||
+        localStorage.getItem(`vba_secondary_card_avatar_${card.id}`)
+      : null;
+  const effectiveAvatar = card.avatarUrl || cachedCardAvatar || null;
+  const resolvedAvatar = effectiveAvatar ? resolveMediaUrl(effectiveAvatar) || effectiveAvatar : null;
   const [copied, setCopied] = useState(false);
 
   const handleCopyLink = () => {
@@ -1765,14 +1771,12 @@ function CardEditor({
         },
       });
       try {
-        const existing = JSON.parse(localStorage.getItem("vba_custom_profile") || "{}");
-        if (d.displayName) existing.name = d.displayName;
-        if (d.professionalTitle) existing.title = d.professionalTitle;
-        if (d.companyName) existing.company = d.companyName;
-        if (d.avatarUrl) existing.avatar = d.avatarUrl;
-        localStorage.setItem("vba_custom_profile", JSON.stringify(existing));
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(new Event("profile-updated"));
+        if (d.avatarUrl && d.id) {
+          localStorage.setItem(`vba_card_avatar_${d.id}`, d.avatarUrl);
+          localStorage.setItem(`vba_secondary_card_avatar_${d.id}`, d.avatarUrl);
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("storage"));
+          }
         }
       } catch {}
       toast.success(t("bc.saved"));

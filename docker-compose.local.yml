@@ -1,4 +1,4 @@
-name: vione-standalone
+name: vione-connect
 
 services:
   backend:
@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile.backend
       target: runner
-    container_name: vione-standalone-backend-local
+    image: vione-connect-backend:latest
+    container_name: vione-connect-backend-local
     restart: unless-stopped
     env_file:
       - .env
@@ -16,7 +17,7 @@ services:
     ports:
       - "4012:4000"
     networks:
-      - vione-standalone-network
+      - vione-connect-network
     depends_on:
       - db
 
@@ -24,7 +25,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: vione-standalone-frontend-local
+    image: vione-connect-frontend:latest
+    container_name: vione-connect-frontend-local
     restart: unless-stopped
     env_file:
       - .env
@@ -38,11 +40,11 @@ services:
     depends_on:
       - backend
     networks:
-      - vione-standalone-network
+      - vione-connect-network
 
   db:
     image: postgres:15
-    container_name: vione-standalone-db-local
+    container_name: vione-connect-db-local
     restart: always
     environment:
       POSTGRES_USER: app1
@@ -53,11 +55,11 @@ services:
     volumes:
       - postgres_standalone_data:/var/lib/postgresql/data
     networks:
-      - vione-standalone-network
+      - vione-connect-network
 
   minio:
     image: minio/minio:latest
-    container_name: vione-standalone-minio-local
+    container_name: vione-connect-minio-local
     restart: always
     environment:
       MINIO_ROOT_USER: minioadmin
@@ -69,10 +71,10 @@ services:
       - vione-standalone-minio-data-local:/data
     command: server /data --console-address ":9001"
     networks:
-      - vione-standalone-network
+      - vione-connect-network
 
 networks:
-  vione-standalone-network:
+  vione-connect-network:
     driver: bridge
 
 volumes:

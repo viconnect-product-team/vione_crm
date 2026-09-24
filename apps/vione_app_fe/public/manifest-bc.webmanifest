@@ -1,7 +1,7 @@
 {
-  "name": "vione_app",
-  "short_name": "vione_app",
-  "description": "Nền tảng kết nối, ghi nhớ và phát triển các mối quan hệ kinh doanh.",
+  "name": "ViOne Connect - Nền tảng Doanh nhân",
+  "short_name": "ViOne Connect",
+  "description": "Nền tảng kết nối, ghi nhớ và phát triển các mối quan hệ kinh doanh chất lượng cao.",
   "id": "/connect-app",
   "start_url": "/connect-app",
   "scope": "/",
@@ -28,6 +28,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

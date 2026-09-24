@@ -54,6 +54,10 @@ import { AiMatchConnectAction, AiMatchDetailSheet } from "./AiMatchDetailSheet";
 import { CustomersPanel } from "./customers/CustomersPanel";
 import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { DynamicAiMatcherPanel } from "./ai/DynamicAiMatcherPanel";
+import { NetworkStoriesStrip } from "./NetworkStoriesStrip";
+import { NetworkSocialComposer } from "./NetworkSocialComposer";
+import { NetworkPartnerSuggestionsStrip } from "./NetworkPartnerSuggestionsStrip";
+import { PostMomentModal } from "./moments/PostMomentModal";
 
 type NetworkSort = "recent" | "name" | "company";
 type NetworkFilter = "all" | "connected" | "saved_card" | "card_scanned" | "contact_shared";
@@ -137,6 +141,7 @@ export function NetworkHome({
   const [sort, setSort] = useState<NetworkSort>("recent");
   const [filter, setFilter] = useState<NetworkFilter>("all");
   const [sortOpen, setSortOpen] = useState(false);
+  const [storyModalOpen, setStoryModalOpen] = useState(false);
   const network = useBusinessConnectNetwork(term);
   const { recommendations } = useTodayRelationshipRecommendations(lang);
   const clearSearch = () => setTerm("");
@@ -298,6 +303,11 @@ export function NetworkHome({
         {/* Lời mời kết bạn đang chờ phản hồi — luôn hiển thị ngay đầu danh sách khi có lời mời */}
         {!narrowed && <NetworkIncomingRequestsSection />}
 
+        {/* Khoảnh khắc 24h Doanh nhân (Facebook-grade Stories Carousel) */}
+        {!narrowed && (
+          <NetworkStoriesStrip onOpenCreateStory={() => setStoryModalOpen(true)} />
+        )}
+
         {/* B — Ô tìm kiếm + bộ lọc */}
         <form
           className="mt-4 flex items-center gap-2 relative self-stretch w-full flex-[0_0_auto]"
@@ -437,36 +447,14 @@ export function NetworkHome({
                   />
                 ) : null}
 
-                {/* Ghi khoảnh khắc nhanh: Bạn vừa gặp ai? */}
+                {/* Facebook-grade Social Status Composer */}
                 {!narrowed ? (
-                  <div className="mt-5 flex items-center gap-3 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-md">
-                    <Link
-                      to="/connect-app/moment"
-                      className="flex min-w-0 flex-1 items-center gap-3 rounded-xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)]"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] bg-[var(--bc-mobile-surface-2)] shadow-sm"
-                      >
-                        <Sparkles className="h-5 w-5 text-[var(--bc-mobile-accent)]" strokeWidth={1.9} />
-                      </span>
-                      <span className="min-w-0">
-                        <span className="block truncate text-[15.5px] font-semibold text-[var(--bc-mobile-accent)]">
-                          {t("bc.mobile.network.compose.title")}
-                        </span>
-                        <span className="mt-0.5 block truncate text-[12.5px] text-[var(--bc-mobile-muted)]">
-                          {t("bc.mobile.network.compose.subtitle")}
-                        </span>
-                      </span>
-                    </Link>
-                    <Link
-                      to="/connect-app/card-scan"
-                      aria-label={t("bc.mobile.network.compose.scan")}
-                      className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)]"
-                    >
-                      <Camera className="h-[21px] w-[21px]" strokeWidth={1.7} />
-                    </Link>
-                  </div>
+                  <NetworkSocialComposer />
+                ) : null}
+
+                {/* Gợi ý kết nối doanh nhân cùng ngành (Facebook-grade Partner Suggestions) */}
+                {!narrowed ? (
+                  <NetworkPartnerSuggestionsStrip />
                 ) : null}
 
                 {/* Khoảnh khắc mạng lưới (Feed cuộc gặp) ngay dưới thanh ghi nhanh */}
@@ -579,6 +567,11 @@ export function NetworkHome({
         )}
       </main>
 
+      <PostMomentModal
+        open={storyModalOpen}
+        onOpenChange={setStoryModalOpen}
+        initialFeeling="share_opportunity"
+      />
     </>
   );
 }
