@@ -142,6 +142,7 @@ export function NetworkHome({
   const [filter, setFilter] = useState<NetworkFilter>("all");
   const [sortOpen, setSortOpen] = useState(false);
   const [storyModalOpen, setStoryModalOpen] = useState(false);
+  const [postMomentModalOpen, setPostMomentModalOpen] = useState(false);
   const network = useBusinessConnectNetwork(term);
   const { recommendations } = useTodayRelationshipRecommendations(lang);
   const clearSearch = () => setTerm("");
@@ -392,6 +393,11 @@ export function NetworkHome({
             {/* AI Match và Nurture List - Chỉ hiển thị khi tab là network */}
             {tab === "network" && (
               <>
+                {/* Facebook-grade Social Status Composer - Đặt ngay trên đầu để tiện chia sẻ khoảnh khắc */}
+                {!narrowed ? (
+                  <NetworkSocialComposer />
+                ) : null}
+
                 {/* ViOne Dynamic AI Copilot Banner */}
                 {!narrowed && (
                   <div className="mb-4 p-4 rounded-2xl border border-amber-300/60 dark:border-amber-500/30 bg-gradient-to-r from-amber-50 via-amber-100/35 to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-xs dark:shadow-xl relative overflow-hidden transition-colors">
@@ -447,28 +453,36 @@ export function NetworkHome({
                   />
                 ) : null}
 
-                {/* Facebook-grade Social Status Composer */}
-                {!narrowed ? (
-                  <NetworkSocialComposer />
-                ) : null}
-
                 {/* Gợi ý kết nối doanh nhân cùng ngành (Facebook-grade Partner Suggestions) */}
                 {!narrowed ? (
                   <NetworkPartnerSuggestionsStrip />
                 ) : null}
 
+                {/* Thanh tạo khoảnh khắc nhanh (Composer) */}
+                {!narrowed && <NetworkSocialComposer />}
+
                 {/* Khoảnh khắc mạng lưới (Feed cuộc gặp) ngay dưới thanh ghi nhanh */}
                 {!narrowed ? (
-                  <section className="mt-6">
+                  <section className="mt-5">
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <h2 className="min-w-0 truncate text-[10px] font-medium tracking-[1px] uppercase text-[var(--bc-mobile-muted)]">
                         {t("bc.mobile.network.moments.title")}
                       </h2>
-                      {feed.items.length > 0 && (
-                        <span className="text-[11px] text-[var(--bc-mobile-muted)]">
-                          {feed.items.length} khoảnh khắc
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPostMomentModalOpen(true)}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[var(--bc-mobile-accent-grad)] text-black border border-[var(--bc-mobile-border-gold)] hover:brightness-105 transition active:scale-95 shadow-xs cursor-pointer"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          <span>Đăng khoảnh khắc</span>
+                        </button>
+                        {feed.items.length > 0 && (
+                          <span className="text-[11px] text-[var(--bc-mobile-muted)]">
+                            {feed.items.length}
+                          </span>
+                        )}
+                      </div>
                     </div>
                     {feed.items.length > 0 ? (
                       <ul
@@ -495,17 +509,24 @@ export function NetworkHome({
                         <p className="mt-1 text-[11.5px] text-[var(--bc-mobile-muted)]">
                           Ghi lại các cuộc gặp gỡ, trao đổi và hợp tác đầu tiên của bạn để lưu giữ hành trình.
                         </p>
-                        <Link
-                          to="/connect-app/moment"
-                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-1.5 text-xs font-bold text-slate-950 shadow-sm transition hover:opacity-90"
+                        <button
+                          type="button"
+                          onClick={() => setPostMomentModalOpen(true)}
+                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-1.5 text-xs font-bold text-slate-950 shadow-sm transition hover:opacity-90 cursor-pointer"
                         >
                           <Plus className="h-3.5 w-3.5" />
                           <span>Ghi khoảnh khắc ngay</span>
-                        </Link>
+                        </button>
                       </div>
                     )}
                   </section>
                 ) : null}
+
+                {/* Modal Đăng khoảnh khắc toàn diện */}
+                <PostMomentModal
+                  open={postMomentModalOpen}
+                  onOpenChange={setPostMomentModalOpen}
+                />
 
                 {/* Danh sách người trong Network */}
                 <section className="mt-7">

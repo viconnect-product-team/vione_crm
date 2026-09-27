@@ -1,15 +1,16 @@
 // BC-Mobile-8A — Hộp thư nội bộ (danh sách cuộc trò chuyện).
 // Chỉ hiển thị cuộc trò chuyện có thật; không tạo danh sách gợi ý ảo.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Loader2, MessageSquare } from "lucide-react";
+import { Loader2, MessageSquare, Plus, Users } from "lucide-react";
 import { useLang, useT } from "@/lib/i18n";
 import { MobilePage } from "@/components/business-connect/mobile/MobilePage";
 import { BusinessConnectTopBar } from "@/components/business-connect/mobile/BusinessConnectTopBar";
 import { MobileSearchBar } from "@/components/business-connect/mobile/MobileSearchBar";
 import { useDmThreads } from "@/hooks/use-bc-dm";
 import type { BcDmThreadSummary } from "@/lib/business-connect/mobile/dm.types";
+import { ViOneCreateGroupModal } from "@/components/business-connect/mobile/ViOneCreateGroupModal";
 
 export const Route = createFileRoute("/connect-app/inbox/")({
   head: () => ({
@@ -60,7 +61,11 @@ function Avatar({ thread }: { thread: BcDmThreadSummary }) {
         />
       ) : (
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1c2433] text-[15px] font-semibold text-[#D8B282] ring-1 ring-[#D8B282]/30">
-          {thread.displayName.trim().charAt(0).toUpperCase() || "?"}
+          {(thread as any).isGroup ? (
+            <Users className="h-6 w-6 text-[var(--bc-mobile-accent,#C29B69)]" />
+          ) : (
+            thread.displayName.trim().charAt(0).toUpperCase() || "?"
+          )}
         </div>
       )}
       {thread.isOnline ? (
@@ -120,7 +125,7 @@ function formatMessagePreview(raw?: string | null, isFromMe?: boolean, youPrefix
   return `${prefix}${text}`;
 }
 
-type InboxFilter = "all" | "unread" | "requests";
+type InboxFilter = "all" | "unread" | "groups" | "requests";
 
 function InboxPage() {
   const t = useT();
@@ -129,18 +134,45 @@ function InboxPage() {
   const query = useDmThreads();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<InboxFilter>("all");
+  const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
+
+  // Nhóm cục bộ đã tạo
+  const [localGroups, setLocalGroups] = useState<BcDmThreadSummary[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      return JSON.parse(localStorage.getItem("vione_local_groups") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    const onGroupCreated = (e: any) => {
+      if (e.detail) {
+        setLocalGroups((prev) => [e.detail, ...prev]);
+      }
+    };
+    window.addEventListener("vione_group_created", onGroupCreated);
+    return () => window.removeEventListener("vione_group_created", onGroupCreated);
+  }, []);
+
   const result = query.data;
-  const threads = Array.isArray(result)
+  const rawRemoteThreads = Array.isArray(result)
     ? result
     : result?.ok && Array.isArray(result.threads)
       ? result.threads
       : [];
   const isError = query.isError || (result != null && typeof result === "object" && "ok" in result && !result.ok);
 
+  const threads = useMemo(() => {
+    return [...localGroups, ...rawRemoteThreads];
+  }, [localGroups, rawRemoteThreads]);
+
   // Phân loại danh mục chuẩn Messenger:
-  // - Người ĐÃ kết nối: isConnected !== false
+  // - Người ĐÃ kết nối & nhóm: isConnected !== false
   // - Tin nhắn chờ (người lạ / gợi ý đối tác chưa kết nối): isConnected === false
   const connectedThreads = useMemo(() => threads.filter((t) => t.isConnected !== false), [threads]);
+  const groupThreads = useMemo(() => threads.filter((t) => (t as any).isGroup), [threads]);
   const unreadConnectedThreads = useMemo(
     () => connectedThreads.filter((t) => (t.unreadCount || 0) > 0),
     [connectedThreads],
@@ -166,9 +198,10 @@ function InboxPage() {
 
   const baseThreads = useMemo(() => {
     if (activeTab === "unread") return unreadConnectedThreads;
+    if (activeTab === "groups") return groupThreads;
     if (activeTab === "requests") return pendingThreads;
     return connectedThreads;
-  }, [activeTab, unreadConnectedThreads, pendingThreads, connectedThreads]);
+  }, [activeTab, unreadConnectedThreads, groupThreads, pendingThreads, connectedThreads]);
 
   const filteredThreads = useMemo(() => {
     if (!q) return baseThreads;
@@ -189,13 +222,24 @@ function InboxPage() {
           {t("bc.mobile.inbox.desc")}
         </p>
 
-        {/* Search bar for conversations and connected peers */}
-        <div className="w-full">
-          <MobileSearchBar
-            value={searchTerm}
-            onChange={setSearchTerm}
-            placeholder="Tìm người liên hệ hoặc nội dung tin nhắn..."
-          />
+        {/* Search bar and Create Group Button */}
+        <div className="flex items-center gap-2.5">
+          <div className="min-w-0 flex-1">
+            <MobileSearchBar
+              value={searchTerm}
+              onChange={setSearchTerm}
+              placeholder="Tìm người liên hệ, nhóm phòng ban..."
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsCreateGroupOpen(true)}
+            className="flex shrink-0 items-center gap-1.5 rounded-2xl bg-[var(--bc-mobile-accent-grad)] px-3.5 py-2.5 text-xs font-bold text-black shadow-xs hover:opacity-95 active:scale-95 transition cursor-pointer"
+            title="Tạo nhóm làm việc mới"
+          >
+            <Users className="h-4 w-4" />
+            <span className="hidden sm:inline">Tạo nhóm</span>
+          </button>
         </div>
 
         {/* Messenger-style Segmented Categories */}
@@ -211,6 +255,19 @@ function InboxPage() {
           >
             <span>Tất cả</span>
             <span className="text-[11px] opacity-80">({connectedThreads.length})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("groups")}
+            className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
+              activeTab === "groups"
+                ? "bg-[var(--bc-mobile-accent-grad)] text-black border border-[var(--bc-mobile-border-gold)] font-bold shadow-xs"
+                : "border border-slate-200 dark:border-[var(--bc-mobile-border)] bg-white dark:bg-[var(--bc-mobile-surface)] text-slate-700 dark:text-[var(--bc-mobile-muted)] hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            <span>Nhóm</span>
+            <span className="text-[11px] opacity-80">({groupThreads.length})</span>
           </button>
 
           <button
@@ -355,6 +412,11 @@ function InboxPage() {
           </ul>
         )}
       </div>
+
+      <ViOneCreateGroupModal
+        open={isCreateGroupOpen}
+        onClose={() => setIsCreateGroupOpen(false)}
+      />
     </MobilePage>
   );
 }

@@ -109,6 +109,7 @@ export function ScheduleCalendar() {
 
   const [createMeetingOpen, setCreateMeetingOpen] = useState(false);
   const [meetingHistory, setMeetingHistory] = useState<MeetingRecord[]>(() => getMeetingHistory());
+  const [savedEvents, setSavedEvents] = useState<SavedCalendarEvent[]>(() => getSavedCalendarEvents());
 
   // Lắng nghe thay đổi từ các modal sự kiện khác
   useEffect(() => {
@@ -276,7 +277,7 @@ export function ScheduleCalendar() {
     if (item.id.startsWith("event:")) {
       const eventId = item.id.replace(/^event:/, "");
       const matched = crmEvents.find((e) => e.id === eventId);
-      const savedMatched = savedEvents.find((s) => s.id === eventId);
+      const savedMatched = savedEvents.find((s: SavedCalendarEvent) => s.id === eventId);
       if (matched) {
         setSelectedEvent(matched);
       } else if (savedMatched) {

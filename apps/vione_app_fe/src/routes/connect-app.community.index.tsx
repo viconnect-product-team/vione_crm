@@ -1,4 +1,4 @@
-// BC-Mobile-7A — My Communities (leaf).
+﻿// BC-Mobile-7A — My Communities (leaf).
 
 import { createFileRoute } from "@tanstack/react-router";
 import { CommunityHome } from "@/components/business-connect/mobile/community/CommunityHome";
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/connect-app/community/")({
   },
   head: () => ({
     meta: [
-      { title: "Cộng đồng của tôi — Business Connect" },
+      { title: "Cộng đồng của tôi — ViOne" },
       { name: "robots", content: "noindex" },
     ],
   }),

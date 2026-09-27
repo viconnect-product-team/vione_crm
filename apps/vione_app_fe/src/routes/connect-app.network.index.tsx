@@ -1,4 +1,4 @@
-// BC-Mobile-2A — /connect-app/network index (production Network experience).
+﻿// BC-Mobile-2A — /connect-app/network index (production Network experience).
 // Data contract: docs/business-connect/mobile/BC_MOBILE_2A_NETWORK_DATA_CONTRACT.md
 
 import { createFileRoute } from "@tanstack/react-router";
@@ -15,13 +15,13 @@ export const Route = createFileRoute("/connect-app/network/")({
   }),
   head: () => ({
     meta: [
-      { title: "Network — Business Connect" },
+      { title: "Network — ViOne" },
       {
         name: "description",
         content:
           "Những người bạn có quan hệ trên Business Connect — tìm kiếm nhanh, kết nối lại dễ dàng.",
       },
-      { property: "og:title", content: "Network — Business Connect" },
+      { property: "og:title", content: "Network — ViOne" },
       {
         property: "og:description",
         content:

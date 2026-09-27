@@ -1,7 +1,7 @@
 // BC-Mobile — Thanh tương tác Moment chuẩn mạng xã hội (Thích · Bình luận · Chia sẻ · Lưu).
 // Thiết kế chuẩn dark luxury ViOne (#121824, #1c2333, #2f3542, #D8B282).
 
-import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
+import { Bookmark, Heart, MessageCircle, NotebookPen, Share2 } from "lucide-react";
 
 export type MomentActionBarProps = {
   momentId: string;
@@ -15,6 +15,8 @@ export type MomentActionBarProps = {
   onShare?: () => void;
   isBookmarked?: boolean;
   onToggleBookmark?: () => void;
+  onOpenMemo?: () => void;
+  hasMemo?: boolean;
 };
 
 export function MomentActionBar({
@@ -28,10 +30,12 @@ export function MomentActionBar({
   onShare,
   isBookmarked = false,
   onToggleBookmark,
+  onOpenMemo,
+  hasMemo = false,
 }: MomentActionBarProps) {
   return (
     <div className="flex items-center justify-between border-t border-[var(--bc-mobile-border)] pt-2 mt-2.5">
-      {/* Cụm tương tác chính bên trái: Thích & Bình luận */}
+      {/* Cụm tương tác chính bên trái: Thích, Bình luận, Ghi nhớ */}
       <div className="flex items-center gap-1 sm:gap-2">
         {/* Nút Thích */}
         <button
@@ -75,6 +79,24 @@ export function MomentActionBar({
             <span className="font-semibold tabular-nums">({commentsCount})</span>
           )}
         </button>
+
+        {/* Nút Ghi nhớ */}
+        {onOpenMemo && (
+          <button
+            type="button"
+            onClick={onOpenMemo}
+            title="Ghi nhớ cuộc gặp"
+            aria-label="Ghi nhớ cuộc gặp"
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 ${
+              hasMemo
+                ? "bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold border border-amber-500/30"
+                : "text-[var(--bc-mobile-muted)] hover:text-amber-600 dark:hover:text-amber-400 hover:bg-[var(--bc-mobile-surface-2)]"
+            }`}
+          >
+            <NotebookPen className="w-4 h-4 text-amber-500" strokeWidth={1.8} />
+            <span>Ghi nhớ</span>
+          </button>
+        )}
       </div>
 
       {/* Cụm tương tác bên phải: Chia sẻ & Lưu (Bookmark) */}

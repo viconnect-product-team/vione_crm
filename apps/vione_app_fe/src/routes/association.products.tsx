@@ -49,6 +49,7 @@ import { MemberHeader } from "@/components/member/MemberShell";
 import { useServerData } from "@/hooks/use-server-data";
 import { listMyProducts, requestQuote, getMyMember, type MyProduct, type MyMember } from "@/lib/member-app.functions";
 import { fetchNestApi, resolveMediaUrl } from "@/lib/api-client";
+import { isUserProductOwner } from "@/lib/marketplace-data";
 import { useT, useFmt, useLang } from "@/lib/i18n";
 import { useAuth } from "@/context/AuthContext";
 
@@ -184,13 +185,21 @@ function ProductsScreen() {
     }
   }, [search?.action]);
 
-  // Category & User-isolated Interested state (prevents new accounts from inheriting old favorites)
+  // Category & User-isolated Interested state (tied strictly to current active user/member ID)
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const userStorageKey = `vba_interested_products_${(member as any)?.userId || (member as any)?.id || member?.code || "user"}`;
+  const resolvedUserId = (user as any)?.id || (member as any)?.userId || (member as any)?.user_id || (member as any)?.id || member?.code;
+  const userStorageKey = resolvedUserId ? `vba_interested_products_${resolvedUserId}` : null;
   const [interestedIds, setInterestedIds] = useState<string[]>([]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    try {
+      localStorage.removeItem("vba_interested_products_user");
+    } catch {}
+    if (!userStorageKey) {
+      setInterestedIds([]);
+      return;
+    }
     try {
       const stored = localStorage.getItem(userStorageKey);
       setInterestedIds(stored ? JSON.parse(stored) : []);
@@ -203,6 +212,10 @@ function ProductsScreen() {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
+    }
+    if (!userStorageKey) {
+      toast.info("Vui lòng đăng nhập để lưu sản phẩm quan tâm");
+      return;
     }
     setInterestedIds((prev) => {
       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id];
@@ -227,6 +240,11 @@ function ProductsScreen() {
   const [loadingProductQuotes, setLoadingProductQuotes] = useState(false);
 
   const handleOpenQuoteModal = (p: MyProduct) => {
+    if (checkIsProductOwner(p)) {
+      toast.info(isEn ? "This is your product. Opening received quote requests." : "Đây là sản phẩm của bạn. Đang mở danh sách yêu cầu báo giá từ khách hàng.");
+      handleOpenProductQuotes(p);
+      return;
+    }
     setQuoteProduct(p);
     setQuoteQty("1");
     setQuoteNote("");
@@ -363,19 +381,14 @@ function ProductsScreen() {
 
   // Check if current user is the actual creator/author of this product
   const checkIsProductAuthor = (p: MyProduct) => {
+    if (!p) return false;
+    if (isUserProductOwner(p as any, user, member)) return true;
     if (!member && !user) return false;
-    const currentUserId = user?.id || (member as any)?.userId || (member as any)?.id;
-    return Boolean(
-      (currentUserId && p.sellerId && String(p.sellerId).toLowerCase() === String(currentUserId).toLowerCase()) ||
-      ((member as any)?.userId && p.sellerId && String(p.sellerId).toLowerCase() === String((member as any).userId).toLowerCase()) ||
-      ((member as any)?.id && p.sellerId && String(p.sellerId).toLowerCase() === String((member as any).id).toLowerCase()) ||
-      (member?.code && p.sellerId && String(p.sellerId).toLowerCase() === String(member.code).toLowerCase()) ||
-      (member?.name && p.sellerName && p.sellerName.toLowerCase().trim() === member.name.toLowerCase().trim()) ||
-      ((user as any)?.name && p.sellerName && p.sellerName.toLowerCase().trim() === (user as any).name.toLowerCase().trim()) ||
-      ((user as any)?.user_metadata?.full_name && p.sellerName && p.sellerName.toLowerCase().trim() === (user as any).user_metadata.full_name.toLowerCase().trim()) ||
-      (member?.name && p.company && p.company.toLowerCase().trim() === member.name.toLowerCase().trim()) ||
-      (member?.title && p.company && p.company.toLowerCase().trim() === member.title.toLowerCase().trim())
-    );
+    const currentUserId = String(user?.id || (member as any)?.userId || (member as any)?.user_id || (member as any)?.id || "").trim().toLowerCase();
+    const prodSellerId = String(p.sellerId || (p as any).seller_id || (p as any).userId || (p as any).user_id || "").trim().toLowerCase();
+    if (currentUserId && prodSellerId && currentUserId === prodSellerId) return true;
+    if (member?.code && prodSellerId && String(member.code).toLowerCase() === prodSellerId) return true;
+    return false;
   };
 
   const checkCanManageProduct = (p: MyProduct) => {
@@ -812,16 +825,27 @@ function ProductsScreen() {
             </div>
           ) : (
             <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => handleOpenQuoteModal(p)}
-                style={{ color: "#ffffff" }}
-                className="flex-1 h-8.5 px-3 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-[11px] font-bold shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <Send className="h-3 w-3 text-amber-300 shrink-0" />
-                <span className="truncate">Nhận báo giá VIP</span>
-              </button>
-              {isAdmin && (
+              {checkIsProductOwner(p) ? (
+                <button
+                  type="button"
+                  onClick={() => handleOpenProductQuotes(p)}
+                  className="flex-1 h-8.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Users className="h-3 w-3 text-white shrink-0" />
+                  <span className="truncate">Yêu cầu báo giá ({p.quoteRequestsCount || 0})</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleOpenQuoteModal(p)}
+                  style={{ color: "#ffffff" }}
+                  className="flex-1 h-8.5 px-3 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-[11px] font-bold shadow-xs transition active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Send className="h-3 w-3 text-amber-300 shrink-0" />
+                  <span className="truncate">Nhận báo giá VIP</span>
+                </button>
+              )}
+              {isAdmin && !checkIsProductOwner(p) && (
                 <button
                   type="button"
                   onClick={() => handleOpenProductQuotes(p)}
@@ -2354,7 +2378,7 @@ function ProductsScreen() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <span className="text-[10px] font-bold text-[#003B95] dark:text-amber-400 block truncate">
-                          {p.company || "CLB CEO 1983"}
+                          {p.company || "ViOne Connect"}
                         </span>
                         <h4 className="text-xs font-bold text-slate-900 dark:text-white line-clamp-1">
                           {p.name}

@@ -27,11 +27,31 @@ const IdSchema = z.object({ id: z.string().min(1).max(128) });
 
 type Row = Record<string, unknown>;
 
-function mapConnection(r: Row): { peerId: string; status: ConnectionStatus; updatedAt: string } {
+function mapConnection(r: Row, defaultStatus: ConnectionStatus = "connected"): { peerId: string; status: ConnectionStatus; updatedAt: string } {
+  const peerId = (
+    r.counterpartUserId ??
+    r.counterpart_user_id ??
+    r.target_user_id ??
+    r.targetUserId ??
+    r.recipient_user_id ??
+    r.recipientUserId ??
+    r.requester_user_id ??
+    r.requesterUserId ??
+    r.peer_id ??
+    r.peerId ??
+    r.id
+  ) as string;
+
+  const rawStatus = (r.status as string) || "";
+  let status: ConnectionStatus = defaultStatus;
+  if (rawStatus === "accepted" || rawStatus === "connected") status = "connected";
+  else if (rawStatus === "pending" || rawStatus === "pending_outgoing") status = "pending_outgoing";
+  else if (rawStatus === "pending_incoming") status = "pending_incoming";
+
   return {
-    peerId: (r.peer_id ?? r.peerId ?? r.counterpart_user_id ?? r.id) as string,
-    status: (r.status as ConnectionStatus) ?? "none",
-    updatedAt: ((r.updated_at ?? r.updatedAt ?? r.created_at ?? "") as string),
+    peerId,
+    status,
+    updatedAt: ((r.updated_at ?? r.updatedAt ?? r.responded_at ?? r.respondedAt ?? r.created_at ?? r.createdAt ?? "") as string),
   };
 }
 
@@ -66,29 +86,52 @@ export const getNetworkStateFn = createServerFn({ method: "GET" })
       timestamps: Record<string, string>;
       messages: ChatMessage[];
     }> => {
-      // Gọi song song: connections + DM threads
-      const [connsRaw, threadsRaw, meRaw] = await Promise.allSettled([
+      // Gọi song song: connections + DM threads + requests + me
+      const [connsRaw, threadsRaw, meRaw, incomingRaw, outgoingRaw] = await Promise.allSettled([
         fetchNestApiFromServer("/network/connections", context.token),
         fetchNestApiFromServer("/dm/threads", context.token),
         fetchNestApiFromServer("/members/me", context.token),
+        fetchNestApiFromServer("/network/requests/incoming", context.token),
+        fetchNestApiFromServer("/network/requests/outgoing", context.token),
       ]);
 
       // Resolve member ID từ /members/me
       let currentMemberId: string | null = null;
       if (meRaw.status === "fulfilled" && meRaw.value) {
         const me = meRaw.value as Row;
-        currentMemberId = (me.id ?? me.member_id ?? null) as string | null;
+        currentMemberId = (me.id ?? me.member_id ?? me.userId ?? null) as string | null;
       }
 
       // Build statuses + timestamps từ connections
       const statuses: Record<string, ConnectionStatus> = {};
       const timestamps: Record<string, string> = {};
+
       if (connsRaw.status === "fulfilled") {
         const list = Array.isArray(connsRaw.value) ? connsRaw.value : [];
         for (const r of list) {
-          const conn = mapConnection(r as Row);
+          const conn = mapConnection(r as Row, "connected");
           if (!conn.peerId) continue;
-          statuses[conn.peerId] = conn.status;
+          statuses[conn.peerId] = "connected";
+          timestamps[conn.peerId] = conn.updatedAt;
+        }
+      }
+
+      if (incomingRaw.status === "fulfilled") {
+        const list = Array.isArray(incomingRaw.value) ? incomingRaw.value : [];
+        for (const r of list) {
+          const conn = mapConnection(r as Row, "pending_incoming");
+          if (!conn.peerId) continue;
+          statuses[conn.peerId] = "pending_incoming";
+          timestamps[conn.peerId] = conn.updatedAt;
+        }
+      }
+
+      if (outgoingRaw.status === "fulfilled") {
+        const list = Array.isArray(outgoingRaw.value) ? outgoingRaw.value : [];
+        for (const r of list) {
+          const conn = mapConnection(r as Row, "pending_outgoing");
+          if (!conn.peerId) continue;
+          statuses[conn.peerId] = "pending_outgoing";
           timestamps[conn.peerId] = conn.updatedAt;
         }
       }

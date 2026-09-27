@@ -28,6 +28,7 @@ import { ThemeProvider } from "@/lib/theme";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { registerServiceWorker } from "@/lib/register-sw";
 import { isTenantHost } from "@/lib/tenant";
+import { ViOneVoiceAssistant } from "@/components/ai/ViOneVoiceAssistant";
 
 const LANG_STORAGE_KEY = "vba.lang";
 
@@ -129,7 +130,8 @@ export const Route = createRootRoute({
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "ViOne App" },
+      { name: "apple-mobile-web-app-title", content: "ViOne" },
+      { name: "application-name", content: "ViOne" },
       { property: "og:title", content: "ViOne — Nền Tảng Chuyển Đổi Số & Kết Nối Doanh Nghiệp Toàn Diện" },
       {
         property: "og:description",
@@ -161,10 +163,12 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "manifest", href: "/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/vione-favicon.svg" },
-      { rel: "icon", type: "image/svg+xml", href: "/vione-favicon.svg" },
-      { rel: "shortcut icon", href: "/vione-favicon.svg" },
+      { rel: "manifest", href: "/manifest.webmanifest?v=gold2" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png?v=gold2" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/vione-gold-192.png?v=gold2" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png?v=gold2" },
+      { rel: "icon", type: "image/svg+xml", href: "/vione-gold-icon.svg?v=gold2" },
+      { rel: "shortcut icon", href: "/favicon.ico?v=gold2" },
       // Web fonts for Business Card industry templates.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -386,8 +390,8 @@ function RootComponent() {
       currentPath === "/verify" ||
       currentPath.startsWith("/landing/ceo1983");
 
-    const targetFavicon = isAssociation ? "/ceo1983-favicon.png" : "/favicon.png";
-    const targetApple = isAssociation ? "/ceo1983-favicon.png" : "/apple-touch-icon.png";
+    const targetFavicon = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=gold9";
+    const targetApple = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=gold9";
 
     const iconLinks = document.querySelectorAll<HTMLLinkElement>("link[rel~='icon']");
     if (iconLinks.length > 0) {
@@ -405,6 +409,14 @@ function RootComponent() {
     if (appleLink) {
       appleLink.href = targetApple;
     }
+
+    // Luôn đảm bảo tiêu đề tab hiển thị đúng ViOne, loại bỏ hoàn toàn Business Connect
+    if (document.title.includes("Business Connect")) {
+      document.title = document.title.replace(/Business Connect/g, "ViOne");
+    }
+    if (currentPath === "/connect-app" || currentPath === "/connect-app/") {
+      document.title = "Trang chủ — ViOne";
+    }
   }, [currentPath]);
 
   return (
@@ -419,6 +431,7 @@ function RootComponent() {
           <MockModeBanner />
           <AuthProvider>
             <GlobalRealtimeNotifications />
+            <GlobalViOneVoiceAssistant />
             <AuthGate>
               <Outlet />
             </AuthGate>
@@ -428,6 +441,25 @@ function RootComponent() {
       </QueryClientProvider>
     </LangContext.Provider>
   );
+}
+
+function GlobalViOneVoiceAssistant() {
+  const routerState = useRouterState();
+  const { user, status } = useAuth();
+  const pathname = routerState.location.pathname;
+
+  // QUY TẮC BẮT BUỘC: Trợ lý AI ViOne chỉ được phép xuất hiện khi:
+  // 1. Đã đăng nhập hợp lệ (user tồn tại và status === 'in')
+  // 2. Đang ở trong phân hệ app ViOne (/connect-app/*)
+  // TUYỆT ĐỐI không xuất hiện ở bất kỳ nơi nào khác.
+  const isViOneApp = pathname.startsWith("/connect-app");
+  const isAuthenticated = status === "in" && Boolean(user);
+
+  if (!isAuthenticated || !isViOneApp) {
+    return null;
+  }
+
+  return <ViOneVoiceAssistant />;
 }
 
 function AuthGate({ children }: { children: React.ReactNode }) {

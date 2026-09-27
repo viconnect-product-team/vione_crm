@@ -349,8 +349,8 @@ export function CardScanFlow() {
     const localContactRecord = {
       id: "scan-" + safeRandomUUID(),
       displayName: draft.displayName,
-      phone: draft.phone || "",
-      email: draft.email || "",
+      phone: draft.phones?.[0]?.value || (draft as any).phone || "",
+      email: draft.emails?.[0] || (draft as any).email || "",
       companyName: draft.companyName || "",
       title: draft.title || "",
       website: draft.website || "",

@@ -26,7 +26,7 @@ export default defineConfig({
       external: ['jspdf', 'xlsx'],
     },
     server: {
-      port: 5173,
+      port: 5174,
       watch: {
         ignored: [
           '**/.output/**',
@@ -40,12 +40,12 @@ export default defineConfig({
       },
       proxy: {
         '/upload': {
-          target: 'http://localhost:4000',
+          target: 'http://localhost:4001',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/upload/, '/api/upload'),
         },
         '/api': {
-          target: 'http://localhost:4000',
+          target: 'http://localhost:4001',
           changeOrigin: true,
         },
       },

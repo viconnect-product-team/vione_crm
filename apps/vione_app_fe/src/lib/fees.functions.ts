@@ -10,10 +10,10 @@ export const listInvoicesFn = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<FeeRecord[]> => {
     try {
       const res = await fetchNestApiFromServer<FeeRecord[]>("/admin/invoices", context.token);
-      return Array.isArray(res) && res.length > 0 ? res : DEFAULT_FEE_INVOICES;
+      return Array.isArray(res) ? res : [];
     } catch (err: any) {
       console.error("[listInvoicesFn] error:", err);
-      return DEFAULT_FEE_INVOICES;
+      return [];
     }
   });
 

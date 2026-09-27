@@ -45,6 +45,9 @@ export type BcMobileNetworkPerson = {
   displayName: string | null;
   avatarUrl: string | null;
   headline: string | null;
+  jobTitle?: string | null;
+  phone?: string | null;
+  email?: string | null;
   companyName: string | null;
   /** ONE restrained context line; null = omit the third row line entirely. */
   context: { kind: BcMobileNetworkContextKind; at: string } | null;
@@ -87,6 +90,7 @@ export function connectionToPerson(
     displayName: counterpart?.displayName ?? null,
     avatarUrl: counterpart?.avatarUrl ?? null,
     headline: counterpart?.headline ?? null,
+    jobTitle: counterpart?.headline ?? null,
     companyName: counterpart?.companyName ?? null,
     context: at ? { kind: "connected", at } : null,
     cardSlug: counterpart?.primaryCardSlug ?? null,
@@ -104,7 +108,10 @@ export function savedCardToPerson(card: SavedCard): BcMobileNetworkPerson {
     displayName: card.target.displayName,
     avatarUrl: card.target.avatarUrl,
     headline: card.target.professionalTitle,
+    jobTitle: card.target.professionalTitle,
     companyName: card.target.companyName,
+    phone: (card.target as any).phone ?? null,
+    email: (card.target as any).email ?? null,
     context: card.savedAt ? { kind: "saved_card", at: card.savedAt } : null,
     cardSlug: card.target.slug ?? null,
     sortAt: card.savedAt ?? "",
@@ -122,6 +129,9 @@ export function guestContactToPerson(g: GuestContact): BcMobileNetworkPerson {
     displayName: g.displayName,
     avatarUrl: null,
     headline: g.title,
+    jobTitle: g.title,
+    phone: g.phone,
+    email: g.email,
     companyName: g.companyName,
     // BC-Mobile-4B — context states provenance truthfully: a scanned paper
     // card is "Card scanned", never "Shared" (scans carry no guest consent).

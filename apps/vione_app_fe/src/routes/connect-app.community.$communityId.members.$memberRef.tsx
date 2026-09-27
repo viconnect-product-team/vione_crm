@@ -1,4 +1,4 @@
-// BC-Mobile-7A — Community member profile (leaf, privacy-safe).
+﻿// BC-Mobile-7A — Community member profile (leaf, privacy-safe).
 
 import { createFileRoute } from "@tanstack/react-router";
 import { CommunityMemberProfile } from "@/components/business-connect/mobile/community/CommunityMemberProfile";
@@ -6,7 +6,7 @@ import { CommunityMemberProfile } from "@/components/business-connect/mobile/com
 export const Route = createFileRoute("/connect-app/community/$communityId/members/$memberRef")({
   head: () => ({
     meta: [
-      { title: "Hồ sơ thành viên — Business Connect" },
+      { title: "Hồ sơ thành viên — ViOne" },
       { name: "robots", content: "noindex" },
     ],
   }),

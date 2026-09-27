@@ -7,7 +7,7 @@
 // navigable Link to Person Detail; the trailing glyph is decorative.
 
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, Check, Clock, Loader2, MoreVertical, UserPlus, X } from "lucide-react";
+import { CalendarDays, Check, Clock, Loader2, MoreVertical, Phone, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { useFmt, useT, type TKey } from "@/lib/i18n";
 import { useState } from "react";
@@ -44,7 +44,7 @@ export function NetworkPersonRow({ person }: { person: BcMobileNetworkPerson }) 
   const fmt = useFmt();
   const name = person.displayName ?? t("bc.mobile.network.unknownPerson");
   const initials = initialsOf(person.displayName);
-  const titleCompany = [person.headline, person.companyName].filter(Boolean).join(" · ");
+  const jobTitle = person.jobTitle || person.headline;
 
   const kind = person.context?.kind ?? null;
   const at = person.context?.at ?? null;
@@ -88,16 +88,31 @@ export function NetworkPersonRow({ person }: { person: BcMobileNetworkPerson }) 
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[17px] font-semibold leading-snug text-[var(--bc-mobile-text)]">
+          <span className="block truncate text-[16px] font-semibold leading-snug text-[var(--bc-mobile-text)]">
             {name}
           </span>
-          {titleCompany ? (
-            <span className="mt-0.5 block truncate text-[13px] text-[var(--bc-mobile-muted)]">
-              {titleCompany}
+          {/* Chức vụ người dùng hiển thị ngay dưới tên */}
+          {jobTitle ? (
+            <span className="mt-0.5 block truncate text-[13px] font-medium text-[var(--bc-mobile-accent)]">
+              {jobTitle}
             </span>
           ) : null}
+          {/* Số điện thoại & công ty */}
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[12px] text-[var(--bc-mobile-muted)]">
+            {person.phone ? (
+              <span className="inline-flex items-center gap-1 font-mono text-[12px] text-[var(--bc-mobile-text)]">
+                <Phone className="h-3 w-3 text-emerald-500 shrink-0" />
+                {person.phone}
+              </span>
+            ) : null}
+            {person.companyName ? (
+              <span className="truncate">
+                {person.phone ? "• " : ""}{person.companyName}
+              </span>
+            ) : null}
+          </div>
           {tagKey ? (
-            <span className="mt-2 inline-flex max-w-full items-center truncate rounded-full border border-[var(--bc-mobile-accent)]/45 px-2.5 py-0.5 text-[11.5px] font-medium text-[var(--bc-mobile-accent)]">
+            <span className="mt-1.5 inline-flex max-w-full items-center truncate rounded-full border border-[var(--bc-mobile-accent)]/45 px-2.5 py-0.5 text-[11.5px] font-medium text-[var(--bc-mobile-accent)]">
               {t(tagKey)}
             </span>
           ) : null}

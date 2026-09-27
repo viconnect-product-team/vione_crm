@@ -1568,6 +1568,60 @@ html:not(.dark) body > div[role="menu"] {
   box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.10) !important;
 }
 
+/* ── Sidebar Profile Menu (Always Dark Obsidian Glass with High Contrast Text) ── */
+aside [role="menu"],
+.sidebar-profile-menu,
+#sidebar-profile-popup {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.65) !important;
+}
+
+aside [role="menu"] button,
+.sidebar-profile-menu button,
+#sidebar-profile-popup button {
+  color: #f1f5f9 !important;
+}
+
+aside [role="menu"] button:hover,
+.sidebar-profile-menu button:hover,
+#sidebar-profile-popup button:hover {
+  background: #1e293b !important;
+  color: #ffffff !important;
+}
+
+aside [role="menu"] svg,
+.sidebar-profile-menu svg,
+#sidebar-profile-popup svg {
+  color: #94a3b8 !important;
+}
+
+aside [role="menu"] button:hover svg,
+.sidebar-profile-menu button:hover svg,
+#sidebar-profile-popup button:hover svg {
+  color: #ffffff !important;
+}
+
+aside [role="menu"] button.logout-btn,
+.sidebar-profile-menu button.logout-btn,
+#sidebar-profile-popup button.logout-btn {
+  color: #fb7185 !important;
+}
+
+aside [role="menu"] button.logout-btn:hover,
+.sidebar-profile-menu button.logout-btn:hover,
+#sidebar-profile-popup button.logout-btn:hover {
+  background: rgba(244, 63, 94, 0.15) !important;
+  color: #fda4af !important;
+}
+
+aside [role="menu"] button.logout-btn svg,
+.sidebar-profile-menu button.logout-btn svg,
+#sidebar-profile-popup button.logout-btn svg {
+  color: #fb7185 !important;
+}
+
 /* Luxury gold text gradient matching Login "Chào mừng" title */
 @utility bc-gold-text {
   background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
@@ -2337,6 +2391,29 @@ html:has([contenteditable="true"]:focus) .vba-bottom-bar {
   animation: robot-listening 1.4s ease-in-out infinite;
 }
 
-
-
+/* ── Figma tokens for ViOne CRM Dashboard ─────────────────────────────────── */
+.bg-Secondary-600 {
+  background-color: #2563eb;
+}
+.text-Secondary-600 {
+  color: #2563eb;
+}
+.outline-Secondary-600 {
+  outline-color: #2563eb;
+}
+.border-Secondary-600 {
+  border-color: #2563eb;
+}
+.bg-Primary-400 {
+  background-color: #38bdf8;
+}
+.text-Primary-400 {
+  color: #38bdf8;
+}
+.outline-Primary-400 {
+  outline-color: #38bdf8;
+}
+.border-Primary-400 {
+  border-color: #38bdf8;
+}
 

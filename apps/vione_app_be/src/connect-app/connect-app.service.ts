@@ -1637,19 +1637,23 @@ export class ConnectAppService implements OnModuleInit {
 
   async listGuestContacts(userId: string) {
     const guests = await this.prisma.$queryRaw<any[]>`
-      SELECT id, display_name, title, company_name, first_shared_at, last_shared_at, source
+      SELECT id, display_name, phone, email, title, company_name, website, address, first_shared_at, last_shared_at, created_at, source
       FROM public.guest_contacts
       WHERE owner_user_id = ${userId}::uuid
-      ORDER BY last_shared_at DESC
+      ORDER BY COALESCE(last_shared_at, created_at) DESC
     `.catch(() => []);
 
     return guests.map(g => ({
       id: g.id,
       displayName: g.display_name || null,
+      phone: g.phone || null,
+      email: g.email || null,
       title: g.title || null,
       companyName: g.company_name || null,
-      firstSharedAt: g.first_shared_at ? new Date(g.first_shared_at).toISOString() : null,
-      lastSharedAt: g.last_shared_at ? new Date(g.last_shared_at).toISOString() : null,
+      website: g.website || null,
+      address: g.address || null,
+      firstSharedAt: g.first_shared_at ? new Date(g.first_shared_at).toISOString() : (g.created_at ? new Date(g.created_at).toISOString() : null),
+      lastSharedAt: g.last_shared_at ? new Date(g.last_shared_at).toISOString() : (g.created_at ? new Date(g.created_at).toISOString() : null),
       source: g.source || null,
     }));
   }
@@ -3634,7 +3638,7 @@ export class ConnectAppService implements OnModuleInit {
 
   async getGuestContact(userId: string, id: string) {
     const rows = await this.prisma.$queryRaw<any[]>`
-      SELECT id, display_name, title, company_name, first_shared_at, last_shared_at, source, owner_label, owner_note
+      SELECT id, display_name, phone, email, title, company_name, website, address, first_shared_at, last_shared_at, created_at, source, owner_label, owner_note
       FROM public.guest_contacts
       WHERE id = ${id}::uuid AND owner_user_id = ${userId}::uuid
       LIMIT 1
@@ -3644,10 +3648,14 @@ export class ConnectAppService implements OnModuleInit {
     return {
       id: g.id,
       displayName: g.display_name || null,
+      phone: g.phone || null,
+      email: g.email || null,
       title: g.title || null,
       companyName: g.company_name || null,
-      firstSharedAt: g.first_shared_at ? new Date(g.first_shared_at).toISOString() : null,
-      lastSharedAt: g.last_shared_at ? new Date(g.last_shared_at).toISOString() : null,
+      website: g.website || null,
+      address: g.address || null,
+      firstSharedAt: g.first_shared_at ? new Date(g.first_shared_at).toISOString() : (g.created_at ? new Date(g.created_at).toISOString() : null),
+      lastSharedAt: g.last_shared_at ? new Date(g.last_shared_at).toISOString() : (g.created_at ? new Date(g.created_at).toISOString() : null),
       source: g.source || null,
       ownerLabel: g.owner_label || null,
       ownerNote: g.owner_note || null,
@@ -5774,34 +5782,38 @@ export class ConnectAppService implements OnModuleInit {
   }
 
   async touchMyDeviceSession(userId: string, input: any) {
-    const existing = await this.prisma.$queryRaw<any[]>`
-      SELECT id, revoked_at FROM public.user_device_sessions
-      WHERE user_id = ${userId}::uuid AND device_key = ${input.deviceKey}
-      LIMIT 1
-    `.catch(() => [] as any[]);
+    try {
+      const existing = await this.prisma.$queryRaw<any[]>`
+        SELECT id, revoked_at FROM public.user_device_sessions
+        WHERE user_id = ${userId}::uuid AND device_key = ${input.deviceKey}
+        LIMIT 1
+      `.catch(() => [] as any[]);
 
-    const first = existing[0];
-    if (first?.revoked_at) return { revoked: true };
+      const first = existing[0];
+      if (first?.revoked_at) return { revoked: true };
 
-    const now = new Date();
-    if (first) {
+      const now = new Date();
+      if (first) {
+        await this.prisma.$executeRaw`
+          UPDATE public.user_device_sessions
+          SET last_seen_at = ${now}
+          WHERE id = ${first.id}::uuid
+        `.catch(() => {});
+        return { revoked: false };
+      }
+
       await this.prisma.$executeRaw`
-        UPDATE public.user_device_sessions
-        SET last_seen_at = ${now}
-        WHERE id = ${first.id}::uuid
-      `;
+        INSERT INTO public.user_device_sessions (
+          user_id, device_key, device_label, platform, browser, is_standalone, first_seen_at, last_seen_at
+        ) VALUES (
+          ${userId}::uuid, ${input.deviceKey}, ${input.label || null}, ${input.platform || null},
+          ${input.browser || null}, ${input.isStandalone || false}, ${now}, ${now}
+        )
+      `.catch(() => {});
+      return { revoked: false };
+    } catch {
       return { revoked: false };
     }
-
-    await this.prisma.$executeRaw`
-      INSERT INTO public.user_device_sessions (
-        user_id, device_key, device_label, platform, browser, is_standalone, first_seen_at, last_seen_at
-      ) VALUES (
-        ${userId}::uuid, ${input.deviceKey}, ${input.label || null}, ${input.platform || null},
-        ${input.browser || null}, ${input.isStandalone || false}, ${now}, ${now}
-      )
-    `;
-    return { revoked: false };
   }
 
   async revokeMyDeviceSession(userId: string, sessionId: string, currentKey: string | null) {
@@ -6962,10 +6974,12 @@ export class ConnectAppService implements OnModuleInit {
     await this.prisma.$executeRaw`
       INSERT INTO public.guest_contacts (
         id, owner_user_id, source_card_id, display_name, phone, email, company_name, title,
-        website, address, source, client_token, first_captured_at, capture_scan_id, created_at, updated_at
+        website, address, source, client_token, first_captured_at, capture_scan_id, created_at, updated_at,
+        first_shared_at, last_shared_at
       ) VALUES (
         ${guestId}::uuid, ${userId}::uuid, NULL, ${displayName}, ${phone}, ${email}, ${companyName}, ${title},
-        ${website}, ${address}, 'business_card_scan', ${clientToken}, ${now}, ${scanId}::uuid, ${now}, ${now}
+        ${website}, ${address}, 'business_card_scan', ${clientToken}, ${now}, ${scanId}::uuid, ${now}, ${now},
+        ${now}, ${now}
       )
     `;
 
@@ -8671,6 +8685,20 @@ export class ConnectAppService implements OnModuleInit {
     const claimantPhone = member[0]?.phone || '';
     const claimantCompany = member[0]?.company || userProfile[0]?.company_name || '';
 
+    // 0. Fetch opportunity title & poster_id first to validate ownership
+    const oppRow = await this.prisma.$queryRaw<any[]>`
+      SELECT id, title, poster_id, association_id FROM public.opportunities WHERE id = ${opportunityRef} LIMIT 1
+    `.catch(() => [] as any[]);
+    if (!oppRow || oppRow.length === 0) {
+      throw new NotFoundException('Không tìm thấy thông tin cơ hội giao thương này trên hệ thống ViOne!');
+    }
+    const posterId = oppRow[0]?.poster_id;
+    if (posterId && (posterId.toString() === userId.toString() || posterId.toString() === member[0]?.id?.toString() || posterId.toString() === member[0]?.code?.toString())) {
+      throw new BadRequestException('Bạn là người đăng cơ hội này nên không thể tự nhận hoặc tự ứng tuyển cho chính mình!');
+    }
+    const oppTitle = oppRow[0]?.title || 'Cơ hội kết nối';
+    const assocId = (communityId && communityId.trim().length > 10) ? communityId.trim() : (oppRow[0]?.association_id || null);
+
     // 1. Update opportunity claim record
     await this.prisma.$executeRaw`
       UPDATE public.opportunities
@@ -8682,14 +8710,6 @@ export class ConnectAppService implements OnModuleInit {
         claimed_company = ${claimantCompany}
       WHERE id = ${opportunityRef}
     `;
-
-    // 2. Fetch opportunity title & poster_id
-    const oppRow = await this.prisma.$queryRaw<any[]>`
-      SELECT id, title, poster_id, association_id FROM public.opportunities WHERE id = ${opportunityRef} LIMIT 1
-    `.catch(() => [] as any[]);
-    const oppTitle = oppRow[0]?.title || 'Cơ hội kết nối';
-    const posterId = oppRow[0]?.poster_id;
-    const assocId = (communityId && communityId.trim().length > 10) ? communityId.trim() : (oppRow[0]?.association_id || null);
 
     // 3. Record interest in opportunity_interests
     const intId = `INT-${Date.now().toString(36).toUpperCase()}`;
@@ -8817,8 +8837,14 @@ export class ConnectAppService implements OnModuleInit {
     const oppRow = await this.prisma.$queryRaw<any[]>`
       SELECT id, title, poster_id, association_id FROM public.opportunities WHERE id = ${opportunityRef} LIMIT 1
     `.catch(() => [] as any[]);
-    const oppTitle = oppRow[0]?.title || 'Cơ hội kết nối';
+    if (!oppRow || oppRow.length === 0) {
+      throw new NotFoundException('Không tìm thấy thông tin cơ hội giao thương này trên hệ thống ViOne!');
+    }
     const posterId = oppRow[0]?.poster_id;
+    if (posterId && (posterId.toString() === userId.toString() || posterId.toString() === member[0]?.id?.toString() || posterId.toString() === member[0]?.code?.toString())) {
+      throw new BadRequestException('Bạn là người đăng cơ hội này nên không thể tự gửi yêu cầu quan tâm cho chính mình!');
+    }
+    const oppTitle = oppRow[0]?.title || 'Cơ hội kết nối';
     const assocId = (communityId && communityId.trim().length > 10) ? communityId.trim() : (oppRow[0]?.association_id || null);
 
     await this.prisma.$executeRaw`
@@ -9284,6 +9310,17 @@ export class ConnectAppService implements OnModuleInit {
 
       const OPP_COLORS = ['#D97706', '#F59E0B', '#B45309', '#D8B282', '#EDB028'];
 
+      const myMembers = await this.prisma.$queryRaw<any[]>`
+        SELECT id, code, user_id FROM public.members
+        WHERE user_id::text = ${userId} OR id = ${userId}
+      `.catch(() => [] as any[]);
+      const myIds = new Set<string>([
+        String(userId).toLowerCase(),
+        ...(myMembers[0]?.id ? [String(myMembers[0].id).toLowerCase()] : []),
+        ...(myMembers[0]?.code ? [String(myMembers[0].code).toLowerCase()] : []),
+        ...(myMembers[0]?.user_id ? [String(myMembers[0].user_id).toLowerCase()] : []),
+      ]);
+
       if (opportunities.length === 0) {
         return [];
       }
@@ -9343,6 +9380,7 @@ export class ConnectAppService implements OnModuleInit {
           claimedPhone: o.claimed_phone || undefined,
           claimedCompany: o.claimed_company || undefined,
           status: o.status || 'open',
+          isOwner: myIds.has(String(o.poster_id || '').toLowerCase()) || (Boolean(o.poster_code) && myIds.has(String(o.poster_code).toLowerCase())),
         };
       });
     } catch {
@@ -11953,6 +11991,42 @@ export class ConnectAppService implements OnModuleInit {
   }
 
   async requestProductQuote(userId: string, data: any) {
+    if (!data?.productId) {
+      throw new BadRequestException('Vui lòng chỉ định sản phẩm cần gửi yêu cầu báo giá!');
+    }
+
+    // 0. Ownership check: Sellers cannot quote/bid on their own products
+    let prodRows: any[] = [];
+    let prodTitle = 'Sản phẩm Marketplace';
+    let assocId = 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d';
+    try {
+      prodRows = await this.prisma.$queryRaw<any[]>`
+        SELECT p.title, p.seller_id, p.association_id, m.user_id as seller_user_id, m.id as member_id
+        FROM public.products p
+        LEFT JOIN public.members m ON (m.user_id::text = p.seller_id::text OR m.id::text = p.seller_id::text)
+        WHERE p.id = ${data.productId} LIMIT 1
+      `.catch((err) => {
+        console.warn('Error querying product for quote ownership check:', err?.message);
+        return [];
+      });
+
+      if (prodRows && prodRows.length > 0) {
+        const prod = prodRows[0];
+        if (prod.title) prodTitle = prod.title;
+        if (prod.association_id) assocId = prod.association_id;
+        const uid = String(userId || '').trim().toLowerCase();
+        const sellerId = String(prod.seller_id || '').trim().toLowerCase();
+        const sellerUserId = String(prod.seller_user_id || '').trim().toLowerCase();
+        const memberId = String(prod.member_id || '').trim().toLowerCase();
+
+        if (uid && (uid === sellerId || uid === sellerUserId || uid === memberId)) {
+          throw new BadRequestException('Bạn là người đăng sản phẩm này nên không thể tự gửi yêu cầu báo giá cho chính mình!');
+        }
+      }
+    } catch (checkErr: any) {
+      if (checkErr instanceof BadRequestException) throw checkErr;
+    }
+
     const id = `quote-${Date.now()}`;
     let q: any = {
       id,
@@ -11982,7 +12056,7 @@ export class ConnectAppService implements OnModuleInit {
     }
 
     // 1. Query buyer info for CRM Lead
-    let buyerName = 'Hội viên CEO 1983';
+    let buyerName = 'Thành viên ViOne Connect';
     let buyerPhone = data.contact || '';
     try {
       const buyerRows = await this.prisma.$queryRaw<any[]>`
@@ -11994,22 +12068,7 @@ export class ConnectAppService implements OnModuleInit {
       }
     } catch {}
 
-    // 2. Query product & seller info
-    let prodRows: any[] = [];
-    let prodTitle = 'Sản phẩm Marketplace';
-    let assocId = 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d';
-    try {
-      prodRows = await this.prisma.$queryRaw<any[]>`
-        SELECT p.title, p.seller_id, p.association_id, m.user_id as seller_user_id, m.id as member_id
-        FROM public.products p
-        LEFT JOIN public.members m ON (m.user_id = p.seller_id OR m.id::text = p.seller_id::text)
-        WHERE p.id = ${data.productId} LIMIT 1
-      `.catch(() => []);
-      if (prodRows.length > 0) {
-        prodTitle = prodRows[0].title || prodTitle;
-        if (prodRows[0].association_id) assocId = prodRows[0].association_id;
-      }
-    } catch {}
+    // 2. Product & seller info already resolved above
 
     // 3. PUSH TO CRM SYSTEM: Dispatch to Association Staff / CRM Notification Center
     try {

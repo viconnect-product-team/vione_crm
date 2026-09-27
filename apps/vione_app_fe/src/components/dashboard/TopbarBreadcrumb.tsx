@@ -6,11 +6,21 @@ import { useT, type TKey } from "@/lib/i18n";
 
 type Crumb = { label: string; to?: string };
 
-/** Resolve the nav item + owning group for a base path (e.g. "/members"). */
-function findNav(base: string): { group: NavGroup; item: NavItem } | null {
+/** Resolve the nav item + owning group for a path (exact match first, then base segment). */
+function findNav(path: string): { group: NavGroup; item: NavItem } | null {
+  // 1. Try exact match
   for (const group of navGroups) {
-    const item = group.items.find((it) => it.to === base);
+    const item = group.items.find((it) => it.to === path);
     if (item) return { group, item };
+  }
+  // 2. Try base path match (e.g. /members from /members/123)
+  const segments = path.split("/").filter(Boolean);
+  if (segments.length > 0) {
+    const base = "/" + segments[0];
+    for (const group of navGroups) {
+      const item = group.items.find((it) => it.to === base);
+      if (item) return { group, item };
+    }
   }
   return null;
 }
@@ -24,20 +34,22 @@ function useCrumbs(): Crumb[] {
   const pathname = useRouterState({ select: (s) => s?.location?.pathname }) ?? "/";
 
   // Home / dashboard.
-  if (pathname === "/") return [{ label: t("nav.dashboard") }];
+  if (pathname === "/" || pathname === "") return [{ label: t("nav.dashboard") || "Tổng quan" }];
 
   const segments = pathname.split("/").filter(Boolean);
-  const base = "/" + segments[0];
-  const match = findNav(base);
+  const match = findNav(pathname);
 
   const crumbs: Crumb[] = [];
 
   if (match) {
-    if (match.group.label) crumbs.push({ label: t(match.group.label) });
-    // The section item links back to its list/root route.
-    crumbs.push({ label: t(match.item.key), to: base });
+    if (match.group.label) {
+      crumbs.push({ label: match.group.label });
+    }
+    const itemLabel = match.item.label || t(match.item.key);
+    crumbs.push({ label: itemLabel, to: match.item.to });
   } else {
     // Fallback: Title-case the first segment for routes outside the registry.
+    const base = "/" + (segments[0] || "");
     crumbs.push({
       label: segments[0].replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
       to: base,
@@ -45,7 +57,7 @@ function useCrumbs(): Crumb[] {
   }
 
   // Nested detail / sub-page crumb (Members > Detail, Opportunities > Edit, ...).
-  if (segments.length > 1) {
+  if (segments.length > 1 && !match?.item.to.includes(segments[1])) {
     const trailingKey: TKey = segments.includes("edit") ? "bc.edit" : "bc.detail";
     crumbs.push({ label: t(trailingKey) });
   }

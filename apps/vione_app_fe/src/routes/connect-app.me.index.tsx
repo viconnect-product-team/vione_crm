@@ -1,4 +1,4 @@
-// BC-Mobile-5A — /connect-app/me: the private identity command center.
+﻿// BC-Mobile-5A — /connect-app/me: the private identity command center.
 // Sections: Identity Hero · My Digital Card · Share · Privacy · Account.
 // All identity mutations derive the actor server-side; the client only ever
 // holds owner DTOs (MyIdentityPayload) or the recipient projection.
@@ -72,12 +72,12 @@ import type {
 export const Route = createFileRoute("/connect-app/me/")({
   head: () => ({
     meta: [
-      { title: "Tôi — Business Connect" },
+      { title: "Tôi — ViOne" },
       {
         name: "description",
         content: "Danh tính số và danh thiếp điện tử của bạn trên Business Connect.",
       },
-      { property: "og:title", content: "Tôi — Business Connect" },
+      { property: "og:title", content: "Tôi — ViOne" },
       {
         property: "og:description",
         content: "Danh tính số và danh thiếp điện tử của bạn trên Business Connect.",

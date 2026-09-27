@@ -28,6 +28,7 @@ import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as MyPermissionsRouteImport } from './routes/my-permissions'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MeetingsRouteImport } from './routes/meetings'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MRouteImport } from './routes/m'
@@ -336,6 +337,11 @@ const NetworkRoute = NetworkRouteImport.update({
 const MyPermissionsRoute = MyPermissionsRouteImport.update({
   id: '/my-permissions',
   path: '/my-permissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MeetingsRoute = MeetingsRouteImport.update({
@@ -1490,6 +1496,7 @@ export interface FileRoutesByFullPath {
   '/m': typeof MRouteWithChildren
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/meetings': typeof MeetingsRoute
+  '/messages': typeof MessagesRoute
   '/my-permissions': typeof MyPermissionsRoute
   '/network': typeof NetworkRoute
   '/news': typeof NewsRoute
@@ -1714,6 +1721,7 @@ export interface FileRoutesByTo {
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
   '/meetings': typeof MeetingsRoute
+  '/messages': typeof MessagesRoute
   '/my-permissions': typeof MyPermissionsRoute
   '/network': typeof NetworkRoute
   '/news': typeof NewsRoute
@@ -1930,6 +1938,7 @@ export interface FileRoutesById {
   '/m': typeof MRouteWithChildren
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/meetings': typeof MeetingsRoute
+  '/messages': typeof MessagesRoute
   '/my-permissions': typeof MyPermissionsRoute
   '/network': typeof NetworkRoute
   '/news': typeof NewsRoute
@@ -2167,6 +2176,7 @@ export interface FileRouteTypes {
     | '/m'
     | '/marketplace'
     | '/meetings'
+    | '/messages'
     | '/my-permissions'
     | '/network'
     | '/news'
@@ -2391,6 +2401,7 @@ export interface FileRouteTypes {
     | '/income'
     | '/install'
     | '/meetings'
+    | '/messages'
     | '/my-permissions'
     | '/network'
     | '/news'
@@ -2606,6 +2617,7 @@ export interface FileRouteTypes {
     | '/m'
     | '/marketplace'
     | '/meetings'
+    | '/messages'
     | '/my-permissions'
     | '/network'
     | '/news'
@@ -2842,6 +2854,7 @@ export interface RootRouteChildren {
   MRoute: typeof MRouteWithChildren
   MarketplaceRoute: typeof MarketplaceRouteWithChildren
   MeetingsRoute: typeof MeetingsRoute
+  MessagesRoute: typeof MessagesRoute
   MyPermissionsRoute: typeof MyPermissionsRoute
   NetworkRoute: typeof NetworkRoute
   NewsRoute: typeof NewsRoute
@@ -3023,6 +3036,13 @@ declare module '@tanstack/react-router' {
       path: '/my-permissions'
       fullPath: '/my-permissions'
       preLoaderRoute: typeof MyPermissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meetings': {
@@ -5233,6 +5253,7 @@ const rootRouteChildren: RootRouteChildren = {
   MRoute: MRouteWithChildren,
   MarketplaceRoute: MarketplaceRouteWithChildren,
   MeetingsRoute: MeetingsRoute,
+  MessagesRoute: MessagesRoute,
   MyPermissionsRoute: MyPermissionsRoute,
   NetworkRoute: NetworkRoute,
   NewsRoute: NewsRoute,

@@ -1,4 +1,4 @@
-// Kích hoạt Danh tính Doanh nghiệp sau khi tạo tài khoản.
+﻿// Kích hoạt Danh tính Doanh nghiệp sau khi tạo tài khoản.
 // Wizard 2 bước, ghi vào domain danh tính chuẩn (bcIdentityUpsertFn).
 // Không tạo domain song song, không tự suy diễn dữ liệu ngoài input người dùng.
 
@@ -17,12 +17,12 @@ import type { BusinessIdentity } from "@/lib/business-connect/mobile/identity.ty
 export const Route = createFileRoute("/connect-app/activate")({
   head: () => ({
     meta: [
-      { title: "Kích hoạt danh tính — Business Connect" },
+      { title: "Kích hoạt danh tính — ViOne" },
       {
         name: "description",
         content: "Hoàn tất thông tin để kích hoạt danh tính doanh nghiệp và danh thiếp điện tử.",
       },
-      { property: "og:title", content: "Kích hoạt danh tính — Business Connect" },
+      { property: "og:title", content: "Kích hoạt danh tính — ViOne" },
       {
         property: "og:description",
         content: "Thiết lập danh tính doanh nghiệp của bạn trên Business Connect.",

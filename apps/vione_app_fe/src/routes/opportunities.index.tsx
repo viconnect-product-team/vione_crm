@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { REVIEW_SEARCH_RESET } from "@/lib/review-search";
 import { useMemo, useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   CalendarClock,
@@ -23,7 +24,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { resolveMediaUrl } from "@/lib/api-client";
+import { resolveMediaUrl, fetchNestApi } from "@/lib/api-client";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { PageHeader, StatCard, Card, Pill } from "@/components/dashboard/PageKit";
 import { TruncatedText } from "@/components/dashboard/TruncatedText";
@@ -60,7 +61,7 @@ function formatCurrencyInput(val: string): string {
 
 export const Route = createFileRoute("/opportunities/")({
   ssr: false,
-  loader: () => listOpportunitiesFn(),
+  loader: () => listOpportunitiesFn().catch(() => ({ opportunities: [], interests: [], interestCounts: {} })),
   component: OpportunitiesPage,
 });
 
@@ -625,15 +626,25 @@ function OpportunitiesPage() {
   const t = useT();
   const fmt = useFmt();
   const router = useRouter();
-  const {
-    opportunities: all,
-    interests,
-    interestCounts,
-  } = Route.useLoaderData() as {
-    opportunities: Opportunity[];
-    interests: OpportunityInterest[];
-    interestCounts: Record<string, number>;
-  };
+  const loaderData = (Route.useLoaderData() as any) ?? {};
+  const { data: serverData, refetch } = useQuery({
+    queryKey: ["opportunities-list"],
+    queryFn: async () => {
+      const res = await fetchNestApi<{
+        opportunities: Opportunity[];
+        interests: OpportunityInterest[];
+        interestCounts: Record<string, number>;
+      }>("/opportunities");
+      return res;
+    },
+    initialData: loaderData?.opportunities?.length ? loaderData : undefined,
+    refetchInterval: 4000,
+  });
+
+  const all: Opportunity[] = serverData?.opportunities ?? loaderData?.opportunities ?? [];
+  const interests: OpportunityInterest[] = serverData?.interests ?? loaderData?.interests ?? [];
+  const interestCounts: Record<string, number> = serverData?.interestCounts ?? loaderData?.interestCounts ?? {};
+
   const deleteOpp = useServerFn(deleteOpportunityFn);
   const toggleOpp = useServerFn(toggleOpportunityStatusFn);
   const [tab, setTab] = useState<Tab>("browse");
@@ -653,10 +664,13 @@ function OpportunitiesPage() {
     if (ql) {
       base = base.filter(
         (o) =>
-          o.title.toLowerCase().includes(ql) ||
-          o.description.toLowerCase().includes(ql) ||
-          o.industry.toLowerCase().includes(ql) ||
-          o.region.toLowerCase().includes(ql),
+          o.title?.toLowerCase().includes(ql) ||
+          o.description?.toLowerCase().includes(ql) ||
+          o.industry?.toLowerCase().includes(ql) ||
+          o.region?.toLowerCase().includes(ql) ||
+          o.company?.toLowerCase().includes(ql) ||
+          o.contactName?.toLowerCase().includes(ql) ||
+          o.posterName?.toLowerCase().includes(ql),
       );
     }
     return base;
@@ -1072,6 +1086,7 @@ function OpportunitiesPage() {
                               <button
                                 onClick={async () => {
                                   await toggleOpp({ data: { id: opp.id } });
+                                  refetch();
                                   await router.invalidate();
                                 }}
                                 className="rounded-lg border border-border bg-background px-2 py-1.5 text-xs font-medium hover:bg-secondary"
@@ -1083,6 +1098,7 @@ function OpportunitiesPage() {
                                 onClick={async () => {
                                   if (confirm(t("opp.confirmDelete"))) {
                                     await deleteOpp({ data: { id: opp.id } });
+                                    refetch();
                                     await router.invalidate();
                                   }
                                 }}
@@ -1137,11 +1153,13 @@ function OpportunitiesPage() {
                 onDelete={async () => {
                   if (confirm(t("opp.confirmDelete"))) {
                     await deleteOpp({ data: { id: opp.id } });
+                    refetch();
                     await router.invalidate();
                   }
                 }}
                 onToggle={async () => {
                   await toggleOpp({ data: { id: opp.id } });
+                  refetch();
                   await router.invalidate();
                 }}
               />
@@ -1163,8 +1181,8 @@ function OpportunitiesPage() {
         </>
       )}
 
-      {showCreate && <NewOpportunityModal onClose={() => setShowCreate(false)} />}
-      {interestOpp && <InterestModal opp={interestOpp} onClose={() => setInterestOpp(null)} />}
+      {showCreate && <NewOpportunityModal onClose={() => { setShowCreate(false); refetch(); }} />}
+      {interestOpp && <InterestModal opp={interestOpp} onClose={() => { setInterestOpp(null); refetch(); }} />}
     </AppShell>
   );
 }

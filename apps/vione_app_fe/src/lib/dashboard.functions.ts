@@ -35,14 +35,20 @@ export const getDashboardStatsFn = createServerFn({ method: "GET" })
     let nestEvents: any[] = [];
     let nestInvoices: any[] = [];
     let nestOpps: any[] = [];
+    let nestDocs: any[] = [];
+    let nestSponsors: any[] = [];
+    let nestTx: any[] = [];
 
     // 1. Fetch from NestJS REST APIs (direct Postgres database connection)
     try {
-      const [membersRes, eventsRes, invoicesRes, oppsRes] = await Promise.allSettled([
+      const [membersRes, eventsRes, invoicesRes, oppsRes, docsRes, sponsorsRes, txRes] = await Promise.allSettled([
         fetchNestApiFromServer<any[]>("/members", token),
         fetchNestApiFromServer<any[]>("/events", token),
         fetchNestApiFromServer<any[]>("/admin/invoices", token),
         fetchNestApiFromServer<any>("/connect-app/opportunity", token),
+        fetchNestApiFromServer<any[]>("/documents", token),
+        fetchNestApiFromServer<any[]>("/sponsors", token),
+        fetchNestApiFromServer<any[]>("/admin/transactions", token),
       ]);
 
       if (membersRes.status === "fulfilled" && Array.isArray(membersRes.value)) {
@@ -56,6 +62,15 @@ export const getDashboardStatsFn = createServerFn({ method: "GET" })
       }
       if (oppsRes.status === "fulfilled" && oppsRes.value) {
         nestOpps = Array.isArray(oppsRes.value) ? oppsRes.value : (oppsRes.value.opportunities || []);
+      }
+      if (docsRes.status === "fulfilled" && Array.isArray(docsRes.value)) {
+        nestDocs = docsRes.value;
+      }
+      if (sponsorsRes.status === "fulfilled" && Array.isArray(sponsorsRes.value)) {
+        nestSponsors = sponsorsRes.value;
+      }
+      if (txRes.status === "fulfilled" && Array.isArray(txRes.value)) {
+        nestTx = txRes.value;
       }
     } catch (e) {
       console.warn("[getDashboardStatsFn] Nest API fetch error:", e);
@@ -89,80 +104,41 @@ export const getDashboardStatsFn = createServerFn({ method: "GET" })
           const j = r.joinedAt || r.joined_at ? new Date(r.joinedAt || r.joined_at) : null;
           return j && j >= start && j < end;
         }).length;
-        list.push({ month: `${d.getMonth() + 1}/${d.getFullYear()}`, count: Math.max(c, 1) });
+        list.push({ month: `${d.getMonth() + 1}/${d.getFullYear()}`, count: c });
       }
       return list;
     };
 
-    // If NestJS returned members, use primary Postgres data
-    if (nestMembers.length > 0) {
-      const totalMembers = nestMembers.length;
-      const activeMembers = nestMembers.filter((m) => m.status === "active").length;
-      const newMembers30d = nestMembers.filter((m) => {
-        const d = m.joinedAt ? new Date(m.joinedAt).getTime() : 0;
-        return d >= days30Time;
-      }).length || Math.max(1, Math.round(totalMembers * 0.25));
-      const companies = nestMembers.filter((m) => m.type === "company").length;
-      const individuals = nestMembers.filter((m) => m.type === "individual").length;
-      const pendingRenewals = nestMembers.filter((m) => m.status === "expired" || m.status === "pending").length;
+    // Use primary Postgres data from NestJS REST API
+    const totalMembers = nestMembers.length;
+    const activeMembers = nestMembers.filter((m) => m.status === "active").length;
+    const newMembers30d = nestMembers.filter((m) => {
+      const d = m.joinedAt ? new Date(m.joinedAt).getTime() : 0;
+      return d >= days30Time;
+    }).length;
+    const companies = nestMembers.filter((m) => m.type === "company").length;
+    const individuals = nestMembers.filter((m) => m.type === "individual").length;
+    const pendingRenewals = nestMembers.filter((m) => m.status === "expired" || m.status === "pending").length;
 
-      const events = nestEvents.length || 15;
-      const upcomingEvents = nestEvents.filter((e) => e.status === "upcoming" || e.status === "ongoing").length || Math.min(events, 12);
-      const openOpportunities = nestOpps.filter((o) => o.status === "open").length || 14;
+    const events = nestEvents.length;
+    const upcomingEvents = nestEvents.filter((e) => e.status === "upcoming" || e.status === "ongoing").length;
+    const openOpportunities = nestOpps.filter((o) => o.status === "open").length;
 
-      const paidInvoices = nestInvoices.filter((i) => i.status === "paid").length;
-      const unpaidInvoices = nestInvoices.filter((i) => i.status !== "paid").length;
-      const revenue = nestInvoices
-        .filter((i) => i.status === "paid")
-        .reduce((sum, i) => sum + Number(i.amount || 0), 0) || 435000000;
+    const paidInvoices = nestInvoices.filter((i) => i.status === "paid").length;
+    const unpaidInvoices = nestInvoices.filter((i) => i.status !== "paid").length;
+    const invoiceRevenue = nestInvoices
+      .filter((i) => i.status === "paid")
+      .reduce((sum, i) => sum + Number(i.amount || 0), 0);
+    const txRevenue = nestTx
+      .filter((t) => t.type === "income" && t.status === "completed")
+      .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+    const revenue = invoiceRevenue + txRevenue;
 
-      const industries = tally(nestMembers, "industry").slice(0, 6);
-      const regions = tally(nestMembers, "region");
-      const growth = computeGrowth(nestMembers);
+    const industries = tally(nestMembers, "industry").slice(0, 6);
+    const regions = tally(nestMembers, "region");
+    const growth = computeGrowth(nestMembers);
 
-      return {
-        totalMembers,
-        activeMembers,
-        newMembers30d,
-        companies,
-        individuals,
-        events,
-        upcomingEvents,
-        registrations: 42,
-        sponsors: 8,
-        documents: 4,
-        revenue,
-        paidInvoices,
-        unpaidInvoices,
-        pendingRenewals,
-        openOpportunities,
-        pendingQuotes: 3,
-        industries,
-        regions,
-        growth,
-      };
-    }
-
-    // Secondary fallback: Supabase Admin query
-    const db = getDb(context);
-    const nowIso = now.toISOString();
-    const days30Iso = new Date(days30Time).toISOString();
-
-    const count = async (table: string, build?: (q: any) => any) => {
-      try {
-        let q = (db.from(table as never) as any).select("*", {
-          count: "exact",
-          head: true,
-        });
-        if (build) q = build(q);
-        const { count: c } = await q;
-        return c ?? 0;
-      } catch {
-        return 0;
-      }
-    };
-
-    const [
+    return {
       totalMembers,
       activeMembers,
       newMembers30d,
@@ -170,84 +146,17 @@ export const getDashboardStatsFn = createServerFn({ method: "GET" })
       individuals,
       events,
       upcomingEvents,
-      registrations,
-      sponsors,
-      documents,
+      registrations: nestEvents.reduce((acc, ev) => acc + (ev.attendeesCount || ev.attendee_count || 0), 0),
+      sponsors: nestSponsors.length,
+      documents: nestDocs.length,
+      revenue,
       paidInvoices,
       unpaidInvoices,
       pendingRenewals,
       openOpportunities,
-      pendingQuotes,
-    ] = await Promise.all([
-      count("members"),
-      count("members", (q) => q.eq("status", "active")),
-      count("members", (q) => q.gte("joined_at", days30Iso)),
-      count("members", (q) => q.eq("type", "company")),
-      count("members", (q) => q.eq("type", "individual")),
-      count("events"),
-      count("events", (q) => q.gte("date", nowIso)),
-      count("event_registrations"),
-      count("sponsors"),
-      count("documents"),
-      count("invoices", (q) => q.eq("status", "paid")),
-      count("invoices", (q) => q.neq("status", "paid")),
-      count("members", (q) => q.eq("status", "expired")),
-      count("opportunities", (q) => q.eq("status", "open")),
-      count("quote_requests", (q) => q.eq("status", "pending")),
-    ]);
-
-    let invRows: any[] = [];
-    try {
-      const res = await (db.from("invoices") as any).select("amount,status");
-      invRows = res?.data ?? [];
-    } catch {
-      invRows = [];
-    }
-    const revenue = (invRows ?? [])
-      .filter((r: any) => r.status === "paid")
-      .reduce((s: number, r: any) => s + Number(r.amount ?? 0), 0) || 435000000;
-
-    let memberRows: any[] = [];
-    try {
-      const res = await (db.from("members") as any).select("industry,region,joined_at");
-      memberRows = res?.data ?? [];
-    } catch {
-      memberRows = [];
-    }
-    const rows = memberRows ?? [];
-    const industries = tally(rows, "industry").slice(0, 6);
-    const regions = tally(rows, "region");
-    const growth = computeGrowth(rows);
-
-    return {
-      totalMembers: Math.max(totalMembers, 26),
-      activeMembers: Math.max(activeMembers, 23),
-      newMembers30d: Math.max(newMembers30d, 6),
-      companies: Math.max(companies, 20),
-      individuals: Math.max(individuals, 6),
-      events: Math.max(events, 15),
-      upcomingEvents: Math.max(upcomingEvents, 12),
-      registrations: Math.max(registrations, 42),
-      sponsors: Math.max(sponsors, 8),
-      documents: Math.max(documents, 4),
-      revenue: Math.max(revenue, 435000000),
-      paidInvoices: Math.max(paidInvoices, 21),
-      unpaidInvoices: Math.max(unpaidInvoices, 4),
-      pendingRenewals: Math.max(pendingRenewals, 3),
-      openOpportunities: Math.max(openOpportunities, 14),
-      pendingQuotes: Math.max(pendingQuotes, 3),
-      industries: industries.length > 0 ? industries : [
-        { key: "ind.trade", count: 8 },
-        { key: "ind.manufacturing", count: 7 },
-        { key: "ind.it", count: 5 },
-        { key: "ind.finance", count: 3 },
-        { key: "ind.realestate", count: 3 },
-      ],
-      regions: regions.length > 0 ? regions : [
-        { key: "region.north", count: 18 },
-        { key: "region.central", count: 4 },
-        { key: "region.south", count: 4 },
-      ],
+      pendingQuotes: 0,
+      industries,
+      regions,
       growth,
     };
   });

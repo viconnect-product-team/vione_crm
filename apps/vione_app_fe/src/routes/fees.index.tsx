@@ -57,10 +57,10 @@ export const Route = createFileRoute("/fees/")({
   }),
   loader: async () => {
     const [invoices, members] = await Promise.all([
-      listInvoicesFn().catch(() => DEFAULT_FEE_INVOICES),
+      listInvoicesFn().catch(() => []),
       fetchNestApi<Member[]>("/members").then((res) => (Array.isArray(res) ? res : [])).catch(() => []),
     ]);
-    const finalInvoices = Array.isArray(invoices) && invoices.length > 0 ? invoices : DEFAULT_FEE_INVOICES;
+    const finalInvoices = Array.isArray(invoices) ? invoices : [];
     return { invoices: finalInvoices, members };
   },
   component: FeesPage,

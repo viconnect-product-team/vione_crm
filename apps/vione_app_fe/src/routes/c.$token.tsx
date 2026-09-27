@@ -1,4 +1,4 @@
-// BC-Mobile-5A/5D — /c/:token public Digital Card recipient route (ANONYMOUS).
+﻿// BC-Mobile-5A/5D — /c/:token public Digital Card recipient route (ANONYMOUS).
 //
 // Privacy contract:
 // - Renders ONLY the server-side PublicIdentityCard projection.
@@ -21,7 +21,7 @@ import type { PublicIdentityResult } from "@/lib/business-connect/mobile/identit
 const SITE = "https://qlhh.lovable.app";
 
 const STATIC_META = {
-  title: "Danh thiếp số — Business Connect",
+  title: "Danh thiếp số — ViOne",
   description: "Danh thiếp số được chia sẻ qua Business Connect.",
 } as const;
 
@@ -44,8 +44,8 @@ export const Route = createFileRoute("/c/$token")({
     const company = card?.companyName?.trim() || "";
     const title = card
       ? name && company
-        ? `${name} · ${company} — Business Connect`
-        : `${name || "Danh thiếp số"} — Business Connect`
+        ? `${name} · ${company} — ViOne`
+        : `${name || "Danh thiếp số"} — ViOne`
       : STATIC_META.title;
     const description = card?.headline?.trim() || STATIC_META.description;
     const ogImage = card?.avatarUrl ? safeWebHref(card.avatarUrl) : null;

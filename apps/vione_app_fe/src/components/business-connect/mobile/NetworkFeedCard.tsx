@@ -16,6 +16,8 @@ import {
   Lock,
   MapPin,
   MoreHorizontal,
+  NotebookPen,
+  Trash2,
   UserPlus,
   Users,
   X,
@@ -155,6 +157,28 @@ export function NetworkFeedCard({
     setViewerOpen(true);
   };
 
+  // Ghi nhớ bài viết / cuộc gặp
+  const [memoText, setMemoText] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem(`vba_moment_memo_${item.momentId}`);
+      if (stored !== null) return stored;
+    } catch {}
+    return "";
+  });
+  const [memoModalOpen, setMemoModalOpen] = useState(false);
+  const [editingMemo, setEditingMemo] = useState(memoText);
+
+  const handleSaveMemo = () => {
+    try {
+      localStorage.setItem(`vba_moment_memo_${item.momentId}`, editingMemo.trim());
+      setMemoText(editingMemo.trim());
+      setMemoModalOpen(false);
+      toast.success(editingMemo.trim() ? "Đã lưu ghi nhớ bài viết" : "Đã xóa ghi nhớ");
+    } catch {
+      toast.error("Không thể lưu ghi nhớ");
+    }
+  };
+
   return (
     <li className="rounded-2xl bc-translucent-card p-3.5 transition-colors duration-150 ease-out hover:border-[#D8B282]/40 motion-reduce:transition-none">
       {/* Hàng nhận diện: ảnh đại diện tác giả · tên tác giả [cùng với người được tag] · chức danh • công ty */}
@@ -276,7 +300,85 @@ export function NetworkFeedCard({
         </p>
       ) : null}
 
-      <FeedActionRow item={item} person={person} />
+      {/* Khối Ghi nhớ cuộc gặp / ghi chú công việc */}
+      {memoText ? (
+        <div className="mt-3 rounded-xl border border-amber-500/35 bg-amber-500/10 p-2.5 flex items-start gap-2.5">
+          <NotebookPen className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
+                Ghi nhớ:
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingMemo(memoText);
+                  setMemoModalOpen(true);
+                }}
+                className="text-[10.5px] font-semibold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
+              >
+                Sửa ghi nhớ
+              </button>
+            </div>
+            <p className="text-xs text-slate-800 dark:text-slate-200 mt-1 whitespace-pre-wrap leading-relaxed">
+              {memoText}
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      <FeedActionRow
+        item={item}
+        person={person}
+        onOpenMemo={() => {
+          setEditingMemo(memoText);
+          setMemoModalOpen(true);
+        }}
+        hasMemo={Boolean(memoText)}
+      />
+
+      {/* Modal soạn / sửa Ghi nhớ cuộc gặp */}
+      <AlertDialog open={memoModalOpen} onOpenChange={setMemoModalOpen}>
+        <AlertDialogContent className="border border-[#2a364a] bg-[#0c131f]/95 backdrop-blur-xl text-[#f1f5f9] max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-amber-400 flex items-center gap-2">
+              <NotebookPen className="w-5 h-5" />
+              <span>Ghi nhớ cuộc gặp & nội dung trao đổi</span>
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-[#94a3b8] text-xs">
+              Lưu lại tóm tắt, công việc cần theo dõi hoặc nhắc nhở riêng của bạn về cuộc gặp này.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="py-2">
+            <textarea
+              value={editingMemo}
+              onChange={(e) => setEditingMemo(e.target.value)}
+              placeholder="Nhập nội dung ghi nhớ (ví dụ: cần gửi báo giá hợp đồng, hạn hoàn thành dự án, điểm lưu ý khi hợp tác)..."
+              rows={4}
+              className="w-full rounded-xl border border-white/20 bg-white/5 p-3 text-sm text-white placeholder:text-white/40 focus:border-amber-400 focus:outline-none"
+            />
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => setMemoModalOpen(false)}
+              className="border-[#334155] bg-[#1e293b] text-[#cbd5e1] hover:bg-[#334155]"
+            >
+              Đóng
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleSaveMemo();
+              }}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold hover:brightness-105"
+            >
+              Lưu ghi nhớ
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </li>
   );
 }
@@ -289,9 +391,13 @@ export function NetworkFeedCard({
 function FeedActionRow({
   item,
   person,
+  onOpenMemo,
+  hasMemo,
 }: {
   item: BcNetworkFeedItem;
   person: BcMobileNetworkPerson | null;
+  onOpenMemo?: () => void;
+  hasMemo?: boolean;
 }) {
   const t = useT();
   const fmt = useFmt();
@@ -513,6 +619,8 @@ function FeedActionRow({
             onShare={handleShare}
             isBookmarked={isBookmarked}
             onToggleBookmark={handleToggleBookmark}
+            onOpenMemo={onOpenMemo}
+            hasMemo={hasMemo}
           />
         </div>
 
@@ -565,9 +673,10 @@ function FeedActionRow({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => setDeleteConfirmOpen(true)}
-                  className="text-red-400 focus:text-red-400 focus:bg-red-500/10 cursor-pointer"
+                  className="text-red-400 focus:text-red-400 focus:bg-red-500/10 cursor-pointer flex items-center gap-2"
                 >
-                  Xoá khoảnh khắc
+                  <Trash2 className="h-4 w-4 shrink-0" />
+                  <span>Xoá khoảnh khắc</span>
                 </DropdownMenuItem>
               </>
             ) : null}

@@ -1,4 +1,4 @@
-// BC — Nhận lời mời tham gia cộng đồng bằng liên kết token.
+﻿// BC — Nhận lời mời tham gia cộng đồng bằng liên kết token.
 
 import { createFileRoute } from "@tanstack/react-router";
 import { CommunityInviteAccept } from "@/components/business-connect/mobile/community/CommunityInviteAccept";
@@ -6,7 +6,7 @@ import { CommunityInviteAccept } from "@/components/business-connect/mobile/comm
 export const Route = createFileRoute("/connect-app/invite/$token")({
   head: () => ({
     meta: [
-      { title: "Lời mời tham gia cộng đồng — Business Connect" },
+      { title: "Lời mời tham gia cộng đồng — ViOne" },
       { name: "description", content: "Xác nhận email để chấp nhận lời mời tham gia cộng đồng." },
       { name: "robots", content: "noindex" },
     ],

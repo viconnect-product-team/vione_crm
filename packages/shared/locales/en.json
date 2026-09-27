@@ -6658,5 +6658,16 @@
   "landing.ceo1983.modal.revenue": "Annual Revenue Scale",
   "landing.ceo1983.modal.submit": "Submit Application",
   "landing.ceo1983.modal.success": "Application submitted successfully! The board will respond within 24 business hours.",
-  "m.index.quickActions": "Quick Actions"
+  "m.index.quickActions": "Quick Actions",
+  "common.deleted": "Deleted",
+  "common.required": "Required",
+  "meet.attendeesCount": "Attendees count",
+  "meet.deleteConfirm": "Are you sure you want to delete this meeting?",
+  "meet.edit": "Edit meeting",
+  "meet.fields.date": "Date",
+  "meet.fields.location": "Location",
+  "meet.fields.status": "Status",
+  "meet.fields.time": "Time",
+  "meet.fields.title": "Meeting title",
+  "meet.fields.type": "Type"
 }

@@ -1,29 +1,29 @@
 {
-  "name": "CLB Doanh Nhân CEO 1983 — Hiệp Hội Doanh Nghiệp",
-  "short_name": "CEO 1983",
-  "description": "Ứng dụng CLB Doanh Nhân CEO 1983: Thẻ hội viên số, biểu quyết, quay số trúng thưởng, sàn sản phẩm và cơ hội kinh doanh B2B.",
-  "start_url": "/association",
+  "name": "ViOne",
+  "short_name": "ViOne",
+  "description": "ViOne — Nền tảng kết nối, chuyển đổi số & giao thương doanh nghiệp thông minh.",
+  "start_url": "/connect-app",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#003B95",
-  "theme_color": "#003B95",
+  "background_color": "#0B132B",
+  "theme_color": "#E5A93C",
   "lang": "vi",
   "icons": [
     {
-      "src": "/app-icon-192.png",
+      "src": "/vione-gold-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/app-icon.png",
+      "src": "/vione-gold-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/app-icon.png",
+      "src": "/vione-gold-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

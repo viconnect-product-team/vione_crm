@@ -128,7 +128,7 @@ function IncomePage() {
   const router = useRouter();
   const rawLoaderData = Route.useLoaderData();
   const loadedTransactions = Array.isArray(rawLoaderData) ? (rawLoaderData as Transaction[]) : [];
-  const TRANSACTIONS = loadedTransactions.length > 0 ? loadedTransactions : DEFAULT_INCOME_TRANSACTIONS;
+  const TRANSACTIONS = loadedTransactions;
 
   // Method filter: all | cash (Tiền mặt) | bank (Chuyển khoản)
   const [methodFilter, setMethodFilter] = useState<"all" | "cash" | "bank">("all");

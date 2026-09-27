@@ -1,11 +1,11 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+﻿import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
   "/connect-app/community/$communityId/events",
 )({
   head: () => ({
     meta: [
-      { title: "Sự kiện cộng đồng — Business Connect" },
+      { title: "Sự kiện cộng đồng — ViOne" },
       { name: "robots", content: "noindex" },
     ],
   }),

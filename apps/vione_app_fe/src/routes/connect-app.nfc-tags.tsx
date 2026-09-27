@@ -1,4 +1,4 @@
-// BC-Mobile-5C — /connect-app/nfc-tags: NFC tag registry page (Me Hub).
+﻿// BC-Mobile-5C — /connect-app/nfc-tags: NFC tag registry page (Me Hub).
 // Lists the owner's programmed NFC tags with derived status
 // (ACTIVE/STALE/REVOKED), write time, link-level last tap, and revoke.
 // Owner-only: every read/mutation derives the actor server-side.
@@ -22,12 +22,12 @@ import type { IdentityNfcTagInfo } from "@/lib/business-connect/mobile/nfc-tags.
 export const Route = createFileRoute("/connect-app/nfc-tags")({
   head: () => ({
     meta: [
-      { title: "Quản lý thẻ NFC — Business Connect" },
+      { title: "Quản lý thẻ NFC — ViOne" },
       {
         name: "description",
         content: "Danh sách thẻ NFC đã ghi, trạng thái và lượt chạm gần nhất.",
       },
-      { property: "og:title", content: "Quản lý thẻ NFC — Business Connect" },
+      { property: "og:title", content: "Quản lý thẻ NFC — ViOne" },
       {
         property: "og:description",
         content: "Danh sách thẻ NFC đã ghi, trạng thái và lượt chạm gần nhất.",

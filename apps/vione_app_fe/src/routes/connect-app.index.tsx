@@ -1,4 +1,4 @@
-// Route: /connect-app — Business Connect Executive Home (BC-Mobile-1A).
+﻿// Route: /connect-app — ViOne Executive Home (BC-Mobile-1A).
 //
 // NOT a dashboard: a quiet executive briefing composed from live contracts
 // (identity, Work Hub, notifications) via useBusinessConnectHome(). No mock
@@ -11,13 +11,13 @@ import { ExecutiveHome } from "@/components/business-connect/mobile/ExecutiveHom
 export const Route = createFileRoute("/connect-app/")({
   head: () => ({
     meta: [
-      { title: "Trang chủ — Business Connect" },
+      { title: "Trang chủ — ViOne" },
       {
         name: "description",
         content:
           "Trang chủ Business Connect: thông tin hôm nay của bạn — cuộc gặp, việc cần làm và kết nối đang chờ.",
       },
-      { property: "og:title", content: "Trang chủ — Business Connect" },
+      { property: "og:title", content: "Trang chủ — ViOne" },
       {
         property: "og:description",
         content:

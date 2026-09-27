@@ -6,19 +6,13 @@ async function main() {
   });
   await client.connect();
 
-  const newsCols = await client.query(`
-    SELECT column_name, data_type 
-    FROM information_schema.columns 
-    WHERE table_name = 'news' AND table_schema = 'public'
+  const tables = await client.query(`
+    SELECT table_name 
+    FROM information_schema.tables 
+    WHERE table_schema = 'public'
+    ORDER BY table_name
   `);
-  console.log("news columns:", newsCols.rows);
-
-  const eventCols = await client.query(`
-    SELECT column_name, data_type 
-    FROM information_schema.columns 
-    WHERE table_name = 'events' AND table_schema = 'public'
-  `);
-  console.log("event columns:", eventCols.rows);
+  console.log("public tables:", tables.rows.map(r => r.table_name));
 
   await client.end();
 }

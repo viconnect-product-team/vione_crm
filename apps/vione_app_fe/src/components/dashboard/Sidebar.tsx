@@ -53,10 +53,20 @@ import type { TKey } from "@/lib/i18n";
 import type { LucideIcon } from "lucide-react";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { useTheme } from "@/lib/theme";
+import { useAuth } from "@/context/AuthContext";
+import { ProfileMenu } from "@/components/dashboard/ProfileMenu";
 
-type Item = { key: TKey; icon: LucideIcon; to?: string; label?: string };
+type Item = { key: TKey; icon: LucideIcon; to?: string; label?: string; badge?: string | number };
 
-const overview: Item[] = [{ key: "nav.dashboard", icon: LayoutDashboard, to: "/", label: "Bảng Điều Khiển Tổng Quan" }];
+// 4 Mục điều hướng cốt lõi theo thiết kế Vione CRM Figma
+const vioneCoreNav: Item[] = [
+  { key: "nav.dashboard", icon: LayoutDashboard, to: "/", label: "Tổng quan" },
+  { key: "nav.vioneMemberList" as TKey, icon: Users, to: "/members", label: "Khách hàng (CRM)" },
+  { key: "nav.vioneMessages" as TKey, icon: MessageSquare, to: "/messages", label: "Hộp thư đa kênh", badge: "12" },
+  { key: "nav.vioneAi" as TKey, icon: Sparkles, to: "/ai", label: "Tự động hóa", badge: "New" },
+];
+
+const overview: Item[] = [{ key: "nav.dashboard", icon: LayoutDashboard, to: "/", label: "Tổng quan" }];
 
 // 1. MẠNG LƯỚI VIONE CONNECT (Hệ sinh thái kết nối số)
 const vioneConnectSuite: Item[] = [
@@ -239,48 +249,71 @@ function NavItem({
   pathname: string | undefined;
   collapsed: boolean;
   onNavigate?: () => void;
-  badge?: number;
+  badge?: string | number;
 }) {
   const t = useT();
   const Icon = item.icon;
   const active = isActive(pathname, item.to);
   const label = item.label || t(item.key);
-  const showBadge = !!badge && badge > 0;
-  const badgeText = badge && badge > 99 ? "99+" : String(badge ?? 0);
-  const cls = `group relative flex w-full items-center gap-3 rounded-lg py-2 text-[13px] outline-none transition-[background-color,color] duration-[var(--motion-fast)] ease-out focus-visible:ring-2 focus-visible:ring-sidebar-ring ${
-    collapsed ? "justify-center px-0" : "pl-3.5 pr-3"
+  const badgeVal = item.badge ?? badge;
+  const showBadge = badgeVal !== undefined && badgeVal !== null && badgeVal !== "";
+
+  const cls = `group relative flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm transition-all duration-150 outline outline-1 outline-offset-[-1px] cursor-pointer ${
+    collapsed ? "justify-center px-2 py-2.5" : ""
   } ${
     active
-      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-      : "text-sidebar-foreground/85 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+      ? "bg-blue-600 text-white font-bold outline-blue-500 shadow-md shadow-blue-600/30"
+      : "bg-transparent outline-transparent text-slate-300 hover:text-white hover:bg-slate-900 font-medium"
   }`;
-  const badgeEl = showBadge ? (
-    collapsed ? (
-      <span className="vba-badge-pop absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive ring-2 ring-sidebar" />
-    ) : (
-      <span className="vba-badge-pop ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-destructive px-1.5 text-[10px] font-bold text-destructive-foreground">
-        {badgeText}
-      </span>
-    )
-  ) : null;
+
+  const renderBadge = () => {
+    if (!showBadge) return null;
+    if (collapsed) {
+      return (
+        <span
+          className={`absolute right-1.5 top-1.5 h-2 w-2 rounded-full ${
+            badgeVal === "New" ? "bg-amber-500" : "bg-blue-600"
+          }`}
+        />
+      );
+    }
+    if (badgeVal === "New") {
+      return (
+        <div className="px-2 py-0.5 bg-amber-500 rounded-xl flex items-center justify-center shrink-0">
+          <span className="text-white text-[10px] font-bold font-['Inter'] leading-none">New</span>
+        </div>
+      );
+    }
+    return (
+      <div className="px-2 py-0.5 bg-blue-600 rounded-xl flex items-center justify-center shrink-0">
+        <span className="text-white text-[10px] font-bold font-['Inter'] leading-none">{badgeVal}</span>
+      </div>
+    );
+  };
+
   const inner = (
-    <>
-      {active && !collapsed && (
-        <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-sidebar-primary" />
+    <div className="flex items-center gap-3 w-full">
+      <div className="size-4 shrink-0 flex items-center justify-center">
+        <Icon
+          className={`size-4 transition-colors ${
+            active ? "text-white" : "text-slate-400 group-hover:text-white"
+          }`}
+          strokeWidth={active ? 2.2 : 1.9}
+        />
+      </div>
+      {!collapsed && (
+        <span
+          className={`flex-1 truncate text-left font-['Inter'] text-[13.5px] ${
+            active ? "text-white font-bold" : "text-slate-200 group-hover:text-white"
+          }`}
+        >
+          {label}
+        </span>
       )}
-      {active && collapsed && (
-        <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-sidebar-primary" />
-      )}
-      <Icon
-        className={`h-[18px] w-[18px] shrink-0 transition-transform duration-[var(--motion-fast)] ease-out ${
-          active ? "text-sidebar-primary" : "group-hover:translate-x-0.5"
-        }`}
-        strokeWidth={active ? 2.4 : 1.9}
-      />
-      {!collapsed && <span className="flex-1 truncate text-left font-medium">{label}</span>}
-      {badgeEl}
-    </>
+      {!collapsed && renderBadge()}
+    </div>
   );
+
   if (item.to) {
     return (
       <Link
@@ -324,16 +357,18 @@ function Group({
   const t = useT();
   const displayLabel = label ? (label.startsWith("nav.") ? t(label as TKey) : label) : undefined;
   return (
-    <div className={collapsed ? "px-2.5" : "px-3"}>
+    <div className={collapsed ? "px-2" : "px-3"}>
       {displayLabel &&
         (collapsed ? (
-          <div className="mx-2 mb-1.5 mt-1 h-px bg-sidebar-border/50" />
+          <div className="mx-2 mb-2 mt-2 h-px bg-slate-800" />
         ) : (
-          <div className="mb-1.5 px-3 text-[10px] font-extrabold uppercase tracking-[0.14em] text-sidebar-foreground/50 flex items-center justify-between">
-            <span>{displayLabel}</span>
+          <div className="mb-2 mt-4 px-3 flex items-center gap-2">
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 select-none">
+              {displayLabel}
+            </span>
           </div>
         ))}
-      <div className="space-y-[3px]">
+      <div className="space-y-1">
         {items.map((it) => (
           <NavItem
             key={it.key}
@@ -403,33 +438,12 @@ export function Sidebar({
     }
   }, [mobile]);
 
-  // Restore scroll position & auto-scroll active item into view
+  // Keep sidebar at top on dashboard home
   useEffect(() => {
-    try {
-      const saved = sessionStorage.getItem("crm_sidebar_scroll_top");
-      if (saved && scrollRef.current) {
-        scrollRef.current.scrollTop = Number(saved);
-      }
-    } catch {
-      /* ignore */
+    if (pathname === "/" && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
     }
-
-    const timer = setTimeout(() => {
-      const activeEl = scrollRef.current?.querySelector('[data-active="true"]');
-      if (activeEl) {
-        activeEl.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
-    }, 60);
-    return () => clearTimeout(timer);
   }, [pathname]);
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    try {
-      sessionStorage.setItem("crm_sidebar_scroll_top", String(e.currentTarget.scrollTop));
-    } catch {
-      /* ignore */
-    }
-  };
 
   function toggle() {
     setCollapsed((prev) => {
@@ -449,209 +463,126 @@ export function Sidebar({
 
   return (
     <aside
-      className={`${visibility} ${mobile ? "h-dvh" : "sticky top-0 h-dvh"} ${width} shrink-0 flex-col border-r border-sidebar-border transition-[width] duration-[var(--motion-slow)] ease-out`}
-      style={{ background: "var(--gradient-sidebar)" }}
+      className={`${visibility} ${mobile ? "h-dvh" : "sticky top-0 h-dvh"} ${width} shrink-0 flex-col bg-slate-950 border-r border-slate-800/80 transition-[width] duration-[var(--motion-slow)] ease-out justify-between select-none text-white`}
     >
-      {/* Logo */}
-      <div
-        className={`flex h-[72px] items-center gap-3 border-b border-sidebar-border ${
-          isCollapsed ? "justify-center px-2" : "px-5"
-        }`}
-      >
-        {activeAssoc?.logoUrl ? (
-          <img
-            src={activeAssoc.logoUrl}
-            alt={brandName}
-            className="h-10 w-10 shrink-0 rounded-xl object-cover"
-          />
-        ) : (
-          <div
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-black text-slate-950 shadow-md border border-amber-400/50"
-            style={{ background: "linear-gradient(135deg, #FFF3C4 0%, #F59E0B 55%, #B45309 100%)" }}
-          >
-            V1
+      {/* ── Top Header & Core Nav ─────────────────────────────────────── */}
+      <div className="flex flex-col flex-1 min-h-0">
+        {/* Logo */}
+        <div
+          className={`flex h-[76px] items-center gap-2.5 border-b border-slate-800/80 ${
+            isCollapsed ? "justify-center px-2" : "px-6"
+          }`}
+        >
+          <div className="w-8 h-8 bg-gradient-to-l from-blue-900 via-blue-600 to-blue-900 rounded-lg inline-flex flex-col justify-center items-center shrink-0 shadow-md">
+            <span className="text-white text-lg font-extrabold font-['Inter'] leading-none">V</span>
           </div>
-        )}
-        {!isCollapsed && (
-          <div className="min-w-0 flex-1 leading-tight">
-            <div className="truncate text-[13.5px] font-extrabold tracking-wide text-sidebar-foreground flex items-center gap-1.5">
-              <span>ViOne Connect</span>
-              <span className="rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 text-[9px] font-black px-1.5 py-0.5 border border-amber-500/30">
-                CRM 5.0
+          {!isCollapsed && (
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-white text-xl font-extrabold font-['Inter'] tracking-tight">Vione</span>
+              <span className="rounded bg-blue-600/20 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 border border-blue-500/30">
+                CRM
               </span>
             </div>
-            <div className="truncate text-[10px] font-semibold text-sidebar-foreground/60 uppercase tracking-wider mt-0.5">
-              Hệ Điều Hành Doanh Nhân
-            </div>
-          </div>
-        )}
-        {!mobile && !isCollapsed && (
-          <button
-            onClick={toggle}
-            aria-label={t("nav.collapse")}
-            title={t("nav.collapse")}
-            className="shrink-0 rounded-lg p-1.5 text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            <PanelLeftClose className="h-[18px] w-[18px]" />
-          </button>
-        )}
-      </div>
-
-      {/* Collapsed expand button */}
-      {!mobile && isCollapsed && (
-        <div className="flex justify-center pt-2">
-          <button
-            onClick={toggle}
-            aria-label={t("nav.expand")}
-            title={t("nav.expand")}
-            className="rounded-lg p-1.5 text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            <PanelLeftOpen className="h-[18px] w-[18px]" />
-          </button>
-        </div>
-      )}
-
-      {/* Nav */}
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="sidebar-scroll flex-1 space-y-5 overflow-y-auto py-4"
-      >
-        <Group
-          items={overview}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-
-        {/* 1. MẠNG LƯỚI VIONE CONNECT */}
-        <Group
-          label="MẠNG LƯỚI VIONE CONNECT"
-          items={vioneConnectSuite}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-
-        {/* 2. GIAO THƯƠNG & B2B DEALS */}
-        <Group
-          label="GIAO THƯƠNG & B2B DEALS"
-          items={vioneCommerce}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-
-        {/* 3. DOANH NGHIỆP & HỘI VIÊN VIONE */}
-        <Group
-          label="DOANH NGHIỆP & THÀNH VIÊN"
-          items={vioneMembers}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-
-        {/* 4. SỰ KIỆN & XÚC TIẾN */}
-        <Group
-          label="SỰ KIỆN & CHECK-IN B2B"
-          items={vioneEvents}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-
-        {/* 5. TÀI CHÍNH & TĂNG TRƯỞNG */}
-        <Group
-          label="TÀI CHÍNH & DOANH THU"
-          items={vioneFinance}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-
-        {/* 6. CẤU HÌNH & BẢO MẬT */}
-        <Group
-          label="CẤU HÌNH & HỆ THỐNG"
-          items={vioneSystem}
-          pathname={pathname}
-          collapsed={isCollapsed}
-          onNavigate={onNavigate}
-        />
-      </div>
-
-      {/* Theme switcher & Enterprise bar — có thể thu nhỏ cố định hoặc phóng to */}
-      {isCollapsed ? (
-        <div className="flex items-center justify-center border-t border-sidebar-border pb-2 pt-3 px-2">
-          <ThemeToggleIconBtn />
-        </div>
-      ) : !bottomExpanded ? (
-        /* Cố định thu nhỏ: thanh ngang nhỏ gọn, tiết kiệm diện tích tối đa */
-        <div className="border-t border-sidebar-border px-3 py-2.5">
-          <div className="flex w-full items-center justify-between gap-2">
-            <ThemeSwitcher />
+          )}
+          {!mobile && !isCollapsed && (
             <button
-              type="button"
-              onClick={() => setBottomExpanded(true)}
-              className="flex items-center gap-1.5 rounded-lg bg-primary/10 px-2 py-1 text-[11px] font-bold text-primary transition hover:bg-primary/20 cursor-pointer"
-              title="Mở rộng xem gói Enterprise"
+              onClick={toggle}
+              aria-label={t("nav.collapse")}
+              title={t("nav.collapse")}
+              className="ml-auto shrink-0 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-900 hover:text-white cursor-pointer"
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span className="truncate max-w-[68px]">Enterprise</span>
-              <ChevronUp className="h-3.5 w-3.5 opacity-70" />
+              <PanelLeftClose className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Collapsed expand button */}
+        {!mobile && isCollapsed && (
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={toggle}
+              aria-label={t("nav.expand")}
+              title={t("nav.expand")}
+              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-900 hover:text-white cursor-pointer"
+            >
+              <PanelLeftOpen className="h-4 w-4" />
             </button>
           </div>
-        </div>
-      ) : (
-        /* Trạng thái mở rộng: hiển thị đầy đủ Theme Switcher và Card Enterprise với nút thu nhỏ */
-        <>
-          <div className="flex items-center border-t border-sidebar-border px-4 pb-2 pt-3">
-            <div className="flex w-full items-center justify-between">
-              <span className="text-[11px] font-medium text-sidebar-foreground/60">
-                {t("theme.label")}
-              </span>
-              <div className="flex items-center gap-2">
-                <ThemeSwitcher />
-                <button
-                  type="button"
-                  onClick={() => setBottomExpanded(false)}
-                  className="rounded-lg p-1 text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
-                  title="Thu nhỏ cố định"
-                >
-                  <ChevronDown className="h-4 w-4" />
-                </button>
+        )}
+
+        {/* Nav Container with Scroll */}
+        <div
+          ref={scrollRef}
+          className="sidebar-scroll flex-1 space-y-4 overflow-y-auto py-5"
+        >
+          {/* Core 4 Vione CRM navigation items matching Figma design */}
+          <div className={isCollapsed ? "px-2" : "px-3"}>
+            {!isCollapsed && (
+              <div className="mb-2 px-3 flex items-center gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400 select-none">
+                  NGHIỆP VỤ CỐT LÕI
+                </span>
               </div>
+            )}
+            <div className="space-y-1">
+              {vioneCoreNav.map((it) => (
+                <NavItem
+                  key={it.key}
+                  item={it}
+                  pathname={pathname}
+                  collapsed={isCollapsed}
+                  onNavigate={onNavigate}
+                />
+              ))}
             </div>
           </div>
 
-          <div className="p-4 pt-1">
-            <div
-              className="relative overflow-hidden rounded-xl border border-border/10 p-4 text-primary-foreground shadow-[var(--shadow-card)]"
-              style={{ background: "var(--gradient-card)" }}
-            >
-              <div className="mb-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  <div className="text-[13px] font-semibold">{t("upgrade.title")}</div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setBottomExpanded(false)}
-                  className="rounded-md p-1 text-primary-foreground/70 transition hover:bg-white/10 hover:text-white cursor-pointer"
-                  title="Thu nhỏ cố định"
-                >
-                  <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-              </div>
-              <p className="mb-3 text-[11px] leading-relaxed text-primary-foreground/85">
-                {t("upgrade.body")}
-              </p>
-              <button className="w-full rounded-lg bg-card/15 py-2 text-xs font-semibold backdrop-blur transition hover:bg-card/25 cursor-pointer">
-                {t("upgrade.cta")}
-              </button>
+          {/* Divider */}
+          {!isCollapsed && (
+            <div className="px-6 pt-3 pb-1">
+              <div className="h-px w-full bg-slate-800/80" />
             </div>
-          </div>
-        </>
-      )}
+          )}
+
+          {/* Additional CRM Modules */}
+          <Group
+            label="TIỆN ÍCH & GIAO THƯƠNG"
+            items={vioneCommerce}
+            pathname={pathname}
+            collapsed={isCollapsed}
+            onNavigate={onNavigate}
+          />
+
+          <Group
+            label="SỰ KIỆN & CHECK-IN B2B"
+            items={vioneEvents}
+            pathname={pathname}
+            collapsed={isCollapsed}
+            onNavigate={onNavigate}
+          />
+
+          <Group
+            label="TÀI CHÍNH & DOANH THU"
+            items={vioneFinance}
+            pathname={pathname}
+            collapsed={isCollapsed}
+            onNavigate={onNavigate}
+          />
+
+          <Group
+            label="CẤU HÌNH & HỆ THỐNG"
+            items={vioneSystem}
+            pathname={pathname}
+            collapsed={isCollapsed}
+            onNavigate={onNavigate}
+          />
+        </div>
+      </div>
+
+      {/* ── Profile Footer matching user's design ──────────────────────── */}
+      <div className={`border-t border-slate-800/80 bg-slate-950 w-full shrink-0 ${isCollapsed ? "p-2" : "p-3"}`}>
+        <ProfileMenu variant="sidebar" collapsed={isCollapsed} />
+      </div>
     </aside>
   );
 }
@@ -659,8 +590,8 @@ export function Sidebar({
 /** Mini cycling icon button dùng khi sidebar thu gọn. */
 function ThemeToggleIconBtn() {
   const { theme, toggle } = useTheme();
-  const icons = { light: Sun, dark: Moon, contrast: Contrast };
-  const Icon = icons[theme];
+  const icons: Record<string, any> = { light: Sun, dark: Moon, contrast: Contrast };
+  const Icon = icons[theme] || Sun;
   return (
     <button
       type="button"

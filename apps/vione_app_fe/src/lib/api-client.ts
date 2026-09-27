@@ -237,15 +237,15 @@ export function resolveMediaUrl(url: string | null | undefined): string | null {
     return publicBase ? `${publicBase}/api/upload/file/${cleanPath}` : `/api/upload/file/${cleanPath}`;
   }
 
-  // 8. Nếu là bare filename (không chứa /) có đuôi file ảnh/tài liệu
-  if (!trimmed.includes("/") && /\.(jpg|jpeg|png|webp|gif|svg|pdf|docx|xlsx)$/i.test(trimmed)) {
+  // 8. Nếu là bare filename (không chứa /) có đuôi file ảnh/tài liệu/video
+  if (!trimmed.includes("/") && /\.(jpg|jpeg|png|webp|gif|svg|pdf|docx|xlsx|mp4|webm|mov|m4v|ogg)$/i.test(trimmed)) {
     return publicBase ? `${publicBase}/api/upload/file/avatars/${trimmed}` : `/api/upload/file/avatars/${trimmed}`;
   }
 
   return trimmed;
 }
 
-const MEDIA_EXT_REGEX = /\.(jpg|jpeg|png|webp|gif|svg|pdf|docx|xlsx)$/i;
+const MEDIA_EXT_REGEX = /\.(jpg|jpeg|png|webp|gif|svg|pdf|docx|xlsx|mp4|webm|mov|m4v|ogg)$/i;
 
 function transformUrls(obj: any, parentKey?: string): any {
   if (obj === null || obj === undefined) return obj;

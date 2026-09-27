@@ -97,37 +97,37 @@ const STATUS_COLOR: Record<Meeting["status"], "info" | "success" | "danger"> = {
   cancelled: "danger",
 };
 
-// Department member registry of CEO 1983
+// Department member registry of ViOne Enterprise
 const DEPARTMENT_MEMBERS: Record<
   string,
   Array<{ name: string; email: string; role: string; phone: string }>
 > = {
-  "Ban Thư ký": [
-    { name: "Lê Hoàng Long", email: "ceo.tongthuky@ceo1983.com", role: "Tổng thư ký", phone: "0983000001" },
-    { name: "Đỗ Thị Mai", email: "ceo.member1@ceo1983.com", role: "Ủy viên Thư ký", phone: "0983000006" },
+  "Ban Giám Đốc": [
+    { name: "Ban Điều Hành ViOne", email: "board@vione.com", role: "Giám đốc điều hành", phone: "0901000001" },
+    { name: "Trợ Lý Điều Hành", email: "assistant@vione.com", role: "Thư ký ban giám đốc", phone: "0901000006" },
   ],
-  "Ban Thành viên": [
-    { name: "Nguyễn Văn Cường", email: "ceo.thanhvien@ceo1983.com", role: "Trưởng ban thành viên", phone: "0983000002" },
-    { name: "Bùi Đức Thắng", email: "ceo.member2@ceo1983.com", role: "Phó ban thành viên", phone: "0983000007" },
+  "Khối Kinh Doanh & Tiếp Thị": [
+    { name: "Trưởng Phòng Kinh Doanh", email: "sales.lead@vione.com", role: "Trưởng ban kinh doanh", phone: "0901000002" },
+    { name: "Chuyên Viên Khách Hàng VIP", email: "sales.vip@vione.com", role: "Quản lý đối tác", phone: "0901000007" },
   ],
-  "Ban Tài chính": [
-    { name: "Vũ Thu Trang", email: "ceo.taichinh@ceo1983.com", role: "Trưởng ban tài chính", phone: "0983000003" },
-    { name: "Ngô Bảo Anh", email: "ceo.member3@ceo1983.com", role: "Ủy viên Tài chính", phone: "0983000008" },
+  "Khối Dự Án & Công Nghệ": [
+    { name: "Giám Đốc Công Nghệ (CTO)", email: "tech.lead@vione.com", role: "Trưởng ban công nghệ", phone: "0901000003" },
+    { name: "Trưởng Nhóm Phát Triển", email: "dev.lead@vione.com", role: "Quản lý dự án", phone: "0901000008" },
   ],
-  "Ban Truyền thông": [
-    { name: "Phạm Quang Huy", email: "ceo.truyenthong@ceo1983.com", role: "Trưởng ban truyền thông", phone: "0983000004" },
-    { name: "Đinh Trọng Hiếu", email: "ceo.member4@ceo1983.com", role: "Ủy viên Truyền thông", phone: "0983000009" },
+  "Phòng Nhân Sự & Đào Tạo": [
+    { name: "Trưởng Ban Nhân Sự", email: "hr.lead@vione.com", role: "Trưởng ban nhân sự", phone: "0901000004" },
+    { name: "Chuyên Viên Đào Tạo", email: "hr.training@vione.com", role: "Giám sát hiệu suất", phone: "0901000009" },
   ],
-  "Ban Xúc tiến thương mại": [
-    { name: "Hoàng Minh Tuấn", email: "ceo.xuctien@ceo1983.com", role: "Trưởng ban xúc tiến", phone: "0983000005" },
-    { name: "Trịnh Kim Oanh", email: "ceo.member5@ceo1983.com", role: "Ủy viên Xúc tiến", phone: "0983000010" },
+  "Khối Vận Hành & CSKH": [
+    { name: "Trưởng Ban Vận Hành", email: "ops.lead@vione.com", role: "Trưởng ban vận hành", phone: "0901000005" },
+    { name: "Điều Phối Viên Dịch Vụ", email: "support@vione.com", role: "Hỗ trợ khách hàng", phone: "0901000010" },
   ],
-  "Toàn thể Ban Chấp Hành": [
-    { name: "Lê Hoàng Long", email: "ceo.tongthuky@ceo1983.com", role: "Tổng thư ký", phone: "0983000001" },
-    { name: "Nguyễn Văn Cường", email: "ceo.thanhvien@ceo1983.com", role: "Trưởng ban thành viên", phone: "0983000002" },
-    { name: "Vũ Thu Trang", email: "ceo.taichinh@ceo1983.com", role: "Trưởng ban tài chính", phone: "0983000003" },
-    { name: "Phạm Quang Huy", email: "ceo.truyenthong@ceo1983.com", role: "Trưởng ban truyền thông", phone: "0983000004" },
-    { name: "Hoàng Minh Tuấn", email: "ceo.xuctien@ceo1983.com", role: "Trưởng ban xúc tiến", phone: "0983000005" },
+  "Toàn thể Ban Lãnh Đạo": [
+    { name: "Ban Điều Hành ViOne", email: "board@vione.com", role: "Giám đốc điều hành", phone: "0901000001" },
+    { name: "Trưởng Phòng Kinh Doanh", email: "sales.lead@vione.com", role: "Trưởng ban kinh doanh", phone: "0901000002" },
+    { name: "Giám Đốc Công Nghệ (CTO)", email: "tech.lead@vione.com", role: "Trưởng ban công nghệ", phone: "0901000003" },
+    { name: "Trưởng Ban Nhân Sự", email: "hr.lead@vione.com", role: "Trưởng ban nhân sự", phone: "0901000004" },
+    { name: "Trưởng Ban Vận Hành", email: "ops.lead@vione.com", role: "Trưởng ban vận hành", phone: "0901000005" },
   ],
 };
 
@@ -182,15 +182,15 @@ function MeetingsPage() {
   const [adminNotes, setAdminNotes] = useState("Ban Quản Trị đã kiểm tra lịch và chuẩn bị sẵn thiết bị.");
   const [approvalZoomUrl, setApprovalZoomUrl] = useState("https://zoom.us/j/88819830002?pwd=VIONE");
   const [approvalPasscode, setApprovalPasscode] = useState("198302");
-  const [rejectionReason, setRejectionReason] = useState("Trùng lịch hội nghị của Ban Chấp Hành Hiệp hội.");
+  const [rejectionReason, setRejectionReason] = useState("Trùng lịch hội nghị của Ban Điều Hành công ty.");
 
   // New Booking Request Form State
   const [newRoomId, setNewRoomId] = useState("room_sapphire");
-  const [newTitle, setNewTitle] = useState("Họp Ban Xúc Tiến Thương Mại");
-  const [newOrganizerName, setNewOrganizerName] = useState("Lê Hoàng Long");
-  const [newOrganizerEmail, setNewOrganizerEmail] = useState("long.le@ceo1983.com");
-  const [newOrganizerPhone, setNewOrganizerPhone] = useState("0983 000 001");
-  const [newDepartment, setNewDepartment] = useState("Ban Xúc tiến thương mại");
+  const [newTitle, setNewTitle] = useState("Họp Ban Điều Hành Doanh Nghiệp");
+  const [newOrganizerName, setNewOrganizerName] = useState("Ban Quản Trị ViOne");
+  const [newOrganizerEmail, setNewOrganizerEmail] = useState("admin@vione.com");
+  const [newOrganizerPhone, setNewOrganizerPhone] = useState("0901 000 001");
+  const [newDepartment, setNewDepartment] = useState("Khối Kinh Doanh & Tiếp Thị");
   const [newMode, setNewMode] = useState<"offline" | "online" | "hybrid">("hybrid");
   const [newDate, setNewDate] = useState(new Date().toISOString().slice(0, 10));
   const [newStartTime, setNewStartTime] = useState("14:30");

@@ -29,6 +29,11 @@ function getContentType(filename: string): string {
     '.svg': 'image/svg+xml',
     '.txt': 'text/plain',
     '.json': 'application/json',
+    '.mp4': 'video/mp4',
+    '.webm': 'video/webm',
+    '.ogg': 'video/ogg',
+    '.mov': 'video/quicktime',
+    '.m4v': 'video/x-m4v',
   };
   return map[ext] || 'application/octet-stream';
 }

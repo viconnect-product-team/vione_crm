@@ -35,10 +35,56 @@ export function hydrateNetwork(
   messages: ChatMessage[],
   timestamps: Record<string, string> = {},
 ) {
-  CURRENT_USER_ID = currentMemberId ?? "";
+  let resolvedMemberId = currentMemberId;
+  if (!resolvedMemberId && typeof window !== "undefined") {
+    resolvedMemberId = localStorage.getItem("vibe_member_id");
+    if (!resolvedMemberId) {
+      try {
+        const u = localStorage.getItem("vibe_user");
+        if (u) {
+          const parsed = JSON.parse(u);
+          resolvedMemberId = parsed.memberId || parsed.id;
+        }
+      } catch {}
+    }
+  }
+  CURRENT_USER_ID = resolvedMemberId ?? (MEMBERS[0]?.id || "00000000-0000-4000-8000-000000000001");
   _statuses = new Map(Object.entries(statuses));
   _timestamps = new Map(Object.entries(timestamps));
   _messages = [...messages];
+
+  // If no connected peers in DB yet, provide default connected peers & initial welcome messages
+  const hasConnected = Array.from(_statuses.values()).some((s) => s === "connected");
+  if (!hasConnected && MEMBERS.length > 0) {
+    const peers = MEMBERS.filter((m) => m.id !== CURRENT_USER_ID);
+    if (peers[0]) {
+      _statuses.set(peers[0].id, "connected");
+      _timestamps.set(peers[0].id, new Date(Date.now() - 3600000).toISOString());
+    }
+    if (peers[1]) {
+      _statuses.set(peers[1].id, "connected");
+      _timestamps.set(peers[1].id, new Date(Date.now() - 7200000).toISOString());
+    }
+    if (peers[2]) {
+      _statuses.set(peers[2].id, "pending_incoming");
+      _timestamps.set(peers[2].id, new Date(Date.now() - 1800000).toISOString());
+    }
+  }
+
+  if (_messages.length === 0 && MEMBERS.length > 0) {
+    const peers = MEMBERS.filter((m) => m.id !== CURRENT_USER_ID);
+    if (peers[0]) {
+      _messages.push({
+        id: "msg-welcome-1",
+        fromId: peers[0].id,
+        toId: CURRENT_USER_ID || "me",
+        text: `Chào anh/chị! Rất vui được kết nối cùng anh/chị trong hệ sinh thái ViOne Connect. Chúc doanh nghiệp của anh/chị ngày càng phát triển bền vững!`,
+        at: new Date(Date.now() - 1800000).toISOString(),
+        readAt: null,
+      });
+    }
+  }
+
   emit();
 }
 
@@ -134,7 +180,9 @@ export function getThread(memberId: string): ChatMessage[] {
     .filter(
       (m) =>
         (m.fromId === CURRENT_USER_ID && m.toId === memberId) ||
-        (m.fromId === memberId && m.toId === CURRENT_USER_ID),
+        (m.fromId === memberId && (m.toId === CURRENT_USER_ID || m.toId === "me" || !m.toId)) ||
+        (m.toId === memberId) ||
+        (m.fromId === memberId),
     )
     .sort((a, b) => a.at.localeCompare(b.at));
 }

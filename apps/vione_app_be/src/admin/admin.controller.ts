@@ -155,6 +155,28 @@ export class AdminController {
   async deleteCampaign(@Param('id') id: string) {
     return this.adminService.deleteCampaign(id);
   }
+
+  // ── TRANSACTIONS / FINANCE ──────────────────────────────────────────
+
+  @Get('transactions')
+  async listTransactions(@Query('type') type?: string) {
+    return this.adminService.listTransactions(type);
+  }
+
+  @Post('transactions')
+  async createTransaction(@Body() body: any) {
+    return this.adminService.createTransaction(body);
+  }
+
+  @Patch('transactions/:id')
+  async updateTransaction(@Param('id') id: string, @Body() body: any) {
+    return this.adminService.updateTransaction(id, body);
+  }
+
+  @Delete('transactions/:id')
+  async deleteTransaction(@Param('id') id: string) {
+    return this.adminService.deleteTransaction(id);
+  }
 }
 
 

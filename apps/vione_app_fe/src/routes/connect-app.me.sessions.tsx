@@ -1,4 +1,4 @@
-// Phiên & thiết bị — /connect-app/me/sessions
+﻿// Phiên & thiết bị — /connect-app/me/sessions
 // Liệt kê các thiết bị đang đăng nhập và cho phép ngắt phiên từ xa.
 // Chỉ chủ tài khoản: mọi đọc/ghi đều xác định chủ thể phía máy chủ.
 
@@ -21,12 +21,12 @@ import type { DeviceSessionInfo } from "@/lib/business-connect/mobile/device-ses
 export const Route = createFileRoute("/connect-app/me/sessions")({
   head: () => ({
     meta: [
-      { title: "Phiên & thiết bị — Business Connect" },
+      { title: "Phiên & thiết bị — ViOne" },
       {
         name: "description",
         content: "Xem các thiết bị đang đăng nhập và ngắt phiên từ xa khi cần.",
       },
-      { property: "og:title", content: "Phiên & thiết bị — Business Connect" },
+      { property: "og:title", content: "Phiên & thiết bị — ViOne" },
       {
         property: "og:description",
         content: "Xem các thiết bị đang đăng nhập và ngắt phiên từ xa khi cần.",

@@ -49,7 +49,7 @@ services:
     environment:
       POSTGRES_USER: app1
       POSTGRES_PASSWORD: "5^S0CEpvYwC1(#YN1UoJ"
-      POSTGRES_DB: vione_standalone_app
+      POSTGRES_DB: vione_project
     ports:
       - "6433:5432"
     volumes:

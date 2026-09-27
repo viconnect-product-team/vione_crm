@@ -316,7 +316,7 @@ export class MembersService {
     let rows: any[];
     if (assocId) {
       rows = await this.prisma.$queryRaw<any[]>`
-        SELECT m.code, m.name, m.contact, m.phone, m.email, m.about, m.address, m.website,
+        SELECT m.id, m.code, m.name, m.contact, m.phone, m.email, m.about, m.address, m.website,
                m.industry, m.region, m.type, m.status, m.user_id, m.executive_role,
                COALESCE(up.avatar_url, bi.avatar_url, vu.avatar_url) as avatar,
                COALESCE(up.display_name, vu.name, bi.display_name, m.contact, m.name) as person_name,
@@ -333,7 +333,7 @@ export class MembersService {
       });
     } else {
       rows = await this.prisma.$queryRaw<any[]>`
-        SELECT m.code, m.name, m.contact, m.phone, m.email, m.about, m.address, m.website,
+        SELECT m.id, m.code, m.name, m.contact, m.phone, m.email, m.about, m.address, m.website,
                m.industry, m.region, m.type, m.status, m.user_id, m.executive_role,
                COALESCE(up.avatar_url, bi.avatar_url, vu.avatar_url) as avatar,
                COALESCE(up.display_name, vu.name, bi.display_name, m.contact, m.name) as person_name,
@@ -351,6 +351,7 @@ export class MembersService {
     }
 
     return rows.map((m) => ({
+      id: m.id ?? m.user_id ?? m.code ?? '',
       code: m.code ?? '',
       name: m.name,
       contact: m.contact ?? m.person_name ?? '',

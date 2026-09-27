@@ -1,4 +1,4 @@
-// BC-Mobile-3A — /connect-app/me/card: Present QR.
+﻿// BC-Mobile-3A — /connect-app/me/card: Present QR.
 //
 // The owner-facing outbound card experience: pick a persona (published
 // business card), present its QR encoding the CANONICAL public URL
@@ -21,12 +21,12 @@ export const Route = createFileRoute("/connect-app/me/card")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Đưa QR — Business Connect" },
+      { title: "Đưa QR — ViOne" },
       {
         name: "description",
         content: "Trình bày mã QR danh thiếp số để người khác quét và lưu liên hệ của bạn.",
       },
-      { property: "og:title", content: "Đưa QR — Business Connect" },
+      { property: "og:title", content: "Đưa QR — ViOne" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

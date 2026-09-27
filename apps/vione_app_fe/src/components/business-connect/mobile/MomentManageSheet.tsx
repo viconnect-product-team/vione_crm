@@ -68,7 +68,7 @@ const FEELINGS_LIST = [
 ];
 
 const POPULAR_LOCATIONS = [
-  "CLB Doanh Nhân CEO 1983",
+  "Cộng đồng Doanh nhân ViOne",
   "Trụ sở ViConnect - Hà Nội",
   "Khách sạn Daewoo Hà Nội",
   "Khách sạn JW Marriott",

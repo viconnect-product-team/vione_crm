@@ -8,7 +8,6 @@ import {
   ClipboardList,
   ScanLine,
   QrCode,
-
   Handshake,
   Package,
   FileBarChart,
@@ -34,93 +33,72 @@ import {
 import type { LucideIcon } from "lucide-react";
 import type { TKey } from "@/lib/i18n";
 
-export type NavItem = { key: TKey; icon: LucideIcon; to: string };
-export type NavGroup = { label?: TKey; items: NavItem[]; platformOnly?: boolean };
+export type NavItem = {
+  key: TKey;
+  icon: LucideIcon;
+  to: string;
+  label?: string;
+};
+
+export type NavGroup = {
+  label?: string;
+  groupKey?: TKey;
+  items: NavItem[];
+  platformOnly?: boolean;
+};
 
 /**
- * Single source of truth for primary navigation destinations.
- * Consumed by the Ctrl+K command palette (and available to other shells).
+ * Danh sách phân nhóm điều hướng chuẩn của Hệ thống ViOne CRM
+ * Đồng bộ chính xác 100% với Sidebar và Breadcrumbs
  */
 export const navGroups: NavGroup[] = [
   {
+    label: "NGHIỆP VỤ CỐT LÕI",
     items: [
-      { key: "nav.dashboard", icon: LayoutDashboard, to: "/" },
-      { key: "nav.ai", icon: Sparkles, to: "/ai" },
+      { key: "nav.dashboard", icon: LayoutDashboard, to: "/", label: "Tổng quan" },
+      { key: "nav.vioneMemberList" as TKey, icon: Users, to: "/members", label: "Khách hàng (CRM)" },
+      { key: "nav.vioneMessages" as TKey, icon: MessageSquare, to: "/messages", label: "Hộp thư đa kênh" },
+      { key: "nav.vioneAi" as TKey, icon: Sparkles, to: "/ai", label: "Tự động hóa" },
+      { key: "nav.vioneCompanyList" as TKey, icon: Building2, to: "/companies", label: "Hồ sơ doanh nghiệp" },
+      { key: "nav.vioneCardTiers" as TKey, icon: Tags, to: "/segments", label: "Hạng thẻ (Gold / Titanium)" },
+      { key: "nav.vioneRenew" as TKey, icon: RefreshCw, to: "/renewal", label: "Gia hạn thẻ & dịch vụ" },
     ],
   },
   {
-    label: "nav.group.members",
+    label: "TIỆN ÍCH & GIAO THƯƠNG",
     items: [
-      { key: "nav.members", icon: Users, to: "/members" },
-      { key: "nav.companies", icon: Building2, to: "/companies" },
-      { key: "nav.memberSeg", icon: Tags, to: "/segments" },
-      { key: "nav.renewal", icon: RefreshCw, to: "/renewal" },
+      { key: "nav.vioneMarketplace" as TKey, icon: Store, to: "/marketplace", label: "Sàn Marketplace B2B" },
+      { key: "nav.vioneOpportunities" as TKey, icon: FileBarChart, to: "/opportunities", label: "Cơ Hội Giao Thương & Deals" },
+      { key: "nav.vioneQuotes" as TKey, icon: ClipboardList, to: "/marketplace/my-quotes", label: "Yêu Cầu Báo Giá VIP" },
     ],
   },
   {
-    label: "nav.group.events",
+    label: "SỰ KIỆN & CHECK-IN B2B",
     items: [
-      { key: "nav.events", icon: Calendar, to: "/events" },
-      { key: "eventsOverview.title", icon: Calendar, to: "/events-overview" },
-      { key: "nav.eventReg", icon: ClipboardList, to: "/event-registrations" },
-      { key: "nav.checkin", icon: ScanLine, to: "/checkin" },
-      { key: "checkinQr.title", icon: QrCode, to: "/checkin-qr" },
-
+      { key: "nav.vioneEventList" as TKey, icon: Calendar, to: "/events", label: "Lịch Sự Kiện B2B" },
+      { key: "nav.vioneEventReg" as TKey, icon: ClipboardList, to: "/event-registrations", label: "Đăng Ký & Khách Mời" },
+      { key: "nav.vioneCheckin" as TKey, icon: QrCode, to: "/checkin-qr", label: "Soát Vé NFC & QR Pass" },
+      { key: "eventsOverview.title" as TKey, icon: Calendar, to: "/events-overview", label: "Tổng quan sự kiện" },
+      { key: "nav.checkin" as TKey, icon: ScanLine, to: "/checkin", label: "Máy quét soát vé" },
     ],
   },
   {
-    label: "nav.group.sponsors",
+    label: "TÀI CHÍNH & DOANH THU",
     items: [
-      { key: "nav.sponsors", icon: Handshake, to: "/sponsors" },
-      { key: "nav.sponsorPkg", icon: Package, to: "/sponsor-packages" },
-      { key: "nav.sponsorReport", icon: FileBarChart, to: "/sponsor-report" },
+      { key: "nav.vioneRevenue" as TKey, icon: Wallet, to: "/fees", label: "Doanh Thu & Phí Dịch Vụ" },
+      { key: "nav.vioneCashflow" as TKey, icon: ArrowLeftRight, to: "/income", label: "Sổ Quỹ Thu - Chi" },
+      { key: "nav.vioneGrowthReport" as TKey, icon: PieChart, to: "/finance-report", label: "Báo Cáo Tăng Trưởng" },
     ],
   },
   {
-    label: "nav.group.finance",
+    label: "CẤU HÌNH & HỆ THỐNG",
     items: [
-      { key: "nav.fee", icon: Wallet, to: "/fees" },
-      { key: "nav.income", icon: ArrowLeftRight, to: "/income" },
-      { key: "nav.financeReport", icon: PieChart, to: "/finance-report" },
+      { key: "nav.vioneSettings" as TKey, icon: Settings, to: "/settings", label: "Cài Đặt Nền Tảng" },
+      { key: "nav.vioneLandingTpl" as TKey, icon: FolderOpen, to: "/admin/landing-templates", label: "Landing Page Doanh Nghiệp" },
+      { key: "nav.vioneAudit" as TKey, icon: History, to: "/activity", label: "Nhật Ký Kiểm Toán" },
+      { key: "nav.vionePermissions" as TKey, icon: ShieldCheck, to: "/platform/permissions", label: "Ma Trận Phân Quyền" },
+      { key: "nav.account" as TKey, icon: UserCog, to: "/account-settings", label: "Tài khoản cá nhân" },
+      { key: "nav.platform" as TKey, icon: ShieldCheck, to: "/platform", label: "Quản trị ViOne Platform", platformOnly: true },
     ],
-  },
-  {
-    label: "nav.group.comm",
-    items: [
-      { key: "nav.notify", icon: Bell, to: "/notifications" },
-      { key: "nav.email", icon: Mail, to: "/email-marketing" },
-      { key: "nav.news", icon: Newspaper, to: "/news" },
-      { key: "nav.perks", icon: Gift, to: "/perks" },
-      { key: "nav.benefits", icon: Award, to: "/benefits" },
-    ],
-  },
-  {
-    label: "nav.group.governance",
-    items: [
-      { key: "nav.governance", icon: Vote, to: "/voting" },
-      { key: "nav.meeting", icon: Users2, to: "/meetings" },
-      { key: "nav.documents", icon: FolderOpen, to: "/documents" },
-    ],
-  },
-  {
-    label: "nav.group.network",
-    items: [
-      { key: "nav.network", icon: MessageSquare, to: "/network" },
-      { key: "nav.marketplace", icon: Store, to: "/marketplace" },
-      { key: "nav.opportunities", icon: Sparkles, to: "/opportunities" },
-    ],
-  },
-  {
-    label: "nav.group.system",
-    items: [
-      { key: "nav.account", icon: UserCog, to: "/account-settings" },
-      { key: "nav.settings", icon: Settings, to: "/settings" },
-      { key: "nav.activity", icon: History, to: "/activity" },
-    ],
-  },
-  {
-    label: "nav.group.platform",
-    platformOnly: true,
-    items: [{ key: "nav.platform", icon: ShieldCheck, to: "/platform" }],
   },
 ];

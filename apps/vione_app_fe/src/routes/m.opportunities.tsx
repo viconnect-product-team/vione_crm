@@ -11,12 +11,14 @@ import {
   type MyOpportunity,
 } from "@/lib/member-app.functions";
 import { useT, useFmt } from "@/lib/i18n";
+import { useAuth } from "@/context/AuthContext";
 
 export const Route = createFileRoute("/m/opportunities")({
   component: OpportunitiesScreen,
 });
 
 function OpportunitiesScreen() {
+  const { user } = useAuth();
   const t = useT();
   const fmt = useFmt();
   const fetchOpps = useServerFn(listMyOpportunities);
@@ -28,6 +30,19 @@ function OpportunitiesScreen() {
   } = useServerData<MyOpportunity[]>(() => fetchOpps(), []);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
+
+  const isOppOwner = (opp: any) => {
+    if (!opp) return false;
+    if (opp.isOwner) return true;
+    if (!user) return false;
+    const uId = String(user.id || "").toLowerCase();
+    const uName = String(user.name || (user as any).fullName || (user as any).user_metadata?.full_name || "").toLowerCase().trim();
+    const posterId = String(opp.posterId || "").toLowerCase();
+    const oppAuthor = String(opp.author || opp.posterName || "").toLowerCase().trim();
+    if (posterId && uId && posterId === uId) return true;
+    if (uName && oppAuthor && uName === oppAuthor) return true;
+    return false;
+  };
 
   const allTab = t("m.opportunities.tabAll");
 
@@ -138,7 +153,11 @@ function OpportunitiesScreen() {
                 </span>
               </div>
               <div className="mt-2">
-                {o.interested ? (
+                {isOppOwner(o) ? (
+                  <span className="inline-flex items-center gap-1 rounded-lg bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 text-[11px] font-semibold text-amber-500">
+                    Cơ hội của bạn
+                  </span>
+                ) : o.interested ? (
                   <span className="inline-flex items-center gap-1 rounded-lg bg-[var(--vba-gold-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--vba-gold)]">
                     <Check className="h-3.5 w-3.5" /> {t("m.opportunities.interested")}
                   </span>
@@ -146,7 +165,7 @@ function OpportunitiesScreen() {
                   <button
                     onClick={() => interest(o.id)}
                     disabled={busy === o.id}
-                    className="rounded-lg vba-gold-grad px-3 py-1.5 text-[11px] font-semibold text-[#1a1206] disabled:opacity-60"
+                    className="rounded-lg vba-gold-grad px-3 py-1.5 text-[11px] font-semibold text-[#1a1206] disabled:opacity-60 cursor-pointer"
                   >
                     {busy === o.id ? t("m.opportunities.sending") : t("m.opportunities.interest")}
                   </button>

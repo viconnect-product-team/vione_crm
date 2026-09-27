@@ -994,5 +994,128 @@ export class AdminService implements OnModuleInit {
     `;
     return { ok: true };
   }
+
+  // ── TRANSACTIONS / FINANCE ──────────────────────────────────────────
+
+  async listTransactions(type?: string) {
+    try {
+      const rows = await this.prisma.$queryRaw<any[]>`
+        SELECT * FROM public.transactions
+        ORDER BY date DESC, created_at DESC
+      `;
+      let res = rows.map((tx) => ({
+        id: tx.code || String(tx.id),
+        date: tx.date
+          ? tx.date instanceof Date
+            ? tx.date.toISOString().slice(0, 10)
+            : String(tx.date).slice(0, 10)
+          : '',
+        type: tx.type,
+        category: tx.category || 'Khác',
+        description: tx.description ?? '',
+        amount: Number(tx.amount ?? 0),
+        method: tx.method || 'bank',
+        status: tx.status || 'completed',
+        advanceAmount: Number(tx.advance_amount ?? 0),
+        refundAmount: Number(tx.refund_amount ?? 0),
+        invoiceUrl: tx.invoice_url ?? '',
+        recipient: tx.recipient ?? '',
+      }));
+      if (type) {
+        res = res.filter((t) => t.type === type);
+      }
+      return res;
+    } catch (err) {
+      console.error('[AdminService] listTransactions error:', err);
+      return [];
+    }
+  }
+
+  async createTransaction(body: any) {
+    const isIncome = body.type === 'income';
+    const prefix = isIncome ? 'PT' : 'PC';
+    const rand = Math.floor(100 + Math.random() * 900);
+    const code = body.id || `${prefix}-${new Date().getFullYear()}-${rand}`;
+    const dateVal = body.date || new Date().toISOString().slice(0, 10);
+
+    await this.prisma.$executeRawUnsafe(
+      `
+      INSERT INTO public.transactions (
+        id, code, date, type, category, description, amount, method, status,
+        advance_amount, refund_amount, invoice_url, recipient, created_at, updated_at
+      ) VALUES (
+        gen_random_uuid(), $1, $2::date, $3, $4, $5, $6::bigint, $7, $8,
+        $9::bigint, $10::bigint, $11, $12, now(), now()
+      )
+    `,
+      code,
+      dateVal,
+      body.type || 'income',
+      body.category || 'Chung',
+      body.description || '',
+      Number(body.amount || 0),
+      body.method || 'bank',
+      body.status || 'completed',
+      Number(body.advanceAmount || 0),
+      Number(body.refundAmount || 0),
+      body.invoiceUrl || '',
+      body.recipient || '',
+    );
+
+    return {
+      id: code,
+      date: dateVal,
+      type: body.type || 'income',
+      category: body.category || 'Chung',
+      description: body.description || '',
+      amount: Number(body.amount || 0),
+      method: body.method || 'bank',
+      status: body.status || 'completed',
+      advanceAmount: Number(body.advanceAmount || 0),
+      refundAmount: Number(body.refundAmount || 0),
+      invoiceUrl: body.invoiceUrl || '',
+      recipient: body.recipient || '',
+    };
+  }
+
+  async updateTransaction(id: string, body: any) {
+    await this.prisma.$executeRawUnsafe(
+      `
+      UPDATE public.transactions SET
+        date = COALESCE($2::date, date),
+        category = COALESCE($3, category),
+        description = COALESCE($4, description),
+        amount = COALESCE($5::bigint, amount),
+        method = COALESCE($6, method),
+        status = COALESCE($7, status),
+        advance_amount = COALESCE($8::bigint, advance_amount),
+        refund_amount = COALESCE($9::bigint, refund_amount),
+        invoice_url = COALESCE($10, invoice_url),
+        recipient = COALESCE($11, recipient),
+        updated_at = now()
+      WHERE code = $1 OR id::text = $1
+    `,
+      id,
+      body.date || null,
+      body.category || null,
+      body.description !== undefined ? body.description : null,
+      body.amount !== undefined ? Number(body.amount) : null,
+      body.method || null,
+      body.status || null,
+      body.advanceAmount !== undefined ? Number(body.advanceAmount) : null,
+      body.refundAmount !== undefined ? Number(body.refundAmount) : null,
+      body.invoiceUrl !== undefined ? body.invoiceUrl : null,
+      body.recipient !== undefined ? body.recipient : null,
+    );
+
+    return { ok: true, id };
+  }
+
+  async deleteTransaction(id: string) {
+    await this.prisma.$executeRaw`
+      DELETE FROM public.transactions WHERE code = ${id} OR id::text = ${id}
+    `;
+    return { ok: true };
+  }
 }
 

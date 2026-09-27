@@ -69,11 +69,11 @@ export class AuthService {
     try {
       const decoded = this.jwtService.verify(refreshToken) as any;
       if (decoded?.type !== 'refresh') {
-        throw new UnauthorizedException('Invalid refresh token type');
+        throw new UnauthorizedException('Phiên làm việc không hợp lệ hoặc đã hết hạn');
       }
       const user = await this.usersService.findById(decoded.sub);
       if (!user) {
-        throw new UnauthorizedException('User not found');
+        throw new UnauthorizedException('Tài khoản người dùng không tồn tại');
       }
       const payload = { username: user.username, sub: user.id, name: user.name, email: user.email };
       const newRefreshPayload = { sub: user.id, type: 'refresh' };
@@ -89,14 +89,14 @@ export class AuthService {
         },
       };
     } catch (e) {
-      throw new UnauthorizedException('Refresh token hết hạn hoặc không hợp lệ');
+      throw new UnauthorizedException('Refresh token đã hết hạn hoặc không hợp lệ');
     }
   }
 
   async register(data: any) {
     const existingUser = await this.usersService.findByUsername(data.username);
     if (existingUser) {
-      throw new BadRequestException('Username already exists');
+      throw new BadRequestException('Tên đăng nhập hoặc địa chỉ email này đã tồn tại trên hệ thống ViOne. Vui lòng sử dụng thông tin khác!');
     }
 
     const salt = await bcrypt.genSalt();
