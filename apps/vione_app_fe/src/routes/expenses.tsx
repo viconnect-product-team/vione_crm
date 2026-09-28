@@ -405,7 +405,7 @@ function ExpensesPage() {
             </button>
             <button
               onClick={() => openCreate(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-700"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#003B95] px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#002B70] transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
               Lập Phiếu Tạm Ứng
@@ -533,7 +533,7 @@ function ExpensesPage() {
             <button
               onClick={() => setCategoryFilter("advance")}
               className={`rounded-lg px-3 py-1 text-xs font-semibold transition-colors ${
-                categoryFilter === "advance" ? "bg-amber-600 text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
+                categoryFilter === "advance" ? "bg-[#003B95] text-white shadow-sm" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Tạm ứng

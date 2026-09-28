@@ -67,7 +67,23 @@ export const getActiveAssociationFn = createServerFn({ method: "GET" })
       .limit(1);
     if (error) throw new Error(error.message);
     const r: any = (rows ?? [])[0];
-    if (!r) return null;
+    if (!r) {
+      const { data: defaultAssocs } = await getDb(context)
+        .from("associations")
+        .select("id, name, slug, logo_url")
+        .order("created_at", { ascending: true })
+        .limit(1);
+      const def = (defaultAssocs ?? [])[0];
+      if (!def) return null;
+      return {
+        associationId: def.id,
+        name: def.name ?? "CLB Doanh Nhân CEO 1983",
+        slug: def.slug ?? "ceo1983",
+        logoUrl: def.logo_url ?? null,
+        role: "admin",
+        isAdmin: true,
+      };
+    }
     return {
       associationId: r.association_id,
       name: r.associations?.name ?? "—",

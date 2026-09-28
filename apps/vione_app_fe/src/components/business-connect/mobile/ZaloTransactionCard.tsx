@@ -90,11 +90,11 @@ export function ZaloTransactionCard({
         {/* Zalo OA Brand Header */}
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/10 bg-slate-50/80 dark:bg-white/[0.03] px-3.5 py-2.5">
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600/10 dark:bg-amber-400/15 text-blue-600 dark:text-amber-400 border border-blue-500/20 dark:border-amber-400/30">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/10 dark:bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20 dark:border-amber-400/30">
               <CreditCard className="h-4 w-4" />
             </div>
             <div>
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-amber-400 block leading-tight">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400 block leading-tight">
                 THÔNG BÁO GIAO DỊCH
               </span>
               <span className="text-[9.5px] text-slate-400 dark:text-slate-400">
@@ -167,7 +167,7 @@ export function ZaloTransactionCard({
           <button
             type="button"
             onClick={() => setShowQrModal(true)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 px-4 py-2.5 text-[12.5px] font-bold text-white shadow-md active:scale-[0.98] transition-all cursor-pointer"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-500 active:bg-amber-500 px-4 py-2.5 text-[12.5px] font-bold text-white shadow-md active:scale-[0.98] transition-all cursor-pointer"
             style={{ color: "#ffffff" }}
           >
             <QrCode className="h-4 w-4 text-white" style={{ color: "#ffffff" }} />
@@ -179,7 +179,7 @@ export function ZaloTransactionCard({
             onClick={handleCopyStk}
             className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-300 dark:border-white/20 bg-white dark:bg-slate-900 py-2 text-[11px] font-semibold text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
-            <Copy className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+            <Copy className="h-3.5 w-3.5 text-amber-600 dark:text-[#D8B282]" />
             <span>{copied ? "Đã sao chép STK" : `Sao chép STK: ${accountNo}`}</span>
           </button>
         </div>
@@ -259,7 +259,7 @@ export function ZaloTransactionCard({
               <button
                 type="button"
                 onClick={handleDownloadQr}
-                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 active:bg-sky-800 py-2.5 text-[12px] font-bold text-white shadow-xs hover:brightness-105 active:scale-95 transition-all cursor-pointer"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-500 active:bg-amber-500 py-2.5 text-[12px] font-bold text-white shadow-xs hover:brightness-105 active:scale-95 transition-all cursor-pointer"
                 style={{ color: "#ffffff" }}
               >
                 <Download className="h-4 w-4 text-white" style={{ color: "#ffffff" }} />

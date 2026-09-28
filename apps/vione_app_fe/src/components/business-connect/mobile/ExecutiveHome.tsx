@@ -534,7 +534,7 @@ export function ExecutiveHome() {
                           <div className="mt-2 flex items-center justify-between gap-2 text-xs text-[var(--bc-mobile-muted)]">
                             <span className="flex items-center gap-1.5 truncate max-w-[200px]">
                               {rem.format === "online" ? (
-                                <Video className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                                <Video className="h-3.5 w-3.5 text-[#D8B282] shrink-0" />
                               ) : (
                                 <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
                               )}
@@ -546,7 +546,7 @@ export function ExecutiveHome() {
                                 onClick={() => {
                                   window.open("https://meet.google.com/new", "_blank");
                                 }}
-                                className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] transition shadow-xs active:scale-95 cursor-pointer"
+                                className="px-3 py-1 rounded-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-[11px] transition shadow-xs active:scale-95 cursor-pointer hover:opacity-90"
                               >
                                 Vào họp
                               </button>
@@ -1124,7 +1124,7 @@ function QuickEditProfileModal({
           <div>
             <label className="text-xs font-semibold text-[var(--bc-mobile-muted)] flex items-center justify-between">
               <span>Link Facebook cá nhân</span>
-              <span className="text-[10px] text-blue-500 font-bold">facebook.com/username</span>
+              <span className="text-[10px] text-amber-600 dark:text-[#D8B282] font-bold">facebook.com/username</span>
             </label>
             <input
               type="text"

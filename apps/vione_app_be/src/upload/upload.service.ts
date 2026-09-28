@@ -74,51 +74,66 @@ export class UploadService {
       throw new InternalServerErrorException('Không thể lưu trữ tệp ảnh lên hệ thống. Vui lòng thử lại sau.');
     }
     
-    // Save upload metadata (non-fatal if uuid check fails)
-    try {
-      const uploadId = randomUUID();
+    // Save upload metadata if valid UUID
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+    if (isUuid) {
+      try {
+        const uploadId = randomUUID();
+        await this.prisma.$executeRaw`
+          INSERT INTO public.user_uploads (id, user_id, file_path, filename, original_name, mime_type, size, created_at, updated_at)
+          VALUES (${uploadId}::uuid, ${userId}::uuid, ${url}, ${safeFilename}, ${file.originalname}, ${file.mimetype || 'image/jpeg'}, ${file.size}, NOW(), NOW())
+        `;
+      } catch (err: any) {
+        console.warn('user_uploads metadata insert notice:', err?.message);
+      }
+
+      // Save url to database user_profiles
       await this.prisma.$executeRaw`
-        INSERT INTO public.user_uploads (id, user_id, file_path, filename, original_name, mime_type, size, created_at, updated_at)
-        VALUES (${uploadId}::uuid, ${userId}::uuid, ${url}, ${safeFilename}, ${file.originalname}, ${file.mimetype}, ${file.size}, NOW(), NOW())
-      `;
-    } catch (err: any) {
-      console.warn('user_uploads metadata insert notice:', err?.message);
+        UPDATE public.user_profiles
+        SET avatar_url = ${url}
+        WHERE user_id = ${userId}::uuid
+      `.catch(() => null);
+
+      // Save url to database members
+      await this.prisma.$executeRaw`
+        UPDATE public.members
+        SET avatar = ${url}
+        WHERE user_id = ${userId}::uuid OR id = ${userId}::uuid
+      `.catch(() => null);
+      
+      // Save url to database business_identities
+      await this.prisma.$executeRaw`
+        UPDATE public.business_identities
+        SET avatar_url = ${url}
+        WHERE owner_user_id = ${userId}::uuid
+      `.catch(() => null);
+
+      // Save url to database member_business_cards
+      await this.prisma.$executeRaw`
+        UPDATE public.member_business_cards
+        SET avatar_url = ${url}
+        WHERE owner_user_id = ${userId}::uuid
+      `.catch(() => null);
+
+      // Save url to database vione_users (synchronize with dev server / local)
+      await this.prisma.$executeRaw`
+        UPDATE public.vione_users
+        SET avatar_url = ${url}
+        WHERE id = ${userId}::uuid
+      `.catch(() => null);
+    } else if (typeof userId === 'string' && userId.includes('@')) {
+      await this.prisma.$executeRaw`
+        UPDATE public.vione_users
+        SET avatar_url = ${url}
+        WHERE email = ${userId}
+      `.catch(() => null);
+
+      await this.prisma.$executeRaw`
+        UPDATE public.members
+        SET avatar = ${url}
+        WHERE email = ${userId}
+      `.catch(() => null);
     }
-
-    // Save url to database user_profiles
-    await this.prisma.$executeRaw`
-      UPDATE public.user_profiles
-      SET avatar_url = ${url}
-      WHERE user_id = ${userId}::uuid
-    `.catch(() => null);
-
-    // Save url to database members
-    await this.prisma.$executeRaw`
-      UPDATE public.members
-      SET avatar = ${url}
-      WHERE user_id = ${userId}::uuid OR id = ${userId}::uuid
-    `.catch(() => null);
-    
-    // Save url to database business_identities
-    await this.prisma.$executeRaw`
-      UPDATE public.business_identities
-      SET avatar_url = ${url}
-      WHERE owner_user_id = ${userId}::uuid
-    `.catch(() => null);
-
-    // Save url to database member_business_cards
-    await this.prisma.$executeRaw`
-      UPDATE public.member_business_cards
-      SET avatar_url = ${url}
-      WHERE owner_user_id = ${userId}::uuid
-    `.catch(() => null);
-
-    // Save url to database vione_users (synchronize with dev server / local)
-    await this.prisma.$executeRaw`
-      UPDATE public.vione_users
-      SET avatar_url = ${url}
-      WHERE id = ${userId}::uuid
-    `.catch(() => null);
     
     return url;
   }
@@ -133,7 +148,7 @@ export class UploadService {
 
     // 1. Ưu tiên tải trực tiếp lên MinIO (S3 Object Storage)
     try {
-      const minioUrl = await this.minioService.uploadFile(safeFilename, file.buffer, file.mimetype);
+      const minioUrl = await this.minioService.uploadFile(safeFilename, file.buffer, file.mimetype || 'application/octet-stream');
       if (minioUrl) {
         url = minioUrl;
         saved = true;
@@ -156,15 +171,18 @@ export class UploadService {
       throw new InternalServerErrorException('Không thể lưu trữ tệp tin lên hệ thống. Vui lòng thử lại sau.');
     }
 
-    // Save upload metadata
-    try {
-      const uploadId = randomUUID();
-      await this.prisma.$executeRaw`
-        INSERT INTO public.user_uploads (id, user_id, file_path, filename, original_name, mime_type, size, created_at, updated_at)
-        VALUES (${uploadId}::uuid, ${userId}::uuid, ${url}, ${safeFilename}, ${file.originalname}, ${file.mimetype}, ${file.size}, NOW(), NOW())
-      `;
-    } catch (err: any) {
-      console.warn('user_uploads metadata insert notice in saveFile:', err?.message);
+    // Save upload metadata if valid UUID
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+    if (isUuid) {
+      try {
+        const uploadId = randomUUID();
+        await this.prisma.$executeRaw`
+          INSERT INTO public.user_uploads (id, user_id, file_path, filename, original_name, mime_type, size, created_at, updated_at)
+          VALUES (${uploadId}::uuid, ${userId}::uuid, ${url}, ${safeFilename}, ${file.originalname}, ${file.mimetype || 'application/octet-stream'}, ${file.size}, NOW(), NOW())
+        `;
+      } catch (err: any) {
+        console.warn('user_uploads metadata insert notice in saveFile:', err?.message);
+      }
     }
 
     return url;

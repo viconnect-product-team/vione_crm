@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/business-connect/meetings/$meetingId")({
   head: () => ({
-    meta: [{ title: "Meeting — Business Connect" }, { name: "robots", content: "noindex" }],
+    meta: [{ title: "Chi tiết cuộc gặp | ViOne Connect" }, { name: "robots", content: "noindex" }],
   }),
   component: MeetingDetailPage,
 });

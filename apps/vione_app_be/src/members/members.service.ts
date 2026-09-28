@@ -213,6 +213,9 @@ export class MembersService {
       industry: mappedIndustry,
       region: mappedRegion,
       status: r.status ?? 'active',
+      executiveRole: r.executive_role || r.executiveRole || 'member',
+      executive_role: r.executive_role || r.executiveRole || 'member',
+      department: r.department || 'Hội viên VIONE',
       joinedAt: joinedStr,
       feeYear: r.fee_year ?? new Date().getFullYear(),
       feePaid: Boolean(r.fee_paid),
@@ -1094,11 +1097,42 @@ export class MembersService {
       throw new ForbiddenException('Chỉ quản trị viên mới có quyền xóa hội viên');
     }
 
-    await this.prisma.$executeRaw`
-      DELETE FROM public.members WHERE id = ${id}
-    `;
+    const linkedUserId = current.user_id;
 
-    return { ok: true };
+    // 1. Dọn dẹp liên kết và cascade khỏi các bảng liên quan
+    await this.prisma.$executeRawUnsafe(`
+      DELETE FROM public.member_account_links WHERE member_id = $1
+    `, id).catch(() => {});
+
+    await this.prisma.$executeRawUnsafe(`
+      DELETE FROM public.member_notifications WHERE recipient_id = $1
+    `, id).catch(() => {});
+
+    await this.prisma.$executeRawUnsafe(`
+      DELETE FROM public.event_registrations WHERE member_id = $1
+    `, id).catch(() => {});
+
+    // 2. Nếu có linkedUserId, dọn dẹp khỏi ma trận phân quyền (memberships, user_roles)
+    if (linkedUserId) {
+      await this.prisma.$executeRawUnsafe(`
+        DELETE FROM public.memberships WHERE user_id = $1::uuid
+      `, linkedUserId).catch(() => {});
+
+      // Không xóa role platform_admin nếu là root admin
+      if (linkedUserId !== '00000000-0000-0000-0000-000000000000') {
+        await this.prisma.$executeRawUnsafe(`
+          DELETE FROM public.user_roles 
+          WHERE user_id = $1::uuid AND role IN ('admin', 'moderator', 'tenant_admin')
+        `, linkedUserId).catch(() => {});
+      }
+    }
+
+    // 3. Xóa hội viên khỏi bảng public.members
+    await this.prisma.$executeRawUnsafe(`
+      DELETE FROM public.members WHERE id = $1
+    `, id);
+
+    return { ok: true, id };
   }
 
   async renewMember(userId: string, id: string) {

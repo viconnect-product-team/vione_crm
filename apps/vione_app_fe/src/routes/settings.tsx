@@ -73,6 +73,10 @@ function SettingsPage() {
       await persistSettings({
         data: { orgName, orgEmail: email, lang, emailNotif, smsNotif, twoFa: twoFA },
       });
+      if (typeof window !== "undefined") {
+        localStorage.setItem("vba_active_assoc_name", orgName);
+        window.dispatchEvent(new CustomEvent("association-changed", { detail: { name: orgName } }));
+      }
       toast.success(t("common.savedToast"));
     } catch {
       toast.error(t("common.saveError"));

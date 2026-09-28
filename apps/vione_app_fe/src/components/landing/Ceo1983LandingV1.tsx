@@ -23,6 +23,7 @@ export function Ceo1983LandingV1() {
     fullName: "",
     companyAndTitle: "",
     phone: "",
+    email: "",
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -33,6 +34,11 @@ export function Ceo1983LandingV1() {
       return;
     }
 
+    if (!form.email.trim() || !form.email.includes("@")) {
+      toast.error("Vui lòng nhập địa chỉ email hợp lệ để nhận thông tin tài khoản.");
+      return;
+    }
+
     setSubmitting(true);
     const regData = {
       fullName: form.fullName.trim(),
@@ -40,6 +46,7 @@ export function Ceo1983LandingV1() {
       company: form.companyAndTitle.trim() || "Doanh nghiệp CEO 1983",
       companyName: form.companyAndTitle.trim() || "Doanh nghiệp CEO 1983",
       phone: form.phone.trim(),
+      email: form.email.trim().toLowerCase(),
       title: form.companyAndTitle.trim() || "CEO / Nhà sáng lập",
       clubSlug: "ceo-1983",
       source: "landing_ceo_v1",
@@ -47,14 +54,14 @@ export function Ceo1983LandingV1() {
     };
 
     try {
-      // 1. Submit through club application server function
-      await submitClubApplication({ data: regData }).catch(() => null);
-
-      // 2. Direct API call to backend members/register
-      await fetchNestApi("/members/register", {
+      // 1. Direct API call to backend public/club-registration (saves to CRM members with status=pending)
+      const res = await fetchNestApi<any>("/public/club-registration", {
         method: "POST",
         body: JSON.stringify(regData),
       }).catch(() => null);
+
+      // 2. Submit through club application server function as fallback
+      await submitClubApplication({ data: regData }).catch(() => null);
 
       // 3. Store lead in localStorage for immediate sync & alert
       try {
@@ -64,11 +71,11 @@ export function Ceo1983LandingV1() {
         window.dispatchEvent(new CustomEvent("new_member_registered", { detail: regData }));
       } catch {}
 
-      toast.success("Đăng ký thành công! Ban Thư Ký CLB CEO 1983 đã tiếp nhận hồ sơ và sẽ liên hệ với Quý CEO sớm nhất.");
-      setForm({ fullName: "", companyAndTitle: "", phone: "" });
+      toast.success(res?.message || "Đăng ký thành công! Ban Thư Ký CLB CEO 1983 đã tiếp nhận hồ sơ trên hệ thống CRM và sẽ liên hệ với Quý CEO sớm nhất.");
+      setForm({ fullName: "", companyAndTitle: "", phone: "", email: "" });
     } catch {
       toast.success("Đã ghi nhận yêu cầu của Quý CEO! Ban Thư Ký sẽ liên hệ sớm nhất.");
-      setForm({ fullName: "", companyAndTitle: "", phone: "" });
+      setForm({ fullName: "", companyAndTitle: "", phone: "", email: "" });
     } finally {
       setSubmitting(false);
     }
@@ -597,6 +604,17 @@ export function Ceo1983LandingV1() {
                 placeholder="Số điện thoại liên hệ"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                className="w-full p-3 bg-slate-50 rounded-md border border-slate-200 text-xs font-normal font-['Inter'] text-slate-900 outline-none focus:border-blue-600"
+              />
+            </div>
+
+            <div>
+              <input
+                type="email"
+                required
+                placeholder="Địa chỉ Email (để nhận tài khoản & kích hoạt)"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="w-full p-3 bg-slate-50 rounded-md border border-slate-200 text-xs font-normal font-['Inter'] text-slate-900 outline-none focus:border-blue-600"
               />
             </div>

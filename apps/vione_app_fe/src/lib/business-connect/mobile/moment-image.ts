@@ -12,15 +12,26 @@ export const MOMENT_IMAGE_MAX_EDGE = 2048;
 export const MOMENT_IMAGE_TARGET_BYTES = 2 * 1024 * 1024; // soft target
 export const MOMENT_IMAGE_MIME = "image/jpeg";
 
-const SUPPORTED = new Set(["image/jpeg", "image/png", "image/webp"]);
+const SUPPORTED = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/jpg",
+  "image/pjpeg",
+  "image/x-png",
+  "image/gif",
+]);
 
 export type MomentImageErrorCode = "unsupported_type" | "too_large" | "decode_failed";
 
 export function validateMomentImageFile(file: {
   type: string;
   size: number;
+  name?: string;
 }): MomentImageErrorCode | null {
-  if (!SUPPORTED.has(file.type)) return "unsupported_type";
+  const isImageName = Boolean(file.name && /\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(file.name));
+  const isImageMime = file.type?.startsWith("image/") || SUPPORTED.has(file.type);
+  if (!isImageMime && !isImageName) return "unsupported_type";
   if (file.size <= 0) return "decode_failed";
   if (file.size > MOMENT_IMAGE_SOURCE_MAX_BYTES) return "too_large";
   return null;
@@ -57,35 +68,70 @@ export async function processMomentImage(
   const invalid = validateMomentImageFile(file);
   if (invalid) return { ok: false, error: invalid };
 
-  let bitmap: ImageBitmap;
+  let bitmap: ImageBitmap | null = null;
   try {
     bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
   } catch {
-    return { ok: false, error: "decode_failed" };
-  }
-
-  const { width, height } = momentImageTargetSize(bitmap.width, bitmap.height);
-  const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    bitmap.close();
-    return { ok: false, error: "decode_failed" };
-  }
-  ctx.drawImage(bitmap, 0, 0, width, height);
-  bitmap.close();
-
-  for (const quality of [0.85, 0.78, 0.7, 0.62]) {
-    const blob = await new Promise<Blob | null>((resolve) =>
-      canvas.toBlob(resolve, MOMENT_IMAGE_MIME, quality),
-    );
-    if (!blob) return { ok: false, error: "decode_failed" };
-    if (blob.size <= MOMENT_IMAGE_TARGET_BYTES || quality === 0.62) {
-      return { ok: true, image: { blob, width, height } };
+    try {
+      bitmap = await createImageBitmap(file);
+    } catch {
+      bitmap = null;
     }
   }
-  return { ok: false, error: "decode_failed" };
+
+  if (bitmap) {
+    const { width, height } = momentImageTargetSize(bitmap.width, bitmap.height);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      bitmap.close();
+
+      for (const quality of [0.85, 0.78, 0.7, 0.62]) {
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, MOMENT_IMAGE_MIME, quality),
+        );
+        if (blob && (blob.size <= MOMENT_IMAGE_TARGET_BYTES || quality === 0.62)) {
+          return { ok: true, image: { blob, width, height } };
+        }
+      }
+    }
+  }
+
+  // Fallback using HTMLImageElement (for older Android WebViews or when createImageBitmap fails)
+  try {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject();
+      img.src = url;
+    });
+
+    const { width, height } = momentImageTargetSize(img.naturalWidth || 800, img.naturalHeight || 800);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(url);
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, MOMENT_IMAGE_MIME, 0.8),
+      );
+      if (blob) {
+        return { ok: true, image: { blob, width, height } };
+      }
+    }
+    URL.revokeObjectURL(url);
+  } catch {
+    // Ultimate fallback: pass through original file as blob
+    return { ok: true, image: { blob: file, width: 800, height: 800 } };
+  }
+
+  return { ok: true, image: { blob: file, width: 800, height: 800 } };
 }
 
 export type MomentCropRect = { x: number; y: number; width: number; height: number };

@@ -10,60 +10,110 @@ export class MeetingsService {
    */
   async getWorkspaceSummary(userId: string) {
     try {
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+
       // 1. Get counts
-      const countsRaw = await this.prisma.$queryRaw<any[]>`
-        SELECT 
-          COUNT(DISTINCT m.id) FILTER (WHERE m.status IN ('confirmed', 'scheduled')) as upcoming,
-          COUNT(DISTINCT m.id) FILTER (WHERE m.status = 'draft' OR m.confirmed_proposal_id IS NULL) as unscheduled,
-          COUNT(DISTINCT m.id) FILTER (WHERE p.response_status = 'pending' AND m.status != 'cancelled') as needs_action,
-          COUNT(DISTINCT m.id) FILTER (WHERE m.status IN ('completed', 'cancelled')) as history
-        FROM public.business_meetings m
-        JOIN public.business_meeting_participants p ON p.meeting_id = m.id
-        WHERE p.user_id = ${userId}::uuid
-      `.catch(() => []);
+      let countsRaw: any[] = [];
+      if (isUuid) {
+        countsRaw = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status IN ('confirmed', 'scheduled')) as upcoming,
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status = 'draft' OR m.confirmed_proposal_id IS NULL) as unscheduled,
+            COUNT(DISTINCT m.id) FILTER (WHERE p.response_status = 'pending' AND m.status != 'cancelled') as needs_action,
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status IN ('completed', 'cancelled')) as history
+          FROM public.business_meetings m
+          LEFT JOIN public.business_meeting_participants p ON p.meeting_id = m.id
+          WHERE p.user_id = ${userId}::uuid OR m.created_by_user_id = ${userId}::uuid OR m.organizer_user_id = ${userId}::uuid
+        `.catch(() => []);
+      } else {
+        countsRaw = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status IN ('confirmed', 'scheduled')) as upcoming,
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status = 'draft' OR m.confirmed_proposal_id IS NULL) as unscheduled,
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status = 'pending' AND m.status != 'cancelled') as needs_action,
+            COUNT(DISTINCT m.id) FILTER (WHERE m.status IN ('completed', 'cancelled')) as history
+          FROM public.business_meetings m
+        `.catch(() => []);
+      }
+
+      const upcomingCount = Number(countsRaw[0]?.upcoming ?? 0);
+      const unscheduledCount = Number(countsRaw[0]?.unscheduled ?? 0);
+      const needsActionCount = Number(countsRaw[0]?.needs_action ?? 0);
+      const historyCount = Number(countsRaw[0]?.history ?? 0);
 
       const counts = {
-        upcoming: Number(countsRaw[0]?.upcoming ?? 0),
-        unscheduled: Number(countsRaw[0]?.unscheduled ?? 0),
-        needsAction: Number(countsRaw[0]?.needs_action ?? 0),
-        history: Number(countsRaw[0]?.history ?? 0),
+        upcoming: upcomingCount,
+        unscheduled: unscheduledCount,
+        needsAction: needsActionCount,
+        history: historyCount,
       };
 
       // 2. Fetch upcoming meetings
-      const upcomingMeetings = await this.prisma.$queryRaw<any[]>`
-        SELECT 
-          m.id, m.title, m.description, m.meeting_type, m.status, m.timezone,
-          m.created_at, m.updated_at, p.role as viewer_role
-        FROM public.business_meetings m
-        JOIN public.business_meeting_participants p ON p.meeting_id = m.id
-        WHERE p.user_id = ${userId}::uuid
-          AND m.status IN ('confirmed', 'scheduled')
-        ORDER BY m.created_at DESC
-        LIMIT 5
-      `.catch(() => []);
+      let upcomingMeetings: any[] = [];
+      if (isUuid) {
+        upcomingMeetings = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            m.id, m.title, m.description, m.meeting_type, m.status, m.timezone,
+            m.location_type, m.scheduling_mode, m.scheduled_start_at, m.scheduled_end_at,
+            m.created_at, m.updated_at, COALESCE(p.role, 'organizer') as viewer_role
+          FROM public.business_meetings m
+          LEFT JOIN public.business_meeting_participants p ON p.meeting_id = m.id
+          WHERE (p.user_id = ${userId}::uuid OR m.created_by_user_id = ${userId}::uuid OR m.organizer_user_id = ${userId}::uuid)
+            AND m.status IN ('confirmed', 'scheduled')
+          ORDER BY m.created_at DESC
+          LIMIT 5
+        `.catch(() => []);
+      } else {
+        upcomingMeetings = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            m.id, m.title, m.description, m.meeting_type, m.status, m.timezone,
+            m.location_type, m.scheduling_mode, m.scheduled_start_at, m.scheduled_end_at,
+            m.created_at, m.updated_at, 'organizer' as viewer_role
+          FROM public.business_meetings m
+          WHERE m.status IN ('confirmed', 'scheduled')
+          ORDER BY m.created_at DESC
+          LIMIT 5
+        `.catch(() => []);
+      }
 
       // 3. Fetch needs-action meetings
-      const needsActionMeetings = await this.prisma.$queryRaw<any[]>`
-        SELECT 
-          m.id, m.title, m.description, m.meeting_type, m.status, m.timezone,
-          m.created_at, m.updated_at, p.role as viewer_role
-        FROM public.business_meetings m
-        JOIN public.business_meeting_participants p ON p.meeting_id = m.id
-        WHERE p.user_id = ${userId}::uuid
-          AND p.response_status = 'pending'
-          AND m.status != 'cancelled'
-        ORDER BY m.created_at DESC
-        LIMIT 5
-      `.catch(() => []);
+      let needsActionMeetings: any[] = [];
+      if (isUuid) {
+        needsActionMeetings = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            m.id, m.title, m.description, m.meeting_type, m.status, m.timezone,
+            m.location_type, m.scheduling_mode, m.scheduled_start_at, m.scheduled_end_at,
+            m.created_at, m.updated_at, COALESCE(p.role, 'required') as viewer_role
+          FROM public.business_meetings m
+          JOIN public.business_meeting_participants p ON p.meeting_id = m.id
+          WHERE p.user_id = ${userId}::uuid
+            AND p.response_status = 'pending'
+            AND m.status != 'cancelled'
+          ORDER BY m.created_at DESC
+          LIMIT 5
+        `.catch(() => []);
+      }
 
       return {
+        needsActionCount,
+        upcomingCount,
+        unscheduledCount,
+        completedRecentlyCount: historyCount,
+        thisMonthCount: upcomingCount + unscheduledCount + historyCount,
+        generatedAt: new Date().toISOString(),
         counts,
-        upcomingMeetings: upcomingMeetings.map(this.formatMeetingItem),
-        needsActionMeetings: needsActionMeetings.map(this.formatMeetingItem),
+        upcomingMeetings: upcomingMeetings.map((r) => this.formatMeetingItem(r)),
+        needsActionMeetings: needsActionMeetings.map((r) => this.formatMeetingItem(r)),
       };
     } catch (err) {
       console.error('getWorkspaceSummary error:', err);
       return {
+        needsActionCount: 0,
+        upcomingCount: 0,
+        unscheduledCount: 0,
+        completedRecentlyCount: 0,
+        thisMonthCount: 0,
+        generatedAt: new Date().toISOString(),
         counts: { upcoming: 0, unscheduled: 0, needsAction: 0, history: 0 },
         upcomingMeetings: [],
         needsActionMeetings: [],
@@ -77,6 +127,7 @@ export class MeetingsService {
   async listWorkspaceMeetings(userId: string, filters: any) {
     const limit = Math.min(Math.max(Number(filters.limit || 20), 1), 50);
     const bucket = filters.bucket || 'upcoming';
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
 
     try {
       let statusFilter = `m.status IN ('confirmed', 'scheduled')`;
@@ -88,39 +139,24 @@ export class MeetingsService {
         statusFilter = `m.status IN ('completed', 'cancelled')`;
       }
 
+      let whereClause = `WHERE ${statusFilter}`;
+      if (isUuid) {
+        whereClause = `WHERE (p.user_id = '${userId}'::uuid OR m.created_by_user_id = '${userId}'::uuid OR m.organizer_user_id = '${userId}'::uuid) AND ${statusFilter}`;
+      }
+
       const rows = await this.prisma.$queryRawUnsafe<any[]>(`
         SELECT 
           m.id, m.title, m.description, m.meeting_type, m.status, m.timezone,
-          m.created_at, m.updated_at, p.role as viewer_role
+          m.location_type, m.scheduling_mode, m.scheduled_start_at, m.scheduled_end_at,
+          m.created_at, m.updated_at, COALESCE(p.role, 'organizer') as viewer_role
         FROM public.business_meetings m
-        JOIN public.business_meeting_participants p ON p.meeting_id = m.id
-        WHERE p.user_id = '${userId}'::uuid
-          AND ${statusFilter}
+        LEFT JOIN public.business_meeting_participants p ON p.meeting_id = m.id
+        ${whereClause}
         ORDER BY m.created_at DESC
         LIMIT ${limit}
       `).catch(() => []);
 
-      const items = await Promise.all(
-        rows.map(async (row) => {
-          const outcome = await this.getOutcome(row.id);
-          const followUps = await this.listFollowUps(row.id);
-          return {
-            meeting: {
-              id: row.id,
-              title: row.title,
-              description: row.description,
-              meetingType: row.meeting_type,
-              status: row.status,
-              timezone: row.timezone,
-              createdAt: row.created_at,
-              updatedAt: row.updated_at,
-            },
-            viewerRole: row.viewer_role,
-            outcome,
-            followUps,
-          };
-        })
-      );
+      const items = rows.map((row) => this.formatMeetingItem(row));
 
       return {
         items,
@@ -266,18 +302,80 @@ export class MeetingsService {
   }
 
   private formatMeetingItem(row: any) {
+    const isScheduled = ['confirmed', 'scheduled'].includes(row.status);
     return {
       meeting: {
         id: row.id,
-        title: row.title,
-        description: row.description,
-        meetingType: row.meeting_type,
-        status: row.status,
-        timezone: row.timezone,
+        title: row.title || 'Cuộc gặp',
+        meetingType: row.meeting_type || 'one_on_one',
+        status: row.status || 'draft',
+        locationType: row.location_type || 'online',
         createdAt: row.created_at,
         updatedAt: row.updated_at,
+        cancelledAt: row.cancelled_at || null,
+        completedAt: row.completed_at || null,
       },
-      viewerRole: row.viewer_role,
+      viewer: {
+        role: row.viewer_role || 'organizer',
+        invitationResponseStatus: row.response_status || 'accepted',
+        canRespondToMeeting: false,
+        hasPendingTimeProposalResponse: false,
+        canSelectFinalTime: false,
+      },
+      action: {
+        kind: 'view_detail',
+        priority: 4,
+        labelKey: 'bc.meetings.workspace.action.viewDetail',
+        target: 'detail',
+        reasonCode: 'viewer_meeting_scheduled',
+      },
+      scheduleSummary: {
+        isScheduled,
+        schedulingMode: row.scheduling_mode || (isScheduled ? 'scheduled' : 'unscheduled'),
+        startAt: row.scheduled_start_at || row.start_at || null,
+        endAt: row.scheduled_end_at || row.end_at || null,
+        timezone: row.timezone || 'Asia/Ho_Chi_Minh',
+        durationMinutes: row.duration_minutes || 60,
+      },
+      invitationSummary: {
+        requiredCount: 1,
+        acceptedCount: 1,
+        declinedCount: 0,
+        tentativeCount: 0,
+        pendingCount: 0,
+      },
+      proposalSummary: {
+        activeProposalCount: 0,
+        selectedProposalId: null,
+        viewerPendingResponseCount: 0,
+        selectableProposalCount: 0,
+        latestProposalAt: null,
+      },
+      participantSummary: {
+        participantCount: 1,
+        requiredCount: 1,
+        acceptedCount: 1,
+        visibleParticipants: [],
+      },
+      calendarSyncSummary: {
+        totalProjectionCount: 0,
+        syncedCount: 0,
+        pendingCount: 0,
+        retryScheduledCount: 0,
+        failedCount: 0,
+        hasUserActionableIssue: false,
+      },
+      sourceContextSummary: {
+        type: 'direct',
+        label: 'Trực tiếp',
+        canNavigate: false,
+        target: null,
+      },
+      latestTimelineSummary: {
+        latestEventKind: null,
+        occurredAt: null,
+        summaryKey: null,
+      },
     };
   }
 
@@ -505,5 +603,125 @@ export class MeetingsService {
       lastErrorCode: r.last_error_code ? String(r.last_error_code) : null,
       retryCount: Number(r.retry_count ?? 0),
     }));
+  }
+
+  async createMeeting(userId: string, data: any) {
+    const title = data.title || 'Cuộc gặp kết nối 1-on-1';
+    const hostName = data.hostName || 'Hội viên chủ trì';
+    const partnerName = data.partnerName || 'Đối tác kết nối';
+    const partnerPhone = data.partnerPhone || '';
+    const partnerCompany = data.partnerCompany || '';
+    const date = data.date || new Date().toISOString().split('T')[0];
+    const time = data.time || '09:00';
+    const venue = data.venue || '';
+    const venueType = data.venueType || 'offline';
+    const onlineUrl = data.onlineUrl || (venueType === 'online' ? venue : '');
+    const notes = data.notes || '';
+    const assocId = data.associationId || 'c1983000-0000-4000-8000-000000001983';
+
+    // 1. Lưu vào bảng public.meetings
+    const code = `MEET-${Date.now().toString().slice(-6)}`;
+    const targetMembers = {
+      hostName,
+      partnerName,
+      partnerPhone,
+      partnerCompany,
+      partnerUserId: data.partnerUserId || null,
+      notes,
+      venueType,
+      onlineUrl,
+    };
+
+    const insertedMeetings = await this.prisma.$queryRaw<any[]>`
+      INSERT INTO public.meetings (
+        code, title, type, date, time, location, attendees, status, 
+        association_id, department, target_members, zoom_url, created_at, updated_at
+      ) VALUES (
+        ${code}, ${title}, '1on1', ${date}::date, ${time}, ${venue}, 2, 'scheduled',
+        ${assocId}::uuid, 'Ban Kết Nối', ${JSON.stringify(targetMembers)}::jsonb, ${onlineUrl}, NOW(), NOW()
+      )
+      RETURNING *
+    `.catch((err) => {
+      console.error('Error inserting into public.meetings:', err);
+      return [];
+    });
+
+    const meeting = insertedMeetings[0] || null;
+
+    // 2. Tìm kiếm đối tác kết nối để gửi thông báo
+    let recipientUserId: string | null = data.partnerUserId || null;
+    if (!recipientUserId && (partnerPhone || partnerName)) {
+      const foundUsers = await this.prisma.$queryRaw<any[]>`
+        SELECT id, user_id FROM public.members 
+        WHERE (phone = ${partnerPhone} AND ${partnerPhone} != '') 
+           OR (name ILIKE ${'%' + partnerName + '%'} AND ${partnerName} != '')
+        LIMIT 1
+      `.catch(() => []);
+
+      if (foundUsers.length > 0) {
+        recipientUserId = foundUsers[0].user_id || foundUsers[0].id;
+      } else {
+        const vUsers = await this.prisma.$queryRaw<any[]>`
+          SELECT id FROM public.vione_users
+          WHERE (phone = ${partnerPhone} AND ${partnerPhone} != '')
+             OR (name ILIKE ${'%' + partnerName + '%'} AND ${partnerName} != '')
+          LIMIT 1
+        `.catch(() => []);
+        if (vUsers.length > 0) {
+          recipientUserId = vUsers[0].id;
+        }
+      }
+    }
+
+    // 3. Tạo thông báo trong public.business_notifications nếu tìm được người nhận
+    if (recipientUserId) {
+      const notifTitle = `Lời mời hẹn gặp kết nối từ ${hostName}`;
+      const notifBody = `${hostName} đã gửi lời mời hẹn gặp kết nối với bạn: "${title}" vào ${date} lúc ${time}. Địa điểm: ${venue}.`;
+      const displayData = {
+        meetingId: meeting?.id || code,
+        title,
+        hostName,
+        partnerName,
+        date,
+        time,
+        venue,
+        venueType,
+      };
+
+      await this.prisma.$executeRaw`
+        INSERT INTO public.business_notifications (
+          recipient_user_id, source_domain, source_record_id, event_kind, notification_kind,
+          title_key, body_key, safe_display_data, action_kind, action_target, priority,
+          status, app_scope, target_app, created_at, updated_at
+        ) VALUES (
+          ${recipientUserId}::uuid, 'meetings', ${meeting?.id ? String(meeting.id) : code}, 'meeting_invite', 'meeting',
+          ${notifTitle}, ${notifBody}, ${JSON.stringify(displayData)}::jsonb, 'open_meeting',
+          ${JSON.stringify({ url: '/business-connect/meetings' })}::jsonb, 'high',
+          'delivered', 'ceo1983', 'mobile_ceo1983', NOW(), NOW()
+        )
+      `.catch((err) => {
+        console.error('Error inserting into business_notifications:', err);
+      });
+    }
+
+    // 4. Đồng thời tạo thông báo chung trong public.notifications
+    await this.prisma.$executeRaw`
+      INSERT INTO public.notifications (
+        code, title, body, audience, channel, status, sent_at, reach,
+        association_id, target_app, created_at, updated_at
+      ) VALUES (
+        ${'NOTIF-' + Date.now().toString().slice(-6)},
+        ${`Lời mời hẹn gặp kết nối: ${title}`},
+        ${`${hostName} đã lên lịch hẹn gặp kết nối 1-on-1 với ${partnerName} vào ngày ${date} lúc ${time}.`},
+        'targeted', 'in_app', 'sent', NOW(), 1,
+        ${assocId}::uuid, 'mobile_ceo1983', NOW(), NOW()
+      )
+    `.catch(() => null);
+
+    return {
+      ok: true,
+      meeting: meeting || { id: code, title, status: 'scheduled' },
+      notifiedUser: Boolean(recipientUserId),
+    };
   }
 }

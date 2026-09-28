@@ -188,8 +188,14 @@ export function resolveMediaUrl(url: string | null | undefined): string | null {
       const after = trimmed.split("127.0.0.1:4000")[1];
       return `${publicBase}${after}`;
     }
-    if (trimmed.includes("minio:9000") || trimmed.includes("localhost:9000")) {
-      const parts = trimmed.split("/vione-bucket/");
+    if (
+      trimmed.includes("minio") ||
+      trimmed.includes(":9000") ||
+      trimmed.includes(":9060") ||
+      trimmed.includes("vione-standalone-bucket") ||
+      trimmed.includes("vione-bucket")
+    ) {
+      const parts = trimmed.split(/\/vione-(?:standalone-)?bucket\//);
       if (parts[1]) {
         return publicBase
           ? `${publicBase}/api/upload/file/${parts[1]}`

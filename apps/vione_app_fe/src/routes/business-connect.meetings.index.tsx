@@ -13,8 +13,8 @@ import { MEETING_WORKSPACE_BUCKETS } from "@/lib/meeting/workspace/types";
 export const Route = createFileRoute("/business-connect/meetings/")({
   head: () => ({
     meta: [
-      { title: "Meetings — Business Connect" },
-      { name: "description", content: "Unified meetings workspace." },
+      { title: "Quản lý cuộc gặp | ViOne Connect" },
+      { name: "description", content: "Không gian làm việc cho toàn bộ cuộc gặp của bạn." },
       { name: "robots", content: "noindex" },
     ],
   }),

@@ -186,10 +186,18 @@ export function IdentityEditPage() {
     setSaveFailed(false);
     try {
       // Direct API call bypasses requireSupabaseAuth middleware
-      await fetchNestApi("/connect-app/me/identity", {
-        method: "PUT",
-        body: JSON.stringify(parsed.data),
-      });
+      try {
+        await fetchNestApi("/connect-app/me/identity", {
+          method: "PUT",
+          body: JSON.stringify(parsed.data),
+        });
+      } catch (putErr) {
+        // Fallback POST if PUT failed
+        await fetchNestApi("/connect-app/me/identity", {
+          method: "POST",
+          body: JSON.stringify(parsed.data),
+        });
+      }
       // Đồng bộ ảnh đại diện/hồ sơ ở mọi màn (Trang chủ, V-Sheet, Tôi, thẻ).
       await invalidateIdentity();
       setSaved(true);
@@ -331,13 +339,13 @@ export function IdentityEditPage() {
                   type="button"
                   onClick={() => void handleSave()}
                   disabled={saving}
-                  className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[#D4AF37]/50 bg-[#121214] dark:bg-[#0A0A0C] px-6 text-[15px] font-bold text-[#F5E0A3] shadow-[0_4px_20px_rgba(0,0,0,0.25)] transition-all hover:border-[#D4AF37] hover:shadow-[0_4px_25px_rgba(212,175,55,0.3)] active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37] motion-reduce:transition-none cursor-pointer"
+                  className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] px-6 text-[15px] font-bold text-slate-950 shadow-[0_4px_20px_rgba(216,178,130,0.4)] transition-all hover:opacity-95 hover:shadow-[0_6px_25px_rgba(216,178,130,0.6)] active:scale-[0.99] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B282] motion-reduce:transition-none cursor-pointer border-none"
                 >
                   {saving && (
                     <Loader2
                       aria-hidden="true"
-                      className="h-4 w-4 animate-spin text-[#F5E0A3] motion-reduce:animate-none"
-                      strokeWidth={1.8}
+                      className="h-4 w-4 animate-spin text-slate-950 motion-reduce:animate-none"
+                      strokeWidth={2}
                     />
                   )}
                   <span className="tracking-wide">{saving ? t("bc.mobile.me.saving") : t("bc.mobile.me.save")}</span>
@@ -346,7 +354,7 @@ export function IdentityEditPage() {
                   type="button"
                   onClick={() => void navigate({ to: "/connect-app/me" })}
                   disabled={saving}
-                  className="min-h-11 w-full rounded-full text-[14px] font-medium text-[var(--bc-mobile-muted)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-navy)] motion-reduce:transition-none"
+                  className="min-h-11 w-full rounded-full text-[14px] font-medium text-[var(--bc-mobile-muted)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B282] motion-reduce:transition-none"
                 >
                   {t("bc.mobile.me.cancel")}
                 </button>

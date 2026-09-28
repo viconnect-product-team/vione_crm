@@ -161,7 +161,8 @@ function Cell({ access, label }: { access: Access; label: string }) {
 function PlatformPermissionsPage() {
   const t = useT();
   const { lang } = useLang();
-  const { isPlatformAdmin, loading } = useRole();
+  const { isPlatformAdmin, isBQT, loading } = useRole();
+  const hasAccess = isPlatformAdmin || isBQT;
 
   const fetchMembers = useServerFn(listMembersFn);
   const { data: members, loading: loadingMembers, reload } = useServerData<any[]>(() => fetchMembers(), []);
@@ -257,6 +258,11 @@ function PlatformPermissionsPage() {
         }
       });
       toast.success(`Đã cập nhật phân quyền cho [${member.name}] thành công!`);
+      setEdits(prev => {
+        const next = { ...prev };
+        delete next[member.id];
+        return next;
+      });
       await reload();
     } catch (e: any) {
       toast.error(e?.message || "Lỗi khi cập nhật phân quyền.");
@@ -265,7 +271,7 @@ function PlatformPermissionsPage() {
     }
   };
 
-  if (!loading && !isPlatformAdmin) {
+  if (!loading && !hasAccess) {
     return (
       <PlatformShell>
         <Card className="p-10 text-center text-sm text-muted-foreground">

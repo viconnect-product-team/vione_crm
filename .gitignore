@@ -54,3 +54,9 @@ uploads/
 build/
 **/build/
 local.properties
+
+# Release artifacts
+release_apk/
+*.apk
+*.aab
+*.ipa

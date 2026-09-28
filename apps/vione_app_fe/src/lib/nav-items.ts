@@ -38,6 +38,7 @@ export type NavItem = {
   icon: LucideIcon;
   to: string;
   label?: string;
+  platformOnly?: boolean;
 };
 
 export type NavGroup = {

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, Component, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -165,24 +165,24 @@ function formatDateSeparator(isoStr?: string) {
   return d.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-function initialsOf(name: string) {
-  return name
-    .split(" ")
-    .slice(-2)
-    .map((w) => w[0])
-    .join("");
+function initialsOf(name?: string | null): string {
+  if (!name || typeof name !== "string") return "HV";
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "HV";
+  const initials = parts.slice(-2).map((w) => w[0] || "").join("").toUpperCase();
+  return initials || "HV";
 }
 
 function cleanPersonName(fullName?: string | null): string {
-  if (!fullName) return "";
+  if (!fullName || typeof fullName !== "string") return "";
   const clean = fullName.split(/\s*[-–—|]\s*/)[0].trim();
   return clean || fullName.trim();
 }
 
 function getShortName(fullName?: string | null): string {
-  if (!fullName) return "";
+  if (!fullName || typeof fullName !== "string") return "";
   const person = cleanPersonName(fullName);
-  const parts = person.split(/\s+/);
+  const parts = person.split(/\s+/).filter(Boolean);
   if (parts.length >= 2) {
     return `${parts[parts.length - 2]} ${parts[parts.length - 1]}`;
   }
@@ -571,6 +571,57 @@ function EventTicketCard({ data, isFromMe }: { data: ActionTicketData; isFromMe:
   );
 }
 
+interface MessagesErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface MessagesErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
+
+class MessagesErrorBoundary extends Component<MessagesErrorBoundaryProps, MessagesErrorBoundaryState> {
+  constructor(props: MessagesErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): MessagesErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: any) {
+    console.error("MessagesScreen caught error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center">
+          <div className="w-14 h-14 rounded-full bg-blue-500/10 flex items-center justify-center mb-3">
+            <MessageSquare className="h-7 w-7 text-blue-600" />
+          </div>
+          <h2 className="text-base font-bold text-slate-800 dark:text-white">Không thể tải tin nhắn</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">
+            Đã có sự cố kết nối hoặc dữ liệu hiển thị. Vui lòng bấm thử lại để làm mới giao diện.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              this.setState({ hasError: false });
+              window.location.reload();
+            }}
+            className="mt-4 px-5 py-2.5 rounded-xl bg-[#003B95] text-white text-xs font-bold hover:bg-[#002B70] transition shadow-sm cursor-pointer"
+          >
+            Thử lại
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function MessagesScreen() {
   const search = Route.useSearch();
   const fetchMembers = useServerFn(listMembers);
@@ -602,26 +653,34 @@ function MessagesScreen() {
   }, [search.peerCode, search.peerName]);
 
   const handleOpenConversation = (c: MyConversation) => {
+    if (!c) return;
     c.unread = 0;
     try {
       const raw = localStorage.getItem("vba.recent_conversations");
       if (raw) {
         const list = JSON.parse(raw);
-        const updated = list.map((item: any) =>
-          item.peerCode?.toLowerCase() === c.peerCode?.toLowerCase()
-            ? { ...item, unread: 0 }
-            : item
-        );
-        localStorage.setItem("vba.recent_conversations", JSON.stringify(updated));
+        if (Array.isArray(list)) {
+          const updated = list.map((item: any) =>
+            item?.peerCode && String(item.peerCode).toLowerCase() === String(c.peerCode).toLowerCase()
+              ? { ...item, unread: 0 }
+              : item
+          );
+          localStorage.setItem("vba.recent_conversations", JSON.stringify(updated));
+        }
       }
     } catch {}
     setActive(c);
   };
 
-  if (active) {
-    return <ChatThread peer={active} onBack={() => setActive(null)} members={members} />;
-  }
-  return <ConversationList onOpen={handleOpenConversation} members={members} />;
+  return (
+    <MessagesErrorBoundary>
+      {active ? (
+        <ChatThread peer={active} onBack={() => setActive(null)} members={members || []} />
+      ) : (
+        <ConversationList onOpen={handleOpenConversation} members={members || []} />
+      )}
+    </MessagesErrorBoundary>
+  );
 }
 
 type ConvFilter = "all" | "channels" | "groups" | "friends" | "unread" | "system" | "pending";
@@ -643,17 +702,19 @@ function getNormalizedFirstChar(str: string): string {
 }
 
 function saveRecentConversation(peer: MyConversation, lastText: string) {
-  if (typeof window === "undefined") return;
+  if (typeof window === "undefined" || !peer) return;
+  const peerCode = String(peer.peerCode || "");
+  if (!peerCode) return;
   try {
     const raw = localStorage.getItem("vba.recent_conversations");
     const list: MyConversation[] = raw ? JSON.parse(raw) : [];
-    const existing = list.find((c) => c.peerCode.toLowerCase() === peer.peerCode.toLowerCase());
+    const existing = Array.isArray(list) ? list.find((c) => c?.peerCode && String(c.peerCode).toLowerCase() === peerCode.toLowerCase()) : undefined;
     const nowIso = new Date().toISOString();
-    const isGroup = Boolean(peer.isGroup || existing?.isGroup || peer.peerCode.startsWith("group_"));
+    const isGroup = Boolean(peer.isGroup || existing?.isGroup || peerCode.startsWith("group_"));
     const item: MyConversation = {
-      peerCode: peer.peerCode,
+      peerCode,
       name:
-        peer.name && peer.name.trim().toLowerCase() !== peer.peerCode.toLowerCase()
+        peer.name && peer.name.trim().toLowerCase() !== peerCode.toLowerCase()
           ? peer.name
           : existing?.name || peer.name,
       last: lastText,
@@ -661,26 +722,26 @@ function saveRecentConversation(peer: MyConversation, lastText: string) {
       rawTime: nowIso,
       unread: 0,
       avatarUrl: peer.avatarUrl || existing?.avatarUrl || null,
-      isSystem: peer.isSystem,
+      isSystem: Boolean(peer.isSystem),
       isGroup,
       memberCount: peer.memberCount || existing?.memberCount,
       members: peer.members || existing?.members,
       groupAvatar: peer.groupAvatar || existing?.groupAvatar,
     };
-    const next = [item, ...list.filter((c) => c.peerCode.toLowerCase() !== peer.peerCode.toLowerCase())];
+    const next = [item, ...(Array.isArray(list) ? list.filter((c) => c?.peerCode && String(c.peerCode).toLowerCase() !== peerCode.toLowerCase()) : [])];
     localStorage.setItem("vba.recent_conversations", JSON.stringify(next.slice(0, 50)));
 
     if (isGroup) {
       const rawGroups = localStorage.getItem("vba.group_conversations");
       const groupList: MyConversation[] = rawGroups ? JSON.parse(rawGroups) : [];
-      const nextGroups = [item, ...groupList.filter((g) => g.peerCode.toLowerCase() !== item.peerCode.toLowerCase())];
+      const nextGroups = [item, ...(Array.isArray(groupList) ? groupList.filter((g) => g?.peerCode && String(g.peerCode).toLowerCase() !== peerCode.toLowerCase()) : [])];
       localStorage.setItem("vba.group_conversations", JSON.stringify(nextGroups.slice(0, 50)));
     }
 
     try {
       const storedDeleted = JSON.parse(localStorage.getItem("vba_deleted_convs") || "[]");
       if (Array.isArray(storedDeleted) && storedDeleted.length > 0) {
-        const nextDeleted = storedDeleted.filter((k: string) => String(k).toLowerCase() !== peer.peerCode.toLowerCase());
+        const nextDeleted = storedDeleted.filter((k: string) => String(k).toLowerCase() !== peerCode.toLowerCase());
         localStorage.setItem("vba_deleted_convs", JSON.stringify(nextDeleted));
       }
     } catch {}
@@ -810,7 +871,8 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
       e.stopPropagation();
       e.preventDefault();
     }
-    const targetKey = peerCode.toLowerCase();
+    const targetKey = String(peerCode || "").toLowerCase();
+    if (!targetKey) return;
     try {
       const stored = JSON.parse(localStorage.getItem("vba_deleted_convs") || "[]");
       const list: string[] = Array.isArray(stored) ? stored : [];
@@ -821,14 +883,14 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     } catch {}
 
     setLocalRecents((prev) => {
-      const next = prev.filter((c) => c.peerCode.toLowerCase() !== targetKey);
+      const next = prev.filter((c) => c?.peerCode && String(c.peerCode).toLowerCase() !== targetKey);
       try {
         localStorage.setItem("vba.recent_conversations", JSON.stringify(next));
       } catch {}
       return next;
     });
     setLocalGroups((prev) => {
-      const next = prev.filter((c) => c.peerCode.toLowerCase() !== targetKey);
+      const next = prev.filter((c) => c?.peerCode && String(c.peerCode).toLowerCase() !== targetKey);
       try {
         localStorage.setItem("vba.group_conversations", JSON.stringify(next));
       } catch {}
@@ -909,11 +971,11 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     setOnlineUserMap((prev) => {
       const next = { ...prev };
       for (const c of conversations) {
-        if (c.userId) {
+        if (c?.userId) {
           if (next[c.userId] === undefined) next[c.userId] = Boolean(c.isOnline);
         }
-        if (c.peerCode) {
-          const codeKey = c.peerCode.toLowerCase();
+        if (c?.peerCode) {
+          const codeKey = String(c.peerCode).toLowerCase();
           if (next[codeKey] === undefined) next[codeKey] = Boolean(c.isOnline);
         }
       }
@@ -935,19 +997,21 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     };
     const handleOnline = (data: { userId?: string }) => {
       if (data?.userId) {
+        const uid = String(data.userId);
         setOnlineUserMap((prev) => ({
           ...prev,
-          [data.userId!]: true,
-          [data.userId!.toLowerCase()]: true,
+          [uid]: true,
+          [uid.toLowerCase()]: true,
         }));
       }
     };
     const handleOffline = (data: { userId?: string }) => {
       if (data?.userId) {
+        const uid = String(data.userId);
         setOnlineUserMap((prev) => ({
           ...prev,
-          [data.userId!]: false,
-          [data.userId!.toLowerCase()]: false,
+          [uid]: false,
+          [uid.toLowerCase()]: false,
         }));
       }
     };
@@ -987,103 +1051,126 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     try {
       const stored = JSON.parse(localStorage.getItem("vba_deleted_convs") || "[]");
       if (Array.isArray(stored)) {
-        stored.forEach((k: string) => deletedConvs.add(String(k).toLowerCase()));
+        stored.forEach((k: string) => {
+          if (k) deletedConvs.add(String(k).toLowerCase());
+        });
       }
     } catch {}
 
     const memberMap = new Map<string, DirectoryMember>();
-    for (const m of members) {
-      if (m.code) memberMap.set(m.code.toLowerCase(), m);
+    if (Array.isArray(members)) {
+      for (const m of members) {
+        if (m?.code) memberMap.set(String(m.code).toLowerCase(), m);
+      }
     }
 
     const map = new Map<string, MyConversation>();
     // First, map server conversations enriched with directory member details
-    for (const c of conversations) {
-      if (deletedConvs.has(c.peerCode.toLowerCase())) {
-        continue;
+    if (Array.isArray(conversations)) {
+      for (const c of conversations) {
+        if (!c) continue;
+        const cPeer = String(c.peerCode || "");
+        if (!cPeer) continue;
+        const key = cPeer.toLowerCase();
+        if (deletedConvs.has(key)) {
+          continue;
+        }
+        if (!c.isSystem && key !== "admin" && key !== "system" && (!c.last || !String(c.last).trim())) {
+          continue;
+        }
+        const mem = memberMap.get(key);
+        const enriched: MyConversation = {
+          ...c,
+          peerCode: cPeer,
+          name:
+            c.name && c.name.trim().toLowerCase() !== key
+              ? c.name
+              : mem?.personName || mem?.contact || mem?.name || c.name || key.toUpperCase(),
+          avatarUrl: c.avatarUrl || mem?.avatar || null,
+          isOnline: Boolean(c.isOnline),
+          userId: c.userId || null,
+        };
+        map.set(key, enriched);
       }
-      if (!c.isSystem && c.peerCode !== "admin" && c.peerCode !== "system" && (!c.last || !c.last.trim())) {
-        continue;
-      }
-      const key = c.peerCode.toLowerCase();
-      const mem = memberMap.get(key);
-      const enriched: MyConversation = {
-        ...c,
-        name:
-          c.name && c.name.trim().toLowerCase() !== key
-            ? c.name
-            : mem?.personName || mem?.contact || mem?.name || c.name || key.toUpperCase(),
-        avatarUrl: c.avatarUrl || mem?.avatar || null,
-        isOnline: c.isOnline,
-        userId: c.userId || null,
-      };
-      map.set(key, enriched);
     }
     // Next, merge any local recent conversations, preserving avatars and names
-    for (const rec of localRecents) {
-      if (deletedConvs.has(rec.peerCode.toLowerCase())) {
-        continue;
-      }
-      if (!rec.isSystem && rec.peerCode !== "admin" && rec.peerCode !== "system" && (!rec.last || !rec.last.trim())) {
-        continue;
-      }
-      const key = rec.peerCode.toLowerCase();
-      const mem = memberMap.get(key);
-      if (!map.has(key)) {
-        map.set(key, {
-          ...rec,
-          name:
-            rec.name && rec.name.trim().toLowerCase() !== key
-              ? rec.name
-              : mem?.personName || mem?.contact || mem?.name || rec.name || key.toUpperCase(),
-          avatarUrl: rec.avatarUrl || mem?.avatar || null,
-        });
-      } else {
-        const serv = map.get(key)!;
-        const getTs = (obj: any) => {
-          if (obj?.rawTime) {
-            const t = new Date(obj.rawTime).getTime();
-            if (!isNaN(t)) return t;
-          }
-          if (obj?.time) {
-            const t = new Date(obj.time).getTime();
-            if (!isNaN(t)) return t;
-          }
-          return 0;
-        };
-        const servTime = getTs(serv);
-        const recTime = getTs(rec);
-        const recIsNewer = recTime >= servTime || (rec.last && rec.last.includes("thu hồi"));
-        map.set(key, {
-          ...serv,
-          name:
-            serv.name && serv.name.trim().toLowerCase() !== key
-              ? serv.name
-              : rec.name && rec.name.trim().toLowerCase() !== key
+    if (Array.isArray(localRecents)) {
+      for (const rec of localRecents) {
+        if (!rec) continue;
+        const recPeer = String(rec.peerCode || "");
+        if (!recPeer) continue;
+        const key = recPeer.toLowerCase();
+        if (deletedConvs.has(key)) {
+          continue;
+        }
+        if (!rec.isSystem && key !== "admin" && key !== "system" && (!rec.last || !String(rec.last).trim())) {
+          continue;
+        }
+        const mem = memberMap.get(key);
+        if (!map.has(key)) {
+          map.set(key, {
+            ...rec,
+            peerCode: recPeer,
+            name:
+              rec.name && rec.name.trim().toLowerCase() !== key
                 ? rec.name
-                : mem?.personName || mem?.contact || mem?.name || serv.name,
-          avatarUrl: serv.avatarUrl || rec.avatarUrl || mem?.avatar || null,
-          last: recIsNewer ? rec.last : serv.last || rec.last,
-          time: recIsNewer ? rec.time : serv.time || rec.time,
-          rawTime: recIsNewer ? (rec.rawTime || rec.time) : (serv.rawTime || serv.time),
-        });
+                : mem?.personName || mem?.contact || mem?.name || rec.name || key.toUpperCase(),
+            avatarUrl: rec.avatarUrl || mem?.avatar || null,
+          });
+        } else {
+          const serv = map.get(key)!;
+          const getTs = (obj: any) => {
+            if (obj?.rawTime) {
+              const t = new Date(obj.rawTime).getTime();
+              if (!isNaN(t)) return t;
+            }
+            if (obj?.time) {
+              const t = new Date(obj.time).getTime();
+              if (!isNaN(t)) return t;
+            }
+            return 0;
+          };
+          const servTime = getTs(serv);
+          const recTime = getTs(rec);
+          const recIsNewer = recTime >= servTime || (rec.last && String(rec.last).includes("thu hồi"));
+          map.set(key, {
+            ...serv,
+            peerCode: recPeer,
+            name:
+              serv.name && serv.name.trim().toLowerCase() !== key
+                ? serv.name
+                : rec.name && rec.name.trim().toLowerCase() !== key
+                  ? rec.name
+                  : mem?.personName || mem?.contact || mem?.name || serv.name,
+            avatarUrl: serv.avatarUrl || rec.avatarUrl || mem?.avatar || null,
+            last: recIsNewer ? rec.last : serv.last || rec.last,
+            time: recIsNewer ? rec.time : serv.time || rec.time,
+            rawTime: recIsNewer ? (rec.rawTime || rec.time) : (serv.rawTime || serv.time),
+          });
+        }
       }
     }
 
     // Next, merge any local group conversations
-    for (const grp of localGroups) {
-      const key = grp.peerCode.toLowerCase();
-      if (!map.has(key)) {
-        map.set(key, grp);
-      } else {
-        const existing = map.get(key)!;
-        map.set(key, {
-          ...existing,
-          isGroup: true,
-          groupAvatar: grp.groupAvatar || existing.groupAvatar,
-          memberCount: grp.memberCount || existing.memberCount,
-          members: grp.members || existing.members,
-        });
+    if (Array.isArray(localGroups)) {
+      for (const grp of localGroups) {
+        if (!grp) continue;
+        const grpPeer = String(grp.peerCode || "");
+        if (!grpPeer) continue;
+        const key = grpPeer.toLowerCase();
+        if (!map.has(key)) {
+          map.set(key, { ...grp, peerCode: grpPeer });
+        } else {
+          const existing = map.get(key)!;
+          map.set(key, {
+            ...existing,
+            peerCode: grpPeer,
+            isGroup: true,
+            groupAvatar: grp.groupAvatar || existing.groupAvatar,
+            memberCount: grp.memberCount || existing.memberCount,
+            members: grp.members || existing.members,
+          });
+        }
       }
     }
 
@@ -1096,8 +1183,8 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
           if (!rawCode) continue;
           const key = String(rawCode).toLowerCase();
           if (deletedConvs.has(key)) continue;
-          const mem = memberMap.get(key) || members.find((m) => m.code?.toLowerCase() === key || m.userId?.toLowerCase() === key);
-          const finalKey = mem?.code ? mem.code.toLowerCase() : key;
+          const mem = memberMap.get(key) || (members || []).find((m) => (m?.code && String(m.code).toLowerCase() === key) || (m?.userId && String(m.userId).toLowerCase() === key));
+          const finalKey = mem?.code ? String(mem.code).toLowerCase() : key;
           if (deletedConvs.has(finalKey)) continue;
 
           if (!map.has(finalKey)) {
@@ -1177,7 +1264,8 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     ];
 
     for (const chan of officialChannels) {
-      const key = chan.peerCode.toLowerCase();
+      const chanPeer = String(chan.peerCode || "");
+      const key = chanPeer.toLowerCase();
       try {
         const chanHistory = localStorage.getItem(`vba.chat.${chan.peerCode}`);
         if (chanHistory) {
@@ -1210,8 +1298,8 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
         if (retracted) {
           const arr = JSON.parse(retracted);
           if (Array.isArray(arr) && arr.length > 0) {
-            const rec = localRecents.find((r) => r.peerCode.toLowerCase() === k);
-            if (rec?.last && rec.last.includes("thu hồi")) {
+            const rec = Array.isArray(localRecents) ? localRecents.find((r) => r?.peerCode && String(r.peerCode).toLowerCase() === k) : undefined;
+            if (rec?.last && String(rec.last).includes("thu hồi")) {
               c.last = rec.last;
               c.time = rec.time || c.time;
             }
@@ -1221,26 +1309,29 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     }
 
     const list = Array.from(map.values()).filter((c) => {
+      if (!c) return false;
+      const pCode = String(c.peerCode || "");
+      if (!pCode) return false;
       // 1. Loại bỏ chính tài khoản của mình khỏi danh sách tin nhắn
       if (isSelfUser(c, user, myMember)) return false;
-      if (c.isSystem || c.peerCode === "admin" || c.peerCode === "system" || c.isGroup || c.peerCode.startsWith("group_")) return true;
+      if (c.isSystem || pCode === "admin" || pCode === "system" || c.isGroup || pCode.startsWith("group_")) return true;
       if (c.isConnected) return true;
-      return Boolean(c.last && c.last.trim().length > 0);
+      return Boolean(c.last && String(c.last).trim().length > 0);
     });
 
     list.sort((a, b) => {
       // Cuộc trò chuyện được ghim luôn nằm trên cùng
-      const isPinnedA = Boolean(pinnedConvs[a.peerCode]);
-      const isPinnedB = Boolean(pinnedConvs[b.peerCode]);
+      const isPinnedA = Boolean(a?.peerCode && pinnedConvs[a.peerCode]);
+      const isPinnedB = Boolean(b?.peerCode && pinnedConvs[b.peerCode]);
       if (isPinnedA && !isPinnedB) return -1;
       if (!isPinnedA && isPinnedB) return 1;
 
       const getTimestamp = (conv: MyConversation) => {
-        if (conv.rawTime) {
+        if (conv?.rawTime) {
           const t = new Date(conv.rawTime).getTime();
           if (!isNaN(t)) return t;
         }
-        if (conv.time) {
+        if (conv?.time) {
           const t = new Date(conv.time).getTime();
           if (!isNaN(t)) return t;
         }
@@ -1250,42 +1341,44 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
       const timeB = getTimestamp(b);
       // Cuộc trò chuyện có tin nhắn / tương tác mới nhất luôn lên đầu (chuẩn Messenger)
       if (timeA !== timeB) return timeB - timeA;
-      if (a.isSystem && !b.isSystem) return -1;
-      if (!a.isSystem && b.isSystem) return 1;
+      if (a?.isSystem && !b?.isSystem) return -1;
+      if (!a?.isSystem && b?.isSystem) return 1;
       return 0;
     });
     return list;
   }, [conversations, localRecents, localGroups, members, user, myMember, pinnedConvs]);
 
-  const filteredMembers = members.filter((m) => {
+  const filteredMembers = (members || []).filter((m) => {
+    if (!m) return false;
     // Không hiển thị chính mình trong danh sách chọn người nhắn mới
     if (isSelfUser(m, user, myMember)) return false;
     const q = pickerQ.trim().toLowerCase();
     if (!q) return true;
-    return (
-      m.name.toLowerCase().includes(q) ||
-      m.code.toLowerCase().includes(q) ||
-      m.industry.toLowerCase().includes(q)
+    return Boolean(
+      (m.name && String(m.name).toLowerCase().includes(q)) ||
+      (m.code && String(m.code).toLowerCase().includes(q)) ||
+      (m.industry && String(m.industry).toLowerCase().includes(q)) ||
+      (m.personName && String(m.personName).toLowerCase().includes(q))
     );
   });
 
-  const isGroupConv = (c: MyConversation) => Boolean(c.isGroup || c.peerCode.startsWith("group_"));
-  const isChannelConv = (c: MyConversation) => Boolean(c.peerCode.startsWith("channel_"));
+  const isGroupConv = (c: MyConversation) => Boolean(c?.isGroup || (c?.peerCode && String(c.peerCode).startsWith("group_")));
+  const isChannelConv = (c: MyConversation) => Boolean(c?.peerCode && String(c.peerCode).startsWith("channel_"));
 
   const channelsCount = allConversations.filter(isChannelConv).length;
   const groupsCount = allConversations.filter(isGroupConv).length;
   const pendingCount = allConversations.filter(
-    (c) => !isGroupConv(c) && !isChannelConv(c) && !c.isSystem && c.peerCode !== "admin" && c.peerCode !== "system" && !c.isConnected
+    (c) => !isGroupConv(c) && !isChannelConv(c) && !c?.isSystem && c?.peerCode !== "admin" && c?.peerCode !== "system" && !c?.isConnected
   ).length;
   const friendsCount = allConversations.filter(
-    (c) => !isGroupConv(c) && !isChannelConv(c) && c.isConnected && !c.isSystem && c.peerCode !== "admin" && c.peerCode !== "system"
+    (c) => !isGroupConv(c) && !isChannelConv(c) && c?.isConnected && !c?.isSystem && c?.peerCode !== "admin" && c?.peerCode !== "system"
   ).length;
   const systemCount = allConversations.filter(
-    (c) => (c.isSystem || c.peerCode === "admin" || c.peerCode === "system") && !isChannelConv(c)
+    (c) => (c?.isSystem || c?.peerCode === "admin" || c?.peerCode === "system") && !isChannelConv(c)
   ).length;
-  const unreadCount = allConversations.filter((c) => (c.unread || 0) > 0).length;
+  const unreadCount = allConversations.filter((c) => (c?.unread || 0) > 0).length;
   const allCount = allConversations.filter(
-    (c) => isGroupConv(c) || isChannelConv(c) || c.isSystem || c.peerCode === "admin" || c.peerCode === "system" || Boolean(c.last && c.last.trim())
+    (c) => isGroupConv(c) || isChannelConv(c) || c?.isSystem || c?.peerCode === "admin" || c?.peerCode === "system" || Boolean(c?.last && String(c.last).trim())
   ).length;
 
   const baseConvs = useMemo(() => {
@@ -1299,25 +1392,25 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     } else if (activeTab === "pending") {
       // Tin nhắn chờ: Chỉ những người CHƯA KẾT NỐI
       list = allConversations.filter(
-        (c) => !isGroupConv(c) && !c.isSystem && c.peerCode !== "admin" && c.peerCode !== "system" && !c.isConnected
+        (c) => !isGroupConv(c) && !c?.isSystem && c?.peerCode !== "admin" && c?.peerCode !== "system" && !c?.isConnected
       );
     } else if (activeTab === "system") {
       // Hệ thống
       list = allConversations.filter(
-        (c) => c.isSystem || c.peerCode === "admin" || c.peerCode === "system"
+        (c) => c?.isSystem || c?.peerCode === "admin" || c?.peerCode === "system"
       );
     } else if (activeTab === "friends") {
       // Bạn bè (đã kết nối)
       list = allConversations.filter(
-        (c) => !isGroupConv(c) && c.isConnected && !c.isSystem && c.peerCode !== "admin" && c.peerCode !== "system"
+        (c) => !isGroupConv(c) && c?.isConnected && !c?.isSystem && c?.peerCode !== "admin" && c?.peerCode !== "system"
       );
     } else if (activeTab === "unread") {
       // Chưa đọc
-      list = allConversations.filter((c) => (c.unread || 0) > 0);
+      list = allConversations.filter((c) => (c?.unread || 0) > 0);
     } else {
       // "all" (Tất cả): Có tất cả tin nhắn đã rep lại hoặc tin nhắn hệ thống hoặc nhóm hoặc người đã kết nối
       list = allConversations.filter(
-        (c) => isGroupConv(c) || c.isSystem || c.peerCode === "admin" || c.peerCode === "system" || c.isConnected || Boolean(c.last && c.last.trim())
+        (c) => isGroupConv(c) || c?.isSystem || c?.peerCode === "admin" || c?.peerCode === "system" || c?.isConnected || Boolean(c?.last && String(c.last).trim())
       );
     }
 
@@ -1329,18 +1422,18 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     // Lọc theo ký tự A-Z
     if (selectedLetter) {
       const letterUpper = selectedLetter.toUpperCase();
-      list = list.filter((c) => getNormalizedFirstChar(c.name) === letterUpper);
+      list = list.filter((c) => getNormalizedFirstChar(c?.name || "") === letterUpper);
     }
 
     // Sắp xếp danh sách
     const sorted = [...list];
     sorted.sort((a, b) => {
       const getTimestamp = (conv: MyConversation) => {
-        if (conv.rawTime) {
+        if (conv?.rawTime) {
           const t = new Date(conv.rawTime).getTime();
           if (!isNaN(t)) return t;
         }
-        if (conv.time) {
+        if (conv?.time) {
           const t = new Date(conv.time).getTime();
           if (!isNaN(t)) return t;
         }
@@ -1351,13 +1444,13 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
         return getTimestamp(a) - getTimestamp(b);
       }
       if (sortMode === "alpha_asc") {
-        return a.name.localeCompare(b.name, "vi", { sensitivity: "base" });
+        return String(a?.name || "").localeCompare(String(b?.name || ""), "vi", { sensitivity: "base" });
       }
       if (sortMode === "alpha_desc") {
-        return b.name.localeCompare(a.name, "vi", { sensitivity: "base" });
+        return String(b?.name || "").localeCompare(String(a?.name || ""), "vi", { sensitivity: "base" });
       }
       if (sortMode === "unread_first") {
-        const diff = (b.unread || 0) - (a.unread || 0);
+        const diff = (b?.unread || 0) - (a?.unread || 0);
         if (diff !== 0) return diff;
         return getTimestamp(b) - getTimestamp(a);
       }
@@ -1365,8 +1458,8 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
       const timeA = getTimestamp(a);
       const timeB = getTimestamp(b);
       if (timeA !== timeB) return timeB - timeA;
-      if (a.isSystem && !b.isSystem) return -1;
-      if (!a.isSystem && b.isSystem) return 1;
+      if (a?.isSystem && !b?.isSystem) return -1;
+      if (!a?.isSystem && b?.isSystem) return 1;
       return 0;
     });
 
@@ -1378,9 +1471,9 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     if (!q) return baseConvs;
     return baseConvs.filter(
       (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.peerCode.toLowerCase().includes(q) ||
-        (c.last && c.last.toLowerCase().includes(q)),
+        (c?.name && String(c.name).toLowerCase().includes(q)) ||
+        (c?.peerCode && String(c.peerCode).toLowerCase().includes(q)) ||
+        (c?.last && String(c.last).toLowerCase().includes(q)),
     );
   }, [baseConvs, searchTerm]);
 
@@ -2000,17 +2093,19 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
         )}
 
         {filteredConversations.map((c: any) => {
-          const isGroup = c.isGroup || c.peerCode?.startsWith("group_");
-          const isSystem = !isGroup && (c.isSystem || c.peerCode === "admin" || c.peerCode === "system");
-          const matchedMember = members.find((m) => m.code.toLowerCase() === c.peerCode.toLowerCase());
-          const resolvedAvatar = c.avatarUrl || matchedMember?.avatar || null;
+          const peerCode = String(c?.peerCode || "");
+          const peerCodeLower = peerCode.toLowerCase();
+          const isGroup = c?.isGroup || peerCode.startsWith("group_");
+          const isSystem = !isGroup && (c?.isSystem || peerCode === "admin" || peerCode === "system");
+          const matchedMember = (members || []).find((m) => m?.code && String(m.code).toLowerCase() === peerCodeLower);
+          const resolvedAvatar = c?.avatarUrl || matchedMember?.avatar || null;
           const resolvedName =
-            c.name && c.name.trim().toLowerCase() !== c.peerCode.toLowerCase()
+            c?.name && String(c.name).trim().toLowerCase() !== peerCodeLower
               ? c.name
-              : matchedMember?.personName || matchedMember?.contact || matchedMember?.name || c.name || c.peerCode;
-          const isSwiped = swipedConvCode === c.peerCode;
-          const isPinned = Boolean(pinnedConvs[c.peerCode]);
-          const isMuted = Boolean(mutedConvs[c.peerCode]);
+              : matchedMember?.personName || matchedMember?.contact || matchedMember?.name || c?.name || peerCode;
+          const isSwiped = swipedConvCode === peerCode;
+          const isPinned = Boolean(pinnedConvs[peerCode]);
+          const isMuted = Boolean(mutedConvs[peerCode]);
 
           return (
             <div key={c.peerCode} role="listitem" className="relative overflow-hidden rounded-2xl mb-2.5">
@@ -2401,19 +2496,21 @@ function ChatThread({
       socket.connect();
     }
     const handleOnline = (data: { userId?: string }) => {
+      const peerCodeLower = String(peer.peerCode || "").toLowerCase();
       if (
         data?.userId &&
         (data.userId === peer.userId ||
-          data.userId.toLowerCase() === peer.peerCode.toLowerCase())
+          String(data.userId).toLowerCase() === peerCodeLower)
       ) {
         setIsPeerOnline(true);
       }
     };
     const handleOffline = (data: { userId?: string }) => {
+      const peerCodeLower = String(peer.peerCode || "").toLowerCase();
       if (
         data?.userId &&
         (data.userId === peer.userId ||
-          data.userId.toLowerCase() === peer.peerCode.toLowerCase())
+          String(data.userId).toLowerCase() === peerCodeLower)
       ) {
         setIsPeerOnline(false);
       }
@@ -2481,12 +2578,13 @@ function ChatThread({
     };
   }, [peer.peerCode, reload]);
 
-  const matchedMember = members.find((m) => m.code.toLowerCase() === peer.peerCode.toLowerCase());
+  const peerCodeLower = String(peer.peerCode || "").toLowerCase();
+  const matchedMember = (members || []).find((m) => m?.code && String(m.code).toLowerCase() === peerCodeLower);
   const resolvedAvatar = peer.avatarUrl || matchedMember?.avatar || null;
   const displayName =
     isGroup
       ? peer.name || "Nhóm trò chuyện"
-      : peer.name && peer.name.trim().toLowerCase() !== peer.peerCode.toLowerCase()
+      : peer.name && String(peer.name).trim().toLowerCase() !== peerCodeLower
         ? peer.name
         : matchedMember?.personName || matchedMember?.contact || matchedMember?.name || data.peerName || peer.name || peer.peerCode;
 
@@ -2496,7 +2594,7 @@ function ChatThread({
       return;
     }
     if (peer.isSystem || peer.peerCode === "admin" || peer.peerCode === "system") return;
-    const found = members.find((m) => m.code.toLowerCase() === peer.peerCode.toLowerCase());
+    const found = (members || []).find((m) => m?.code && String(m.code).toLowerCase() === peerCodeLower);
     if (found) {
       setProfileMember(found);
     } else {
@@ -4342,14 +4440,15 @@ function ForwardMessageModal({
   if (!open) return null;
   if (typeof document === "undefined") return null;
 
-  const filtered = members.filter((m) => {
+  const filtered = (members || []).filter((m) => {
+    if (!m) return false;
     const term = q.trim().toLowerCase();
     if (!term) return true;
-    return (
-      (m.personName && m.personName.toLowerCase().includes(term)) ||
-      (m.name && m.name.toLowerCase().includes(term)) ||
-      (m.code && m.code.toLowerCase().includes(term)) ||
-      (m.industry && m.industry.toLowerCase().includes(term))
+    return Boolean(
+      (m.personName && String(m.personName).toLowerCase().includes(term)) ||
+      (m.name && String(m.name).toLowerCase().includes(term)) ||
+      (m.code && String(m.code).toLowerCase().includes(term)) ||
+      (m.industry && String(m.industry).toLowerCase().includes(term))
     );
   });
 

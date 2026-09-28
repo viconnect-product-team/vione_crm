@@ -139,7 +139,7 @@ function getFileBadgeInfo(fileName: string) {
     return { label: "PDF", color: "bg-red-500/20 text-red-400 border-red-500/30" };
   }
   if (["doc", "docx"].includes(ext)) {
-    return { label: "DOC", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" };
+    return { label: "DOC", color: "bg-amber-500/20 text-[#D8B282] border-amber-400/30" };
   }
   if (["xls", "xlsx", "csv"].includes(ext)) {
     return { label: "XLS", color: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" };
@@ -1327,7 +1327,7 @@ function ThreadPage() {
                             }}
                             className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-[var(--bc-mobile-text)] hover:bg-[var(--bc-mobile-surface)] hover:text-[var(--bc-mobile-accent)] cursor-pointer transition-colors"
                           >
-                            <div className="grid h-7 w-7 place-items-center rounded-lg bg-blue-500/15 text-blue-400">
+                            <div className="grid h-7 w-7 place-items-center rounded-lg bg-amber-500/15 text-[#D8B282]">
                               <FileText className="h-4 w-4" />
                             </div>
                             <span>Gửi tài liệu / tệp</span>

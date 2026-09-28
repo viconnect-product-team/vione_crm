@@ -23,6 +23,7 @@ export class MeController {
   }
 
   @Put('identity')
+  @Post('identity')
   async upsertMyIdentity(@Request() req, @Body() data: any) {
     return this.connectAppService.upsertMyIdentity(req.user.id, data);
   }

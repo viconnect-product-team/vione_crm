@@ -21,6 +21,7 @@ export type MyProduct = {
   sellerAvatar?: string;
   sellerPhone?: string;
   sellerCompany?: string;
+  quoteRequestsCount?: number;
 };
 
 // ---------- Products ----------

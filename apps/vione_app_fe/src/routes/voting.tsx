@@ -334,7 +334,7 @@ function VotingPage() {
             </button>
             <button
               onClick={() => setLuckyDrawOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 px-4 py-2 text-sm font-bold text-white shadow-md transition hover:opacity-95"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 px-4 py-2 text-sm font-bold text-white shadow-md transition hover:opacity-95"
             >
               <Gift className="h-4 w-4" />
               Bốc Thăm Trúng Thưởng
@@ -407,13 +407,18 @@ function VotingPage() {
             <Card key={v.id} className={`p-5 transition-all ${isClosed ? "border-emerald-500/30 bg-card/80" : ""}`}>
               <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <div className="mb-1 flex items-center gap-2">
+                  <div className="mb-1 flex flex-wrap items-center gap-2">
                     <Pill color={isClosed ? "neutral" : STATUS_COLOR[status]}>
                       {isClosed ? "Đã kết thúc" : t(STATUS_KEY[status])}
                     </Pill>
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                       {t(TYPE_KEY[v.type])}
                     </span>
+                    {v.eventName && (
+                      <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                        📅 Sự kiện: {v.eventName}
+                      </span>
+                    )}
                     <span className="rounded-full bg-blue-500/10 px-2.5 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-400 border border-blue-500/20">
                       🌐 Đẩy thông báo: ViOne App & Hiệp hội App
                     </span>
@@ -652,7 +657,9 @@ function VoteModal({ vote, onClose }: { vote?: Vote; onClose: () => void }) {
   const updateVote = useServerFn(updateVoteFn);
   const [title, setTitle] = useState(vote?.title ?? "");
   const [type, setType] = useState<Vote["type"]>(vote?.type ?? "policy");
-  const [targetAudience, setTargetAudience] = useState("all");
+  const [targetAudience, setTargetAudience] = useState<string>(vote?.targetAudience ?? "all");
+  const [eventId, setEventId] = useState(vote?.eventId ?? "");
+  const [eventsList, setEventsList] = useState<Array<{ id: string; name: string; date?: string }>>([]);
   const [startsAt, setStartsAt] = useState(vote?.startsAt ?? "");
   const [endsAt, setEndsAt] = useState(vote?.endsAt ?? "");
   const [options, setOptions] = useState<string[]>(
@@ -660,6 +667,15 @@ function VoteModal({ vote, onClose }: { vote?: Vote; onClose: () => void }) {
   );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchNestApi<any[]>("/events")
+      .then((res) => {
+        const list = Array.isArray(res) ? res : (res as any)?.items || [];
+        setEventsList(list);
+      })
+      .catch(() => {});
+  }, []);
 
   function setOpt(i: number, val: string) {
     setOptions((prev) => prev.map((o, idx) => (idx === i ? val : o)));
@@ -670,9 +686,9 @@ function VoteModal({ vote, onClose }: { vote?: Vote; onClose: () => void }) {
     setSaving(true);
     try {
       if (vote) {
-        await updateVote({ data: { id: vote.id, title, type, startsAt, endsAt, options } });
+        await updateVote({ data: { id: vote.id, title, type, targetAudience, startsAt, endsAt, options, eventId: eventId || null } });
       } else {
-        await createVote({ data: { title, type, targetAudience, startsAt, endsAt, options } });
+        await createVote({ data: { title, type, targetAudience, startsAt, endsAt, options, eventId: eventId || undefined } });
       }
       await router.invalidate();
       onClose();
@@ -730,6 +746,27 @@ function VoteModal({ vote, onClose }: { vote?: Vote; onClose: () => void }) {
               <option value="election">Bầu cử</option>
               <option value="amendment">Sửa đổi điều lệ</option>
             </select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-foreground">
+              Gắn với sự kiện (Tùy chọn)
+            </label>
+            <select
+              value={eventId}
+              onChange={(e) => setEventId(e.target.value)}
+              className={inputCls}
+            >
+              <option value="">-- Không gắn sự kiện (Biểu quyết chung) --</option>
+              {eventsList.map((ev) => (
+                <option key={ev.id} value={ev.id}>
+                  📅 {ev.name} ({ev.date || "Chưa có ngày"})
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              * Khi gắn với sự kiện, biểu quyết này sẽ xuất hiện trên trang sự kiện và tương tác phiên họp.
+            </p>
           </div>
 
           <div>
@@ -1006,7 +1043,7 @@ function LuckyDrawModal({ onClose }: { onClose: () => void }) {
             <button
               onClick={spin}
               disabled={spinning}
-              className="mt-2 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-600 px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
+              className="mt-2 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-105 active:scale-95 disabled:opacity-50 cursor-pointer"
             >
               <Sparkles className="h-4 w-4" />
               {spinning ? "Đang quay số..." : "QUAY SỐ NGẪU NHIÊN"}

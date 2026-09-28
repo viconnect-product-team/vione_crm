@@ -1,0 +1,1 @@
+import{j as e}from"./index-j5FxrF9b.js";import{S as t}from"./verify-pPRy82bn.js";const m=({error:r})=>e.jsx(t,{children:e.jsx("div",{className:"text-center text-slate-400",children:r.message})});export{m as errorComponent};

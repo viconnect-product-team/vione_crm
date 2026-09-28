@@ -151,7 +151,7 @@ function CommandPalette() {
         </CommandGroup>
 
         {groups.map((group, i) => (
-          <CommandGroup key={i} heading={group.label ? t(group.label) : t("cmd.navigation")}>
+          <CommandGroup key={i} heading={group.label ? t(group.label as any) : t("cmd.navigation")}>
             {group.items.map((item) => {
               const Icon = item.icon;
               const label = t(item.key);

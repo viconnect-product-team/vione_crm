@@ -19,6 +19,8 @@ export type EventItem = {
   status: "upcoming" | "ongoing" | "completed" | "cancelled";
   type: "forum" | "workshop" | "networking" | "training";
   qrFields: QrField[];
+  qrScanners?: { id: string; name: string; code?: string; phone?: string; avatar?: string }[];
+  sponsors?: { id?: string; name: string; logoUrl?: string; tier?: string; description?: string }[];
   image?: string | null;
   banner?: string | null;
   ticketPrice?: number | null;
@@ -68,6 +70,8 @@ function mapEvent(r: Row): EventItem {
     status: r.status as EventItem["status"],
     type: r.type as EventItem["type"],
     qrFields: normalizeQrFields(r.qr_fields),
+    qrScanners: (r.qr_scanners as any) ?? [],
+    sponsors: (r.sponsors as any) ?? [],
     image: (r.image as string) ?? null,
     banner: (r.banner as string) ?? null,
     ticketPrice: r.ticket_price !== undefined && r.ticket_price !== null ? Number(r.ticket_price) : null,

@@ -1236,7 +1236,7 @@ function NotificationsScreen() {
                           void markRead({ data: { id: n.id } }).catch(() => {});
                           navigate({ to: "/association/messages", search: { peerCode: "admin" } });
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[11px] font-bold shadow-xs hover:opacity-95 transition cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-white text-[11px] font-bold shadow-xs transition cursor-pointer"
                       >
                         Nhắn tin BTC
                       </button>

@@ -267,7 +267,7 @@ export function CommunityEventDetail({
               <div className="mt-3 divide-y divide-[var(--bc-mobile-border)]">
                 <div className="py-2.5 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="h-8 w-8 rounded-lg bg-sky-500/10 text-sky-400 font-bold text-xs flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-[#D8B282] font-bold text-xs flex items-center justify-center">
                       ST
                     </div>
                     <div>
@@ -279,7 +279,7 @@ export function CommunityEventDetail({
                       </div>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/15 text-sky-400">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-[#D8B282]">
                     💎 Bạch Kim
                   </span>
                 </div>
@@ -305,7 +305,7 @@ export function CommunityEventDetail({
 
                 <div className="py-2.5 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-400 font-bold text-xs flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-[#D8B282] font-bold text-xs flex items-center justify-center">
                       TP
                     </div>
                     <div>

@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520" style="background:#0b1329;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="50%" stop-color="#111d40" />
+      <stop offset="100%" stop-color="#070c1b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0084FF" />
+      <stop offset="100%" stop-color="#003B95" />
+    </linearGradient>
+    <filter id="dropGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="520" fill="url(#bgGrad)" />
+  
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1">
+    <line x1="0" y1="80" x2="800" y2="80" />
+    <line x1="0" y1="180" x2="800" y2="180" />
+    <line x1="0" y1="280" x2="800" y2="280" />
+    <line x1="0" y1="380" x2="800" y2="380" />
+    <line x1="0" y1="480" x2="800" y2="480" />
+    <line x1="160" y1="0" x2="160" y2="520" />
+    <line x1="320" y1="0" x2="320" y2="520" />
+    <line x1="480" y1="0" x2="480" y2="520" />
+    <line x1="640" y1="0" x2="640" y2="520" />
+  </g>
+
+  <!-- Top Header Banner -->
+  <rect x="40" y="24" width="720" height="60" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+  <circle cx="75" cy="54" r="18" fill="url(#goldGrad)" />
+  <text x="75" y="60" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle">1983</text>
+  <text x="108" y="46" fill="#fbbf24" font-size="15" font-weight="800" letter-spacing="0.5">HƯỚNG DẪN 10: SÀN GIAO THƯƠNG B2B NỘI BỘ</text>
+  <text x="108" y="66" fill="#94a3b8" font-size="12">Đăng tin chào mua/bán, chiết khấu nội bộ & đàm phán hợp đồng</text>
+  <rect x="660" y="40" width="80" height="28" rx="8" fill="#F59E0B" />
+  <text x="700" y="58" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">SÀN B2B</text>
+
+  <!-- Main Content -->
+  
+  <g transform="translate(60, 105)">
+    <rect x="0" y="0" width="280" height="380" rx="32" fill="#0f172a" stroke="#334155" stroke-width="4" filter="url(#dropGlow)" />
+    <rect x="90" y="8" width="100" height="16" rx="8" fill="#1e293b" />
+    <rect x="15" y="36" width="250" height="330" rx="20" fill="#ffffff" />
+    <text x="140" y="68" fill="#003B95" font-size="13" font-weight="bold" text-anchor="middle">SÀN GIAO THƯƠNG B2B</text>
+    <!-- Item 1 -->
+    <rect x="25" y="82" width="230" height="75" rx="12" fill="#f8fafc" stroke="#e2e8f0" />
+    <rect x="35" y="92" width="55" height="55" rx="8" fill="#dbeafe" />
+    <text x="62" y="124" fill="#003B95" font-size="20" text-anchor="middle">🏗️</text>
+    <text x="100" y="104" fill="#0f172a" font-size="11" font-weight="bold">Vật Liệu Xây Dựng Xanh</text>
+    <text x="100" y="118" fill="#ea580c" font-size="11" font-weight="bold">Chiết khấu 25% nội bộ</text>
+    <text x="100" y="132" fill="#64748b" font-size="9">Cty CP Đầu Tư An Phát • Hà Nội</text>
+    <rect x="100" y="138" width="60" height="14" rx="4" fill="#10b981" />
+    <text x="130" y="148" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Chào bán</text>
+
+    <!-- Item 2 -->
+    <rect x="25" y="165" width="230" height="75" rx="12" fill="#f8fafc" stroke="#e2e8f0" />
+    <rect x="35" y="175" width="55" height="55" rx="8" fill="#fef3c7" />
+    <text x="62" y="207" fill="#d97706" font-size="20" text-anchor="middle">☕</text>
+    <text x="100" y="187" fill="#0f172a" font-size="11" font-weight="bold">Tìm Đại Lý Phân Phối F&amp;B</text>
+    <text x="100" y="201" fill="#ea580c" font-size="11" font-weight="bold">Hỗ trợ 100% Marketing</text>
+    <text x="100" y="215" fill="#64748b" font-size="9">Tập Đoàn F&amp;B Quý Hợi</text>
+    <rect x="100" y="221" width="60" height="14" rx="4" fill="#0084FF" />
+    <text x="130" y="231" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Tìm đối tác</text>
+
+    <!-- Post CTA -->
+    <rect x="25" y="252" width="230" height="40" rx="10" fill="#ea580c" />
+    <text x="140" y="277" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">+ Đăng Tin Giao Thương Mới</text>
+  </g>
+
+  <g transform="translate(380, 115)">
+    <rect x="0" y="0" width="380" height="110" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="36" fill="#fbbf24" font-size="15" font-weight="bold">1. Đăng Tin Chào Mua / Chào Bán Nội Bộ</text>
+    <text x="24" y="62" fill="#cbd5e1" font-size="12">Hội viên cam kết mức chiết khấu ưu đãi tốt hơn thị trường</text>
+    <text x="24" y="80" fill="#cbd5e1" font-size="12">dành riêng cho các thành viên CLB Doanh Nhân CEO 1983.</text>
+
+    <rect x="0" y="130" width="380" height="110" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="166" fill="#38bdf8" font-size="15" font-weight="bold">2. Tự Động Kết Nối Khung Chat Thương Thảo</text>
+    <text x="24" y="192" fill="#cbd5e1" font-size="12">Khi bấm "Quan tâm", hệ thống tự động mở phòng chat</text>
+    <text x="24" y="210" fill="#cbd5e1" font-size="12">kèm thông tin bài đăng để hai bên trực tiếp đàm phán.</text>
+
+    <rect x="0" y="260" width="380" height="95" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="296" fill="#4ade80" font-size="15" font-weight="bold">3. Thẩm Định Uy Tín Từ Ban Xúc Tiến Thương Mại</text>
+    <text x="24" y="322" fill="#cbd5e1" font-size="12">Các cơ hội B2B được Ban Xúc Tiến kiểm định chất lượng.</text>
+  </g>
+
+</svg>

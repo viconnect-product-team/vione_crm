@@ -17,6 +17,8 @@ export class CreateEventDto {
   status?: 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
   associationId?: string;
   qrFields?: string[];
+  qrScanners?: any[];
+  sponsors?: any[];
   image?: string;
   banner?: string;
   ticketPrice?: number;
@@ -40,6 +42,8 @@ export class UpdateEventDto {
   banner?: string;
   ticketPrice?: number;
   fee?: number;
+  qrScanners?: any[];
+  sponsors?: any[];
 }
 
 @Injectable()
@@ -199,6 +203,8 @@ export class EventsService {
       bannerUrl: resolvedImage,
       coverUrl: resolvedImage,
       qrFields: r.qr_fields ?? ['registration_code'],
+      qrScanners: r.qr_scanners ?? [],
+      sponsors: r.sponsors ?? [],
       createdAt: r.created_at,
       updatedAt: r.updated_at,
       associationId: r.association_id,
@@ -441,9 +447,12 @@ export class EventsService {
     const evImg = data.image || data.banner || '';
     const ticketPrice = Number(data.ticketPrice ?? data.fee ?? 0);
 
+    const qrScannersJson = JSON.stringify(data.qrScanners || []);
+    const sponsorsJson = JSON.stringify(data.sponsors || []);
+
     await this.prisma.$executeRaw`
       INSERT INTO public.events (
-        id, name, date, location, capacity, registered, status, type, qr_fields, association_id, image, banner, ticket_price, fee, created_at, updated_at
+        id, name, date, location, capacity, registered, status, type, qr_fields, qr_scanners, sponsors, association_id, image, banner, ticket_price, fee, created_at, updated_at
       ) VALUES (
         ${eventId},
         ${data.name},
@@ -454,6 +463,8 @@ export class EventsService {
         ${data.status ?? 'upcoming'},
         ${data.type ?? 'forum'},
         ${qrFields}::text[],
+        ${qrScannersJson}::jsonb,
+        ${sponsorsJson}::jsonb,
         ${assocId}::uuid,
         ${evImg},
         ${evImg},
@@ -547,6 +558,8 @@ export class EventsService {
     const status = data.status !== undefined ? data.status : current.status;
     const evImg = data.image !== undefined ? data.image : (data.banner !== undefined ? data.banner : current.image);
     const ticketPrice = data.ticketPrice !== undefined ? Number(data.ticketPrice) : (data.fee !== undefined ? Number(data.fee) : Number(current.ticket_price ?? 0));
+    const qrScannersJson = data.qrScanners !== undefined ? JSON.stringify(data.qrScanners) : null;
+    const sponsorsJson = data.sponsors !== undefined ? JSON.stringify(data.sponsors) : null;
 
     await this.prisma.$executeRaw`
       UPDATE public.events SET
@@ -560,6 +573,8 @@ export class EventsService {
         banner = ${evImg},
         ticket_price = ${ticketPrice},
         fee = ${ticketPrice},
+        qr_scanners = COALESCE(${qrScannersJson}::jsonb, qr_scanners),
+        sponsors = COALESCE(${sponsorsJson}::jsonb, sponsors),
         updated_at = now()
       WHERE id = ${id}
     `;
@@ -608,24 +623,27 @@ export class EventsService {
       throw new ForbiddenException('Chỉ quản trị viên mới có quyền xóa sự kiện');
     }
 
-    // Cancel registrations
-    const cancelled = await this.prisma.$executeRaw`
-      UPDATE public.event_registrations
-      SET status = 'cancelled', updated_at = now()
-      WHERE event_id = ${id} AND status = 'confirmed'
-    `.catch(() => 0);
+    // 1. Xóa các đăng ký tham gia sự kiện
+    await this.prisma.$executeRaw`
+      DELETE FROM public.event_registrations WHERE event_id = ${id}
+    `.catch(() => null);
 
-    // Delete ticket types
+    // 2. Xóa các loại vé của sự kiện
     await this.prisma.$executeRaw`
       DELETE FROM public.event_ticket_types WHERE event_id = ${id}
     `.catch(() => null);
 
-    // Delete event
+    // 3. Hủy liên kết poll với event này nếu có
+    await this.prisma.$executeRaw`
+      UPDATE public.polls SET event_id = NULL WHERE event_id = ${id}
+    `.catch(() => null);
+
+    // 4. Xóa sự kiện
     await this.prisma.$executeRaw`
       DELETE FROM public.events WHERE id = ${id}
     `;
 
-    return { ok: true, cancelledRegistrations: cancelled };
+    return { ok: true };
   }
 
   // Mobile API: List events for mobile PWA

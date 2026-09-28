@@ -55,9 +55,7 @@ import { CustomersPanel } from "./customers/CustomersPanel";
 import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { DynamicAiMatcherPanel } from "./ai/DynamicAiMatcherPanel";
 import { NetworkStoriesStrip } from "./NetworkStoriesStrip";
-import { NetworkSocialComposer } from "./NetworkSocialComposer";
 import { NetworkPartnerSuggestionsStrip } from "./NetworkPartnerSuggestionsStrip";
-import { PostMomentModal } from "./moments/PostMomentModal";
 
 type NetworkSort = "recent" | "name" | "company";
 type NetworkFilter = "all" | "connected" | "saved_card" | "card_scanned" | "contact_shared";
@@ -141,8 +139,6 @@ export function NetworkHome({
   const [sort, setSort] = useState<NetworkSort>("recent");
   const [filter, setFilter] = useState<NetworkFilter>("all");
   const [sortOpen, setSortOpen] = useState(false);
-  const [storyModalOpen, setStoryModalOpen] = useState(false);
-  const [postMomentModalOpen, setPostMomentModalOpen] = useState(false);
   const network = useBusinessConnectNetwork(term);
   const { recommendations } = useTodayRelationshipRecommendations(lang);
   const clearSearch = () => setTerm("");
@@ -306,7 +302,7 @@ export function NetworkHome({
 
         {/* Khoảnh khắc 24h Doanh nhân (Facebook-grade Stories Carousel) */}
         {!narrowed && (
-          <NetworkStoriesStrip onOpenCreateStory={() => setStoryModalOpen(true)} />
+          <NetworkStoriesStrip />
         )}
 
         {/* B — Ô tìm kiếm + bộ lọc */}
@@ -393,24 +389,19 @@ export function NetworkHome({
             {/* AI Match và Nurture List - Chỉ hiển thị khi tab là network */}
             {tab === "network" && (
               <>
-                {/* Facebook-grade Social Status Composer - Đặt ngay trên đầu để tiện chia sẻ khoảnh khắc */}
-                {!narrowed ? (
-                  <NetworkSocialComposer />
-                ) : null}
-
                 {/* ViOne Dynamic AI Copilot Banner */}
                 {!narrowed && (
-                  <div className="mb-4 p-4 rounded-2xl border border-amber-300/60 dark:border-amber-500/30 bg-gradient-to-r from-amber-50 via-amber-100/35 to-amber-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 shadow-xs dark:shadow-xl relative overflow-hidden transition-colors">
-                    <div className="absolute top-0 right-0 w-36 h-36 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
+                  <div className="mb-4 p-4 rounded-2xl border border-amber-300/40 dark:border-amber-500/20 bg-gradient-to-r from-amber-50/80 via-yellow-50/40 to-amber-50/80 dark:from-stone-900 dark:via-neutral-900 dark:to-stone-900 shadow-xs dark:shadow-xl relative overflow-hidden transition-colors">
+                    <div className="absolute top-0 right-0 w-36 h-36 bg-[#D8B282]/15 rounded-full blur-2xl pointer-events-none" />
                     <div className="flex items-start justify-between gap-3 relative z-10">
                       <div className="flex items-start gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#F6E1C3] to-[#D8B282] p-0.5 shadow-xs shrink-0 flex items-center justify-center">
-                          <Sparkles className="h-5 w-5 text-amber-900" />
+                        <div className="h-10 w-10 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] p-0.5 shadow-xs shrink-0 flex items-center justify-center text-slate-950">
+                          <Sparkles className="h-5 w-5 text-slate-950" />
                         </div>
                         <div>
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="text-[11.5px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300">ViOne AI Copilot Matcher</span>
-                            <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500/15 dark:bg-amber-400/20 text-amber-900 dark:text-amber-200 border border-amber-500/30 dark:border-amber-400/40">Dynamic %</span>
+                            <span className="text-[11.5px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-[#F6E1C3]">ViOne AI Copilot Matcher</span>
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-black bg-amber-500/10 text-amber-800 dark:text-[#F6E1C3] border border-amber-500/30">Dynamic %</span>
                           </div>
                           <p className="text-[13.5px] font-bold text-slate-900 dark:!text-white mt-0.5">Tìm kiếm đối tác theo năng lực & chức danh</p>
                           <p className="text-[11.5px] text-slate-600 dark:!text-slate-300 mt-0.5 line-clamp-1">Ví dụ: "Tôi cần tìm 1 người có khả năng gọi vốn quỹ đầu tư..."</p>
@@ -419,7 +410,7 @@ export function NetworkHome({
                       <button
                         type="button"
                         onClick={() => handleTabChange("suggestions")}
-                        className="shrink-0 px-3.5 py-2 rounded-xl bg-[linear-gradient(135deg,#FFF3C4_0%,#FEE180_30%,#F5C443_65%,#EDB028_100%)] text-slate-950 border border-amber-400/50 text-xs font-black uppercase tracking-wider shadow-xs hover:brightness-105 active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                        className="shrink-0 px-3.5 py-2 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] hover:opacity-90 text-slate-950 text-xs font-bold uppercase tracking-wider shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                       >
                         <span>Khám phá AI</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -453,36 +444,23 @@ export function NetworkHome({
                   />
                 ) : null}
 
-                {/* Gợi ý kết nối doanh nhân cùng ngành (Facebook-grade Partner Suggestions) */}
+                {/* Gợi ý kết nối doanh nhân cùng ngành (Partner Suggestions) */}
                 {!narrowed ? (
                   <NetworkPartnerSuggestionsStrip />
                 ) : null}
 
-                {/* Thanh tạo khoảnh khắc nhanh (Composer) */}
-                {!narrowed && <NetworkSocialComposer />}
-
-                {/* Khoảnh khắc mạng lưới (Feed cuộc gặp) ngay dưới thanh ghi nhanh */}
+                {/* Khoảnh khắc mạng lưới (Feed cuộc gặp) */}
                 {!narrowed ? (
                   <section className="mt-5">
                     <div className="mb-3 flex items-center justify-between gap-3">
                       <h2 className="min-w-0 truncate text-[10px] font-medium tracking-[1px] uppercase text-[var(--bc-mobile-muted)]">
                         {t("bc.mobile.network.moments.title")}
                       </h2>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setPostMomentModalOpen(true)}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[var(--bc-mobile-accent-grad)] text-black border border-[var(--bc-mobile-border-gold)] hover:brightness-105 transition active:scale-95 shadow-xs cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                          <span>Đăng khoảnh khắc</span>
-                        </button>
-                        {feed.items.length > 0 && (
-                          <span className="text-[11px] text-[var(--bc-mobile-muted)]">
-                            {feed.items.length}
-                          </span>
-                        )}
-                      </div>
+                      {feed.items.length > 0 && (
+                        <span className="text-[11px] text-[var(--bc-mobile-muted)]">
+                          {feed.items.length} cuộc gặp
+                        </span>
+                      )}
                     </div>
                     {feed.items.length > 0 ? (
                       <ul
@@ -500,33 +478,19 @@ export function NetworkHome({
                       </ul>
                     ) : (
                       <div className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-5 text-center shadow-xs">
-                        <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[var(--bc-mobile-accent)]">
-                          <Sparkles className="h-5 w-5" />
+                        <div className="mx-auto grid h-10 w-10 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[#D8B282]">
+                          <Sparkles className="h-5 w-5 text-[#D8B282]" />
                         </div>
                         <p className="mt-2 text-[13px] font-semibold text-[var(--bc-mobile-text)]">
                           Chưa có khoảnh khắc nào gần đây
                         </p>
                         <p className="mt-1 text-[11.5px] text-[var(--bc-mobile-muted)]">
-                          Ghi lại các cuộc gặp gỡ, trao đổi và hợp tác đầu tiên của bạn để lưu giữ hành trình.
+                          Các cuộc gặp gỡ, trao đổi và hợp tác giữa các hội viên sẽ xuất hiện tại đây.
                         </p>
-                        <button
-                          type="button"
-                          onClick={() => setPostMomentModalOpen(true)}
-                          className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-1.5 text-xs font-bold text-slate-950 shadow-sm transition hover:opacity-90 cursor-pointer"
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                          <span>Ghi khoảnh khắc ngay</span>
-                        </button>
                       </div>
                     )}
                   </section>
                 ) : null}
-
-                {/* Modal Đăng khoảnh khắc toàn diện */}
-                <PostMomentModal
-                  open={postMomentModalOpen}
-                  onOpenChange={setPostMomentModalOpen}
-                />
 
                 {/* Danh sách người trong Network */}
                 <section className="mt-7">
@@ -588,11 +552,7 @@ export function NetworkHome({
         )}
       </main>
 
-      <PostMomentModal
-        open={storyModalOpen}
-        onOpenChange={setStoryModalOpen}
-        initialFeeling="share_opportunity"
-      />
+
     </>
   );
 }
@@ -1487,7 +1447,7 @@ function NetworkIncomingRequestsSection({ full = false }: { full?: boolean } = {
                       onError: () => toast.error("Không thể hoàn tất kết nối. Vui lòng thử lại."),
                     })
                   }
-                  className="flex-1 py-1.5 px-3 rounded-full font-bold text-[12.5px] bg-gradient-to-r from-[#F7D896] via-[#E2B755] to-[#C49338] text-slate-950 shadow hover:opacity-95 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1"
+                  className="flex-1 py-1.5 px-3 rounded-full font-bold text-[12.5px] bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-[0_2px_10px_rgba(216,178,130,0.3)] hover:opacity-95 active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1"
                 >
                   ✓ Đồng ý
                 </button>

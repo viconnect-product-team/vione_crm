@@ -12,7 +12,7 @@
     "prebuild": "node scripts/gen-routes.mjs",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
     "prebuild:dev": "node scripts/gen-routes.mjs",
-    "build:dev": "vite build --mode development",
+    "build:dev": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",

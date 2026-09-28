@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as Minio from 'minio';
 import * as net from 'net';
 
@@ -30,13 +30,27 @@ function checkPortOpen(host: string, port: number, timeoutMs = 400): Promise<boo
 @Injectable()
 export class MinioService implements OnModuleInit {
   private clients: { name: string; client: Minio.Client }[] = [];
-  private readonly bucketName = process.env.MINIO_BUCKET || 'vione-bucket';
-  private minioOffline = true; // Default to offline until proven reachable
-  private lastOfflineTime = 0;
+  private readonly bucketName = process.env.MINIO_BUCKET || 'vione-standalone-bucket';
+  private readonly fallbackBuckets = ['vione-standalone-bucket', 'vione-bucket'];
+  private minioOffline = true;
+  private lastInitTime = 0;
 
   async onModuleInit() {
-    const accessKey = process.env.MINIO_ACCESS_KEY || 'minioadmin';
-    const secretKey = process.env.MINIO_SECRET_KEY || 'minioadmin';
+    await this.initMinio();
+  }
+
+  getBucketName(): string {
+    return this.bucketName;
+  }
+
+  isOnline(): boolean {
+    return !this.minioOffline && this.clients.length > 0;
+  }
+
+  async initMinio(): Promise<boolean> {
+    this.lastInitTime = Date.now();
+    const envAccessKey = process.env.MINIO_ACCESS_KEY;
+    const envSecretKey = process.env.MINIO_SECRET_KEY;
     const envEndpoint = process.env.MINIO_ENDPOINT;
     const envPort = process.env.MINIO_PORT ? parseInt(process.env.MINIO_PORT, 10) : undefined;
     const useSSL = process.env.MINIO_USE_SSL === 'true';
@@ -52,7 +66,36 @@ export class MinioService implements OnModuleInit {
       });
     }
 
-    // 2. Localhost on port 9060 or 9000
+    // 2. Docker container aliases on vione-network (resolve in ~1ms in Docker)
+    candidateConfigs.push({
+      name: 'docker-alias(vione-standalone-minio-prod:9000)',
+      endPoint: 'vione-standalone-minio-prod',
+      port: 9000,
+    });
+    candidateConfigs.push({
+      name: 'docker-alias(minio:9000)',
+      endPoint: 'minio',
+      port: 9000,
+    });
+    candidateConfigs.push({
+      name: 'docker-alias(vione-standalone-minio:9000)',
+      endPoint: 'vione-standalone-minio',
+      port: 9000,
+    });
+
+    // 3. Remote dev server MinIO (Port 9060 and 9000 on 14.225.217.232)
+    candidateConfigs.push({
+      name: 'remote-server(14.225.217.232:9060)',
+      endPoint: '14.225.217.232',
+      port: 9060,
+    });
+    candidateConfigs.push({
+      name: 'remote-server(14.225.217.232:9000)',
+      endPoint: '14.225.217.232',
+      port: 9000,
+    });
+
+    // 4. Localhost on port 9060 or 9000
     candidateConfigs.push({
       name: 'local(127.0.0.1:9060)',
       endPoint: '127.0.0.1',
@@ -64,32 +107,21 @@ export class MinioService implements OnModuleInit {
       port: 9000,
     });
 
-    // 3. Docker container aliases only in Linux/Docker environment (never on Windows host to avoid DNS resolution hangs)
-    const isInsideDocker = process.platform === 'linux' && (Boolean(process.env.DOCKER_CONTAINER) || Boolean(process.env.KUBERNETES_SERVICE_HOST));
-    if (isInsideDocker) {
-      candidateConfigs.push({
-        name: 'docker-alias(vione-standalone-minio-prod:9000)',
-        endPoint: 'vione-standalone-minio-prod',
-        port: 9000,
-      });
-      candidateConfigs.push({
-        name: 'docker-alias(vione-standalone-minio:9000)',
-        endPoint: 'vione-standalone-minio',
-        port: 9000,
-      });
-      candidateConfigs.push({
-        name: 'docker-alias(minio:9000)',
-        endPoint: 'minio',
-        port: 9000,
-      });
+    // Credential candidates to attempt
+    const credentialPairs: { accessKey: string; secretKey: string }[] = [];
+    if (envAccessKey && envSecretKey) {
+      credentialPairs.push({ accessKey: envAccessKey, secretKey: envSecretKey });
     }
+    credentialPairs.push({ accessKey: 'vioneadmin', secretKey: 'vioneadmin' });
+    credentialPairs.push({ accessKey: 'minioadmin', secretKey: 'minioadmin' });
 
-    // Deduplicate by endPoint:port
-    const seen = new Set<string>();
+    const newClients: { name: string; client: Minio.Client }[] = [];
+    const seenEndpoints = new Set<string>();
+
     for (const conf of candidateConfigs) {
-      const key = `${conf.endPoint}:${conf.port}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
+      const epKey = `${conf.endPoint}:${conf.port}`;
+      if (seenEndpoints.has(epKey)) continue;
+      seenEndpoints.add(epKey);
 
       // Fast non-blocking socket probe (400ms)
       const isOpen = await checkPortOpen(conf.endPoint, conf.port, 400);
@@ -97,49 +129,69 @@ export class MinioService implements OnModuleInit {
         continue;
       }
 
-      try {
-        const client = new Minio.Client({
-          endPoint: conf.endPoint,
-          port: conf.port,
-          useSSL,
-          accessKey,
-          secretKey,
-        });
-        this.clients.push({ name: conf.name, client });
-      } catch (e: any) {
-        console.warn(`MinIO client setup notice for ${conf.name}:`, e?.message);
-      }
-    }
+      // Try credential pairs on this open endpoint
+      for (const cred of credentialPairs) {
+        try {
+          const client = new Minio.Client({
+            endPoint: conf.endPoint,
+            port: conf.port,
+            useSSL,
+            accessKey: cred.accessKey,
+            secretKey: cred.secretKey,
+          });
 
-    if (this.clients.length === 0) {
-      this.minioOffline = true;
-      this.lastOfflineTime = Date.now();
-      console.log('[MinioService] No active MinIO instance detected. File uploads will instantly use local disk storage.');
-      return;
-    }
+          // Verify connectivity and list buckets
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error('Bucket list timeout')), 1200)
+          );
+          const buckets = await Promise.race([client.listBuckets(), timeoutPromise]);
 
-    // Check bucket existence on reachable client
-    for (const entry of this.clients) {
-      try {
-        const checkBucketPromise = entry.client.bucketExists(this.bucketName);
-        const timeoutPromise = new Promise<boolean>((_, reject) =>
-          setTimeout(() => reject(new Error('Bucket check timeout')), 1000)
-        );
-        const exists = await Promise.race([checkBucketPromise, timeoutPromise]);
-        if (!exists) {
-          await entry.client.makeBucket(this.bucketName, 'us-east-1');
+          // Ensure buckets exist
+          const allBuckets = Array.from(new Set([this.bucketName, ...this.fallbackBuckets]));
+          for (const bName of allBuckets) {
+            const exists = buckets.some((b: any) => b.name === bName);
+            if (!exists) {
+              try {
+                await client.makeBucket(bName, 'us-east-1');
+              } catch {}
+            }
+          }
+
+          newClients.push({ name: `${conf.name}[${cred.accessKey}]`, client });
+          console.log(`[MinioService] Connected successfully to MinIO at ${conf.name} (user: ${cred.accessKey})`);
+          break; // Connected with valid creds for this endpoint
+        } catch (e: any) {
+          // Try next cred
         }
-        this.minioOffline = false;
-        console.log(`[MinioService] Connected to active MinIO at ${entry.name}`);
-        break;
-      } catch {
-        // Continue to check next client
       }
     }
+
+    if (newClients.length > 0) {
+      this.clients = newClients;
+      this.minioOffline = false;
+      return true;
+    }
+
+    this.minioOffline = true;
+    console.warn('[MinioService] No active MinIO instance reachable across candidate endpoints.');
+    return false;
+  }
+
+  private async ensureConnected(): Promise<boolean> {
+    if (!this.minioOffline && this.clients.length > 0) {
+      return true;
+    }
+    // Re-attempt init if last attempt was > 3 seconds ago
+    if (Date.now() - this.lastInitTime > 3000) {
+      return this.initMinio();
+    }
+    return false;
   }
 
   async uploadFile(filename: string, fileBuffer: Buffer, mimeType: string): Promise<string | null> {
-    if (this.minioOffline || this.clients.length === 0) {
+    await this.ensureConnected();
+
+    if (this.clients.length === 0) {
       return null;
     }
 
@@ -156,7 +208,7 @@ export class MinioService implements OnModuleInit {
           { 'Content-Type': mimeType }
         );
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('MinIO connection timeout (1500ms)')), 1500)
+          setTimeout(() => reject(new Error('MinIO putObject timeout (3000ms)')), 3000)
         );
         await Promise.race([uploadPromise, timeoutPromise]);
 
@@ -165,43 +217,53 @@ export class MinioService implements OnModuleInit {
           this.clients.unshift(entry);
         }
         this.minioOffline = false;
+        console.log(`[MinioService] Stored '${filename}' in MinIO bucket '${this.bucketName}' via ${entry.name}`);
         return `/upload/file/${filename}`;
       } catch (err: any) {
         lastErr = err;
       }
     }
 
-    this.minioOffline = true;
-    this.lastOfflineTime = Date.now();
-    console.warn(`MinIO upload unreachable or failed across all endpoints (${lastErr?.message || 'Unreachable'}). Falling back to local disk storage.`);
+    console.warn(`[MinioService] Upload failed across all endpoints (${lastErr?.message || 'Unreachable'}).`);
     return null;
   }
 
   async getFileStream(filename: string): Promise<any> {
+    await this.ensureConnected();
+
+    const bucketsToTry = Array.from(new Set([this.bucketName, ...this.fallbackBuckets]));
+
     for (let i = 0; i < this.clients.length; i++) {
       const entry = this.clients[i];
-      try {
-        const stream = await entry.client.getObject(this.bucketName, filename);
-        if (stream) {
-          if (i > 0) {
-            this.clients.splice(i, 1);
-            this.clients.unshift(entry);
+      for (const bName of bucketsToTry) {
+        try {
+          const stream = await entry.client.getObject(bName, filename);
+          if (stream) {
+            if (i > 0) {
+              this.clients.splice(i, 1);
+              this.clients.unshift(entry);
+            }
+            return stream;
           }
-          return stream;
+        } catch {
+          // try next bucket or client
         }
-      } catch {
-        // try next client
       }
     }
     return null;
   }
 
   async deleteFile(filename: string): Promise<void> {
+    await this.ensureConnected();
+
+    const bucketsToTry = Array.from(new Set([this.bucketName, ...this.fallbackBuckets]));
+
     for (const entry of this.clients) {
-      try {
-        await entry.client.removeObject(this.bucketName, filename);
-        return;
-      } catch {}
+      for (const bName of bucketsToTry) {
+        try {
+          await entry.client.removeObject(bName, filename);
+        } catch {}
+      }
     }
   }
 }

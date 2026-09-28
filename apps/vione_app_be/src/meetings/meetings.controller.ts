@@ -23,6 +23,12 @@ export class MeetingsController {
     return this.meetingsService.listWorkspaceMeetings(userId, {});
   }
 
+  @Post()
+  async createMeeting(@Request() req: any, @Body() body: any) {
+    const userId = req.user.id || req.user.sub;
+    return this.meetingsService.createMeeting(userId, body);
+  }
+
   @Get('workspace/summary')
   async getWorkspaceSummary(@Request() req: any) {
     const userId = req.user.id || req.user.sub;

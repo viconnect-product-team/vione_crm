@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Check, ChevronLeft, ChevronRight, Plus, QrCode, Ticket, Trash2, X, ImagePlus, Sparkles, MapPin, Users } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { Check, ChevronLeft, ChevronRight, Plus, QrCode, Ticket, Trash2, X, ImagePlus, Sparkles, MapPin, Users, ShieldCheck, Search, Award, CheckSquare, Square, Building2, UserCheck } from "lucide-react";
 import { toast } from "sonner";
 import {
   QR_FIELDS,
@@ -13,6 +13,22 @@ import { EVENT_TYPE_TEMPLATES, type EventTypeKey } from "@/lib/event-type-templa
 
 type EventType = EventItem["type"];
 type EventStatus = EventItem["status"];
+
+export type MediaMember = {
+  id: string;
+  name: string;
+  code?: string;
+  phone?: string;
+  avatar?: string;
+  department?: string;
+};
+
+export type SponsorDraft = {
+  name: string;
+  logoUrl: string;
+  tier: "diamond" | "gold" | "silver" | "bronze" | "companion";
+  description: string;
+};
 
 type TicketDraft = {
   name: string;
@@ -32,6 +48,7 @@ type Info = {
 };
 
 const emptyTicket = (): TicketDraft => ({ name: "", price: "", quantity: "", description: "" });
+const emptySponsor = (): SponsorDraft => ({ name: "", logoUrl: "", tier: "gold", description: "" });
 
 const TYPE_OPTS: EventType[] = ["forum", "workshop", "networking", "training"];
 const STATUS_OPTS: EventStatus[] = ["upcoming", "ongoing", "completed", "cancelled"];
@@ -67,7 +84,65 @@ export function EventWizard({
       description: defaultTpl.description,
     },
   ]);
+  const [sponsors, setSponsors] = useState<SponsorDraft[]>([]);
   const [qrFields, setQrFields] = useState<QrField[]>(["registration_code"]);
+  const [selectedScanners, setSelectedScanners] = useState<MediaMember[]>([]);
+  const [mediaMembers, setMediaMembers] = useState<MediaMember[]>([]);
+  const [loadingMembers, setLoadingMembers] = useState(false);
+
+  // Tải danh sách hội viên Ban Truyền thông khi mở Wizard
+  useEffect(() => {
+    if (!open) return;
+    let isMounted = true;
+    setLoadingMembers(true);
+    fetchNestApi<any[]>("/members")
+      .then((res) => {
+        if (!isMounted) return;
+        const membersList = Array.isArray(res) ? res : (res as any)?.items || [];
+        // Lọc các hội viên thuộc Ban Truyền thông hoặc liên quan Media
+        const mediaList: MediaMember[] = membersList
+          .filter((m: any) => {
+            const dept = String(m.department || "").toLowerCase();
+            const role = String(m.executive_role || m.role || "").toLowerCase();
+            return dept.includes("truyền thông") || dept.includes("media") || role.includes("truyền thông");
+          })
+          .map((m: any) => ({
+            id: m.id,
+            name: m.name || m.full_name || "Hội viên Ban Truyền thông",
+            code: m.code || m.member_code || "",
+            phone: m.phone || "",
+            avatar: m.avatar || m.avatar_url || "",
+            department: m.department || "Ban Truyền thông",
+          }));
+
+        if (mediaList.length > 0) {
+          setMediaMembers(mediaList);
+          // Mặc định chọn tất cả thành viên Ban Truyền thông để thuận tiện soát vé
+          setSelectedScanners(mediaList);
+        } else if (membersList.length > 0) {
+          const fallback = membersList.slice(0, 4).map((m: any) => ({
+            id: m.id,
+            name: m.name || "Hội viên",
+            code: m.code || "",
+            phone: m.phone || "",
+            avatar: m.avatar || "",
+            department: "Ban Truyền thông (Gợi ý)",
+          }));
+          setMediaMembers(fallback);
+          setSelectedScanners(fallback);
+        }
+      })
+      .catch((err) => {
+        console.error("[EventWizard] Failed to fetch members:", err);
+      })
+      .finally(() => {
+        if (isMounted) setLoadingMembers(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [open]);
 
   const reset = () => {
     setStep(0);
@@ -89,7 +164,9 @@ export function EventWizard({
         description: forumTpl.description,
       },
     ]);
+    setSponsors([]);
     setQrFields(["registration_code"]);
+    setSelectedScanners(mediaMembers);
   };
 
   const close = () => {
@@ -159,6 +236,8 @@ export function EventWizard({
           status: info.status,
           imageUrl: info.imageUrl,
           qrFields,
+          qrScanners: selectedScanners,
+          sponsors: sponsors.filter((s) => s.name.trim()),
           tickets: tickets.map((tk) => ({
             name: tk.name.trim(),
             price: Number(tk.price) || 0,
@@ -252,8 +331,25 @@ export function EventWizard({
         {/* Body */}
         <div className="flex-1 overflow-y-auto p-5">
           {step === 0 && <InfoStep info={info} setInfo={setInfo} />}
-          {step === 1 && <TicketStep tickets={tickets} setTickets={setTickets} />}
-          {step === 2 && <QrStep qrFields={qrFields} toggleQr={toggleQr} sample={qrSample} />}
+          {step === 1 && (
+            <TicketStep
+              tickets={tickets}
+              setTickets={setTickets}
+              sponsors={sponsors}
+              setSponsors={setSponsors}
+            />
+          )}
+          {step === 2 && (
+            <QrStep
+              qrFields={qrFields}
+              toggleQr={toggleQr}
+              sample={qrSample}
+              mediaMembers={mediaMembers}
+              selectedScanners={selectedScanners}
+              setSelectedScanners={setSelectedScanners}
+              loadingMembers={loadingMembers}
+            />
+          )}
         </div>
 
         {/* Footer */}
@@ -561,91 +657,191 @@ function InfoStep({ info, setInfo }: { info: Info; setInfo: (v: Info) => void })
 function TicketStep({
   tickets,
   setTickets,
+  sponsors,
+  setSponsors,
 }: {
   tickets: TicketDraft[];
   setTickets: (v: TicketDraft[]) => void;
+  sponsors: SponsorDraft[];
+  setSponsors: (v: SponsorDraft[]) => void;
 }) {
   const t = useT();
-  const update = (i: number, patch: Partial<TicketDraft>) =>
+  const updateTicket = (i: number, patch: Partial<TicketDraft>) =>
     setTickets(tickets.map((tk, idx) => (idx === i ? { ...tk, ...patch } : tk)));
-  const remove = (i: number) => setTickets(tickets.filter((_, idx) => idx !== i));
+  const removeTicket = (i: number) => setTickets(tickets.filter((_, idx) => idx !== i));
+
+  const updateSponsor = (i: number, patch: Partial<SponsorDraft>) =>
+    setSponsors(sponsors.map((sp, idx) => (idx === i ? { ...sp, ...patch } : sp)));
+  const removeSponsor = (i: number) => setSponsors(sponsors.filter((_, idx) => idx !== i));
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <Ticket className="h-4 w-4 text-primary" aria-hidden="true" /> {t("ewz.tickets.heading")}
-        </h3>
-        <p className="mt-0.5 text-xs text-muted-foreground">{t("ewz.tickets.hint")}</p>
-      </div>
-
-      {tickets.length === 0 && (
-        <p className="rounded-lg border border-dashed border-border bg-muted/30 p-4 text-center text-xs text-muted-foreground">
-          {t("ewz.tickets.empty")}
-        </p>
-      )}
-
+    <div className="space-y-6">
+      {/* Phần 1: Các loại vé */}
       <div className="space-y-3">
-        {tickets.map((tk, i) => (
-          <div key={i} className="rounded-xl border border-border bg-background p-3">
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <input
-                className={`${inputCls} font-medium`}
-                placeholder={t("ewz.tickets.namePh")}
-                aria-label={t("ewz.tickets.name")}
-                value={tk.name}
-                onChange={(e) => update(i, { name: e.target.value })}
-              />
-              <button
-                type="button"
-                onClick={() => remove(i)}
-                aria-label={t("ewz.tickets.remove")}
-                className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
-              >
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className={labelCls}>{t("ewz.tickets.price")}</label>
-                <input
-                  type="number"
-                  min={0}
-                  className={inputCls}
-                  value={tk.price}
-                  onChange={(e) => update(i, { price: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>{t("ewz.tickets.qty")}</label>
-                <input
-                  type="number"
-                  min={0}
-                  className={inputCls}
-                  value={tk.quantity}
-                  onChange={(e) => update(i, { quantity: e.target.value })}
-                />
-              </div>
-            </div>
-            <div className="mt-2">
-              <label className={labelCls}>{t("ewz.tickets.desc")}</label>
-              <input
-                className={inputCls}
-                value={tk.description}
-                onChange={(e) => update(i, { description: e.target.value })}
-              />
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Ticket className="h-4 w-4 text-primary" aria-hidden="true" /> {t("ewz.tickets.heading")}
+            </h3>
+            <p className="mt-0.5 text-xs text-muted-foreground">{t("ewz.tickets.hint")}</p>
           </div>
-        ))}
+          <button
+            type="button"
+            onClick={() => setTickets([...tickets, emptyTicket()])}
+            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted"
+          >
+            <Plus className="h-3.5 w-3.5 text-primary" /> Thêm loại vé
+          </button>
+        </div>
+
+        {tickets.length === 0 && (
+          <p className="rounded-lg border border-dashed border-border bg-muted/30 p-4 text-center text-xs text-muted-foreground">
+            {t("ewz.tickets.empty")}
+          </p>
+        )}
+
+        <div className="space-y-3">
+          {tickets.map((tk, i) => (
+            <div key={i} className="rounded-xl border border-border bg-background p-3">
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <input
+                  className={`${inputCls} font-medium`}
+                  placeholder={t("ewz.tickets.namePh")}
+                  aria-label={t("ewz.tickets.name")}
+                  value={tk.name}
+                  onChange={(e) => updateTicket(i, { name: e.target.value })}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeTicket(i)}
+                  aria-label={t("ewz.tickets.remove")}
+                  className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+                >
+                  <Trash2 className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className={labelCls}>{t("ewz.tickets.price")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    className={inputCls}
+                    value={tk.price}
+                    onChange={(e) => updateTicket(i, { price: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className={labelCls}>{t("ewz.tickets.qty")}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    className={inputCls}
+                    value={tk.quantity}
+                    onChange={(e) => updateTicket(i, { quantity: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="mt-2">
+                <label className={labelCls}>{t("ewz.tickets.desc")}</label>
+                <input
+                  className={inputCls}
+                  value={tk.description}
+                  onChange={(e) => updateTicket(i, { description: e.target.value })}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setTickets([...tickets, emptyTicket()])}
-        className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border bg-background py-2.5 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
-      >
-        <Plus className="h-4 w-4" aria-hidden="true" /> {t("ewz.tickets.add")}
-      </button>
+      {/* Phần 2: Nhà tài trợ sự kiện */}
+      <div className="space-y-3 border-t border-border pt-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Award className="h-4 w-4 text-amber-500" aria-hidden="true" /> Nhà tài trợ sự kiện
+            </h3>
+            <p className="mt-0.5 text-xs text-muted-foreground">Vinh danh các đơn vị, cá nhân tài trợ cho sự kiện</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSponsors([...sponsors, emptySponsor()])}
+            className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted"
+          >
+            <Plus className="h-3.5 w-3.5 text-amber-500" /> Thêm tài trợ
+          </button>
+        </div>
+
+        {sponsors.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border bg-muted/20 p-4 text-center">
+            <p className="text-xs text-muted-foreground">Chưa có nhà tài trợ nào được thêm vào sự kiện này.</p>
+            <button
+              type="button"
+              onClick={() => setSponsors([...sponsors, emptySponsor()])}
+              className="mt-2 text-xs font-semibold text-primary hover:underline"
+            >
+              + Bấm vào đây để thêm nhà tài trợ đầu tiên
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {sponsors.map((sp, i) => (
+              <div key={i} className="rounded-xl border border-border bg-background p-3">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <div className="flex flex-1 items-center gap-2">
+                    <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <input
+                      className={`${inputCls} font-medium flex-1`}
+                      placeholder="Tên doanh nghiệp / Nhà tài trợ..."
+                      value={sp.name}
+                      onChange={(e) => updateSponsor(i, { name: e.target.value })}
+                    />
+                  </div>
+                  <select
+                    className="h-10 rounded-lg border border-border bg-background px-2.5 text-xs font-medium"
+                    value={sp.tier}
+                    onChange={(e) => updateSponsor(i, { tier: e.target.value as any })}
+                  >
+                    <option value="diamond">💎 Kim Cương</option>
+                    <option value="gold">🥇 Vàng</option>
+                    <option value="silver">🥈 Bạc</option>
+                    <option value="bronze">🥉 Đồng</option>
+                    <option value="companion">🤝 Đồng Hành</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => removeSponsor(i)}
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className={labelCls}>Logo URL</label>
+                    <input
+                      className={inputCls}
+                      placeholder="https://..."
+                      value={sp.logoUrl}
+                      onChange={(e) => updateSponsor(i, { logoUrl: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Ghi chú / Quyền lợi</label>
+                    <input
+                      className={inputCls}
+                      placeholder="Quyền lợi gian hàng, phát biểu..."
+                      value={sp.description}
+                      onChange={(e) => updateSponsor(i, { description: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -654,63 +850,205 @@ function QrStep({
   qrFields,
   toggleQr,
   sample,
+  mediaMembers,
+  selectedScanners,
+  setSelectedScanners,
+  loadingMembers,
 }: {
   qrFields: QrField[];
   toggleQr: (f: QrField) => void;
   sample: string;
+  mediaMembers: MediaMember[];
+  selectedScanners: MediaMember[];
+  setSelectedScanners: React.Dispatch<React.SetStateAction<MediaMember[]>>;
+  loadingMembers: boolean;
 }) {
   const t = useT();
+  const [search, setSearch] = useState("");
+
+  const filteredMembers = useMemo(() => {
+    if (!search.trim()) return mediaMembers;
+    const q = search.toLowerCase();
+    return mediaMembers.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        (m.code && m.code.toLowerCase().includes(q)) ||
+        (m.phone && m.phone.includes(q))
+    );
+  }, [mediaMembers, search]);
+
+  const toggleScanner = (member: MediaMember) => {
+    const isSelected = selectedScanners.some((s) => s.id === member.id);
+    if (isSelected) {
+      setSelectedScanners(selectedScanners.filter((s) => s.id !== member.id));
+    } else {
+      setSelectedScanners([...selectedScanners, member]);
+    }
+  };
+
+  const selectAll = () => {
+    setSelectedScanners(mediaMembers);
+  };
+
+  const clearAll = () => {
+    setSelectedScanners([]);
+  };
+
   return (
-    <div className="space-y-4">
-      <div>
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
-          <QrCode className="h-4 w-4 text-primary" aria-hidden="true" /> {t("ewz.qr.heading")}
-        </h3>
-        <p className="mt-0.5 text-xs text-muted-foreground">{t("ewz.qr.hint")}</p>
+    <div className="space-y-6">
+      {/* Multi-Select: Ban Truyền thông quét mã QR */}
+      <div className="space-y-3 rounded-2xl border border-primary/20 bg-primary/[0.02] p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
+          <div>
+            <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
+              Người có quyền quét mã QR (Ban Truyền thông)
+            </h3>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Chỉ các nhân sự được chọn mới có quyền dùng app để check-in và quét vé sự kiện này.
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
+              Đã chọn: {selectedScanners.length}
+            </span>
+          </div>
+        </div>
+
+        {/* Action bar: Search + Select All */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Tìm theo tên, mã thành viên, SĐT..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-3 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={selectAll}
+            className="shrink-0 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+          >
+            Chọn tất cả
+          </button>
+          <button
+            type="button"
+            onClick={clearAll}
+            className="shrink-0 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            Bỏ chọn
+          </button>
+        </div>
+
+        {/* Member cards grid */}
+        {loadingMembers ? (
+          <div className="p-4 text-center text-xs text-muted-foreground">Đang tải danh sách thành viên Ban Truyền thông...</div>
+        ) : filteredMembers.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border p-4 text-center text-xs text-muted-foreground">
+            {search ? "Không tìm thấy thành viên phù hợp" : "Chưa có thành viên nào thuộc Ban Truyền thông"}
+          </div>
+        ) : (
+          <div className="grid max-h-56 grid-cols-1 gap-2 overflow-y-auto sm:grid-cols-2">
+            {filteredMembers.map((member) => {
+              const isSelected = selectedScanners.some((s) => s.id === member.id);
+              return (
+                <div
+                  key={member.id}
+                  onClick={() => toggleScanner(member)}
+                  className={`flex cursor-pointer items-center gap-3 rounded-xl border p-2.5 transition select-none ${
+                    isSelected
+                      ? "border-primary bg-primary/10 shadow-sm"
+                      : "border-border bg-card hover:border-border/80 hover:bg-muted/40"
+                  }`}
+                >
+                  <div className="shrink-0">
+                    {isSelected ? (
+                      <CheckSquare className="h-4 w-4 text-primary" />
+                    ) : (
+                      <Square className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full bg-muted">
+                    {member.avatar ? (
+                      <img src={member.avatar} alt={member.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="grid h-full w-full place-items-center bg-primary/20 text-xs font-bold text-primary">
+                        {member.name.slice(0, 1).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-semibold text-foreground">{member.name}</p>
+                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                      {member.code && <span className="font-mono">{member.code}</span>}
+                      {member.phone && <span>• {member.phone}</span>}
+                    </div>
+                  </div>
+                  <span className="shrink-0 rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+                    Truyền thông
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      <fieldset className="space-y-2">
-        {QR_FIELDS.map((f) => {
-          const checked = qrFields.includes(f);
-          return (
-            <label
-              key={f}
-              className={`flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ${
-                checked
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-background hover:bg-muted/50"
-              }`}
-            >
-              <input
-                type="checkbox"
-                className="mt-0.5 h-4 w-4 accent-[var(--primary)]"
-                checked={checked}
-                onChange={() => toggleQr(f)}
-              />
-              <span className="min-w-0">
-                <span className="block text-sm font-medium text-foreground">
-                  {t(`ewz.qr.${f}` as never)}
-                </span>
-                <span className="block text-xs text-muted-foreground">
-                  {t(`ewz.qr.${f}.desc` as never)}
-                </span>
-              </span>
-            </label>
-          );
-        })}
-      </fieldset>
+      {/* Cấu hình trường nhúng mã QR */}
+      <div className="space-y-3">
+        <div>
+          <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <QrCode className="h-4 w-4 text-primary" aria-hidden="true" /> {t("ewz.qr.heading")}
+          </h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">{t("ewz.qr.hint")}</p>
+        </div>
 
-      <div className="rounded-xl border border-border bg-muted/30 p-4">
-        <p className="mb-3 text-xs font-medium text-muted-foreground">{t("ewz.qr.preview")}</p>
-        <div className="flex items-center gap-4">
-          <QrCanvas value={sample} size={120} />
-          <div className="min-w-0">
-            <p className="mb-1 text-[11px] uppercase tracking-wide text-muted-foreground">
-              {t("ewz.qr.previewHint")}
-            </p>
-            <code className="block break-all rounded-md bg-background px-2 py-1.5 text-[11px] text-foreground">
-              {sample}
-            </code>
+        <fieldset className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          {QR_FIELDS.map((f) => {
+            const checked = qrFields.includes(f);
+            return (
+              <label
+                key={f}
+                className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-2.5 transition ${
+                  checked
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-background hover:bg-muted/50"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-3.5 w-3.5 accent-[var(--primary)]"
+                  checked={checked}
+                  onChange={() => toggleQr(f)}
+                />
+                <span className="min-w-0">
+                  <span className="block text-xs font-medium text-foreground">
+                    {t(`ewz.qr.${f}` as never)}
+                  </span>
+                  <span className="block text-[11px] text-muted-foreground">
+                    {t(`ewz.qr.${f}.desc` as never)}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </fieldset>
+
+        <div className="rounded-xl border border-border bg-muted/30 p-3.5">
+          <p className="mb-2 text-xs font-medium text-muted-foreground">{t("ewz.qr.preview")}</p>
+          <div className="flex items-center gap-4">
+            <QrCanvas value={sample} size={100} />
+            <div className="min-w-0">
+              <p className="mb-1 text-[11px] uppercase tracking-wide text-muted-foreground">
+                {t("ewz.qr.previewHint")}
+              </p>
+              <code className="block break-all rounded-md bg-background px-2 py-1 text-[11px] text-foreground">
+                {sample}
+              </code>
+            </div>
           </div>
         </div>
       </div>

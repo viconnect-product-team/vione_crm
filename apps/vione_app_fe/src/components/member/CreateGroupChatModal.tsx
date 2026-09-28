@@ -575,7 +575,7 @@ export function CreateGroupChatModal({
             disabled={selectedMembers.length === 0 || isSubmitting}
             className={`w-full py-3 rounded-xl text-xs font-black uppercase tracking-wider transition active:scale-98 shadow-md flex items-center justify-center gap-2 cursor-pointer ${
               selectedMembers.length > 0
-                ? "bg-gradient-to-r from-[#003B95] via-[#1E40AF] to-[#D97706] text-white shadow-blue-900/20 hover:brightness-105"
+                ? "bg-gradient-to-r from-[#0052CC] via-[#003B95] to-[#002B70] text-white shadow-blue-900/20 hover:brightness-105"
                 : "bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-slate-500 cursor-not-allowed"
             }`}
           >

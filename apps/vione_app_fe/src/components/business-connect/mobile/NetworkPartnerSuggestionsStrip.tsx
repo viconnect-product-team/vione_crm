@@ -89,7 +89,7 @@ export function NetworkPartnerSuggestionsStrip() {
       <div className="flex items-center justify-between mb-3 px-0.5">
         <div>
           <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <Sparkles className="w-3.5 h-3.5 text-[#D8B282]" />
             <h3 className="text-[13px] font-bold text-[var(--bc-mobile-text,#0F172A)]">
               Gợi ý kết nối doanh nhân
             </h3>
@@ -101,7 +101,7 @@ export function NetworkPartnerSuggestionsStrip() {
         <Link
           to="/connect-app/network"
           search={{ tab: "suggestions" }}
-          className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline"
+          className="text-xs font-semibold text-amber-700 dark:text-[#F6E1C3] hover:underline"
         >
           Xem tất cả
         </Link>
@@ -115,7 +115,7 @@ export function NetworkPartnerSuggestionsStrip() {
           return (
             <div
               key={partner.id}
-              className="relative flex-none w-[175px] rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3 flex flex-col justify-between transition-all hover:border-amber-400/50 hover:shadow-xs group"
+              className="relative flex-none w-[175px] rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3 flex flex-col justify-between transition-all hover:border-[#D8B282]/50 hover:shadow-xs group"
             >
               {/* Dismiss button */}
               <button
@@ -133,9 +133,9 @@ export function NetworkPartnerSuggestionsStrip() {
                   <img
                     src={partner.avatar}
                     alt={partner.name}
-                    className="w-full h-full rounded-full object-cover border border-amber-400/40 shadow-xs"
+                    className="w-full h-full rounded-full object-cover border border-[#D8B282]/40 shadow-xs"
                   />
-                  <span className="absolute bottom-0 right-0 px-1 py-0.2 rounded-full text-[8.5px] font-black bg-amber-500 text-slate-950 shadow-xs">
+                  <span className="absolute bottom-0 right-0 px-1 py-0.2 rounded-full text-[8.5px] font-black bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-xs">
                     {partner.matchScore}%
                   </span>
                 </div>
@@ -147,7 +147,7 @@ export function NetworkPartnerSuggestionsStrip() {
                 <p className="text-[10.5px] text-[var(--bc-mobile-muted)] text-center line-clamp-1 mt-0.5">
                   {partner.title}
                 </p>
-                <p className="text-[10px] font-medium text-amber-700 dark:text-amber-300 text-center line-clamp-1">
+                <p className="text-[10px] font-medium text-amber-700 dark:text-[#F6E1C3] text-center line-clamp-1">
                   {partner.company}
                 </p>
               </div>
@@ -164,7 +164,7 @@ export function NetworkPartnerSuggestionsStrip() {
                   className={`w-full py-1.5 px-2 rounded-lg text-[11px] font-bold flex items-center justify-center gap-1 transition-all ${
                     isConnected
                       ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
-                      : "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:brightness-105 shadow-xs active:scale-95"
+                      : "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] hover:opacity-90 text-slate-950 shadow-xs active:scale-95"
                   }`}
                 >
                   {isConnected ? (

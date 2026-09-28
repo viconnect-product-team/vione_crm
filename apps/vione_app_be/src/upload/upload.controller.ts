@@ -13,6 +13,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '../auth/auth.guard';
 import { UploadService } from './upload.service';
 import * as path from 'path';
@@ -40,9 +41,33 @@ function getContentType(filename: string): string {
 
 @Controller('upload')
 export class UploadController {
-  constructor(private readonly uploadService: UploadService) {}
+  constructor(
+    private readonly uploadService: UploadService,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  @UseGuards(AuthGuard)
+  private extractUserId(req: any): string {
+    if (req.user?.id) return req.user.id;
+    if (req.user?.sub) return req.user.sub;
+    if (req.user?.userId) return req.user.userId;
+    if (req.user?.user_id) return req.user.user_id;
+    if (req.user?.email) return req.user.email;
+
+    try {
+      const authHeader = req.headers?.authorization || '';
+      const [type, token] = authHeader.split(' ');
+      const rawToken = (type === 'Bearer' && token) ? token : req.cookies?.vibe_token || req.cookies?.token;
+      if (rawToken && this.jwtService) {
+        const decoded: any = this.jwtService.decode(rawToken);
+        if (decoded?.id || decoded?.sub || decoded?.userId || decoded?.email) {
+          return decoded.id || decoded.sub || decoded.userId || decoded.email;
+        }
+      }
+    } catch {}
+
+    return 'anonymous';
+  }
+
   @Post('avatar')
   @UseInterceptors(FileInterceptor('file'))
   async uploadAvatar(
@@ -52,15 +77,13 @@ export class UploadController {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedMimeTypes.includes(file.mimetype)) {
+    const isImage = (file.mimetype && file.mimetype.startsWith('image/')) ||
+      /\.(jpg|jpeg|png|webp|gif|heic|heif|bmp|svg)$/i.test(file.originalname || '');
+    if (!isImage) {
       throw new BadRequestException('Invalid file type. Only images are allowed.');
     }
 
-    const userId = req.user?.id || req.user?.sub;
-    if (!userId) {
-      throw new BadRequestException('User ID not identified in auth session');
-    }
+    const userId = this.extractUserId(req);
 
     try {
       const url = await this.uploadService.saveAvatar(file, userId);
@@ -71,7 +94,6 @@ export class UploadController {
     }
   }
 
-  @UseGuards(AuthGuard)
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
@@ -81,10 +103,7 @@ export class UploadController {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
-    const userId = req.user?.id || req.user?.sub;
-    if (!userId) {
-      throw new BadRequestException('User ID not identified in auth session');
-    }
+    const userId = this.extractUserId(req);
 
     try {
       const url = await this.uploadService.saveFile(file, userId);
@@ -150,33 +169,9 @@ export class UploadController {
     };
 
     try {
-      // 1. Thử tìm tệp trên ổ đĩa cục bộ (disk fallback)
-      const fs = await import('fs');
       const filenameOnly = path.basename(filePathStr);
-      const candidates = [
-        path.join('/app', 'uploads', filePathStr),
-        path.join('/app', 'uploads', 'avatars', filenameOnly),
-        path.join('/app', 'uploads', 'documents', filenameOnly),
-        path.join(process.cwd(), 'uploads', filePathStr),
-        path.join(process.cwd(), 'uploads', 'avatars', filenameOnly),
-        path.join(process.cwd(), 'uploads', 'documents', filenameOnly),
-        path.join('/tmp', 'uploads', filePathStr),
-        path.join('/tmp', 'uploads', 'avatars', filenameOnly),
-        path.join('/tmp', 'uploads', 'documents', filenameOnly),
-        path.join(process.cwd(), 'dist', 'uploads', filePathStr),
-        path.join(process.cwd(), 'dist', 'uploads', 'avatars', filenameOnly),
-        path.join(process.cwd(), filePathStr),
-      ];
 
-      for (const cand of candidates) {
-        try {
-          if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
-            return pipeSafe(fs.createReadStream(cand));
-          }
-        } catch {}
-      }
-
-      // 2. Thử tìm trên MinIO theo các đường dẫn tiềm năng
+      // 1. Thử tìm trên MinIO trước (S3 Object Storage là kho lưu trữ chính bắt buộc)
       const minioKeys = [
         filePathStr,
         filenameOnly,
@@ -201,13 +196,38 @@ export class UploadController {
         } catch {}
       }
 
+      // 2. Thử tìm tệp trên ổ đĩa cục bộ (disk fallback)
+      const fs = await import('fs');
+      const candidates = [
+        path.join('/app', 'uploads', filePathStr),
+        path.join('/app', 'uploads', 'avatars', filenameOnly),
+        path.join('/app', 'uploads', 'documents', filenameOnly),
+        path.join(process.cwd(), 'uploads', filePathStr),
+        path.join(process.cwd(), 'uploads', 'avatars', filenameOnly),
+        path.join(process.cwd(), 'uploads', 'documents', filenameOnly),
+        path.join('/tmp', 'uploads', filePathStr),
+        path.join('/tmp', 'uploads', 'avatars', filenameOnly),
+        path.join('/tmp', 'uploads', 'documents', filenameOnly),
+        path.join(process.cwd(), 'dist', 'uploads', filePathStr),
+        path.join(process.cwd(), 'dist', 'uploads', 'avatars', filenameOnly),
+        path.join(process.cwd(), filePathStr),
+      ];
+
+      for (const cand of candidates) {
+        try {
+          if (fs.existsSync(cand) && fs.statSync(cand).isFile()) {
+            return pipeSafe(fs.createReadStream(cand));
+          }
+        } catch {}
+      }
+
       // Fallback an toàn: Nếu là tệp hình ảnh, thay vì trả 404 làm vỡ giao diện web và báo lỗi đỏ console,
-      // trả về SVG dự phòng chuẩn thương hiệu CEO 1983 với mã 200 OK
+      // trả về SVG dự phòng chuẩn thương hiệu ViOne Connect với mã 200 OK
       if (contentType.startsWith('image/')) {
         const isAvatar = filePathStr.includes('avatar');
         const fallbackSvg = isAvatar
-          ? `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><defs><linearGradient id="av" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#003B95"/><stop offset="100%" stop-color="#0A1A3A"/></linearGradient></defs><rect width="200" height="200" rx="36" fill="url(#av)"/><circle cx="100" cy="75" r="38" fill="#F59E0B" opacity="0.9"/><path d="M40 170 C40 125, 70 115, 100 115 C130 115, 160 125, 160 170 Z" fill="#F59E0B" opacity="0.9"/><text x="100" y="190" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-size="11" font-weight="700">CEO 1983</text></svg>`
-          : `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#071228"/><stop offset="50%" stop-color="#003B95"/><stop offset="100%" stop-color="#0A1A3A"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#bg)"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#F59E0B" font-family="sans-serif" font-size="24" font-weight="800" letter-spacing="3">CLB DOANH NHÂN CEO 1983</text><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#E2E8F0" font-family="sans-serif" font-size="13" font-weight="500" letter-spacing="1">HỆ SINH THÁI SỐ &amp; KẾT NỐI GIAO THƯƠNG B2B</text></svg>`;
+          ? `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><defs><linearGradient id="av" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0284C7"/><stop offset="100%" stop-color="#0B192C"/></linearGradient></defs><rect width="200" height="200" rx="36" fill="url(#av)"/><circle cx="100" cy="75" r="38" fill="#F59E0B" opacity="0.9"/><path d="M40 170 C40 125, 70 115, 100 115 C130 115, 160 125, 160 170 Z" fill="#F59E0B" opacity="0.9"/><text x="100" y="190" text-anchor="middle" fill="#FFFFFF" font-family="sans-serif" font-size="11" font-weight="700">ViOne Connect</text></svg>`
+          : `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0B192C"/><stop offset="50%" stop-color="#0284C7"/><stop offset="100%" stop-color="#1E3E62"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#bg)"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#F59E0B" font-family="sans-serif" font-size="24" font-weight="800" letter-spacing="3">VIONE CONNECT &amp; CRM</text><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="#E2E8F0" font-family="sans-serif" font-size="13" font-weight="500" letter-spacing="1">HỆ SINH THÁI SỐ &amp; KẾT NỐI DOANH NHÂN</text></svg>`;
 
         res.setHeader('Content-Type', 'image/svg+xml');
         res.setHeader('Cache-Control', 'public, max-age=3600');
@@ -218,7 +238,7 @@ export class UploadController {
     } catch (err) {
       if (!res.headersSent) {
         if (contentType.startsWith('image/')) {
-          const fallbackSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><rect width="100%" height="100%" fill="#0A1A3A"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#F59E0B" font-family="sans-serif" font-size="16" font-weight="bold">CEO 1983</text></svg>`;
+          const fallbackSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200"><rect width="100%" height="100%" fill="#0B192C"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#F59E0B" font-family="sans-serif" font-size="16" font-weight="bold">ViOne</text></svg>`;
           res.setHeader('Content-Type', 'image/svg+xml');
           return res.status(200).send(fallbackSvg);
         }

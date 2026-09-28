@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" height="520" style="background:#0b1329;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1329" />
+      <stop offset="50%" stop-color="#111d40" />
+      <stop offset="100%" stop-color="#070c1b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0084FF" />
+      <stop offset="100%" stop-color="#003B95" />
+    </linearGradient>
+    <filter id="dropGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="520" fill="url(#bgGrad)" />
+  
+  <g opacity="0.08" stroke="#ffffff" stroke-width="1">
+    <line x1="0" y1="80" x2="800" y2="80" />
+    <line x1="0" y1="180" x2="800" y2="180" />
+    <line x1="0" y1="280" x2="800" y2="280" />
+    <line x1="0" y1="380" x2="800" y2="380" />
+    <line x1="0" y1="480" x2="800" y2="480" />
+    <line x1="160" y1="0" x2="160" y2="520" />
+    <line x1="320" y1="0" x2="320" y2="520" />
+    <line x1="480" y1="0" x2="480" y2="520" />
+    <line x1="640" y1="0" x2="640" y2="520" />
+  </g>
+
+  <!-- Top Header Banner -->
+  <rect x="40" y="24" width="720" height="60" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+  <circle cx="75" cy="54" r="18" fill="url(#goldGrad)" />
+  <text x="75" y="60" fill="#ffffff" font-size="13" font-weight="900" text-anchor="middle">1983</text>
+  <text x="108" y="46" fill="#fbbf24" font-size="15" font-weight="800" letter-spacing="0.5">HƯỚNG DẪN 2: THAO TÁC 1 TAY DYNAMIC & REACHABILITY</text>
+  <text x="108" y="66" fill="#94a3b8" font-size="12">Kéo nửa màn hình xuống, vuốt chuyển tab & công thái học</text>
+  <rect x="660" y="40" width="80" height="28" rx="8" fill="#F59E0B" />
+  <text x="700" y="58" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">REACHABILITY</text>
+
+  <!-- Main Content -->
+  
+  <g transform="translate(60, 105)">
+    <!-- Phone Mockup -->
+    <rect x="0" y="0" width="280" height="380" rx="32" fill="#0f172a" stroke="#334155" stroke-width="4" filter="url(#dropGlow)" />
+    <rect x="90" y="8" width="100" height="16" rx="8" fill="#1e293b" />
+    <!-- Reachability Drop Overlay -->
+    <rect x="15" y="36" width="250" height="110" rx="4" fill="#1e293b" opacity="0.6" />
+    <text x="140" y="95" fill="#94a3b8" font-size="10" font-weight="700" text-anchor="middle">VÙNG HẠ MÀN HÌNH (REACHABILITY)</text>
+    <!-- Shifted Down Screen Content -->
+    <rect x="15" y="146" width="250" height="220" rx="16" fill="#ffffff" />
+    <rect x="30" y="160" width="220" height="36" rx="10" fill="#f1f5f9" />
+    <text x="50" y="183" fill="#64748b" font-size="11">🔍 Tìm kiếm hội viên...</text>
+    <rect x="30" y="208" width="100" height="26" rx="8" fill="#003B95" />
+    <text x="80" y="225" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">Hộp thư (12)</text>
+    <rect x="138" y="208" width="112" height="26" rx="8" fill="#f1f5f9" />
+    <text x="194" y="225" fill="#475569" font-size="11" font-weight="bold" text-anchor="middle">Tin nhắn chờ (3)</text>
+    <!-- Chat preview card -->
+    <rect x="30" y="244" width="220" height="50" rx="12" fill="#f8fafc" stroke="#e2e8f0" />
+    <circle cx="55" cy="269" r="16" fill="#003B95" />
+    <text x="55" y="274" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">CT</text>
+    <text x="80" y="263" fill="#0f172a" font-size="11" font-weight="bold">Nguyễn Văn An - Chủ tịch</text>
+    <text x="80" y="278" fill="#64748b" font-size="10">Hẹn gặp anh tại Cafe Doanh Nhân...</text>
+    <circle cx="236" cy="269" r="4" fill="#0084FF" />
+    <!-- Thumb Icon Dynamic Cue -->
+    <circle cx="140" cy="330" r="18" fill="#F59E0B" />
+    <text x="140" y="336" fill="#ffffff" font-size="16" text-anchor="middle">👆</text>
+  </g>
+
+  <!-- Explanation Cards -->
+  <g transform="translate(380, 115)">
+    <rect x="0" y="0" width="380" height="110" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="36" fill="#fbbf24" font-size="15" font-weight="bold">1. Chế Độ Kéo Nửa Màn Hình (Reachability)</text>
+    <text x="24" y="62" fill="#cbd5e1" font-size="12">Vuốt trượt nhẹ từ đỉnh xuống để toàn bộ nút bấm,</text>
+    <text x="24" y="80" fill="#cbd5e1" font-size="12">thanh tìm kiếm trượt xuống 35vh trong tầm với ngón cái.</text>
+
+    <rect x="0" y="130" width="380" height="110" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="166" fill="#38bdf8" font-size="15" font-weight="bold">2. Vuốt Ngang Mép Chuyển Tab Nhanh</text>
+    <text x="24" y="192" fill="#cbd5e1" font-size="12">Vuốt từ mép trái sang phải để quay lại trang trước</text>
+    <text x="24" y="210" fill="#cbd5e1" font-size="12">hoặc vuốt qua lại chuyển nhanh các tab Bảng tin / Sự kiện.</text>
+
+    <rect x="0" y="260" width="380" height="95" rx="16" fill="#142247" stroke="#253b75" stroke-width="1.5" />
+    <text x="24" y="296" fill="#4ade80" font-size="15" font-weight="bold">3. Phản Hồi Xúc Giác &amp; Thu Gọn Tự Động</text>
+    <text x="24" y="322" fill="#cbd5e1" font-size="12">Rung haptic êm ái, chạm vùng trống phía trên để phục hồi.</text>
+  </g>
+
+</svg>

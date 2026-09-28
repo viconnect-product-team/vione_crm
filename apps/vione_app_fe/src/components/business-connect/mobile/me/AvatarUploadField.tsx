@@ -34,47 +34,62 @@ export function AvatarUploadField({ value, onChange, disabled }: AvatarUploadFie
     setBusy(true);
     try {
       const processed = await processMomentImage(file);
-      if (!processed.ok) {
-        setFailed(true);
-        return;
-      }
+      const blobToUpload = processed.ok ? processed.image.blob : file;
       
       const token =
         (typeof window !== "undefined" &&
           (localStorage.getItem("vibe_token") ||
             localStorage.getItem("token") ||
             localStorage.getItem("access_token") ||
+            localStorage.getItem("sb-access-token") ||
             localStorage.getItem("vba_token"))) ||
         "";
 
       const formData = new FormData();
-      formData.append("file", processed.image.blob, "avatar.jpg");
+      formData.append("file", blobToUpload, file.name || "avatar.jpg");
 
       const headers: Record<string, string> = {};
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const res = await fetch(getNestApiUrl("/upload/avatar"), {
-        method: "POST",
-        credentials: "include",
-        headers,
-        body: formData,
-      });
-
-      if (!res.ok) {
-        setFailed(true);
-        return;
+      let resData: any = null;
+      try {
+        const res = await fetch(getNestApiUrl("/upload/avatar"), {
+          method: "POST",
+          credentials: "include",
+          headers,
+          body: formData,
+        });
+        if (res.ok) {
+          resData = await res.json();
+        }
+      } catch (err) {
+        console.warn("[AvatarUploadField] /upload/avatar network error:", err);
       }
 
-      const resData = await res.json();
-      if (!resData.url) {
-        setFailed(true);
-        return;
+      if (!resData?.url) {
+        // Fallback to /upload/file
+        try {
+          const res2 = await fetch(getNestApiUrl("/upload/file"), {
+            method: "POST",
+            credentials: "include",
+            headers,
+            body: formData,
+          });
+          if (res2.ok) {
+            resData = await res2.json();
+          }
+        } catch (err2) {
+          console.warn("[AvatarUploadField] /upload/file fallback error:", err2);
+        }
       }
 
-      // Lưu relative path vào DB (ví dụ: /uploads/avatars/xxx.jpg)
-      onChange(resData.url);
+      if (resData?.url) {
+        onChange(resData.url);
+      } else {
+        setFailed(true);
+      }
     } catch {
       setFailed(true);
     } finally {
@@ -106,7 +121,7 @@ export function AvatarUploadField({ value, onChange, disabled }: AvatarUploadFie
             type="button"
             disabled={disabled || busy}
             onClick={() => inputRef.current?.click()}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bc-mobile-border)] px-4 text-[13.5px] font-medium text-[var(--bc-mobile-text)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-navy)] motion-reduce:transition-none"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--bc-mobile-border)] px-4 text-[13.5px] font-medium text-[var(--bc-mobile-text)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B282] motion-reduce:transition-none"
           >
             {busy ? (
               <Loader2
@@ -130,7 +145,7 @@ export function AvatarUploadField({ value, onChange, disabled }: AvatarUploadFie
                   inputRef.current.value = "";
                 }
               }}
-              className="inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium text-[var(--bc-mobile-muted)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-navy)] motion-reduce:transition-none"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[13.5px] font-medium text-[var(--bc-mobile-muted)] transition-colors hover:bg-[var(--bc-mobile-surface-2)] disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8B282] motion-reduce:transition-none"
             >
               <Trash2 aria-hidden className="size-4" strokeWidth={1.8} />
               {t("bc.mobile.me.avatar.remove")}

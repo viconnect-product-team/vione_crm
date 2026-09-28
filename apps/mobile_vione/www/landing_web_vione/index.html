@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vione — Nền Tảng Tự Động Hóa Vận Hành & Creator AI 5.0</title>
+  <link rel="icon" type="image/svg+xml" href="/vione-favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@700&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #EAB308;
+      --primary-hover: #CA8A04;
+      --primary-light: #FFF7D6;
+      --primary-border: #FDE68A;
+      --dark: #09090B;
+      --dark-text: #111827;
+      --muted: #52525B;
+      --slate: #64748B;
+      --border: #E4E4E7;
+      --bg-light: #FBFBFA;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--dark-text);
+      background-color: #FFFFFF;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .vione-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    header {
+      width: 100%;
+      height: 77px;
+      padding: 20px 80px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #09090B;
+      box-shadow: 0 2px 8px rgba(234, 179, 8, 0.3);
+      transition: transform 0.2s;
+    }
+    .logo:hover .logo-icon {
+      transform: scale(1.05);
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -1px;
+      color: #09090B;
+    }
+
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-menu a {
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-menu a:hover {
+      color: var(--dark);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-login {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--dark);
+      text-decoration: none;
+      padding: 8px 12px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-login:hover {
+      opacity: 0.8;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--primary);
+      color: #09090B;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .btn-primary:hover {
+      background: #FACC15;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(234, 179, 8, 0.35);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      width: 100%;
+      min-height: 952px;
+      padding: 96px 80px;
+      background: var(--bg-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .hero-container {
+      width: 1280px;
+      height: 760px;
+      padding: 0 80px;
+      background: radial-gradient(25% 55% at 75% 45%, rgba(255, 190, 0, 0.07) 0%, rgba(248, 250, 252, 0) 85%);
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .hero-left {
+      width: 620px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      width: fit-content;
+      background: #FFF7D6;
+      border: 1px solid var(--primary-border);
+      border-radius: 200px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #FFBE00;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #FFBE00;
+      animation: pulseDot 2s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .badge-text {
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #B45309;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-title {
+      font-weight: 800;
+      font-size: 56px;
+      line-height: 64px;
+      color: #111827;
+      letter-spacing: -1px;
+    }
+
+    .hero-desc {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 26px;
+      color: var(--slate);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-top: 12px;
+    }
+
+    .btn-hero-primary {
+      padding: 16px 32px;
+      background: #FFBE00;
+      border-radius: 8px;
+      color: #090C12;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(255, 190, 0, 0.3);
+      transition: all 0.25s ease;
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(255, 190, 0, 0.4);
+    }
+
+    .btn-hero-secondary {
+      padding: 16px 32px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      color: #111827;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-hero-secondary:hover {
+      background: #F8FAFC;
+      border-color: #CBD5E1;
+    }
+
+    /* Spatial Mockup Right */
+    .hero-right {
+      width: 560px;
+      height: 560px;
+      position: relative;
+    }
+
+    .saas-portrait {
+      position: absolute;
+      width: 260px;
+      height: 460px;
+      left: 30px;
+      top: 30px;
+      border: 1px solid #E2E8F0;
+      border-radius: 24px;
+      object-fit: cover;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+      z-index: 1;
+    }
+
+    .back-glow {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      left: 240px;
+      top: 120px;
+      background: #FFBE00;
+      opacity: 0.25;
+      filter: blur(40px);
+      border-radius: 110px;
+      z-index: 2;
+    }
+
+    .holo-panel-1 {
+      position: absolute;
+      width: 210px;
+      padding: 14px;
+      left: 240px;
+      top: 40px;
+      background: #FFFFFF;
+      border: 1px solid #FFBE00;
+      box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.08);
+      border-radius: 16px;
+      z-index: 6;
+      animation: floatSlow 6s ease-in-out infinite;
+    }
+
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .holo-panel-2 {
+      position: absolute;
+      width: 180px;
+      padding: 12px;
+      left: 50px;
+      top: 420px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.06);
+      border-radius: 12px;
+      z-index: 6;
+      animation: floatReverse 5s ease-in-out infinite;
+    }
+
+    @keyframes floatReverse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    .phone-mockup {
+      position: absolute;
+      width: 280px;
+      height: 520px;
+      left: 220px;
+      top: 100px;
+      background: #FFFFFF;
+      border: 3px solid #FFBE00;
+      box-shadow: 0px 20px 40px rgba(255, 190, 0, 0.25);
+      border-radius: 36px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 5;
+      backdrop-filter: blur(8px);
+    }
+
+    .phone-status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .notch {
+      width: 60px;
+      height: 16px;
+      background: #000000;
+      border-radius: 8px;
+    }
+
+    .app-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 8px;
+    }
+
+    .vione-live-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 11px;
+      color: #111827;
+    }
+
+    .vione-live-box {
+      width: 20px;
+      height: 20px;
+      background: #FFBE00;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 11px;
+      color: #09090B;
+    }
+
+    .app-stat-card {
+      background: #FFF7D6;
+      border: 1px solid #FDE68A;
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #B45309;
+      text-transform: uppercase;
+    }
+
+    .stat-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: #733B05;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .stat-growth {
+      font-size: 9px;
+      font-weight: 600;
+      color: #16A34A;
+    }
+
+    .task-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .task-pct {
+      color: #D97706;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: #F1F5F9;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #FFBE00;
+      border-radius: 2px;
+    }
+
+    /* Modules Section */
+    .modules-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    .section-eyebrow {
+      font-family: 'Geist Mono', monospace;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: #EAB308;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      color: #09090B;
+      letter-spacing: -0.5px;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
+
+    .module-card {
+      background: #FBFBFA;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .module-card:hover {
+      border-color: #EAB308;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(234, 179, 8, 0.1);
+    }
+
+    .module-icon-box {
+      width: 48px;
+      height: 48px;
+      background: #FEF08A;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #09090B;
+      flex-shrink: 0;
+    }
+
+    .module-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #09090B;
+      margin-bottom: 6px;
+    }
+
+    .module-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    /* AI Workflow Section */
+    .ai-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: var(--bg-light);
+      display: flex;
+      align-items: center;
+      gap: 64px;
+    }
+
+    .ai-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .ai-visual {
+      flex: 1;
+      height: 400px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .ai-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Dashboard Preview */
+    .dashboard-preview-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .dashboard-img-container {
+      width: 1280px;
+      height: 480px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .dashboard-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Steps */
+    .steps-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: var(--bg-light);
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .step-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-number {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 48px;
+      line-height: 1;
+      color: #EAB308;
+    }
+
+    .step-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #09090B;
+    }
+
+    .step-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* Pricing Section */
+    .pricing-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: var(--bg-light);
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .pricing-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .pricing-card.featured {
+      border: 2px solid #EAB308;
+      box-shadow: 0 16px 32px rgba(234, 179, 8, 0.15);
+    }
+
+    .pricing-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #09090B;
+    }
+
+    .pricing-sub {
+      font-size: 14px;
+      color: var(--muted);
+      min-height: 40px;
+    }
+
+    .price-value {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      color: #09090B;
+    }
+
+    .price-period {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .pricing-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .pricing-features {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .feature-check {
+      color: #EAB308;
+      font-weight: bold;
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* FAQ */
+    .faq-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: #FFFFFF;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    .faq-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .faq-item {
+      background: var(--bg-light);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .faq-item:hover {
+      border-color: #EAB308;
+    }
+
+    .faq-question {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #09090B;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-answer {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      width: 100%;
+      padding: 96px 80px;
+      background: #FEF08A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 40px;
+      color: #09090B;
+      max-width: 900px;
+    }
+
+    .cta-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 680px;
+    }
+
+    .btn-cta {
+      padding: 16px 36px;
+      background: #09090B;
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(9, 9, 11, 0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-cta:hover {
+      background: #27272A;
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    footer {
+      width: 100%;
+      padding: 80px 80px 40px;
+      background: #FFFFFF;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .footer-brand {
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .footer-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .footer-links-group {
+      display: flex;
+      gap: 64px;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-col-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #09090B;
+    }
+
+    .footer-col a {
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover {
+      color: var(--dark);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #71717A;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="vione-container">
+    <!-- Header -->
+    <header>
+      <a href="#" class="logo">
+        <div class="logo-icon">V</div>
+        <div class="logo-text">Vione</div>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="#home">Trang chủ</a>
+        <a href="#modules">Sản phẩm</a>
+        <a href="#ai-copilot">Tính năng AI</a>
+        <a href="#pricing">Bảng giá</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="/login" class="btn-login">Đăng nhập</a>
+        <a href="#trial" class="btn-primary" onclick="openTrialModal()">Dùng thử miễn phí</a>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero-section" id="home">
+      <div class="hero-container">
+        <div class="hero-left">
+          <div class="badge-pill">
+            <div class="badge-dot"></div>
+            <div class="badge-text">CREATIVE AUTOMATION PLATFORM</div>
+          </div>
+
+          <h1 class="hero-title">Nhân rộng tầm ảnh hưởng cùng Creator AI 5.0</h1>
+
+          <p class="hero-desc">
+            Đột phá quy trình sáng tạo và tối ưu hóa chuyển đổi lượng người theo dõi thành doanh thu ổn định thông qua trợ lý ảo đa năng thế hệ mới.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#trial" class="btn-hero-primary" onclick="openTrialModal()">
+              <span>Trải nghiệm sáng tạo</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="#pricing" class="btn-hero-secondary">Xem bảng giá Creator</a>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="back-glow"></div>
+          <img class="saas-portrait" src="SaaS_Portrait.png" alt="Creator AI Portrait" onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80'">
+
+          <div class="holo-panel-1">
+            <div style="font-weight: 700; font-size: 11px; color: #B45309; text-transform: uppercase;">TƯƠNG TÁC ĐA KÊNH</div>
+            <div style="font-size: 12px; font-weight: 600; color: #111827; margin-top: 4px;">Trả lời tự động 5,400 tin nhắn fan hôm nay.</div>
+          </div>
+
+          <div class="holo-panel-2">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <div style="width: 6px; height: 6px; background: #FFBE00; border-radius: 50%;"></div>
+              <div style="font-weight: 700; font-size: 11px; color: #B45309;">XU THẾ MỚI</div>
+            </div>
+            <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Tối ưu phễu người hâm mộ</div>
+          </div>
+
+          <div class="phone-mockup">
+            <div class="phone-status-bar">
+              <span>09:41</span>
+              <div class="notch"></div>
+              <span>5G 100%</span>
+            </div>
+
+            <div class="app-header">
+              <div class="vione-live-tag">
+                <div class="vione-live-box">V</div>
+                <span>VIONE LIVE</span>
+              </div>
+              <div style="width: 24px; height: 24px; background: #F1F5F9; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+              </div>
+            </div>
+
+            <div class="app-stat-card">
+              <div class="stat-label">TƯƠNG TÁC HÔM NAY</div>
+              <div class="stat-val">92.4k</div>
+              <div class="stat-growth">+15.8% so với chu kỳ trước</div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 4px;">
+              <span style="font-size: 11px; font-weight: 700; color: #111827;">PHÂN TÍCH CONTENT</span>
+              <span style="font-size: 10px; font-weight: 600; color: #FFBE00;">Đang tối ưu</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div class="task-card">
+                <div class="task-header">
+                  <span>Tác vụ AI #1024</span>
+                  <span class="task-pct">80%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: 80%;"></div>
+                </div>
+              </div>
+
+              <div class="task-card">
+                <div class="task-header">
+                  <span>Tác vụ AI #1025</span>
+                  <span class="task-pct">55%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: 55%;"></div>
+                </div>
+              </div>
+
+              <div class="task-card">
+                <div class="task-header">
+                  <span>Tác vụ AI #1026</span>
+                  <span class="task-pct">40%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" style="width: 40%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: auto; display: flex; justify-content: center; padding-bottom: 4px;">
+              <div style="width: 100px; height: 4px; background: #111827; border-radius: 2px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modules Section -->
+    <section class="modules-section" id="modules">
+      <div>
+        <div class="section-eyebrow">MÔ ĐUN LIÊN KẾT</div>
+        <h2 class="section-title">Kiến Trúc Hoạt Động Hợp Nhất</h2>
+      </div>
+
+      <div class="modules-grid">
+        <div class="module-card">
+          <div class="module-icon-box">CRM</div>
+          <div>
+            <h3 class="module-title">Vione CRM</h3>
+            <p class="module-desc">Quản trị quan hệ khách hàng chuyên sâu, tự động hóa phễu bán hàng và tối ưu tỷ lệ chuyển đổi.</p>
+          </div>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon-box">Work</div>
+          <div>
+            <h3 class="module-title">Vione Work</h3>
+            <p class="module-desc">Quản lý công việc, dự án và cộng tác nhóm không giới hạn không gian và thời gian.</p>
+          </div>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon-box">F</div>
+          <div>
+            <h3 class="module-title">Vione Finance</h3>
+            <p class="module-desc">Theo dõi dòng tiền, hoạch định ngân sách và lập báo cáo tài chính thời gian thực.</p>
+          </div>
+        </div>
+
+        <div class="module-card">
+          <div class="module-icon-box">HRM</div>
+          <div>
+            <h3 class="module-title">Vione HRM</h3>
+            <p class="module-desc">Quản lý nhân sự toàn diện từ tuyển dụng, chấm công đến tính lương tự động.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Copilot Section -->
+    <section class="ai-section" id="ai-copilot">
+      <div class="ai-left">
+        <div class="section-eyebrow">AI WORKFLOW COPILOT</div>
+        <h2 class="section-title">Trợ Lý Thiết Lập Quy Trình Thông Minh</h2>
+        <p style="font-size: 16px; line-height: 1.6; color: var(--muted);">
+          AI tự động phân tích dữ liệu hiệu suất phòng ban để phát hiện điểm nghẽn và chủ động gợi ý các luồng tự động hóa tối ưu, giúp vận hành doanh nghiệp mượt mà.
+        </p>
+      </div>
+
+      <div class="ai-visual">
+        <img src="Rectangle.png" alt="AI Flowchart" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80'">
+      </div>
+    </section>
+
+    <!-- Operational Dashboard -->
+    <section class="dashboard-preview-section">
+      <div style="text-align: center;">
+        <div class="section-eyebrow">GIÁM SÁT HOẠT ĐỘNG</div>
+        <h2 class="section-title">Kiểm Soát Vận Hành Tổng Thể</h2>
+      </div>
+
+      <div class="dashboard-img-container">
+        <img src="Rectangle (2).png" alt="Operational Dashboard" onerror="this.src='https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1400&q=80'">
+      </div>
+    </section>
+
+    <!-- 3 Steps -->
+    <section class="steps-section">
+      <div>
+        <div class="section-eyebrow">3 BƯỚC THIẾT LẬP</div>
+        <h2 class="section-title">Xây Dựng Quy Trình Tự Động Trong 5 Phút</h2>
+      </div>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h3 class="step-title">Lựa Chọn Trình Kích Hoạt</h3>
+          <p class="step-desc">Chọn sự kiện bắt đầu như: Khách hàng mới, Hóa đơn quá hạn, hay Đăng ký nghỉ phép.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h3 class="step-title">Kết Nối Các Hành Động</h3>
+          <p class="step-desc">Thêm các hành động tiếp theo giữa các bộ phận để dữ liệu tự động đồng bộ liên thông.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h3 class="step-title">Kích Hoạt & Giám Sát</h3>
+          <p class="step-desc">Để AI tự động hóa vận hành, theo dõi tiến độ công việc và cảnh báo điểm nghẽn.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing-section" id="pricing">
+      <div>
+        <div class="section-eyebrow">BẢNG GIÁ DỊCH VỤ</div>
+        <h2 class="section-title">Gói Giải Pháp Linh Hoạt</h2>
+      </div>
+
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3 class="pricing-name">Khởi nghiệp (Startup)</h3>
+          <p class="pricing-sub">Phù hợp cho các nhóm nhỏ muốn số hóa quy trình cơ bản.</p>
+          <div>
+            <span class="price-value">450.000đ</span>
+            <span class="price-period">/tháng</span>
+          </div>
+          <div class="pricing-divider"></div>
+          <div class="pricing-features">
+            <div class="feature-item"><span class="feature-check">✓</span> Tối đa 15 thành viên</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Đầy đủ module Vione Work</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Dung lượng lưu trữ 10GB</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Hỗ trợ qua email</div>
+          </div>
+          <a href="#trial" class="btn-hero-secondary" style="text-align: center;" onclick="openTrialModal('Khởi nghiệp')">Chọn gói này</a>
+        </div>
+
+        <div class="pricing-card featured">
+          <div style="position: absolute; top: -12px; right: 24px; background: #FFBE00; color: #09090B; font-weight: 800; font-size: 11px; padding: 4px 10px; border-radius: 12px; text-transform: uppercase;">Phổ biến nhất</div>
+          <h3 class="pricing-name">Tăng trưởng (Growth)</h3>
+          <p class="pricing-sub">Giải pháp toàn diện cho doanh nghiệp đang bứt phá.</p>
+          <div>
+            <span class="price-value">1.200.000đ</span>
+            <span class="price-period">/tháng</span>
+          </div>
+          <div class="pricing-divider"></div>
+          <div class="pricing-features">
+            <div class="feature-item"><span class="feature-check">✓</span> Không giới hạn thành viên</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Trọn bộ 4 module chính</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Trợ lý AI Copilot cơ bản</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Dung lượng lưu trữ 100GB</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Hỗ trợ 24/7</div>
+          </div>
+          <a href="#trial" class="btn-hero-primary" style="text-align: center; justify-content: center;" onclick="openTrialModal('Tăng trưởng')">Đăng ký ngay</a>
+        </div>
+
+        <div class="pricing-card">
+          <h3 class="pricing-name">Doanh nghiệp (Enterprise)</h3>
+          <p class="pricing-sub">Thiết kế riêng cho các tập đoàn lớn cần tùy biến sâu.</p>
+          <div>
+            <span class="price-value">Liên hệ</span>
+          </div>
+          <div class="pricing-divider"></div>
+          <div class="pricing-features">
+            <div class="feature-item"><span class="feature-check">✓</span> Hạ tầng máy chủ riêng biệt</div>
+            <div class="feature-item"><span class="feature-check">✓</span> AI Copilot tùy biến sâu theo dữ liệu</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Bảo mật nâng cao & SSO</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Kỹ sư hỗ trợ trực tiếp</div>
+            <div class="feature-item"><span class="feature-check">✓</span> Tích hợp hệ thống ERP riêng</div>
+          </div>
+          <a href="#trial" class="btn-hero-secondary" style="text-align: center;" onclick="openTrialModal('Doanh nghiệp')">Liên hệ tư vấn</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section" id="faq">
+      <div>
+        <div class="section-eyebrow">HỎI ĐÁP THƯỜNG GẶP</div>
+        <h2 class="section-title">Câu Hỏi Thường Gặp</h2>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Vione có thể tích hợp với các hệ thống hiện tại của doanh nghiệp không?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            Có, Vione cung cấp hệ thống API mở mạnh mẽ giúp tích hợp mượt mà với SAP, Salesforce, các cổng thanh toán và các phần mềm chuyên dụng khác.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Dữ liệu trên Vione được bảo mật như thế nào?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            Vione áp dụng tiêu chuẩn bảo mật ngân hàng quốc tế mã hóa AES-256, xác thực 2 lớp (2FA) và sao lưu dữ liệu tự động theo thời gian thực trên đám mây.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <span>Chúng tôi có được dùng thử phần mềm trước khi mua không?</span>
+            <span>+</span>
+          </div>
+          <div class="faq-answer">
+            Vione cung cấp gói trải nghiệm miễn phí đầy đủ tính năng trong 14 ngày cho tối đa 10 thành viên để doanh nghiệp đánh giá mức độ phù hợp.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <h2 class="cta-title">Bắt đầu kỷ nguyên quản trị tự động cùng Vione</h2>
+      <p class="cta-sub">Tham gia cùng hàng nghìn doanh nghiệp Việt đang số hóa và bứt phá ngoạn mục bằng hệ thống Vione.</p>
+      <a href="#trial" class="btn-cta" onclick="openTrialModal()">Đăng ký dùng thử miễn phí</a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <div class="logo-icon">V</div>
+            <div class="logo-text">Vione</div>
+          </a>
+          <p class="footer-desc">
+            Hệ sinh thái quản trị doanh nghiệp toàn diện tích hợp AI thông minh, nâng cao hiệu quả vận hành và tối ưu nguồn lực.
+          </p>
+        </div>
+
+        <div class="footer-links-group">
+          <div class="footer-col">
+            <span class="footer-col-title">Sản phẩm</span>
+            <a href="#">Vione CRM</a>
+            <a href="#">Vione Work</a>
+            <a href="#">Vione Finance</a>
+            <a href="#">Vione HRM</a>
+          </div>
+
+          <div class="footer-col">
+            <span class="footer-col-title">Liên hệ</span>
+            <a href="tel:19001234">Hotline: 1900 1234</a>
+            <a href="mailto:contact@vione.vn">Email: contact@vione.vn</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 Vione. Bảo lưu mọi quyền.</div>
+        <div>Điều khoản bảo mật · Quy chế sử dụng</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    function openTrialModal(pkg) {
+      const email = prompt("Nhập email doanh nghiệp của bạn để kích hoạt dùng thử " + (pkg ? "gói " + pkg : "") + ":");
+      if (email && email.trim()) {
+        alert("Cảm ơn quý doanh nghiệp! Chuyên viên giải pháp ViOne sẽ kích hoạt tài khoản trải nghiệm qua email " + email.trim() + " trong vòng 15 phút.");
+      }
+    }
+  </script>
+</body>
+</html>

@@ -422,7 +422,7 @@ function ConnectAppNotificationsPage() {
                           <div className="text-[11.5px] font-bold text-amber-800 dark:text-amber-300">
                             Bình chọn ý kiến của bạn:
                           </div>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-700 dark:text-sky-300 font-bold border border-sky-500/20">
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-[#F6E1C3] font-bold border border-amber-400/20">
                             📱 Bỏ phiếu qua ViOne App
                           </span>
                         </div>
@@ -514,7 +514,7 @@ function ConnectAppNotificationsPage() {
                         {n.safeDisplayData.sourceStats && (
                           <div className="pt-2 border-t border-emerald-500/20 flex flex-wrap items-center gap-2 text-[10.5px] text-slate-600 dark:text-slate-300">
                             <span className="font-semibold">Nguồn tham gia:</span>
-                            <span className="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-700 dark:text-sky-300 font-medium">
+                            <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-[#F6E1C3] font-medium">
                               📱 ViOne: {n.safeDisplayData.sourceStats.vioneApp || 0}
                             </span>
                             <span className="px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 font-medium">

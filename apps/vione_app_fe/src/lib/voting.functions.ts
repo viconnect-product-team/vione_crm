@@ -36,6 +36,9 @@ export type Vote = {
   myVote?: string | null;
   myVoteSource?: string | null;
   sourceStats?: VoteSourceStats;
+  targetAudience?: string | null;
+  eventId?: string | null;
+  eventName?: string | null;
 };
 
 export const listVotesFn = createServerFn({ method: "GET" })
@@ -77,6 +80,8 @@ export const listVotesFn = createServerFn({ method: "GET" })
             myVote: r.myVote || null,
             myVoteSource: r.myVoteSource || null,
             sourceStats,
+            eventId: r.eventId || r.event_id || null,
+            eventName: r.eventName || r.event_name || null,
           };
         });
       }
@@ -137,6 +142,7 @@ export const createVoteFn = createServerFn({ method: "POST" })
     const targetAudience = String(d.targetAudience ?? "all");
     const startsAt = String(d.startsAt ?? "").trim();
     const endsAt = String(d.endsAt ?? "").trim();
+    const eventId = d.eventId ? String(d.eventId).trim() : undefined;
     const options = Array.isArray(d.options)
       ? (d.options as unknown[]).map((o: any) => String(o).trim()).filter(Boolean)
       : [];
@@ -147,7 +153,7 @@ export const createVoteFn = createServerFn({ method: "POST" })
     if (options.length < 2) throw new Error("Cần ít nhất 2 lựa chọn");
     if (options.length > 20) throw new Error("Tối đa 20 lựa chọn");
     if (!["policy", "election", "amendment"].includes(type)) throw new Error("Loại không hợp lệ");
-    return { title, type, targetAudience, startsAt, endsAt, options };
+    return { title, type, targetAudience, startsAt, endsAt, options, eventId };
   })
   .handler(async ({ data, context }) => {
     return fetchNestApiFromServer("/voting/polls", context.token, {
@@ -163,13 +169,15 @@ export const updateVoteFn = createServerFn({ method: "POST" })
     const id = String(d.id ?? "").trim();
     const title = String(d.title ?? "").trim();
     const type = String(d.type ?? "policy");
+    const targetAudience = d.targetAudience ? String(d.targetAudience).trim() : undefined;
     const startsAt = String(d.startsAt ?? "").trim();
     const endsAt = String(d.endsAt ?? "").trim();
+    const eventId = d.eventId !== undefined ? (d.eventId ? String(d.eventId).trim() : null) : undefined;
     const options = Array.isArray(d.options)
       ? (d.options as unknown[]).map((o: any) => String(o).trim()).filter(Boolean)
       : [];
     if (!id) throw new Error("Thiếu mã bình chọn");
-    return { id, title, type, startsAt, endsAt, options };
+    return { id, title, type, targetAudience, startsAt, endsAt, options, eventId };
   })
   .handler(async ({ data, context }) => {
     const { id, ...body } = data;

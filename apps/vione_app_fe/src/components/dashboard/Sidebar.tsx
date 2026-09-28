@@ -173,6 +173,12 @@ const vioneEvents: Item[] = [
     label: "Đăng Ký & Khách Mời",
   },
   {
+    key: "nav.vioneMeetings" as TKey,
+    icon: Handshake,
+    to: "/business-connect/meetings",
+    label: "Quản Lý Cuộc Gặp",
+  },
+  {
     key: "nav.vioneCheckin" as TKey,
     icon: QrCodeIcon,
     to: "/checkin-qr",

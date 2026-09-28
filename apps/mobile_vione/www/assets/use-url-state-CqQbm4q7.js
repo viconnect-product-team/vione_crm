@@ -1,0 +1,1 @@
+import{c as u,at as i,r as h}from"./index-j5FxrF9b.js";function f(s,t){const c=u(),e=i({strict:!1})[s],o=e==null||e===""?t:String(e),l=h.useCallback(r=>{c({search:(n=>{const a={...n};return r==null||r===""||r===t?delete a[s]:a[s]=r,a}),replace:!0,resetScroll:!1})},[c,s,t]);return[o,l]}export{f as u};

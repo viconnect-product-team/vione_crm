@@ -10,6 +10,7 @@ export class CreatePollDto {
   startDate?: string;
   endDate?: string;
   targetAudience?: string; // 'all' | 'members' | 'non_members'
+  eventId?: string;
 }
 
 export class CastVoteDto {
@@ -46,6 +47,7 @@ export class VotingService {
   async listPolls(userId: string, associationId?: string) {
     const rows: any[] = await this.prisma.$queryRaw<any[]>`
       SELECT p.*,
+        (SELECT name FROM public.events ev WHERE ev.id = p.event_id LIMIT 1) as event_name,
         (SELECT json_agg(json_build_object(
           'id', o.id,
           'title', o.title,
@@ -67,7 +69,7 @@ export class VotingService {
       ORDER BY p.created_at DESC
     `.catch(async () => {
       return this.prisma.$queryRaw<any[]>`
-        SELECT * FROM public.polls ORDER BY created_at DESC
+        SELECT p.*, (SELECT name FROM public.events ev WHERE ev.id = p.event_id LIMIT 1) as event_name FROM public.polls p ORDER BY p.created_at DESC
       `.catch(() => [] as any[]);
     });
 
@@ -90,6 +92,8 @@ export class VotingService {
         myVoteSource: r.my_vote_source || null,
         totalVotes,
         sourceStats,
+        eventId: r.event_id || null,
+        eventName: r.event_name || null,
         createdAt: r.created_at,
         endDate: r.end_date || null,
       };
@@ -99,6 +103,7 @@ export class VotingService {
   async getPollById(userId: string, id: string) {
     const rows: any[] = await this.prisma.$queryRaw<any[]>`
       SELECT p.*,
+        (SELECT name FROM public.events ev WHERE ev.id = p.event_id LIMIT 1) as event_name,
         (SELECT json_agg(json_build_object(
           'id', o.id,
           'title', o.title,
@@ -141,6 +146,8 @@ export class VotingService {
       myVoteSource: r.my_vote_source || null,
       totalVotes,
       sourceStats,
+      eventId: r.event_id || null,
+      eventName: r.event_name || null,
       createdAt: r.created_at,
       endDate: r.end_date || null,
     };
@@ -188,15 +195,17 @@ export class VotingService {
     const startDate = (data as any).startsAt || data.startDate || null;
     const endDate = (data as any).endsAt || data.endDate || null;
 
+    const eventId = data.eventId || null;
+
     try {
       await this.prisma.$executeRaw`
-        INSERT INTO public.polls (id, title, description, status, start_date, end_date, created_at, updated_at)
-        VALUES (${pollId}::uuid, ${data.title}, ${data.description || null}, 'open', ${startDate ? new Date(startDate) : null}, ${endDate ? new Date(endDate) : null}, now(), now())
+        INSERT INTO public.polls (id, title, description, status, start_date, end_date, event_id, created_at, updated_at)
+        VALUES (${pollId}::uuid, ${data.title}, ${data.description || null}, 'open', ${startDate ? new Date(startDate) : null}, ${endDate ? new Date(endDate) : null}, ${eventId}, now(), now())
       `;
     } catch (e: any) {
       await this.prisma.$executeRaw`
-        INSERT INTO public.polls (id, title, description, status, created_at, updated_at)
-        VALUES (${pollId}::uuid, ${data.title}, ${data.description || null}, 'open', now(), now())
+        INSERT INTO public.polls (id, title, description, status, event_id, created_at, updated_at)
+        VALUES (${pollId}::uuid, ${data.title}, ${data.description || null}, 'open', ${eventId}, now(), now())
       `.catch(() => {});
     }
 
@@ -351,6 +360,7 @@ export class VotingService {
       SET title = COALESCE(${data.title}, title),
           description = COALESCE(${data.description || null}, description),
           status = COALESCE(${data.status || null}, status),
+          event_id = COALESCE(${data.eventId || null}, event_id),
           updated_at = now()
       WHERE id = ${id}::uuid
     `.catch(() => {});

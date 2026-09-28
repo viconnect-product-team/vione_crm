@@ -32,7 +32,7 @@ const CLEARTEXT = true;
 
 const config: CapacitorConfig = {
   appId: 'ViOneBusinessConnect',
-  appName: 'ViOne Connect',
+  appName: 'ViOne',
 
   // Web assets directory fallback
   webDir: 'www',

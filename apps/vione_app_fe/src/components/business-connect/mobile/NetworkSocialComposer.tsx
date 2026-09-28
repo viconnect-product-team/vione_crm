@@ -49,9 +49,9 @@ export function NetworkSocialComposer() {
           <button
             type="button"
             onClick={() => handleOpenWithFeeling("meet_partner")}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[11.5px] font-semibold text-blue-600 dark:text-blue-400 transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 text-[11.5px] font-semibold text-amber-600 dark:text-[#F6E1C3] transition-colors shrink-0"
           >
-            <Users className="w-4 h-4 text-blue-500" />
+            <Users className="w-4 h-4 text-[#D8B282]" />
             <span>Gắn thẻ đối tác</span>
           </button>
 
