@@ -47,7 +47,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { MemberHeader } from "@/components/member/MemberShell";
 import { QrCanvas } from "@/components/member/QrCanvas";
-import { Ceo1983BusinessCardVisit } from "@/components/member/Ceo1983BusinessCardVisit";
+import { ViOneBusinessCardVisual } from "@/components/member/ViOneBusinessCardVisual";
 import { AssociationMemberQrModal } from "@/components/member/AssociationMemberQrModal";
 import { PrivacySettingsModal } from "@/components/member/PrivacySettingsModal";
 import { useAuth } from "@/context/AuthContext";
@@ -552,16 +552,16 @@ function CardScreen() {
       <MemberHeader title={t("m.card.headerTitle")} back />
 
       <div className="px-4 pt-4">
-        {/* Visit Card CEO 1983 (100% thay thế hoàn toàn thẻ cứng theo yêu cầu) */}
+        {/* ViOne Business Card */}
         <div className="mb-4">
-          <Ceo1983BusinessCardVisit
+          <ViOneBusinessCardVisual
             name={d.name || "NGUYỄN VĂN A"}
-            title={customProfile?.title || (member as any)?.position || (member as any)?.title || "Director"}
+            title={customProfile?.title || (member as any)?.position || (member as any)?.title || "Executive Member"}
             phone={customProfile?.phone || member?.phone || "036xxxxxxx"}
             email={customProfile?.email || member?.email || "username@gmail.com"}
-            company={d.company || "CÂU LẠC BỘ CEO1983"}
-            website="https://ceo1983club.com"
-            clubEmail="info@ceo1983club.com"
+            company={d.company || "VIONE BUSINESS NETWORK"}
+            website="https://vione.vn"
+            clubEmail="info@vione.vn"
             cardCode={currentMemberCode}
             qrValue={`${origin}/card/${currentMemberCode}`}
             avatarUrl={d.photo}

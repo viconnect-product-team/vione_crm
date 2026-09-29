@@ -20,10 +20,26 @@ export type EventItem = {
   type: "forum" | "workshop" | "networking" | "training";
   qrFields: QrField[];
   qrScanners?: { id: string; name: string; code?: string; phone?: string; avatar?: string }[];
-  sponsors?: { id?: string; name: string; logoUrl?: string; tier?: string; description?: string }[];
+  sponsors?: EventSponsorItem[];
   image?: string | null;
   banner?: string | null;
   ticketPrice?: number | null;
+};
+
+export type EventSponsorItem = {
+  id?: string;
+  name?: string;
+  logoUrl?: string;
+  tier?: string;
+  description?: string;
+  sponsorId?: string;
+  sponsorName?: string;
+  packageId?: string;
+  packageName?: string;
+  amount?: number;
+  packageType?: "cash" | "in_kind" | string;
+  inKindDescription?: string;
+  benefits?: string[];
 };
 
 export type TicketType = {

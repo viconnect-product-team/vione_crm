@@ -25,6 +25,18 @@ export class ConnectAppService implements OnModuleInit {
   async onModuleInit() {
     try {
       await this.prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS public.association_logo_history (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          association_id UUID NOT NULL,
+          changed_by UUID,
+          changed_by_name TEXT,
+          old_logo_url TEXT,
+          new_logo_url TEXT,
+          action TEXT NOT NULL DEFAULT 'change',
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+      `).catch(() => {});
+      await this.prisma.$executeRawUnsafe(`
         CREATE TABLE IF NOT EXISTS public.business_relationship_moment_comments (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           moment_id UUID NOT NULL,
@@ -11138,9 +11150,9 @@ export class ConnectAppService implements OnModuleInit {
       console.warn('Demo request insert error:', e);
     }
 
-    // 3. Sinh chuỗi ký tự mật khẩu ngẫu nhiên (8 ký tự) & gửi qua email thông báo
-    const randomChars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
-    const rawPassword = Array.from(crypto.randomBytes(8))
+    // 3. Sinh chuỗi ký tự mật khẩu ngẫu nhiên (6 ký tự chuẩn dễ nhập) & gửi qua email thông báo
+    const randomChars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz';
+    const rawPassword = Array.from(crypto.randomBytes(6))
       .map((byte) => randomChars[byte % randomChars.length])
       .join('');
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
@@ -11209,7 +11221,7 @@ export class ConnectAppService implements OnModuleInit {
       }
     }
 
-    const detailedNotes = `${notesContent} | TÀI KHOẢN ĐĂNG NHẬP: Email=${email} / Pass=[Random đã gửi qua Email]`;
+    const detailedNotes = `${notesContent} | TÀI KHOẢN ĐĂNG NHẬP: Email=${email} | Pass=${rawPassword}`;
 
     const targetAssocUuid = assocId || (await this.prisma.$queryRaw<any[]>`SELECT id FROM public.associations LIMIT 1`.then(r => r[0]?.id).catch(() => null));
 
@@ -12339,6 +12351,102 @@ export class ConnectAppService implements OnModuleInit {
     `;
     if (rows.length === 0) return null;
     return { id, status: 'cancelled', cancelReason: reason };
+  }
+
+  async getActiveAssociationDetails(userId?: string) {
+    let assoc: any = null;
+    if (userId) {
+      const userAssocs = await this.prisma.$queryRaw<any[]>`
+        SELECT a.id, a.name, a.slug, a.logo_url, m.role
+        FROM public.memberships m
+        JOIN public.associations a ON m.association_id = a.id
+        WHERE m.user_id = ${userId}::uuid
+        ORDER BY m.is_default DESC, m.created_at ASC
+        LIMIT 1
+      `.catch(() => []);
+      if (userAssocs.length > 0) assoc = userAssocs[0];
+    }
+    if (!assoc) {
+      const firstAssoc = await this.prisma.$queryRaw<any[]>`
+        SELECT id, name, slug, logo_url FROM public.associations ORDER BY created_at ASC LIMIT 1
+      `.catch(() => []);
+      if (firstAssoc.length > 0) assoc = firstAssoc[0];
+    }
+    if (!assoc) {
+      return {
+        associationId: 'c1983000-0000-4000-8000-000000001983',
+        name: 'ViOne Connect',
+        slug: 'vione',
+        logoUrl: null,
+        role: 'admin',
+        isAdmin: true,
+      };
+    }
+    return {
+      associationId: String(assoc.id),
+      name: String(assoc.name || 'ViOne Connect'),
+      slug: assoc.slug ? String(assoc.slug) : 'vione',
+      logoUrl: assoc.logo_url || null,
+      role: assoc.role || 'admin',
+      isAdmin: assoc.role === 'admin' || !assoc.role,
+    };
+  }
+
+  async updateAssociationLogo(userId: string, associationId?: string, logoUrl?: string | null) {
+    let targetId = associationId;
+    if (!targetId || !/^[0-9a-fA-F-]{36}$/.test(targetId)) {
+      const first = await this.prisma.$queryRaw<any[]>`SELECT id FROM public.associations ORDER BY created_at ASC LIMIT 1`.catch(() => []);
+      if (first.length > 0) targetId = first[0].id;
+    }
+    if (targetId) {
+      const prev = await this.prisma.$queryRaw<any[]>`SELECT logo_url FROM public.associations WHERE id = ${targetId}::uuid LIMIT 1`.catch(() => []);
+      const oldUrl = prev[0]?.logo_url || null;
+
+      await this.prisma.$executeRaw`
+        UPDATE public.associations
+        SET logo_url = ${logoUrl || null}, updated_at = NOW()
+        WHERE id = ${targetId}::uuid
+      `;
+
+      const user = await this.prisma.vione_users.findUnique({ where: { id: userId } }).catch(() => null);
+      const actorName = user?.name || user?.email || 'Quản trị viên';
+
+      try {
+        await this.prisma.$executeRaw`
+          INSERT INTO public.association_logo_history (id, association_id, changed_by, changed_by_name, old_logo_url, new_logo_url, action, created_at)
+          VALUES (gen_random_uuid(), ${targetId}::uuid, ${userId}::uuid, ${actorName}, ${oldUrl}, ${logoUrl || null}, ${!logoUrl ? 'remove' : !oldUrl ? 'set' : 'change'}, NOW())
+        `;
+      } catch {}
+    }
+    return { ok: true, logoUrl: logoUrl || null };
+  }
+
+  async getAssociationLogoHistory(associationId?: string) {
+    try {
+      let targetId = associationId;
+      if (!targetId || !/^[0-9a-fA-F-]{36}$/.test(targetId)) {
+        const first = await this.prisma.$queryRaw<any[]>`SELECT id FROM public.associations ORDER BY created_at ASC LIMIT 1`.catch(() => []);
+        if (first.length > 0) targetId = first[0].id;
+      }
+      if (!targetId) return [];
+      const rows = await this.prisma.$queryRaw<any[]>`
+        SELECT id, action, changed_by_name, old_logo_url, new_logo_url, created_at
+        FROM public.association_logo_history
+        WHERE association_id = ${targetId}::uuid
+        ORDER BY created_at DESC
+        LIMIT 20
+      `.catch(() => []);
+      return (rows || []).map((r: any) => ({
+        id: String(r.id),
+        action: String(r.action || 'change'),
+        changedByName: r.changed_by_name || null,
+        oldLogoUrl: r.old_logo_url || null,
+        newLogoUrl: r.new_logo_url || null,
+        createdAt: r.created_at ? new Date(r.created_at).toISOString() : new Date().toISOString(),
+      }));
+    } catch {
+      return [];
+    }
   }
 }
 

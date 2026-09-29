@@ -227,5 +227,66 @@ export class UploadService {
       WHERE owner_user_id = ${userId}::uuid AND avatar_url = ${upload.file_path}
     `;
   }
+
+  async saveAssociationLogo(file: any, userId: string, associationId?: string): Promise<string> {
+    const fileExt = path.extname(file.originalname).toLowerCase() || '.png';
+    const baseFilename = `${associationId || 'assoc'}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}${fileExt}`;
+    const safeFilename = `association-logos/${baseFilename}`;
+
+    let saved = false;
+    let url: string | null = null;
+
+    try {
+      const minioUrl = await this.minioService.uploadFile(safeFilename, file.buffer, file.mimetype);
+      if (minioUrl) {
+        url = minioUrl;
+        saved = true;
+      }
+    } catch (minioErr: any) {
+      console.warn('MinIO upload unreachable/failed for association logo, fallback to disk storage:', minioErr?.message);
+    }
+
+    if (!saved) {
+      try {
+        url = await this.saveToLocalDisk('association-logos', baseFilename, file.buffer);
+        saved = true;
+      } catch (diskErr: any) {
+        console.warn('Local disk write notice in saveAssociationLogo:', diskErr?.message);
+      }
+    }
+
+    if (!saved || !url) {
+      throw new InternalServerErrorException('Không thể lưu trữ tệp logo lên hệ thống. Vui lòng thử lại sau.');
+    }
+
+    // Save upload metadata
+    try {
+      const uploadId = randomUUID();
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+      if (isUuid) {
+        await this.prisma.$executeRaw`
+          INSERT INTO public.user_uploads (id, user_id, file_path, filename, original_name, mime_type, size, created_at, updated_at)
+          VALUES (${uploadId}::uuid, ${userId}::uuid, ${url}, ${safeFilename}, ${file.originalname}, ${file.mimetype || 'image/png'}, ${file.size}, NOW(), NOW())
+        `;
+      }
+    } catch {}
+
+    // Update association logo_url
+    if (associationId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(associationId)) {
+      await this.prisma.$executeRaw`
+        UPDATE public.associations
+        SET logo_url = ${url}, updated_at = NOW()
+        WHERE id = ${associationId}::uuid
+      `.catch(() => null);
+    } else {
+      await this.prisma.$executeRaw`
+        UPDATE public.associations
+        SET logo_url = ${url}, updated_at = NOW()
+        WHERE id = (SELECT id FROM public.associations ORDER BY created_at ASC LIMIT 1)
+      `.catch(() => null);
+    }
+
+    return url;
+  }
 }
 

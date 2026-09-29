@@ -49,17 +49,17 @@ if (Test-Path $authKey) {
     Write-Warning "Khong tim thay AuthKey_4Q734PS4PG.p8 trong $CRED_DIR. Ban co the can nhap Apple Developer credentials thu cong."
 }
 
-# 3. Dong bo Capacitor iOS neu co yeu cau
-if ($Sync) {
-    Write-Host "`n[3/4] Dong bo Capacitor iOS (cap sync ios)..." -ForegroundColor Yellow
-    Push-Location $MOBILE_DIR
-    try {
-        npx cap sync ios
-    } finally {
-        Pop-Location
+# 3. Kiem tra tinh hop le ma nguon (TypeScript verification)
+Write-Host "`n[3/4] Kiem tra typecheck ma nguon React Native..." -ForegroundColor Yellow
+Push-Location $MOBILE_DIR
+try {
+    npm run typecheck
+    if ($LASTEXITCODE -ne 0) {
+        throw "Loi typecheck trong apps/mobile_vione!"
     }
-} else {
-    Write-Host "`n[3/4] Bo qua cap sync ios (su dung cau hinh hien hanh)..." -ForegroundColor DarkGray
+    Write-Host "  -> Typecheck: 0 loi (San sang build)" -ForegroundColor Green
+} finally {
+    Pop-Location
 }
 
 # 4. Kich hoat lenh EAS Build iOS

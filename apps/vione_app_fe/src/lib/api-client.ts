@@ -1,11 +1,30 @@
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("vibe_token");
+  return (
+    localStorage.getItem("vibe_token") ||
+    localStorage.getItem("access_token") ||
+    localStorage.getItem("token") ||
+    localStorage.getItem("sb-access-token") ||
+    null
+  );
 }
 
 export function getBaseApiUrl(): string {
   if (typeof window !== "undefined") {
-    // 1. Khi chạy trên trình duyệt (Web / PWA) với HTTPS hoặc qua Reverse Proxy (5443, 5444, 5445):
+    // 0. Khi chạy trên môi trường Native Capacitor với local assets (localhost / capacitor://):
+    // window.location là 'https://localhost' hoặc 'capacitor://localhost'.
+    // Cần trỏ đích danh tới IP/Domain máy chủ backend ViOne Connect thay vì relative URL!
+    const isCapacitorLocal = Boolean(
+      window.location.protocol === "capacitor:" ||
+      ((window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") &&
+        (!window.location.port || window.location.port === "80" || window.location.port === "443"))
+    );
+    if (isCapacitorLocal) {
+      return "https://14.225.217.232:5445";
+    }
+
+    // 1. Khi chạy trên trình duyệt (Web / PWA) với HTTPS hoặc qua Reverse Proxy (5443, 5444, 5445)
+    // hoặc khi Capacitor mở trực tiếp server URL:
     // Dùng chuỗi rỗng "" để mọi lệnh fetch đều là relative URL (/api/...) trên cùng Origin HTTPS.
     // Điều này TRÁNH TRIỆT ĐỂ lỗi Mixed Content (blocked:mixed-content) và lỗi CORS!
     if (
@@ -99,7 +118,7 @@ function mapEndpoint(endpoint: string): string {
 }
 
 export function getNestApiUrl(endpoint: string): string {
-  return `${NEST_API_URL}${mapEndpoint(endpoint)}`;
+  return `${getBaseApiUrl()}${mapEndpoint(endpoint)}`;
 }
 
 export function getPublicBackendUrl(): string {
@@ -414,7 +433,7 @@ export async function fetchNestApi<T = any>(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("vibe_token") : null;
+  const token = getAuthToken();
   const headers = new Headers(options.headers);
   headers.set("Content-Type", "application/json");
   if (token) {
@@ -440,7 +459,8 @@ export async function fetchNestApi<T = any>(
     }
   }
 
-  const response = await fetch(`${NEST_API_URL}${mappedEndpoint}`, {
+  const baseUrl = getBaseApiUrl();
+  const response = await fetch(`${baseUrl}${mappedEndpoint}`, {
     ...options,
     body: requestBody,
     headers,

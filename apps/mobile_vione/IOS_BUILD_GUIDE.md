@@ -11,21 +11,16 @@ Tài liệu này hướng dẫn chi tiết quy trình xuất file **Android APK*
 
 ---
 
-## ⭐️ LƯU Ý QUAN TRỌNG NHẤT: KHI NÀO CẦN BUILD APP?
+## ⭐️ KIẾN TRÚC MỚI: REACT NATIVE NATIVE APP (EXPO SDK 52)
 
-Ứng dụng Mobile ViOne chạy ở chế độ **Live Remote Server** ([capacitor.config.ts](file:///d:/download/VICONNECT/VIONE_PROJECT/vione_app/apps/mobile/capacitor.config.ts)):
-```ts
-const USE_REMOTE_SERVER = true;
-const REMOTE_URL = 'http://14.225.217.232:5000';
-```
+Ứng dụng **ViOne Mobile** đã được nâng cấp và chuyển đổi hoàn toàn sang **Pure Native React Native App** (Expo SDK 52) với trải nghiệm mượt mà, tối ưu camera quét QR và bảo mật sinh trắc học:
 
-- **Khi sửa UI / Logic Frontend**: **KHÔNG CẦN BUILD LẠI FILE NATIVE!**
-  Bạn chỉ cần deploy bản web frontend lên máy chủ `14.225.217.232:5000` (chạy script `fast-deploy.ps1`). App trên điện thoại tự động cập nhật ngay khi mở lại.
-- **Chỉ cần build lại file .ipa / .apk khi**:
-  1. Đổi Icon app hoặc màn hình chờ Splash screen.
-  2. Tích hợp thư viện Native mới (Push notification, Bluetooth, NFC, In-app purchase,...).
-  3. Đổi địa chỉ URL máy chủ (ví dụ: chuyển từ IP sang domain chính thức `https://app.vione.vn`).
-  4. Nâng version lớn để phát hành chính thức lên App Store / Google Play.
+- **Mã nguồn ứng dụng**: Nằm trực tiếp tại [apps/mobile_vione/src](file:///d:/download/VICONNECT/CEO_VIONE_PROJECT/vione_project/apps/mobile_vione/src).
+- **Phát triển cục bộ (Hot Reload)**: Chạy `npm run dev:mobile` (hoặc `cd apps/mobile_vione && npx expo start`), quét mã QR bằng Expo Go hoặc thiết bị Android/iOS để kiểm thử tức thì.
+- **Biên dịch Native**:
+  - Android APK: `npm run build:apk` (hoặc `.\build-apk.ps1`)
+  - iOS IPA (TestFlight): `npm run build:ipa` (hoặc `.\build-ipa.ps1`)
+- **API Backend**: Kết nối trực tiếp tới NestJS API (`https://14.225.217.232:5445/api` hoặc local proxy).
 
 ---
 

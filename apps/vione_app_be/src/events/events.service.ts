@@ -445,7 +445,12 @@ export class EventsService {
     const qrFields = Array.from(new Set(data.qrFields && data.qrFields.length > 0 ? data.qrFields : ['registration_code']));
 
     const evImg = data.image || data.banner || '';
-    const ticketPrice = Number(data.ticketPrice ?? data.fee ?? 0);
+    const maxTicketPrice = Array.isArray(data.tickets) && data.tickets.length > 0
+      ? Math.max(0, ...data.tickets.map((t: any) => Number(t.price) || 0))
+      : 0;
+    const ticketPrice = data.ticketPrice !== undefined && data.ticketPrice !== null && !isNaN(Number(data.ticketPrice))
+      ? Number(data.ticketPrice)
+      : (data.fee !== undefined && data.fee !== null && !isNaN(Number(data.fee)) ? Number(data.fee) : maxTicketPrice);
 
     const qrScannersJson = JSON.stringify(data.qrScanners || []);
     const sponsorsJson = JSON.stringify(data.sponsors || []);

@@ -722,6 +722,11 @@ function ProductModal({
                 Giá ưu đãi (VND) <span className="text-destructive">*</span>
               </label>
               <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={price}
                 onChange={(e) => setPrice(formatCurrencyInput(e.target.value))}
                 placeholder="VD: 10.000.000"
@@ -733,6 +738,11 @@ function ProductModal({
                 Giá niêm yết (VND)
               </label>
               <input
+                type="text"
+                inputMode="numeric"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={originalPrice}
                 onChange={(e) => setOriginalPrice(formatCurrencyInput(e.target.value))}
                 placeholder="VD: 12.000.000"

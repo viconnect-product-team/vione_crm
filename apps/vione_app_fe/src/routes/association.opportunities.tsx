@@ -51,11 +51,14 @@ import { useT, useFmt } from "@/lib/i18n";
 import { useAuth } from "@/context/AuthContext";
 import { formatDisplayDate } from "@/lib/date-format";
 
-function formatCurrencyInput(val: string): string {
-  const digits = val.replace(/\D/g, "");
+function formatCurrencyInput(val: string | number): string {
+  if (val === undefined || val === null) return "";
+  const digits = String(val).replace(/\D/g, "");
   if (!digits) return "";
-  return Number(digits).toLocaleString("vi-VN");
+  const cleanDigits = digits.replace(/^0+(?=\d)/, "");
+  return cleanDigits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
+
 
 export const Route = createFileRoute("/association/opportunities")({
   component: OpportunitiesScreen,
@@ -217,6 +220,7 @@ function OpportunitiesScreen() {
   }, [member, user]);
 
   const allTab = "Tất cả";
+  const interestsTab = "Quan tâm nhận được";
   const myOppsTab = "Cơ hội của tôi";
 
   // Check if an opportunity was posted by current user
@@ -339,11 +343,14 @@ function OpportunitiesScreen() {
   }, [isCarouselHovered, featuredList.length]);
 
   const tabs = useMemo(() => {
-    const set = new Set<string>([allTab, myOppsTab]);
+    const defaultTabs = [allTab, interestsTab, myOppsTab];
     allOpportunities.forEach((o) => {
-      set.add(normalizeTag(o.tag));
+      const tag = normalizeTag(o.tag);
+      if (!defaultTabs.includes(tag)) {
+        defaultTabs.push(tag);
+      }
     });
-    return Array.from(set);
+    return defaultTabs;
   }, [allOpportunities]);
   const [tab, setTab] = useState(allTab);
 
@@ -355,6 +362,13 @@ function OpportunitiesScreen() {
       let matchTab = true;
       if (tab === myOppsTab) {
         matchTab = Boolean(isMine);
+      } else if (tab === interestsTab) {
+        const hasInterests =
+          Number((o as any).interestedCount) > 0 ||
+          Boolean((o as any).interested) ||
+          (Array.isArray((o as any).interests) && (o as any).interests.length > 0) ||
+          (Array.isArray((o as any).interestedMembers) && (o as any).interestedMembers.length > 0);
+        matchTab = Boolean((isMine && hasInterests) || hasInterests || (!isMine && ((o as any).views > 0 || (o as any).interestedCount > 0)));
       } else if (tab !== allTab) {
         matchTab = tagVi === tab;
       }
@@ -1593,6 +1607,11 @@ function OpportunitiesScreen() {
                       Ngân sách tối thiểu (VNĐ)
                     </label>
                     <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={newBudgetMin}
                       onChange={(e) => setNewBudgetMin(formatCurrencyInput(e.target.value))}
                       placeholder="VD: 500.000.000"
@@ -1604,6 +1623,11 @@ function OpportunitiesScreen() {
                       Ngân sách tối đa (VNĐ)
                     </label>
                     <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={newBudgetMax}
                       onChange={(e) => setNewBudgetMax(formatCurrencyInput(e.target.value))}
                       placeholder="VD: 2.000.000.000"
@@ -1871,6 +1895,11 @@ function OpportunitiesScreen() {
                       Ngân sách từ (VNĐ)
                     </label>
                     <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={editBudgetMin}
                       onChange={(e) => setEditBudgetMin(formatCurrencyInput(e.target.value))}
                       placeholder="VD: 50.000.000"
@@ -1882,6 +1911,11 @@ function OpportunitiesScreen() {
                       Đến (VNĐ)
                     </label>
                     <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={editBudgetMax}
                       onChange={(e) => setEditBudgetMax(formatCurrencyInput(e.target.value))}
                       placeholder="VD: 200.000.000"

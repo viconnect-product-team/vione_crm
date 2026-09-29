@@ -50,6 +50,27 @@ export class CommunityController {
     return this.connectAppService.createCommunity(req.user.id, body);
   }
 
+  // --- Association Settings & Logo Management ---
+  @Get('active')
+  async getActiveAssociation(@Request() req: any) {
+    const userId = req.user?.id;
+    return this.connectAppService.getActiveAssociationDetails(userId);
+  }
+
+  @Post('logo')
+  @UseGuards(JwtAuthGuard)
+  async updateAssociationLogo(
+    @Request() req: any,
+    @Body() body: { associationId?: string; logoUrl: string | null },
+  ) {
+    return this.connectAppService.updateAssociationLogo(req.user.id, body.associationId, body.logoUrl);
+  }
+
+  @Get('logo-history')
+  async getAssociationLogoHistory(@Query('associationId') associationId?: string) {
+    return this.connectAppService.getAssociationLogoHistory(associationId);
+  }
+
   // --- Static Community Join Requests & Invites (must be defined before :communityId) ---
   @Get('all')
   async listAllCommunities() {

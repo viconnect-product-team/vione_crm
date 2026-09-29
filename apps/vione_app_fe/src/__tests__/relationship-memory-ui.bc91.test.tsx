@@ -43,7 +43,7 @@ vi.mock("@tanstack/react-router", async () => {
     ref: React.Ref<HTMLAnchorElement>,
   ) {
     return (
-      <a ref={ref} href={typeof to === "string" ? to : "#"} {...rest}>
+      <a ref={ref as any} href={typeof to === "string" ? to : "#"} {...rest}>
         {children}
       </a>
     );

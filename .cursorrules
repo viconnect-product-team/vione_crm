@@ -5,17 +5,15 @@
 - **Frontend (@vibe/web)**: TanStack React Start, Vite, React 19, TailwindCSS 4, Radix UI, Lucide React, Zod, React Query.
 - **Backend (@vibe/api)**: NestJS, Passport, JWT.
 - **Database (@vibe/db)**: Prisma ORM, PostgreSQL.
-- **Mobile Wrappers**: Capacitor (Android & iOS) tách biệt 2 app:
-  - `apps/mobile_vione/`: ViOne Connect (App ID: `com.vione.app`, route: `/connect-app`).
-  - `apps/mobile_ceo1983/`: CEO 1983 Association (App ID: `vn.ceo1983.app`, route: `/association`).
-  - `apps/mobile/`: Template gốc Capacitor.
+- **Mobile Apps**:
+  - `apps/mobile_vione/`: **Pure Native React Native App (Expo SDK 52)** cho ViOne Business Connect (App ID: `com.vione.app`, bundle ID: `ViOneBusinessConnect`). Cấu trúc: React Navigation 4 tabs (`Home`, `Network`, `Community`, `Me`) + nút tròn kim loại mạ vàng `VButton` nổi ở giữa kích hoạt `VActionSheet` (Mã QR của tôi, Quét QR Camera, Chạm NFC, Đăng khoảnh khắc B2B). Kết nối trực tiếp NestJS API qua `src/api/client.ts`. Lưu phiên offline bằng `AsyncStorage`.
+  - `apps/mobile_ceo1983/`: CEO 1983 Association Native Wrapper (Android APK & iOS IPA/TestFlight).
 - **Environment**: Node.js >= 22 (Node 22 is required for native globalThis.WebSocket support on both local and server runtime environments).
 
 ## Folder Structure
-- `apps/web/`: Frontend application (TanStack Start).
-- `apps/api/`: Backend application (NestJS).
-- `apps/mobile_vione/`: ViOne Connect Native Wrapper (Android APK & iOS IPA/TestFlight).
-- `apps/mobile_ceo1983/`: CEO 1983 Association Native Wrapper (Android APK & iOS IPA/TestFlight).
+- `apps/vione_app_fe/`: Frontend application (TanStack Start, React 19).
+- `apps/vione_app_be/`: Backend application (NestJS, Prisma).
+- `apps/mobile_vione/`: ViOne Connect Pure Native React Native App (Expo SDK 52).
 - `packages/db/`: Database models and Prisma client.
 
 ## Coding Conventions

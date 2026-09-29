@@ -26,7 +26,7 @@ export default defineConfig({
       external: ['jspdf', 'xlsx'],
     },
     server: {
-      port: 5174,
+      port: 5173,
       watch: {
         ignored: [
           '**/.output/**',

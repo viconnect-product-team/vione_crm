@@ -389,8 +389,6 @@ const LAND_I18N = {
   },
 };
 
-import { Ceo1983Landing } from "./Ceo1983Landing";
-
 /** Shared public landing UI for an association, used by /h/:slug and hostname routing. */
 export function AssociationLandingView({ a }: { a: PublicAssociation }) {
   const { lang } = useLang();
@@ -403,16 +401,6 @@ export function AssociationLandingView({ a }: { a: PublicAssociation }) {
       setAppUrl(`${window.location.origin}/m?slug=${encodeURIComponent(a.slug || "")}`);
     }
   }, [a.slug]);
-
-  if (
-    a.slug === "ceo1983" ||
-    a.slug === "ceo-1983" ||
-    a.slug === "clb-ceo-1983" ||
-    a.slug?.includes("1983") ||
-    a.name?.toLowerCase().includes("1983")
-  ) {
-    return <Ceo1983Landing />;
-  }
 
   const isCeo1983 = false;
 

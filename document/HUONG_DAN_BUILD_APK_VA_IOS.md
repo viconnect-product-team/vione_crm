@@ -22,42 +22,50 @@ Hệ thống Mobile của ViOne được kiến trúc theo mô hình **Hybrid Li
 
 ## 📱 2. CẤU TRÚC 2 ỨNG DỤNG MOBILE TRONG HỆ THỐNG
 
-Monorepo quản lý độc lập 2 ứng dụng tương ứng với 2 tệp khách hàng:
+Monorepo quản lý 2 ứng dụng tương ứng với 2 tệp người dùng:
 
-| Thông tin | Ứng Dụng 1: ViOne Connect | Ứng Dụng 2: Hiệp Hội CEO 1983 |
+| Thông tin | Ứng Dụng 1: ViOne Connect (Pure React Native) | Ứng Dụng 2: Hiệp Hội CEO 1983 (Capacitor) |
 | :--- | :--- | :--- |
 | **Thư mục mã nguồn** | `apps/mobile_vione` | `apps/mobile_ceo1983` |
-| **Tên hiển thị trên điện thoại** | `ViOne Connect` | `CEO 1983` |
+| **Kiến trúc** | **Pure React Native (Expo SDK 52 + RN 0.76.7)** | Hybrid Live Remote (Capacitor) |
+| **Tên hiển thị** | `ViOne Connect` | `CEO 1983` |
 | **Package ID Android** | `com.vione.app` | `vn.ceo1983.app` |
-| **Bundle Identifier iOS** | `ViOneBusinessConnect` | `vn.ceo1983.app` |
-| **URL khởi động mặc định** | `https://14.225.217.232:5444/connect-app` | `https://14.225.217.232:5444/association` |
-| **Tính năng phần cứng** | Thẻ Titanium NFC, QR Code, File chooser | Thẻ Hội viên NFC, QR Check-in, File chooser |
+| **Bundle ID iOS** | `vn.vione.app` | `vn.ceo1983.app` |
+| **Kết nối mạng** | Direct REST API `https://14.225.217.232:5445/api` | Webview live server `...:5444/association` |
+| **Tính năng Native** | React Navigation, Camera QR, Dynamic QR, NFC | Webview, InAppBrowser, NFC, Camera |
 
 ---
 
-## 🤖 3. HƯỚNG DẪN BUILD ANDROID APK
+## 🤖 3. HƯỚNG DẪN CHẠY VÀ BUILD ỨNG DỤNG
 
-Có 2 phương thức xuất file APK tùy theo nhu cầu:
-
-### Phương thức A: Build Cục Bộ Siêu Tốc (Khuyên dùng để thử nghiệm cài ngay)
-Phương thức này biên dịch trực tiếp trên máy Windows thông qua Java JDK 21 và Gradle Wrapper đã tích hợp sẵn. Thời gian build chỉ từ **30 giây - 1.5 phút**.
-
-#### 1. Lệnh thực thi từ thư mục gốc dự án:
+### 3.1. Chạy phát triển (Development Mode):
 ```powershell
-# Build APK cho App ViOne Connect:
-npm run mobile:vione:apk:local
+# Chạy ViOne Connect React Native (Expo Dev Server):
+npm run dev:mobile
+# Hoặc:
+cd apps/mobile_vione
+npm start
 
-# Build APK cho App Hiệp Hội CEO 1983:
-npm run mobile:ceo1983:apk:local
+# Mở ứng dụng trên điện thoại qua Expo Go (quét mã QR) hoặc chạy máy ảo:
+npm run android # Mở Android Emulator
+npm run ios     # Mở iOS Simulator
 ```
 
-#### 2. Hoặc thực thi trực tiếp trong thư mục mobile:
+### 3.2. Build Android APK & iOS IPA cho ViOne Connect (React Native):
 ```powershell
-# Cho ViOne Connect:
 cd apps/mobile_vione
-npx cap copy android
-cd android
-.\gradlew.bat assembleDebug
+
+# Kiểm tra lỗi typecheck (Bắt buộc exit 0):
+npm run typecheck
+
+# Build APK cài đặt trực tiếp qua Expo EAS:
+npm run build:apk
+
+# Build IPA cho iOS TestFlight:
+npm run build:ipa
+```
+
+### 3.3. Build APK Cục Bộ cho CEO 1983 (Capacitor):
 
 # Cho CEO 1983:
 cd apps/mobile_ceo1983

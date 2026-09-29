@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, Component, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback, Component, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -21,6 +21,7 @@ import {
   type DirectoryMember,
 } from "@/lib/member-app.functions";
 import { useAuth } from "@/context/AuthContext";
+import { fetchNestApi } from "@/lib/api-client";
 import { useT, useFmt } from "@/lib/i18n";
 import {
   AlertTriangle,
@@ -101,8 +102,8 @@ export function isSelfUser(
   const candidateUserId = (candidate.userId || "").trim().toLowerCase();
   const candidateName = (candidate.name || "").trim().toLowerCase();
 
-  // If group or system, never self
-  if (candidateCode.startsWith("group_") || candidateCode === "admin" || candidateCode === "system") {
+  // If group, channel or system, never self
+  if (candidateCode.startsWith("group_") || candidateCode.startsWith("channel_") || candidateCode === "admin" || candidateCode === "system") {
     return false;
   }
 
@@ -763,6 +764,51 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     reload,
   } = useServerData<MyConversation[]>(() => listConversations(), [], "vba_conversations");
 
+  // Client-side direct fetch từ NestJS /dm/member/conversations bằng Bearer token cho môi trường Mobile APK
+  const [directConversations, setDirectConversations] = useState<MyConversation[] | null>(null);
+
+  const fetchDirectConversations = useCallback(() => {
+    fetchNestApi<any[]>("/dm/member/conversations")
+      .then((items: any) => {
+        if (Array.isArray(items)) {
+          setDirectConversations(items.map((c: any) => ({
+            peerCode: c.peerCode,
+            name: c.name,
+            last: c.last,
+            time: c.time,
+            rawTime: c.rawTime || c.time,
+            unread: c.unread ?? 0,
+            avatarUrl: c.avatarUrl ?? null,
+            isSystem: Boolean(c.isSystem),
+            isOnline: Boolean(c.isOnline),
+            userId: c.userId ?? null,
+            isConnected: Boolean(c.isConnected),
+            connectionStatus: c.connectionStatus || (c.isSystem ? "accepted" : "none"),
+            isPending: Boolean(c.isPending),
+            isOutgoingPending: Boolean(c.isOutgoingPending),
+            isIncomingPending: Boolean(c.isIncomingPending),
+            isStranger: Boolean(c.isStranger),
+            connectionId: c.connectionId ?? null,
+            isGroup: Boolean(c.isGroup),
+            memberCount: c.memberCount,
+            members: c.members,
+            groupAvatar: c.groupAvatar,
+          })));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    fetchDirectConversations();
+    const interval = setInterval(() => {
+      if (typeof document !== "undefined" && !document.hidden) {
+        fetchDirectConversations();
+      }
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [fetchDirectConversations]);
+
   const [localRecents, setLocalRecents] = useState<MyConversation[]>(() => {
     if (typeof window === "undefined") return [];
     try {
@@ -788,14 +834,16 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
   const [selectedConvForAction, setSelectedConvForAction] = useState<MyConversation | null>(null);
   const [pinnedConvs, setPinnedConvs] = useState<Record<string, boolean>>(() => {
     try {
-      return JSON.parse(localStorage.getItem("vba_pinned_convs") || "{}");
+      const parsed = JSON.parse(localStorage.getItem("vba_pinned_convs") || "{}");
+      return (parsed && typeof parsed === "object") ? parsed : {};
     } catch {
       return {};
     }
   });
   const [mutedConvs, setMutedConvs] = useState<Record<string, boolean>>(() => {
     try {
-      return JSON.parse(localStorage.getItem("vba_muted_convs") || "{}");
+      const parsed = JSON.parse(localStorage.getItem("vba_muted_convs") || "{}");
+      return (parsed && typeof parsed === "object") ? parsed : {};
     } catch {
       return {};
     }
@@ -1066,8 +1114,9 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
 
     const map = new Map<string, MyConversation>();
     // First, map server conversations enriched with directory member details
-    if (Array.isArray(conversations)) {
-      for (const c of conversations) {
+    const convSource = (directConversations && directConversations.length > 0) ? directConversations : (conversations || []);
+    if (Array.isArray(convSource)) {
+      for (const c of convSource) {
         if (!c) continue;
         const cPeer = String(c.peerCode || "");
         if (!cPeer) continue;
@@ -1320,9 +1369,10 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
     });
 
     list.sort((a, b) => {
-      // Cuộc trò chuyện được ghim luôn nằm trên cùng
-      const isPinnedA = Boolean(a?.peerCode && pinnedConvs[a.peerCode]);
-      const isPinnedB = Boolean(b?.peerCode && pinnedConvs[b.peerCode]);
+      // Cuộc trò chuyện được ghim luôn nằm trên cùng (bảo vệ an toàn không crash nếu pinnedConvs là null/undefined)
+      const safePinned = (pinnedConvs && typeof pinnedConvs === "object") ? pinnedConvs : {};
+      const isPinnedA = Boolean(a?.peerCode && safePinned[a.peerCode]);
+      const isPinnedB = Boolean(b?.peerCode && safePinned[b.peerCode]);
       if (isPinnedA && !isPinnedB) return -1;
       if (!isPinnedA && isPinnedB) return 1;
 
@@ -1346,7 +1396,7 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
       return 0;
     });
     return list;
-  }, [conversations, localRecents, localGroups, members, user, myMember, pinnedConvs]);
+  }, [conversations, directConversations, localRecents, localGroups, members, user, myMember, pinnedConvs]);
 
   const filteredMembers = (members || []).filter((m) => {
     if (!m) return false;
@@ -1408,9 +1458,9 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
       // Chưa đọc
       list = allConversations.filter((c) => (c?.unread || 0) > 0);
     } else {
-      // "all" (Tất cả): Có tất cả tin nhắn đã rep lại hoặc tin nhắn hệ thống hoặc nhóm hoặc người đã kết nối
+      // "all" (Tất cả): Có tất cả tin nhắn đã rep lại hoặc tin nhắn hệ thống hoặc nhóm hoặc người đã kết nối hoặc Kênh Hiệp Hội
       list = allConversations.filter(
-        (c) => isGroupConv(c) || c?.isSystem || c?.peerCode === "admin" || c?.peerCode === "system" || c?.isConnected || Boolean(c?.last && String(c.last).trim())
+        (c) => isGroupConv(c) || isChannelConv(c) || c?.isSystem || c?.peerCode === "admin" || c?.peerCode === "system" || c?.isConnected || Boolean(c?.last && String(c.last).trim())
       );
     }
 

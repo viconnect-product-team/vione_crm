@@ -94,6 +94,33 @@ export class UploadController {
     }
   }
 
+  @Post('association-logo')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAssociationLogo(
+    @UploadedFile() file: any,
+    @Request() req: any,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
+    const isImage = (file.mimetype && file.mimetype.startsWith('image/')) ||
+      /\.(jpg|jpeg|png|webp|gif|heic|heif|bmp|svg)$/i.test(file.originalname || '');
+    if (!isImage) {
+      throw new BadRequestException('Invalid file type. Only images are allowed.');
+    }
+
+    const userId = this.extractUserId(req);
+    const associationId = req.body?.associationId || req.query?.associationId;
+
+    try {
+      const url = await this.uploadService.saveAssociationLogo(file, userId, associationId);
+      return { url };
+    } catch (err: any) {
+      console.error('uploadAssociationLogo error:', err);
+      throw new BadRequestException(err?.message || 'Failed to process association logo upload');
+    }
+  }
+
   @Post('file')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(

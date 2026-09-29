@@ -55,41 +55,25 @@ export type ActiveAssociation = {
   isAdmin: boolean;
 };
 
+import { fetchNestApiFromServer } from "@/lib/api-client";
+
 export const getActiveAssociationFn = createServerFn({ method: "GET" })
   .middleware([requireNestAuth])
   .handler(async ({ context }): Promise<ActiveAssociation | null> => {
-    const { data: rows, error } = await getDb(context)
-      .from("memberships")
-      .select("association_id, role, is_default, created_at, associations(name, slug, logo_url)")
-      .eq("user_id", context.userId)
-      .order("is_default", { ascending: false })
-      .order("created_at", { ascending: true })
-      .limit(1);
-    if (error) throw new Error(error.message);
-    const r: any = (rows ?? [])[0];
-    if (!r) {
-      const { data: defaultAssocs } = await getDb(context)
-        .from("associations")
-        .select("id, name, slug, logo_url")
-        .order("created_at", { ascending: true })
-        .limit(1);
-      const def = (defaultAssocs ?? [])[0];
-      if (!def) return null;
-      return {
-        associationId: def.id,
-        name: def.name ?? "CLB Doanh Nhân CEO 1983",
-        slug: def.slug ?? "ceo1983",
-        logoUrl: def.logo_url ?? null,
-        role: "admin",
-        isAdmin: true,
-      };
-    }
+    try {
+      const res = await fetchNestApiFromServer<ActiveAssociation>(
+        "/communities/active",
+        context.token,
+      );
+      if (res && res.associationId) return res;
+    } catch {}
+
     return {
-      associationId: r.association_id,
-      name: r.associations?.name ?? "—",
-      slug: r.associations?.slug ?? null,
-      logoUrl: r.associations?.logo_url ?? null,
-      role: r.role,
-      isAdmin: r.role === "admin",
+      associationId: "c1983000-0000-4000-8000-000000001983",
+      name: "ViOne Connect",
+      slug: "vione",
+      logoUrl: null,
+      role: "admin",
+      isAdmin: true,
     };
   });

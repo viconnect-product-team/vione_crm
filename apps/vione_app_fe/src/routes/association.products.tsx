@@ -86,10 +86,12 @@ function matchCategory(productCat: string, filterCat: string): boolean {
   return false;
 }
 
-function formatCurrencyInput(val: string): string {
-  const digits = val.replace(/\D/g, "");
+function formatCurrencyInput(val: string | number): string {
+  if (val === undefined || val === null) return "";
+  const digits = String(val).replace(/\D/g, "");
   if (!digits) return "";
-  return Number(digits).toLocaleString("vi-VN");
+  const clean = digits.replace(/^0+(?=\d)/, "");
+  return clean.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function formatSmartProductPrice(rawPrice: string | number | undefined | null): string {
@@ -1741,6 +1743,10 @@ function ProductsScreen() {
                       </label>
                       <input
                         type="text"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck={false}
                         value={formOriginalPrice}
                         onChange={(e) => setFormOriginalPrice(formatCurrencyInput(e.target.value))}
                         placeholder="Ví dụ: 20.000.000 đ"
@@ -1753,6 +1759,10 @@ function ProductsScreen() {
                       </label>
                       <input
                         type="text"
+                        inputMode="numeric"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck={false}
                         required
                         value={formPrice}
                         onChange={(e) => setFormPrice(formatCurrencyInput(e.target.value))}
@@ -2157,6 +2167,10 @@ function ProductsScreen() {
                     </label>
                     <input
                       type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={editOriginalPrice}
                       onChange={(e) => setEditOriginalPrice(formatCurrencyInput(e.target.value))}
                       placeholder="VD: 50.000.000"
@@ -2169,6 +2183,10 @@ function ProductsScreen() {
                     </label>
                     <input
                       type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
                       value={editPrice}
                       onChange={(e) => setEditPrice(formatCurrencyInput(e.target.value))}
                       placeholder="VD: 35.000.000"

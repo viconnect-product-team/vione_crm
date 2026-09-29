@@ -1,33 +1,42 @@
 {
   "name": "@vibe/mobile_vione",
   "version": "1.0.0",
-  "description": "ViOne Connect Mobile App Wrapper (Android APK & iOS IPA)",
+  "description": "ViOne Business Connect Native Mobile App (React Native & Expo)",
   "main": "index.js",
   "scripts": {
-    "sync": "npx cap sync",
-    "sync:android": "npx cap sync android",
-    "sync:ios": "npx cap sync ios",
-    "open:android": "npx cap open android",
-    "open:ios": "npx cap open ios",
-    "build:static": "npm run build --prefix ../vione_app_fe && npx cap sync",
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "build:apk": "npx eas-cli build --profile preview --platform android",
-    "build:apk:fast": "npx cap copy android && cd android && gradlew.bat assembleDebug",
-    "build:apk:dev": "npx eas-cli build --profile development --platform android",
-    "build:apk:local": "npm run build:static && cd android && gradlew.bat assembleDebug",
-    "build:apk:release": "npm run build:static && cd android && gradlew.bat assembleRelease",
     "build:aab": "npx eas-cli build --profile production --platform android",
     "build:ipa": "npx eas-cli build --profile production --platform ios --non-interactive",
-    "build:ios:dev": "npx eas-cli build --profile development --platform ios",
-    "build:ios:preview": "npx eas-cli build --profile preview --platform ios",
     "build:ios:prod": "npx eas-cli build --profile production --platform ios --non-interactive",
     "build:ios:submit": "npx eas-cli build --profile production --platform ios --auto-submit --non-interactive",
-    "submit:ios": "npx eas-cli submit --platform ios",
-    "eas:login": "npx eas-cli login",
-    "eas:whoami": "npx eas-cli whoami",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "1.23.1",
+    "@react-navigation/bottom-tabs": "^7.2.1",
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/native-stack": "^7.2.1",
+    "expo": "~52.0.37",
+    "expo-camera": "~16.0.17",
+    "expo-linear-gradient": "~14.0.2",
+    "expo-status-bar": "~2.0.1",
+    "lucide-react-native": "^0.475.0",
+    "react": "18.3.1",
+    "react-native": "0.76.7",
+    "react-native-qrcode-svg": "^6.3.14",
+    "react-native-safe-area-context": "4.12.0",
+    "react-native-screens": "~4.4.0",
+    "react-native-svg": "15.8.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~18.3.12",
+    "babel-preset-expo": "^57.0.13",
+    "typescript": "^5.8.3"
+  },
+  "private": true
 }

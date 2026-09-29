@@ -1,1 +1,0 @@
-import{u as s,v as n,j as r,A as a,bG as i}from"./index-j5FxrF9b.js";function c({reset:o}){const t=s(),e=n();return r.jsx(a,{children:r.jsx(i,{title:t("invoice.loadError"),onRetry:()=>{o(),e.invalidate()}})})}export{c as errorComponent};

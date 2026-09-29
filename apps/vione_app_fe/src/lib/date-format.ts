@@ -62,7 +62,7 @@ export function formatCurrencyInput(val: string | number | null | undefined): st
   if (val === null || val === undefined || val === "") return "";
   const digits = String(val).replace(/\D/g, "");
   if (!digits) return "";
-  return Number(digits).toLocaleString("vi-VN");
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function parseCurrencyInput(val: string | number | null | undefined): number {

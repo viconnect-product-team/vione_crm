@@ -22,7 +22,12 @@ vi.mock("@tanstack/react-start", () => ({
 }));
 
 vi.mock("@/lib/api-client", () => ({
-  fetchNestApi: (url: string, opts?: any) => createFn({ data: opts?.body ? JSON.parse(opts.body) : {} }),
+  fetchNestApi: (url: string, opts?: any) => {
+    if (url.includes("/members") || url.includes("/sponsors")) return Promise.resolve([]);
+    return createFn({ data: opts?.body ? JSON.parse(opts.body) : {} });
+  },
+  resolveMediaUrl: (u: string) => u,
+  uploadFileToNest: vi.fn(),
 }));
 
 vi.mock("@/lib/events.functions", () => ({
@@ -91,7 +96,8 @@ describe("event creation wizard — multi-step flow (end to end)", () => {
     // --- Step 2: ticket types ---
     const addBtn = await screen.findByRole("button", { name: /thêm|add/i });
     fireEvent.click(addBtn);
-    const ticketName = await screen.findByLabelText(/tên vé|ticket name/i, { selector: "input" });
+    const ticketNames = await screen.findAllByLabelText(/tên vé|ticket name/i, { selector: "input" });
+    const ticketName = ticketNames[ticketNames.length - 1];
     fireEvent.change(ticketName, { target: { value: "VIP" } });
     // price + quantity are the number inputs inside the ticket card
     const numberInputs = Array.from(

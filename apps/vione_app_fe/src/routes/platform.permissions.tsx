@@ -169,6 +169,7 @@ function PlatformPermissionsPage() {
   const updateRoleDept = useServerFn(updateMemberRoleAndDeptFn);
 
   const [edits, setEdits] = useState<Record<string, { role: string; department: string; associationId: string }>>({});
+  const [savedEdits, setSavedEdits] = useState<Record<string, { role: string; department: string; associationId: string }>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [filterAssoc, setFilterAssoc] = useState("all");
@@ -177,9 +178,9 @@ function PlatformPermissionsPage() {
   const filteredMembers = useMemo(() => {
     const ql = q.trim().toLowerCase();
     return (members || []).filter((m: any) => {
-      const mAssoc = edits[m.id]?.associationId ?? m.associationId ?? m.association_id ?? "c1983000-0000-4000-8000-000000001983";
+      const mAssoc = edits[m.id]?.associationId ?? savedEdits[m.id]?.associationId ?? m.associationId ?? m.association_id ?? "c1983000-0000-4000-8000-000000001983";
       if (filterAssoc !== "all" && mAssoc !== filterAssoc) return false;
-      const mRole = edits[m.id]?.role ?? m.executiveRole ?? m.role ?? "member";
+      const mRole = edits[m.id]?.role ?? savedEdits[m.id]?.role ?? m.executiveRole ?? m.role ?? "member";
       if (filterRole !== "all" && mRole !== filterRole) return false;
       if (!ql) return true;
       return (
@@ -189,17 +190,17 @@ function PlatformPermissionsPage() {
         (m.phone || "").toLowerCase().includes(ql)
       );
     });
-  }, [members, q, filterAssoc, filterRole, edits]);
+  }, [members, q, filterAssoc, filterRole, edits, savedEdits]);
 
   const accessors = useMemo(
     () => ({
       code: (m: any) => m.code,
       name: (m: any) => m.name,
       email: (m: any) => m.email,
-      role: (m: any) => edits[m.id]?.role ?? m.executiveRole ?? m.role ?? "member",
-      association: (m: any) => edits[m.id]?.associationId ?? m.associationId ?? m.association_id ?? "",
+      role: (m: any) => edits[m.id]?.role ?? savedEdits[m.id]?.role ?? m.executiveRole ?? m.role ?? "member",
+      association: (m: any) => edits[m.id]?.associationId ?? savedEdits[m.id]?.associationId ?? m.associationId ?? m.association_id ?? "",
     }),
-    [edits],
+    [edits, savedEdits],
   );
 
   const tc = useTableControls(filteredMembers, accessors, {
@@ -213,8 +214,8 @@ function PlatformPermissionsPage() {
       ...prev,
       [memberId]: {
         role: newRole,
-        department: prev[memberId]?.department || currentDept || "Hội viên VIONE",
-        associationId: prev[memberId]?.associationId || currentAssoc || "c1983000-0000-4000-8000-000000001983",
+        department: prev[memberId]?.department || savedEdits[memberId]?.department || currentDept || "Hội viên VIONE",
+        associationId: prev[memberId]?.associationId || savedEdits[memberId]?.associationId || currentAssoc || "c1983000-0000-4000-8000-000000001983",
       }
     }));
   };
@@ -223,9 +224,9 @@ function PlatformPermissionsPage() {
     setEdits(prev => ({
       ...prev,
       [memberId]: {
-        role: prev[memberId]?.role || currentRole || "member",
+        role: prev[memberId]?.role || savedEdits[memberId]?.role || currentRole || "member",
         department: newDept,
-        associationId: prev[memberId]?.associationId || currentAssoc || "c1983000-0000-4000-8000-000000001983",
+        associationId: prev[memberId]?.associationId || savedEdits[memberId]?.associationId || currentAssoc || "c1983000-0000-4000-8000-000000001983",
       }
     }));
   };
@@ -234,8 +235,8 @@ function PlatformPermissionsPage() {
     setEdits(prev => ({
       ...prev,
       [memberId]: {
-        role: prev[memberId]?.role || currentRole || "member",
-        department: prev[memberId]?.department || currentDept || "Hội viên VIONE",
+        role: prev[memberId]?.role || savedEdits[memberId]?.role || currentRole || "member",
+        department: prev[memberId]?.department || savedEdits[memberId]?.department || currentDept || "Hội viên VIONE",
         associationId: newAssoc,
       }
     }));
@@ -243,9 +244,9 @@ function PlatformPermissionsPage() {
 
   const handleSave = async (member: any) => {
     const edit = edits[member.id];
-    const roleToSave = edit?.role || member.executiveRole || member.role || "member";
-    const deptToSave = edit?.department || member.department || "Hội viên VIONE";
-    const assocToSave = edit?.associationId || member.associationId || member.association_id || "c1983000-0000-4000-8000-000000001983";
+    const roleToSave = edit?.role || savedEdits[member.id]?.role || member.executiveRole || member.role || "member";
+    const deptToSave = edit?.department || savedEdits[member.id]?.department || member.department || "Hội viên VIONE";
+    const assocToSave = edit?.associationId || savedEdits[member.id]?.associationId || member.associationId || member.association_id || "c1983000-0000-4000-8000-000000001983";
 
     try {
       setSavingId(member.id);
@@ -258,6 +259,14 @@ function PlatformPermissionsPage() {
         }
       });
       toast.success(`Đã cập nhật phân quyền cho [${member.name}] thành công!`);
+      setSavedEdits(prev => ({
+        ...prev,
+        [member.id]: {
+          role: roleToSave,
+          department: deptToSave,
+          associationId: assocToSave,
+        }
+      }));
       setEdits(prev => {
         const next = { ...prev };
         delete next[member.id];
@@ -391,9 +400,9 @@ function PlatformPermissionsPage() {
                 </tr>
               ) : (
                 tc.pageRows.map((m: any, idx: number) => {
-                  const currentRole = edits[m.id]?.role ?? m.executiveRole ?? m.role ?? "member";
-                  const currentDept = edits[m.id]?.department ?? m.department ?? "Hội viên VIONE";
-                  const currentAssoc = edits[m.id]?.associationId ?? m.associationId ?? m.association_id ?? "c1983000-0000-4000-8000-000000001983";
+                  const currentRole = edits[m.id]?.role ?? savedEdits[m.id]?.role ?? m.executiveRole ?? m.role ?? "member";
+                  const currentDept = edits[m.id]?.department ?? savedEdits[m.id]?.department ?? m.department ?? "Hội viên VIONE";
+                  const currentAssoc = edits[m.id]?.associationId ?? savedEdits[m.id]?.associationId ?? m.associationId ?? m.association_id ?? "c1983000-0000-4000-8000-000000001983";
                   const isChanged = edits[m.id] !== undefined;
                   const isSaving = savingId === m.id;
 

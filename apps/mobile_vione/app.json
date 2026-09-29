@@ -38,7 +38,14 @@
       "favicon": "./assets/favicon.png"
     },
     "scheme": "vione",
-    "plugins": [],
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "ViOne cần quyền truy cập camera để quét mã QR và danh thiếp số."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "99ca8a2c-46ed-423a-b295-727bbce64c4f"

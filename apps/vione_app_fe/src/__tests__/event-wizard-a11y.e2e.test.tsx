@@ -32,7 +32,12 @@ vi.mock("@tanstack/react-start", () => ({
 }));
 
 vi.mock("@/lib/api-client", () => ({
-  fetchNestApi: () => createFn(),
+  fetchNestApi: (url: string) => {
+    if (url?.includes("/members") || url?.includes("/sponsors")) return Promise.resolve([]);
+    return createFn();
+  },
+  resolveMediaUrl: (u: string) => u,
+  uploadFileToNest: vi.fn(),
 }));
 
 vi.mock("@/lib/events.functions", () => ({

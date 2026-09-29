@@ -127,12 +127,47 @@ export function AssociationLogoUploader() {
     setPreviewUrl(preview);
     setBusy(true);
     try {
-      const fd = new FormData();
-      fd.append("associationId", assoc.associationId);
-      fd.append("file", file, file.name || "logo.png");
-      const { url } = await uploadLogo({ data: fd });
-      await saveLogo({ data: { associationId: assoc.associationId, logoUrl: url } });
-      setLogoUrl(url);
+      let uploadedUrl = "";
+      try {
+        const fd = new FormData();
+        fd.append("associationId", assoc.associationId);
+        fd.append("file", file, file.name || "logo.png");
+        const res = await uploadLogo({ data: fd });
+        uploadedUrl = res.url;
+      } catch (uploadErr) {
+        // Resilient direct browser upload fallback
+        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+        const clientFd = new FormData();
+        clientFd.append("file", file, file.name || "logo.png");
+        clientFd.append("associationId", assoc.associationId);
+        const resp = await fetch("/api/upload/association-logo", {
+          method: "POST",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          body: clientFd,
+        });
+        if (resp.ok) {
+          const resJson = await resp.json();
+          uploadedUrl = resJson.url;
+        } else {
+          throw uploadErr;
+        }
+      }
+
+      try {
+        await saveLogo({ data: { associationId: assoc.associationId, logoUrl: uploadedUrl } });
+      } catch (saveErr) {
+        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+        await fetch("/api/communities/logo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ associationId: assoc.associationId, logoUrl: uploadedUrl }),
+        });
+      }
+
+      setLogoUrl(uploadedUrl);
       setPreviewUrl(null);
       await reload();
       await loadHistory();
@@ -152,7 +187,19 @@ export function AssociationLogoUploader() {
     if (!assoc) return;
     setBusy(true);
     try {
-      await saveLogo({ data: { associationId: assoc.associationId, logoUrl: null } });
+      try {
+        await saveLogo({ data: { associationId: assoc.associationId, logoUrl: null } });
+      } catch (saveErr) {
+        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+        await fetch("/api/communities/logo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ associationId: assoc.associationId, logoUrl: null }),
+        });
+      }
       setLogoUrl(null);
       await reload();
       await loadHistory();
