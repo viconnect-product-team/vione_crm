@@ -240,7 +240,7 @@ export function CreateGroupChatModal({
             </button>
             <div>
               <h3 className="text-[15px] font-black text-slate-900 dark:text-white leading-tight flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-[#003B95] dark:text-amber-400" />
+                <Users className="h-4 w-4 text-amber-500 dark:text-amber-400" />
                 <span>Tạo nhóm chat mới</span>
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
@@ -255,7 +255,7 @@ export function CreateGroupChatModal({
             disabled={selectedMembers.length === 0 || isSubmitting}
             className={`px-4 py-1.5 rounded-full text-xs font-bold transition active:scale-95 flex items-center gap-1 cursor-pointer ${
               selectedMembers.length > 0
-                ? "bg-gradient-to-r from-[#003B95] to-[#1E40AF] text-white shadow-md shadow-blue-900/20 hover:brightness-110"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-900/20 hover:brightness-110"
                 : "bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-slate-500 cursor-not-allowed"
             }`}
           >
@@ -300,7 +300,7 @@ export function CreateGroupChatModal({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-white dark:bg-slate-800 text-[#003B95] dark:text-amber-400 shadow-md border border-slate-200 dark:border-slate-700 active:scale-90 transition cursor-pointer"
+                  className="absolute -bottom-1 -right-1 p-1.5 rounded-full bg-white dark:bg-slate-800 text-amber-600 dark:text-amber-400 shadow-md border border-slate-200 dark:border-slate-700 active:scale-90 transition cursor-pointer"
                   title="Tải ảnh từ máy"
                 >
                   <Camera className="h-3 w-3" />
@@ -325,7 +325,7 @@ export function CreateGroupChatModal({
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
                     placeholder="Ví dụ: Ban Điều Hành CEO 1983..."
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.05] text-[13px] font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-[#003B95] dark:focus:border-amber-400 shadow-xs pr-8"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.05] text-[13px] font-semibold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-amber-500 dark:focus:border-amber-400 shadow-xs pr-8"
                   />
                   {groupName && (
                     <button
@@ -368,7 +368,7 @@ export function CreateGroupChatModal({
                     }}
                     className={`shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       !customAvatarUrl && selectedBadge.id === b.id
-                        ? "bg-[#003B95] text-white shadow-xs scale-105"
+                        ? "bg-amber-600 text-white shadow-xs scale-105"
                         : "bg-white dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-slate-300"
                     }`}
                   >
@@ -393,7 +393,7 @@ export function CreateGroupChatModal({
                       triggerHaptic();
                       setGroupName(name);
                     }}
-                    className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-white dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-[#003B95] dark:hover:text-amber-400 hover:border-[#003B95]/40 transition cursor-pointer"
+                    className="text-[11px] font-medium px-2.5 py-1 rounded-lg bg-white dark:bg-white/[0.05] border border-slate-200/80 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 hover:border-amber-500/40 transition cursor-pointer"
                   >
                     + {name}
                   </button>
@@ -408,7 +408,7 @@ export function CreateGroupChatModal({
               <div className="flex items-center justify-between mb-2">
                 <span className="text-[12px] font-bold text-slate-900 dark:text-white flex items-center gap-1">
                   <span>Đã chọn</span>
-                  <span className="text-[#003B95] dark:text-amber-400">
+                  <span className="text-amber-600 dark:text-amber-400">
                     ({selectedMembers.length})
                   </span>
                 </span>
@@ -435,10 +435,10 @@ export function CreateGroupChatModal({
                           <img
                             src={resolvedAvatar}
                             alt={m.name}
-                            className="w-12 h-12 rounded-full object-cover ring-2 ring-[#003B95] dark:ring-amber-400 shadow-xs"
+                            className="w-12 h-12 rounded-full object-cover ring-2 ring-amber-500 dark:ring-amber-400 shadow-xs"
                           />
                         ) : (
-                          <div className="grid w-12 h-12 place-items-center rounded-full bg-gradient-to-tr from-[#003B95] to-[#1E40AF] text-amber-300 text-xs font-bold ring-2 ring-[#003B95] dark:ring-amber-400 shadow-xs">
+                          <div className="grid w-12 h-12 place-items-center rounded-full bg-gradient-to-tr from-amber-600 to-amber-700 text-amber-200 text-xs font-bold ring-2 ring-amber-500 dark:ring-amber-400 shadow-xs">
                             {initialsOf(m.name)}
                           </div>
                         )}
@@ -486,7 +486,7 @@ export function CreateGroupChatModal({
 
           {/* Section Indicator: Connected Members Only */}
           <div className="flex items-center justify-between px-1">
-            <div className="flex items-center gap-1.5 text-[11.5px] font-bold text-[#003B95] dark:text-amber-400">
+            <div className="flex items-center gap-1.5 text-[11.5px] font-bold text-amber-600 dark:text-amber-400">
               <UserCheck className="w-3.5 h-3.5" />
               <span>Hội viên đã kết nối giao thương ({filteredMembers.length})</span>
             </div>
@@ -523,7 +523,7 @@ export function CreateGroupChatModal({
                             className="w-11 h-11 rounded-full object-cover ring-1 ring-slate-200 dark:ring-white/10"
                           />
                         ) : (
-                          <div className="grid w-11 h-11 place-items-center rounded-full bg-gradient-to-tr from-[#003B95] to-[#1E40AF] text-amber-300 text-xs font-bold ring-1 ring-slate-200 dark:ring-white/10">
+                          <div className="grid w-11 h-11 place-items-center rounded-full bg-gradient-to-tr from-amber-600 to-amber-700 text-amber-200 text-xs font-bold ring-1 ring-slate-200 dark:ring-white/10">
                             {initialsOf(m.name)}
                           </div>
                         )}
@@ -553,7 +553,7 @@ export function CreateGroupChatModal({
                       <div
                         className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
                           isSelected
-                            ? "bg-[#003B95] dark:bg-amber-500 text-white shadow-xs scale-105"
+                            ? "bg-amber-600 dark:bg-amber-500 text-white shadow-xs scale-105"
                             : "border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-transparent group-hover:border-slate-400"
                         }`}
                       >
@@ -575,7 +575,7 @@ export function CreateGroupChatModal({
             disabled={selectedMembers.length === 0 || isSubmitting}
             className={`w-full py-3 rounded-xl text-xs font-black uppercase tracking-wider transition active:scale-98 shadow-md flex items-center justify-center gap-2 cursor-pointer ${
               selectedMembers.length > 0
-                ? "bg-gradient-to-r from-[#0052CC] via-[#003B95] to-[#002B70] text-white shadow-blue-900/20 hover:brightness-105"
+                ? "bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 text-white shadow-amber-900/20 hover:brightness-105"
                 : "bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-slate-500 cursor-not-allowed"
             }`}
           >

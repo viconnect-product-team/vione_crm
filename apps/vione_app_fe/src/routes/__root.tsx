@@ -163,12 +163,12 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "manifest", href: "/manifest.webmanifest?v=gold2" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png?v=gold2" },
-      { rel: "icon", type: "image/png", sizes: "192x192", href: "/vione-gold-192.png?v=gold2" },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png?v=gold2" },
-      { rel: "icon", type: "image/svg+xml", href: "/vione-gold-icon.svg?v=gold2" },
-      { rel: "shortcut icon", href: "/favicon.ico?v=gold2" },
+      { rel: "manifest", href: "/manifest.webmanifest?v=vione_gold_crown" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png?v=vione_gold_crown" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/vione-gold-192.png?v=vione_gold_crown" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png?v=vione_gold_crown" },
+      { rel: "icon", type: "image/svg+xml", href: "/vione-gold-icon.svg?v=vione_gold_crown" },
+      { rel: "shortcut icon", href: "/favicon.ico?v=vione_gold_crown" },
       // Web fonts for Business Card industry templates.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
@@ -390,8 +390,8 @@ function RootComponent() {
       currentPath === "/verify" ||
       currentPath.startsWith("/landing/ceo1983");
 
-    const targetFavicon = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=gold9";
-    const targetApple = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=gold9";
+    const targetFavicon = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=vione_gold_crown";
+    const targetApple = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=vione_gold_crown";
 
     const iconLinks = document.querySelectorAll<HTMLLinkElement>("link[rel~='icon']");
     if (iconLinks.length > 0) {

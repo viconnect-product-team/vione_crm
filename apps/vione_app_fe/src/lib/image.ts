@@ -2,8 +2,8 @@ export function getImageUrl(path: string | null | undefined): string {
   if (!path) return "";
   if (path.startsWith("data:")) return path;
 
-  // Xử lý chống Mixed Content khi đang chạy HTTPS
-  if (typeof window !== "undefined" && window.location.protocol === "https:") {
+  // Xử lý chống Mixed Content khi đang chạy HTTPS hoặc rewrite port nội bộ
+  if (typeof window !== "undefined") {
     if (
       path.startsWith("http://14.225.217.232") ||
       path.includes(":5001") ||
@@ -11,7 +11,8 @@ export function getImageUrl(path: string | null | undefined): string {
       path.includes(":5003") ||
       path.includes(":5004") ||
       path.includes(":5005") ||
-      path.includes(":4000")
+      path.includes(":4000") ||
+      path.includes(":4001")
     ) {
       try {
         const u = new URL(path);
@@ -26,15 +27,11 @@ export function getImageUrl(path: string | null | undefined): string {
     return path;
   }
 
-  // VITE_API_URL là địa chỉ NestJS Backend
+  // Trên trình duyệt, dùng relative URL để Vite dev server hoặc Nginx proxy tự chuyển hướng /api và /upload
   const baseUrl =
-    typeof window !== "undefined" &&
-    (window.location.protocol === "https:" ||
-      window.location.port === "5443" ||
-      window.location.port === "5444" ||
-      window.location.port === "5445")
+    typeof window !== "undefined"
       ? ""
-      : import.meta.env.VITE_API_URL || "http://localhost:4000";
+      : import.meta.env.VITE_API_URL || "http://localhost:4001";
   const cleanBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
   let cleanPath = path.startsWith("/") ? path : `/${path}`;
   if (cleanPath.startsWith("/upload/")) {

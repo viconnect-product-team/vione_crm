@@ -149,7 +149,7 @@ function isDeadCover(url?: string | null): boolean {
   return false;
 }
 
-export default function ProfileScreen() {
+function ProfileScreen() {
   const t = useT();
   const { lang, setLang } = useLang();
   const { theme, setTheme } = useTheme();

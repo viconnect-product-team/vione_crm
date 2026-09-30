@@ -292,7 +292,7 @@ export function PullToRefresh({
           className={`pointer-events-none fixed top-1/2 -translate-y-1/2 z-50 flex items-center gap-1.5 px-3 py-2 rounded-2xl shadow-xl backdrop-blur-md border transition-transform ${
             swipeDistanceX < 0
               ? "right-3 bg-amber-500/90 text-white border-amber-400/50 animate-in slide-in-from-right-4"
-              : "left-3 bg-[#003B95]/90 text-white border-blue-400/50 animate-in slide-in-from-left-4"
+              : "left-3 bg-slate-800/90 text-amber-300 border-amber-500/40 animate-in slide-in-from-left-4"
           }`}
           style={{
             transform: `translateY(-50%) scale(${Math.min(1.15, 0.9 + Math.abs(swipeDistanceX) / 250)})`,
@@ -332,8 +332,8 @@ export function PullToRefresh({
             </>
           ) : isRefreshing ? (
             <>
-              <RotateCw className="h-4 w-4 animate-spin text-[#003B95] dark:text-amber-400" />
-              <span className="text-xs font-bold text-[#003B95] dark:text-amber-400">
+              <RotateCw className="h-4 w-4 animate-spin text-amber-500 dark:text-amber-400" />
+              <span className="text-xs font-bold text-amber-500 dark:text-amber-400">
                 Đang làm mới dữ liệu...
               </span>
             </>

@@ -179,7 +179,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-md p-0 overflow-hidden border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b1329] text-slate-900 dark:text-white sm:rounded-2xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-[#19194D] via-[#003B95] to-[#0f4c9c] p-4 text-white">
+        <div className="relative bg-gradient-to-r from-slate-900 via-amber-950/70 to-slate-950 p-4 text-white">
           <div className="flex items-center gap-2.5">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 backdrop-blur-xs border border-white/25">
               <ShieldCheck className="h-5 w-5 text-amber-400" />
@@ -229,13 +229,13 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-8 text-slate-400">
-              <Loader2 className="h-6 w-6 animate-spin text-[#003B95] mb-2" />
+              <Loader2 className="h-6 w-6 animate-spin text-amber-500 mb-2" />
               <span className="text-xs">{isEn ? "Loading settings..." : "Đang tải cài đặt..."}</span>
             </div>
           ) : (
             <>
-              <div className="rounded-xl bg-blue-50/70 dark:bg-blue-950/40 p-3 border border-blue-100 dark:border-blue-900/50 flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
-                <Info className="h-4 w-4 text-[#003B95] dark:text-blue-400 shrink-0 mt-0.5" />
+              <div className="rounded-xl bg-amber-50/70 dark:bg-amber-950/40 p-3 border border-amber-200/60 dark:border-amber-900/50 flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300">
+                <Info className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                 <span>
                   {isEn
                     ? "When a field is hidden, partners scanning your QR will see 'Hidden by privacy settings' instead of your raw contact detail."
@@ -264,7 +264,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showPhone}
                     onChange={(e) => setShowPhone(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -287,7 +287,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showEmail}
                     onChange={(e) => setShowEmail(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -310,7 +310,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showAddress}
                     onChange={(e) => setShowAddress(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -333,7 +333,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showCompany}
                     onChange={(e) => setShowCompany(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -356,7 +356,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showName}
                     onChange={(e) => setShowName(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -379,7 +379,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showPhoto}
                     onChange={(e) => setShowPhoto(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -402,7 +402,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showIndustry}
                     onChange={(e) => setShowIndustry(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -425,7 +425,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showCompanySize}
                     onChange={(e) => setShowCompanySize(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
 
@@ -448,7 +448,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
                     type="checkbox"
                     checked={showFeaturedProducts}
                     onChange={(e) => setShowFeaturedProducts(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-300 text-[#003B95] focus:ring-[#003B95] cursor-pointer"
+                    className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 cursor-pointer"
                   />
                 </label>
               </div>
@@ -471,7 +471,7 @@ export function PrivacySettingsModal({ open, onClose, onUpdated }: PrivacySettin
             onClick={handleSave}
             disabled={saving || loading}
             style={{ color: "#ffffff" }}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#003B95] hover:bg-[#002B70] px-5 py-2 text-xs font-bold text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-5 py-2 text-xs font-bold text-white shadow-xs transition active:scale-95 cursor-pointer disabled:opacity-50"
           >
             {saving ? (
               <>

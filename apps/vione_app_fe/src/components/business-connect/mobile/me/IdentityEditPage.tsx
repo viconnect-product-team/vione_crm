@@ -200,6 +200,21 @@ export function IdentityEditPage() {
       }
       // Đồng bộ ảnh đại diện/hồ sơ ở mọi màn (Trang chủ, V-Sheet, Tôi, thẻ).
       await invalidateIdentity();
+      try {
+        const raw = localStorage.getItem("vba_custom_profile");
+        const existing = raw ? JSON.parse(raw) : {};
+        localStorage.setItem("vba_custom_profile", JSON.stringify({
+          ...existing,
+          avatar: parsed.data.avatarUrl || existing.avatar,
+          name: parsed.data.displayName || existing.name,
+          phone: parsed.data.primaryPhone || existing.phone,
+          jobTitle: parsed.data.jobTitle || existing.jobTitle,
+          company: parsed.data.companyName || existing.company,
+          bio: parsed.data.bio || existing.bio,
+        }));
+        window.dispatchEvent(new Event("vba_profile_updated"));
+        window.dispatchEvent(new Event("vba_member_avatar_updated"));
+      } catch {}
       setSaved(true);
       void navigate({ to: "/connect-app/me" });
     } catch {

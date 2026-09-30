@@ -46,7 +46,7 @@ export const Route = createFileRoute("/card/$code")({
       <p className="text-sm text-slate-400 max-w-sm">{error.message || "Không thể tải thông tin danh thiếp."}</p>
       <Link
         to="/association"
-        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#003B95] px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#002B70] transition"
+        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/25 transition"
       >
         <ArrowLeft className="h-4 w-4" /> Về ứng dụng Hiệp hội
       </Link>
@@ -61,7 +61,7 @@ export const Route = createFileRoute("/card/$code")({
       <p className="text-sm text-slate-400 max-w-sm">Mã thẻ không tồn tại trên hệ thống CLB Doanh Nhân CEO 1983 hoặc đã hết hạn.</p>
       <Link
         to="/association"
-        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#003B95] px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#002B70] transition"
+        className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/25 transition"
       >
         <ArrowLeft className="h-4 w-4" /> Về ứng dụng Hiệp hội
       </Link>
@@ -166,7 +166,7 @@ function PublicCardView() {
         </p>
         <Link
           to="/association"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#003B95] px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#002B70] transition"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/25 transition"
         >
           <ArrowLeft className="h-4 w-4" /> Về trang chủ Hiệp hội
         </Link>
@@ -313,7 +313,7 @@ function PublicCardView() {
         <header className="flex items-center justify-between py-4">
           <Link
             to="/association"
-            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[12px] font-bold text-[#003B95] shadow-xs transition hover:bg-slate-100"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[12px] font-bold text-amber-600 shadow-xs transition hover:bg-slate-100"
           >
             <ArrowLeft className="h-4 w-4" />
             <span>{t("back")}</span>
@@ -352,7 +352,7 @@ function PublicCardView() {
             title="Bấm để lật thẻ"
           >
             {/* ================= FRONT SIDE ================= */}
-            <div className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden [backface-visibility:hidden] flex flex-col justify-between p-5 border border-amber-400/40 bg-gradient-to-br from-[#00224F] via-[#003B95] to-[#0A192F] text-white shadow-xl">
+            <div className="absolute inset-0 w-full h-full rounded-2xl overflow-hidden [backface-visibility:hidden] flex flex-col justify-between p-5 border border-amber-400/40 bg-gradient-to-br from-[#14120F] via-[#1E1B16] to-[#0D0B09] text-white shadow-xl">
               {/* Background luxury elements */}
               <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-amber-400/15 blur-3xl pointer-events-none" />
               <div className="absolute -left-12 -bottom-12 h-44 w-44 rounded-full bg-blue-500/15 blur-3xl pointer-events-none" />
@@ -508,7 +508,7 @@ function PublicCardView() {
               onClick={handleShare}
               className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition active:scale-95 text-slate-700 shadow-xs"
             >
-              <Share2 className="h-4 w-4 text-[#003B95]" />
+              <Share2 className="h-4 w-4 text-amber-600" />
               <span className="text-[10.5px] font-bold">{t("shareCard")}</span>
             </button>
           )}
@@ -521,7 +521,7 @@ function PublicCardView() {
               rel="noreferrer"
               className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl border border-blue-300/80 bg-blue-50 hover:bg-blue-100 transition active:scale-95 text-blue-900 shadow-xs"
             >
-              <MessageCircle className="h-4 w-4 text-[#003B95]" />
+              <MessageCircle className="h-4 w-4 text-blue-600" />
               <span className="text-[10.5px] font-bold">Zalo</span>
             </a>
           ) : (
@@ -530,7 +530,7 @@ function PublicCardView() {
               onClick={handleShare}
               className="flex flex-col items-center justify-center gap-1 p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition active:scale-95 text-slate-700 shadow-xs"
             >
-              {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4 text-[#003B95]" />}
+              {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4 text-amber-600" />}
               <span className="text-[10.5px] font-bold">{copied ? "Đã copy" : t("shareCard")}</span>
             </button>
           )}

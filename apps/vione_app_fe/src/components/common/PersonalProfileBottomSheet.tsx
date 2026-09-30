@@ -138,13 +138,13 @@ export function PersonalProfileBottomSheet({
           type="button"
           onClick={onClose}
           aria-label="Đóng"
-          className="absolute top-4 right-4 z-30 grid h-8 w-8 place-items-center rounded-full bg-black/40 text-white backdrop-blur-md hover:bg-black/60 transition active:scale-95 cursor-pointer"
+          className="absolute top-4 right-4 z-30 grid h-8 w-8 place-items-center rounded-full bg-white/90 dark:bg-black/50 text-slate-700 dark:text-white border border-slate-200/80 dark:border-white/20 shadow-sm backdrop-blur-md hover:bg-white dark:hover:bg-black/70 transition active:scale-95 cursor-pointer"
         >
           <X className="h-4.5 w-4.5" />
         </button>
 
         {/* Ảnh bìa Cover */}
-        <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-gradient-to-r from-[#001D4A] via-[#003B95] to-[#0A1224]">
+        <div className="relative h-32 sm:h-36 w-full overflow-hidden bg-gradient-to-r from-slate-900 via-amber-950/60 to-slate-900 border-b border-amber-500/20">
           {resolvedCover ? (
             <img
               src={resolvedCover}
@@ -152,12 +152,12 @@ export function PersonalProfileBottomSheet({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#00224F] via-[#003B95] to-[#0A1224]" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-amber-950/40 to-slate-900" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
           {/* Huy hiệu thành viên góc bìa */}
-          <div className="absolute top-3 left-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10.5px] font-bold shadow-xs">
+          <div className="absolute top-3 left-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/30 dark:bg-white/20 backdrop-blur-md border border-white/40 text-white text-[10.5px] font-bold shadow-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>{profile.memberCode || "HỘI VIÊN CHÍNH THỨC"}</span>
           </div>
@@ -175,7 +175,7 @@ export function PersonalProfileBottomSheet({
                   className="h-24 w-24 rounded-2xl border-4 border-white dark:border-[#0A1224] object-cover shadow-xl bg-white dark:bg-slate-800"
                 />
               ) : (
-                <div className="h-24 w-24 rounded-2xl border-4 border-white dark:border-[#0A1224] bg-gradient-to-tr from-[#003B95] to-[#19194D] text-white font-black text-2xl grid place-items-center shadow-xl">
+                <div className="h-24 w-24 rounded-2xl border-4 border-white dark:border-[#0A1224] bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-500 text-white font-black text-2xl grid place-items-center shadow-xl">
                   {initials}
                 </div>
               )}
@@ -188,7 +188,7 @@ export function PersonalProfileBottomSheet({
                 <button
                   type="button"
                   onClick={onOpenQr}
-                  className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-[#003B95] dark:text-blue-400 hover:bg-slate-100 transition active:scale-95 shadow-xs cursor-pointer"
+                  className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-slate-100 transition active:scale-95 shadow-xs cursor-pointer"
                   title="Mở mã QR danh thiếp"
                 >
                   <QrCode className="h-5 w-5" />
@@ -210,7 +210,7 @@ export function PersonalProfileBottomSheet({
                   onClick={onEdit}
                   title="Chỉnh sửa hồ sơ"
                   aria-label="Chỉnh sửa hồ sơ"
-                  className="grid h-10 w-10 place-items-center rounded-xl bg-[#003B95] hover:bg-[#002b6e] text-white shadow-md hover:brightness-105 active:scale-95 transition cursor-pointer"
+                  className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-md shadow-amber-500/25 hover:brightness-105 active:scale-95 transition cursor-pointer"
                 >
                   <Pencil className="h-4 w-4" />
                 </button>
@@ -224,12 +224,12 @@ export function PersonalProfileBottomSheet({
               <h2 className="text-xl font-black text-slate-900 dark:text-white leading-tight">
                 {profile.displayName || "Doanh nhân"}
               </h2>
-              <BadgeCheck className="h-5 w-5 text-[#003B95] dark:text-sky-400 shrink-0" />
+              <BadgeCheck className="h-5 w-5 text-amber-500 dark:text-amber-400 shrink-0" />
             </div>
 
             {profile.jobTitle && (
               <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
-                <Briefcase className="h-3.5 w-3.5 text-[#003B95] dark:text-blue-400 shrink-0" />
+                <Briefcase className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                 <span>{profile.jobTitle}</span>
               </div>
             )}
@@ -315,7 +315,7 @@ export function PersonalProfileBottomSheet({
                 href={facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-blue-400 dark:hover:border-blue-500 transition group"
+                className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-amber-400/60 dark:hover:border-amber-500/60 transition group"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-9 w-9 rounded-xl bg-[#1877F2] text-white grid place-items-center shadow-sm">
@@ -324,7 +324,7 @@ export function PersonalProfileBottomSheet({
                     </svg>
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                       Trang Facebook cá nhân
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] block">
@@ -332,7 +332,7 @@ export function PersonalProfileBottomSheet({
                     </span>
                   </div>
                 </div>
-                <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors" />
               </a>
             ) : (
               <div className="flex items-center justify-between p-3.5 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 text-slate-400 text-xs">
@@ -348,7 +348,7 @@ export function PersonalProfileBottomSheet({
                   <button
                     type="button"
                     onClick={onEdit}
-                    className="text-[11px] font-bold text-[#003B95] dark:text-blue-400 hover:underline"
+                    className="text-[11px] font-bold text-amber-600 dark:text-amber-400 hover:underline"
                   >
                     + Thêm
                   </button>
@@ -362,7 +362,7 @@ export function PersonalProfileBottomSheet({
                 href={profile.linkedinUrl.startsWith("http") ? profile.linkedinUrl : `https://${profile.linkedinUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-blue-400 dark:hover:border-blue-500 transition group"
+                className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-amber-400/60 dark:hover:border-amber-500/60 transition group"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-9 w-9 rounded-xl bg-[#0A66C2] text-white grid place-items-center shadow-sm">
@@ -371,7 +371,7 @@ export function PersonalProfileBottomSheet({
                     </svg>
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                       Hồ sơ LinkedIn
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] block">
@@ -379,7 +379,7 @@ export function PersonalProfileBottomSheet({
                     </span>
                   </div>
                 </div>
-                <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                <ExternalLink className="h-4 w-4 text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors" />
               </a>
             )}
 
@@ -389,14 +389,14 @@ export function PersonalProfileBottomSheet({
                 href={profile.website.startsWith("http") ? profile.website : `https://${profile.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-slate-400 transition group"
+                className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-amber-400/60 transition group"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#003B95] dark:text-blue-400 grid place-items-center">
+                  <div className="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-amber-600 dark:text-amber-400 grid place-items-center">
                     <Globe className="h-5 w-5" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-[#003B95] dark:group-hover:text-blue-400 transition-colors">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                       Website chính thức
                     </span>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[200px] block">

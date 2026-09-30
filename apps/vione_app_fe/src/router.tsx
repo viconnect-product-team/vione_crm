@@ -55,14 +55,30 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
   );
 }
 
-export const getRouter = () => {
-  const router = createRouter({
+function buildRouter() {
+  return createRouter({
     routeTree,
     context: {},
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
     defaultErrorComponent: DefaultErrorComponent,
   });
+}
+
+export type AppRouter = ReturnType<typeof buildRouter>;
+
+let clientRouter: AppRouter | undefined;
+
+export const getRouter = (): AppRouter => {
+  if (typeof window !== "undefined" && clientRouter) {
+    return clientRouter;
+  }
+
+  const router = buildRouter();
+
+  if (typeof window !== "undefined") {
+    clientRouter = router;
+  }
 
   return router;
 };

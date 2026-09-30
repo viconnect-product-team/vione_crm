@@ -16,9 +16,11 @@ import {
   ArrowRight,
   Bell,
   CalendarDays,
+  Camera,
   ChevronRight,
   CircleCheck,
   Handshake,
+  Loader2,
   MapPin,
   MessageSquare,
   Pencil,
@@ -32,7 +34,7 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { hasTKey, useFmt, useLang, useT, type TKey } from "@/lib/i18n";
 import { getVNTimeGreeting } from "@/lib/utils";
@@ -51,7 +53,7 @@ import {
   isDefaultTodayPreferences,
 } from "@/lib/business-connect/mobile/today-preferences";
 
-import { fetchNestApi, resolveMediaUrl } from "@/lib/api-client";
+import { fetchNestApi, resolveMediaUrl, uploadFileToNest } from "@/lib/api-client";
 import { avatarOrDemo, demoAvatar } from "@/lib/business-connect/mobile/demo-avatars";
 import { RelationshipSuggestions } from "./RelationshipSuggestions";
 import { ViOneLogo } from "./ViOneLogo";
@@ -846,28 +848,29 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
   const mine = useMyIdentity({ enabled: Boolean(viewerUserId) });
   const profileIdentity = mine.data?.identity ?? null;
 
-  // Tên hiển thị (chỉ hiển thị tên cùng số điện thoại)
+  // Tên hiển thị (lấy từ dữ liệu thật trong DB)
   const name =
     customProfile?.name?.trim() ||
     profileIdentity?.displayName ||
     identity.displayName ||
-    "Phạm Văn Vũ (Admin)";
+    identity.email?.split("@")[0] ||
+    "Hội viên ViOne";
 
   // Số điện thoại
   const phone =
     customProfile?.phone?.trim() ||
     profileIdentity?.primaryPhone ||
-    localStorage.getItem("ceo1983_member_phone") ||
-    "0983 000 001";
+    "";
 
   // Ảnh đại diện
   const rawAvatarUrl = customProfile?.avatar || profileIdentity?.avatarUrl || identity.avatarUrl || null;
   const avatarUrl = avatarOrDemo(rawAvatarUrl, name);
 
-  // Ảnh bìa 1 nửa (half-height cover)
+  // Ảnh bìa
   const coverUrl =
     customProfile?.cover ||
-    "/skyline_perspective_dark.jpg";
+    profileIdentity?.coverUrl ||
+    "";
 
   return (
     <div id="tour-vione-profile-banner" className="relative mt-2">
@@ -877,16 +880,17 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
         className="relative overflow-hidden rounded-3xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] shadow-md transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
       >
         {/* Ảnh bìa */}
-        <div className="relative h-28 sm:h-32 w-full overflow-hidden bg-[var(--bc-mobile-surface-2)]">
-          <img
-            src={coverUrl}
-            alt="Cover"
-            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-            onError={(e) => {
-              e.currentTarget.src = "/skyline_perspective_dark.jpg";
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+        <div className="relative h-28 sm:h-32 w-full overflow-hidden bg-gradient-to-r from-slate-900 via-amber-950/40 to-slate-950">
+          {coverUrl ? (
+            <img
+              src={resolveMediaUrl(coverUrl) || coverUrl}
+              alt="Cover"
+              className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-amber-950/40 to-slate-950" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
           {/* Nút Chỉnh sửa nhanh trên ảnh bìa - chỉ để icon */}
           <button
@@ -897,7 +901,7 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
             }}
             title="Chỉnh sửa thông tin"
             aria-label="Chỉnh sửa thông tin"
-            className="absolute top-2.5 right-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/60 backdrop-blur-md text-amber-400 border border-white/20 hover:border-amber-400 hover:text-amber-300 shadow-md cursor-pointer active:scale-90 transition-all"
+            className="absolute top-2.5 right-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-md text-slate-700 dark:text-amber-400 border border-slate-200/60 dark:border-white/20 hover:border-amber-400 shadow-md cursor-pointer active:scale-90 transition-all"
           >
             <Pencil className="h-4 w-4" />
           </button>
@@ -912,10 +916,12 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
             <h1 className="truncate text-[20px] sm:text-[22px] font-bold tracking-tight text-[var(--bc-mobile-text)]">
               {name}
             </h1>
-            <p className="mt-1 flex items-center gap-2 text-[13.5px] font-semibold text-[var(--bc-mobile-accent)]">
-              <Phone className="h-3.5 w-3.5 text-[var(--bc-mobile-accent)] shrink-0" />
-              <span>{phone}</span>
-            </p>
+            {phone ? (
+              <p className="mt-1 flex items-center gap-2 text-[13.5px] font-semibold text-[var(--bc-mobile-accent)]">
+                <Phone className="h-3.5 w-3.5 text-[var(--bc-mobile-accent)] shrink-0" />
+                <span>{phone}</span>
+              </p>
+            ) : null}
           </div>
 
           <button
@@ -945,18 +951,18 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
         onClose={() => setProfileSheetOpen(false)}
         profile={{
           displayName: name,
-          jobTitle: customProfile?.jobTitle || profileIdentity?.headline || "Doanh nhân",
+          jobTitle: customProfile?.jobTitle || profileIdentity?.headline || profileIdentity?.jobTitle || "Doanh nhân",
           companyName: customProfile?.company || profileIdentity?.companyName || "Thành viên ViOne",
           avatarUrl: rawAvatarUrl,
           coverUrl: coverUrl,
-          phone: phone,
+          phone: phone || null,
           email: profileIdentity?.email || identity.email || null,
-          address: customProfile?.address || profileIdentity?.address || "Hà Nội, Việt Nam",
-          bio: customProfile?.bio || profileIdentity?.bio || "Doanh nhân kết nối giao thương trong hệ sinh thái ViOne.",
-          facebookUrl: customProfile?.facebook || localStorage.getItem("vba_facebook_url") || null,
+          address: customProfile?.address || profileIdentity?.address || null,
+          bio: customProfile?.bio || profileIdentity?.bio || null,
+          facebookUrl: customProfile?.facebook || null,
           linkedinUrl: customProfile?.linkedin || null,
           website: customProfile?.website || null,
-          memberCode: "VIONE-VIP",
+          memberCode: profileIdentity?.memberCode || (identity as any)?.memberCode || "HỘI VIÊN CHÍNH THỨC",
           isOwner: true,
         }}
         onEdit={() => {
@@ -984,6 +990,7 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
           onSaved={() => {
             setQuickEditOpen(false);
             setProfileVersion((v) => v + 1);
+            void mine.refetch();
             toast.success("✓ Đã cập nhật thông tin hồ sơ thành công!");
           }}
         />
@@ -1024,7 +1031,51 @@ function QuickEditProfileModal({
   const [facebook, setFacebook] = useState(initialFacebook || "");
   const [bio, setBio] = useState(initialBio || "");
 
-  const handleSave = () => {
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const url = await uploadFileToNest(file, file.name);
+      if (url) {
+        setAvatar(url);
+        toast.success("✓ Đã tải ảnh đại diện lên máy chủ thành công!");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Lỗi khi tải ảnh đại diện lên");
+    } finally {
+      setUploadingAvatar(false);
+      if (e.target) e.target.value = "";
+    }
+  };
+
+  const handleCoverFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    try {
+      const url = await uploadFileToNest(file, file.name);
+      if (url) {
+        setCover(url);
+        toast.success("✓ Đã tải ảnh bìa lên máy chủ thành công!");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Lỗi khi tải ảnh bìa lên");
+    } finally {
+      setUploadingCover(false);
+      if (e.target) e.target.value = "";
+    }
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
     try {
       const existingRaw = localStorage.getItem("vba_custom_profile");
       const existing = existingRaw ? JSON.parse(existingRaw) : {};
@@ -1045,10 +1096,31 @@ function QuickEditProfileModal({
       if (facebook.trim()) {
         localStorage.setItem("vba_facebook_url", facebook.trim());
       }
+
+      // Lưu lên máy chủ ViOne Connect backend
+      await fetchNestApi("/connect-app/me/identity", {
+        method: "PUT",
+        body: JSON.stringify({
+          displayName: updated.name,
+          primaryPhone: updated.phone,
+          avatarUrl: updated.avatar,
+          coverUrl: updated.cover,
+          jobTitle: updated.jobTitle,
+          companyName: updated.company,
+          bio: updated.bio,
+          facebookUrl: updated.facebook,
+        }),
+      }).catch((err) => {
+        console.warn("[QuickEditProfileModal] sync backend identity error:", err);
+      });
+
       window.dispatchEvent(new Event("vba_profile_updated"));
+      window.dispatchEvent(new Event("vba_member_avatar_updated"));
       onSaved();
     } catch {
       onSaved();
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -1066,6 +1138,140 @@ function QuickEditProfileModal({
           >
             <X className="h-4 w-4" />
           </button>
+        </div>
+
+        {/* Khối tải ảnh bìa & ảnh đại diện trực quan */}
+        <div className="mt-4 space-y-4">
+          {/* Ảnh bìa */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-bold text-[var(--bc-mobile-text)]">
+                Ảnh bìa trang cá nhân
+              </label>
+              <button
+                type="button"
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingCover}
+                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-[#D8B282] hover:underline cursor-pointer disabled:opacity-50"
+              >
+                {uploadingCover ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span>Đang tải lên...</span>
+                  </>
+                ) : (
+                  <>
+                    <Camera className="h-3 w-3" />
+                    <span>Tải ảnh bìa</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <input
+              type="file"
+              ref={coverInputRef}
+              accept="image/*"
+              onChange={handleCoverFile}
+              className="hidden"
+            />
+            <div
+              onClick={() => coverInputRef.current?.click()}
+              className="group relative h-28 w-full rounded-2xl overflow-hidden border border-[var(--bc-mobile-border)] bg-gradient-to-r from-slate-900 via-amber-950/40 to-slate-950 cursor-pointer hover:border-[var(--bc-mobile-border-gold)] transition-all shadow-inner"
+            >
+              {cover ? (
+                <img
+                  src={resolveMediaUrl(cover) || cover}
+                  alt="Cover"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-white/70 text-xs font-medium">
+                  Chưa có ảnh bìa — Chạm để tải ảnh từ máy
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors flex items-center justify-center">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold shadow-md">
+                  <Camera className="h-3.5 w-3.5 text-amber-400" />
+                  {uploadingCover ? "Đang tải ảnh bìa lên MinIO..." : "Chạm để thay đổi ảnh bìa"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Ảnh đại diện */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-bold text-[var(--bc-mobile-text)]">
+                Ảnh đại diện
+              </label>
+              <button
+                type="button"
+                onClick={() => avatarInputRef.current?.click()}
+                disabled={uploadingAvatar}
+                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-[#D8B282] hover:underline cursor-pointer disabled:opacity-50"
+              >
+                {uploadingAvatar ? (
+                  <>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <span>Đang tải lên...</span>
+                  </>
+                ) : (
+                  <>
+                    <Camera className="h-3 w-3" />
+                    <span>Tải ảnh đại diện</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <input
+              type="file"
+              ref={avatarInputRef}
+              accept="image/*"
+              onChange={handleAvatarFile}
+              className="hidden"
+            />
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)]">
+              <div
+                onClick={() => avatarInputRef.current?.click()}
+                className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-[var(--bc-mobile-border-gold)] overflow-hidden bg-[var(--bc-mobile-surface)] cursor-pointer group shadow-md"
+              >
+                <img
+                  src={resolveMediaUrl(avatar) || avatarOrDemo(avatar, name)}
+                  alt="Avatar"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                  onError={(e) => {
+                    e.currentTarget.src = demoAvatar(name);
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/35 group-hover:bg-black/50 transition-colors grid place-items-center">
+                  <Camera className="h-4 w-4 text-white drop-shadow" />
+                </div>
+              </div>
+              <div className="min-w-0 flex-1">
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={uploadingAvatar}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--bc-mobile-border-gold)] bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-700 dark:text-[#D8B282] cursor-pointer transition-colors"
+                >
+                  {uploadingAvatar ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <span>Đang tải lên MinIO...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Camera className="h-3.5 w-3.5" />
+                      <span>Chọn ảnh từ thiết bị</span>
+                    </>
+                  )}
+                </button>
+                <p className="mt-1 text-[11px] text-[var(--bc-mobile-muted)] truncate">
+                  Định dạng JPG, PNG, WEBP. Tự động lưu lên hệ thống.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="mt-4 space-y-3.5">
@@ -1147,32 +1353,6 @@ function QuickEditProfileModal({
               className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none resize-none"
             />
           </div>
-
-          <div>
-            <label className="text-xs font-semibold text-[var(--bc-mobile-muted)]">
-              Link ảnh đại diện
-            </label>
-            <input
-              type="text"
-              value={avatar}
-              onChange={(e) => setAvatar(e.target.value)}
-              placeholder="Dán link ảnh đại diện..."
-              className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-[var(--bc-mobile-muted)]">
-              Link ảnh bìa
-            </label>
-            <input
-              type="text"
-              value={cover}
-              onChange={(e) => setCover(e.target.value)}
-              placeholder="Dán link ảnh bìa hoặc /skyline_perspective_dark.jpg..."
-              className="mt-1 w-full rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3.5 py-2.5 text-xs sm:text-sm text-[var(--bc-mobile-text)] focus:border-[var(--bc-mobile-border-gold)] outline-none"
-            />
-          </div>
         </div>
 
         <div className="mt-5 flex items-center gap-2 pt-2 border-t border-[var(--bc-mobile-border)]">
@@ -1186,9 +1366,17 @@ function QuickEditProfileModal({
           <button
             type="button"
             onClick={handleSave}
-            className="flex-1 py-2.5 rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] text-xs font-bold shadow-md cursor-pointer hover:brightness-105 active:scale-98 transition-all"
+            disabled={saving || uploadingAvatar || uploadingCover}
+            className="flex-1 py-2.5 rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] text-xs font-bold shadow-md cursor-pointer hover:brightness-105 active:scale-98 transition-all inline-flex items-center justify-center gap-2 disabled:opacity-60"
           >
-            Lưu thay đổi
+            {saving ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <span>Đang lưu...</span>
+              </>
+            ) : (
+              <span>Lưu thay đổi</span>
+            )}
           </button>
         </div>
       </div>

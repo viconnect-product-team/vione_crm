@@ -57,7 +57,7 @@ const VOTING_OPTIONS: { value: Choice; labelKey: TKey; descKey: TKey }[] = [
   { value: "same", labelKey: "acct.openBehavior.same", descKey: "acct.openBehavior.sameDesc" },
 ];
 
-export function AccountManagementPage() {
+function AccountManagementPage() {
   const t = useT();
   const navigate = useNavigate();
   const { isPlatformAdmin, isAdmin, roles: userRolesList } = useRole();

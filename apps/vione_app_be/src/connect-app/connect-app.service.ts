@@ -786,6 +786,7 @@ export class ConnectAppService implements OnModuleInit {
         companyName: identity.company_name,
         bio: identity.bio,
         avatarUrl: identity.avatar_url,
+        coverUrl: identity.cover_url || null,
         primaryEmail: identity.primary_email,
         primaryPhone: identity.primary_phone,
         website: identity.website,
@@ -812,6 +813,7 @@ export class ConnectAppService implements OnModuleInit {
     const companyName = input.companyName !== undefined ? (input.companyName || null) : null;
     const bio = input.bio !== undefined ? (input.bio || null) : null;
     const avatarUrl = input.avatarUrl !== undefined ? (input.avatarUrl || null) : null;
+    const coverUrl = input.coverUrl !== undefined ? (input.coverUrl || null) : (input.cover || null);
     const primaryEmail = input.primaryEmail !== undefined ? (input.primaryEmail || null) : null;
     const primaryPhone = input.primaryPhone !== undefined ? (input.primaryPhone || null) : null;
     const website = input.website !== undefined ? (input.website || null) : null;
@@ -821,16 +823,27 @@ export class ConnectAppService implements OnModuleInit {
     const countryCode = input.countryCode !== undefined ? (input.countryCode || null) : null;
     const preferredLocale = input.preferredLocale !== undefined ? (input.preferredLocale || null) : null;
 
+    // Đảm bảo user tồn tại trong auth.users để không bị vi phạm foreign key 23503
+    try {
+      await this.prisma.$executeRaw`
+        INSERT INTO auth.users (id, email, role)
+        VALUES (${userId}::uuid, COALESCE(${primaryEmail}, 'user@vione.app'), 'authenticated')
+        ON CONFLICT (id) DO NOTHING
+      `;
+    } catch (authErr) {
+      console.warn('[upsertMyIdentity] ensure auth.users record warning:', authErr);
+    }
+
     try {
       await this.prisma.$executeRaw`
         INSERT INTO public.business_identities (
-          id, owner_user_id, display_name, headline, job_title, company_name, bio, avatar_url,
+          id, owner_user_id, display_name, headline, job_title, company_name, bio, avatar_url, cover_url,
           primary_email, primary_phone, website, linkedin_url, address, city, country_code,
           preferred_locale, status, created_at, updated_at
         ) VALUES (
           ${id}::uuid, ${userId}::uuid, ${displayName}, ${headline},
           ${jobTitle}, ${companyName}, ${bio},
-          ${avatarUrl}, ${primaryEmail}, ${primaryPhone},
+          ${avatarUrl}, ${coverUrl}, ${primaryEmail}, ${primaryPhone},
           ${website}, ${linkedinUrl}, ${address},
           ${city}, ${countryCode}, ${preferredLocale},
           'active', ${now}, ${now}
@@ -842,6 +855,7 @@ export class ConnectAppService implements OnModuleInit {
           company_name = COALESCE(EXCLUDED.company_name, public.business_identities.company_name),
           bio = COALESCE(EXCLUDED.bio, public.business_identities.bio),
           avatar_url = COALESCE(EXCLUDED.avatar_url, public.business_identities.avatar_url),
+          cover_url = COALESCE(EXCLUDED.cover_url, public.business_identities.cover_url),
           primary_email = COALESCE(EXCLUDED.primary_email, public.business_identities.primary_email),
           primary_phone = COALESCE(EXCLUDED.primary_phone, public.business_identities.primary_phone),
           website = COALESCE(EXCLUDED.website, public.business_identities.website),
@@ -856,18 +870,31 @@ export class ConnectAppService implements OnModuleInit {
       console.error('[upsertMyIdentity] error inserting/updating business_identities:', err);
     }
 
-    if (avatarUrl) {
-      try {
-        await this.prisma.$executeRaw`
-          UPDATE public.user_profiles SET
-            avatar_url = ${avatarUrl},
-            display_name = COALESCE(${displayName}, display_name),
-            updated_at = ${now}
-          WHERE user_id = ${userId}::uuid
-        `;
-      } catch (err) {
-        console.warn('[upsertMyIdentity] user_profiles update skipped or failed:', err);
-      }
+    try {
+      await this.prisma.$executeRaw`
+        UPDATE public.user_profiles SET
+          avatar_url = COALESCE(${avatarUrl}, avatar_url),
+          display_name = COALESCE(${displayName}, display_name),
+          updated_at = ${now}
+        WHERE user_id = ${userId}::uuid
+      `;
+    } catch (err) {
+      console.warn('[upsertMyIdentity] user_profiles update skipped or failed:', err);
+    }
+
+    try {
+      await this.prisma.$executeRaw`
+        UPDATE public.members SET
+          name = COALESCE(${displayName}, name),
+          avatar_url = COALESCE(${avatarUrl}, avatar_url),
+          role = COALESCE(${jobTitle}, role),
+          company = COALESCE(${companyName}, company),
+          phone = COALESCE(${primaryPhone}, phone),
+          updated_at = ${now}
+        WHERE user_id = ${userId}::uuid
+      `;
+    } catch (err) {
+      // ignore
     }
 
     return this.getMyIdentity(userId);
@@ -4735,9 +4762,32 @@ export class ConnectAppService implements OnModuleInit {
       targetKind = 'general';
     }
 
+    if (targetKind === 'general') {
+      targetUserId = null;
+      targetCardId = null;
+      targetGuestId = null;
+    }
+
+    // Đảm bảo user tồn tại trong auth.users
+    try {
+      await this.prisma.$executeRaw`
+        INSERT INTO auth.users (id, email, role)
+        VALUES (${userId}::uuid, 'user@vione.app', 'authenticated')
+        ON CONFLICT (id) DO NOTHING
+      `;
+    } catch (authErr) {
+      // ignore
+    }
+
+    const parsedOccurredAt = occurredAt ? new Date(occurredAt) : new Date();
+    const safeOccurredAt = isNaN(parsedOccurredAt.getTime()) ? new Date() : parsedOccurredAt;
+    const safeClientToken = (clientToken && /^[0-9a-fA-F-]{36}$/.test(String(clientToken)))
+      ? String(clientToken)
+      : crypto.randomUUID();
+
     const existingRows = await this.prisma.$queryRaw<any[]>`
       SELECT id, status FROM public.business_relationship_moments
-      WHERE owner_user_id = ${userId}::uuid AND client_token = ${clientToken}::uuid
+      WHERE owner_user_id = ${userId}::uuid AND client_token = ${safeClientToken}::uuid
       LIMIT 1
     `.catch(() => []);
 
@@ -4751,7 +4801,7 @@ export class ConnectAppService implements OnModuleInit {
       }
       await this.prisma.$executeRaw`
         UPDATE public.business_relationship_moments
-        SET occurred_at = ${new Date(occurredAt)},
+        SET occurred_at = ${safeOccurredAt},
             event_name = ${eventName || null},
             place_label = ${placeLabel || null},
             note = ${note || null},
@@ -4770,8 +4820,8 @@ export class ConnectAppService implements OnModuleInit {
           ${targetUserId ? targetUserId : null}::uuid,
           ${targetCardId ? targetCardId : null}::uuid,
           ${targetGuestId ? targetGuestId : null}::uuid,
-          ${new Date(occurredAt)}, ${eventName || null}, ${placeLabel || null}, ${note || null},
-          'pending', ${visibility || 'friends'}, ${clientToken}::uuid, now(), now()
+          ${safeOccurredAt}, ${eventName || null}, ${placeLabel || null}, ${note || null},
+          'pending', ${visibility || 'friends'}, ${safeClientToken}::uuid, now(), now()
         )
       `;
     }
@@ -9912,6 +9962,11 @@ export class ConnectAppService implements OnModuleInit {
 
   // ── Direct Messaging (1-1 Inbox) ──────────────────────────────────
   async listMyDmThreads(userId: string) {
+    const myCode = await this.resolveMemberCodeForUser(userId).catch(() => '');
+    const mine = (myCode || '').toLowerCase();
+    const myUserId = userId.toLowerCase();
+    const myKeys = [mine, myUserId].filter(Boolean);
+
     const threads = await this.prisma.$queryRaw<any[]>`
       SELECT t.id, t.user1_id, t.user2_id, t.last_message_at, t.last_message_body,
              (SELECT COUNT(*)::int FROM public.direct_messages m 
@@ -9942,7 +9997,7 @@ export class ConnectAppService implements OnModuleInit {
       acceptedSet.add(counterpart);
     }
 
-    const userProfilesMap = new Map<string, { displayName: string; avatarUrl: string | null; headline: string | null; companyName: string | null }>();
+    const userProfilesMap = new Map<string, { displayName: string; avatarUrl: string | null; headline: string | null; companyName: string | null; code?: string | null }>();
     if (counterpartUserIds.size > 0) {
       const idsArray = Array.from(counterpartUserIds);
       const [identities, profiles, members] = await Promise.all([
@@ -9957,7 +10012,7 @@ export class ConnectAppService implements OnModuleInit {
           WHERE user_id = ANY(${idsArray}::uuid[])
         `.catch(() => []),
         this.prisma.$queryRaw<any[]>`
-          SELECT user_id, name, avatar, company, position 
+          SELECT user_id, code, name, avatar, company, position 
           FROM public.members 
           WHERE user_id = ANY(${idsArray}::uuid[])
         `.catch(() => []),
@@ -9974,6 +10029,7 @@ export class ConnectAppService implements OnModuleInit {
           avatarUrl: ident?.avatar_url || prof?.avatar_url || mem?.avatar || null,
           headline: ident?.headline || ident?.job_title || prof?.professional_title || mem?.position || null,
           companyName: ident?.company_name || prof?.company_name || mem?.company || null,
+          code: mem?.code || null,
         });
       }
     }
@@ -9999,6 +10055,107 @@ export class ConnectAppService implements OnModuleInit {
         unreadCount: Number(t.unread_count || 0),
         isConnected: acceptedSet.has(counterpartId),
       });
+    }
+
+    // ── Đồng bộ & hiển thị tin nhắn từ bảng public.messages ──
+    const legacyMsgs = await this.prisma.$queryRaw<any[]>`
+      SELECT id, from_id, to_id, text, created_at, read_at
+      FROM public.messages
+      WHERE LOWER(from_id) = ANY(${myKeys}::text[]) OR LOWER(to_id) = ANY(${myKeys}::text[])
+      ORDER BY created_at DESC
+    `.catch(() => []);
+
+    if (legacyMsgs && legacyMsgs.length > 0) {
+      const allMembers = await this.prisma.$queryRaw<any[]>`
+        SELECT m.id, m.code, m.user_id, m.name, m.avatar, m.company, m.position,
+               COALESCE(up.display_name, vu.name, bi.display_name, m.name) as display_name,
+               COALESCE(up.avatar_url, bi.avatar_url, vu.avatar_url, m.avatar) as avatar_url,
+               COALESCE(bi.headline, bi.job_title, up.professional_title, m.position) as headline,
+               COALESCE(bi.company_name, up.company_name, m.company) as company_name
+        FROM public.members m
+        LEFT JOIN public.user_profiles up ON up.user_id = m.user_id
+        LEFT JOIN public.business_identities bi ON bi.owner_user_id = m.user_id AND bi.status = 'active'
+        LEFT JOIN public.vione_users vu ON vu.id = m.user_id
+      `.catch(() => []);
+
+      const legacyByPeer = new Map<string, any[]>();
+      for (const m of legacyMsgs) {
+        const from = String(m.from_id).toLowerCase();
+        const to = String(m.to_id).toLowerCase();
+        const isFromMe = myKeys.includes(from);
+        const rawPeer = isFromMe ? to : from;
+        if (!legacyByPeer.has(rawPeer)) legacyByPeer.set(rawPeer, []);
+        legacyByPeer.get(rawPeer)!.push({ ...m, isFromMe });
+      }
+
+      for (const [peerKey, pMsgs] of legacyByPeer.entries()) {
+        const latest = pMsgs[0];
+        const isSystem = peerKey === 'admin' || peerKey === 'system';
+        const mem = allMembers.find((m: any) =>
+          (m.code && String(m.code).toLowerCase() === peerKey) ||
+          (m.user_id && String(m.user_id).toLowerCase() === peerKey) ||
+          (m.id && String(m.id).toLowerCase() === peerKey)
+        );
+        const peerUserId = mem?.user_id ? String(mem.user_id).toLowerCase() : null;
+
+        // Nếu đối tác đã có thread trong resultThreads: cập nhật nếu tin nhắn legacy mới hơn
+        const existingIdx = resultThreads.findIndex((rt) =>
+          (peerUserId && rt.personId === `u:${peerUserId}`) ||
+          rt.threadId === peerKey
+        );
+
+        if (existingIdx >= 0) {
+          const existing = resultThreads[existingIdx];
+          const existTime = existing.lastMessageAt ? new Date(existing.lastMessageAt).getTime() : 0;
+          const legacyTime = latest.created_at ? new Date(latest.created_at).getTime() : 0;
+          if (legacyTime >= existTime) {
+            existing.lastMessageAt = latest.created_at ? new Date(latest.created_at).toISOString() : existing.lastMessageAt;
+            existing.lastMessagePreview = latest.text || existing.lastMessagePreview;
+            existing.lastMessageFromMe = latest.isFromMe;
+          }
+        } else {
+          // Chưa có thread: tạo mới và đảm bảo hiển thị
+          const targetCounterpartId = peerUserId || peerKey;
+          addedCounterparts.add(targetCounterpartId);
+
+          let ensuredThreadId = crypto.randomUUID();
+          if (peerUserId) {
+            try {
+              const [u1, u2] = userId.toLowerCase() < peerUserId.toLowerCase() ? [userId, peerUserId] : [peerUserId, userId];
+              const ensured = await this.prisma.$queryRaw<any[]>`
+                INSERT INTO public.direct_message_threads (id, user1_id, user2_id, last_message_at, last_message_body, created_at, updated_at)
+                VALUES (${ensuredThreadId}::uuid, ${u1}::uuid, ${u2}::uuid, ${latest.created_at || new Date()}, ${latest.text || ''}, now(), now())
+                ON CONFLICT (user1_id, user2_id) DO UPDATE 
+                SET last_message_at = EXCLUDED.last_message_at, last_message_body = EXCLUDED.last_message_body, updated_at = now()
+                RETURNING id
+              `.catch(() => []);
+              if (ensured && ensured[0]?.id) {
+                ensuredThreadId = ensured[0].id;
+              }
+            } catch {
+              // ignore
+            }
+          }
+
+          const unread = pMsgs.filter((m) => !m.isFromMe && m.read_at == null).length;
+          resultThreads.push({
+            threadId: ensuredThreadId,
+            personId: peerUserId ? `u:${peerUserId}` : `code:${peerKey}`,
+            displayName: isSystem
+              ? 'Ban Thư Ký CLB Doanh Nhân CEO 1983'
+              : (mem?.display_name || mem?.name || `Hội viên ${peerKey.toUpperCase()}`),
+            avatarUrl: isSystem ? '/ceo1983-logo.png' : (mem?.avatar_url || mem?.avatar || null),
+            headline: isSystem ? 'Hỗ trợ hội viên' : (mem?.headline || mem?.position || null),
+            companyName: isSystem ? 'CLB Doanh Nhân CEO 1983' : (mem?.company_name || mem?.company || null),
+            isOnline: isSystem ? true : (peerUserId ? (this.gateway?.isUserOnline(peerUserId) ?? false) : false),
+            lastMessageAt: latest.created_at ? new Date(latest.created_at).toISOString() : null,
+            lastMessagePreview: latest.text || null,
+            lastMessageFromMe: latest.isFromMe,
+            unreadCount: unread,
+            isConnected: isSystem ? true : (peerUserId ? acceptedSet.has(peerUserId) : false),
+          });
+        }
+      }
     }
 
     // Bổ sung các hội viên đã kết nối nhưng chưa phát sinh tin nhắn
@@ -10043,6 +10200,13 @@ export class ConnectAppService implements OnModuleInit {
         });
       }
     }
+
+    // Sắp xếp các hội viên có tin nhắn gần nhất lên đầu danh sách
+    resultThreads.sort((a, b) => {
+      const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+      const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+      return timeB - timeA;
+    });
 
     return { ok: true, threads: resultThreads };
   }
@@ -10183,7 +10347,7 @@ export class ConnectAppService implements OnModuleInit {
       LIMIT 100
     `.catch(() => []);
 
-    const messages = msgRows.map(m => ({
+    let messages = msgRows.map(m => ({
       id: m.id,
       threadId: m.thread_id,
       fromMe: String(m.sender_user_id).toLowerCase() === userId.toLowerCase(),
@@ -10194,6 +10358,49 @@ export class ConnectAppService implements OnModuleInit {
       readAt: m.read_at ? new Date(m.read_at).toISOString() : null,
       retractedAt: m.is_retracted ? new Date(m.updated_at).toISOString() : null,
     }));
+
+    if (messages.length === 0) {
+      // Fallback tra cứu tin nhắn từ public.messages
+      const myCode = await this.resolveMemberCodeForUser(userId).catch(() => '');
+      const myKeys = [myCode?.toLowerCase(), userId.toLowerCase()].filter(Boolean);
+      const counterpartMember = mem[0]?.code ? String(mem[0].code).toLowerCase() : null;
+      const counterpartKeys = [counterpartMember, counterpartId.toLowerCase()].filter(Boolean);
+
+      const legacyMsgs = await this.prisma.$queryRaw<any[]>`
+        SELECT id, from_id, to_id, text, created_at, read_at
+        FROM public.messages
+        WHERE ((LOWER(from_id) = ANY(${myKeys}::text[]) AND LOWER(to_id) = ANY(${counterpartKeys}::text[]))
+           OR (LOWER(to_id) = ANY(${myKeys}::text[]) AND LOWER(from_id) = ANY(${counterpartKeys}::text[])))
+        ORDER BY created_at ASC
+        LIMIT 100
+      `.catch(() => []);
+
+      if (legacyMsgs && legacyMsgs.length > 0) {
+        messages = legacyMsgs.map(m => ({
+          id: m.id,
+          threadId: t.id,
+          fromMe: myKeys.includes(String(m.from_id).toLowerCase()),
+          body: m.text,
+          reactions: [],
+          replyTo: null,
+          createdAt: m.created_at ? new Date(m.created_at).toISOString() : new Date().toISOString(),
+          readAt: m.read_at ? new Date(m.read_at).toISOString() : null,
+          retractedAt: null,
+        }));
+
+        const lastMsg = messages[messages.length - 1];
+        if (lastMsg) {
+          threadSummary.lastMessageAt = lastMsg.createdAt;
+          threadSummary.lastMessagePreview = lastMsg.body;
+          threadSummary.lastMessageFromMe = lastMsg.fromMe;
+        }
+      }
+    } else {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg) {
+        threadSummary.lastMessageFromMe = lastMsg.fromMe;
+      }
+    }
 
     return { ok: true, thread: threadSummary, messages };
   }
@@ -10238,6 +10445,21 @@ export class ConnectAppService implements OnModuleInit {
       SET last_message_at = now(), last_message_body = ${data.body.slice(0, 150)}, updated_at = now()
       WHERE id = ${t.id}::uuid
     `;
+
+    // Đồng bộ tin nhắn sang bảng public.messages
+    try {
+      const myCode = await this.resolveMemberCodeForUser(userId).catch(() => '');
+      const peerMem = await this.prisma.$queryRaw<any[]>`
+        SELECT code FROM public.members WHERE user_id = ${counterpartId}::uuid LIMIT 1
+      `.catch(() => []);
+      const peerCode = peerMem[0]?.code;
+      await this.prisma.$executeRaw`
+        INSERT INTO public.messages (id, from_id, to_id, text, created_at)
+        VALUES (${newMsgId}::uuid, ${myCode || userId}, ${peerCode || counterpartId}, ${data.body}, now())
+      `.catch(() => null);
+    } catch {
+      // ignore
+    }
 
     const messageObj = {
       id: newMsgId,

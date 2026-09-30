@@ -1,15 +1,14 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "../../node_modules/expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "react": ["./node_modules/@types/react"],
-      "react-dom": ["./node_modules/@types/react-dom"]
+      "@/*": ["src/*"]
     },
     "typeRoots": [
-      "./node_modules/@types"
+      "./node_modules/@types",
+      "../../node_modules/@types"
     ],
     "skipLibCheck": true
   },

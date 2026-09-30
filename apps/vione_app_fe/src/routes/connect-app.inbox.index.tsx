@@ -169,15 +169,28 @@ function InboxPage() {
   }, [localGroups, rawRemoteThreads]);
 
   // Phân loại danh mục chuẩn Messenger:
-  // - Người ĐÃ kết nối & nhóm: isConnected !== false
-  // - Tin nhắn chờ (người lạ / gợi ý đối tác chưa kết nối): isConnected === false
+  // - Tất cả: Toàn bộ hội thoại do chính tài khoản này đã nhắn tin tới (lastMessageFromMe), hội thoại đã có tin nhắn, nhóm, và người đã kết nối
+  const allThreads = useMemo(() => {
+    return threads.filter((t) => {
+      if ((t as any).isGroup) return true;
+      if (t.lastMessageFromMe) return true;
+      if (Boolean(t.lastMessagePreview)) return true;
+      if (t.isConnected !== false) return true;
+      return false;
+    });
+  }, [threads]);
+
   const connectedThreads = useMemo(() => threads.filter((t) => t.isConnected !== false), [threads]);
   const groupThreads = useMemo(() => threads.filter((t) => (t as any).isGroup), [threads]);
   const unreadConnectedThreads = useMemo(
-    () => connectedThreads.filter((t) => (t.unreadCount || 0) > 0),
-    [connectedThreads],
+    () => allThreads.filter((t) => (t.unreadCount || 0) > 0),
+    [allThreads],
   );
-  const pendingThreads = useMemo(() => threads.filter((t) => t.isConnected === false), [threads]);
+  // Tin nhắn chờ: Chỉ chứa tin nhắn từ người lạ CHƯA kết nối gửi đến và KHÔNG PHẢI do chính tài khoản này gửi đi
+  const pendingThreads = useMemo(
+    () => threads.filter((t) => t.isConnected === false && !t.lastMessageFromMe && Boolean(t.lastMessagePreview)),
+    [threads],
+  );
 
   const unreadCount = useMemo(
     () => unreadConnectedThreads.reduce((sum, t) => sum + (t.unreadCount || 0), 0),
@@ -200,8 +213,8 @@ function InboxPage() {
     if (activeTab === "unread") return unreadConnectedThreads;
     if (activeTab === "groups") return groupThreads;
     if (activeTab === "requests") return pendingThreads;
-    return connectedThreads;
-  }, [activeTab, unreadConnectedThreads, groupThreads, pendingThreads, connectedThreads]);
+    return allThreads;
+  }, [activeTab, unreadConnectedThreads, groupThreads, pendingThreads, allThreads]);
 
   const filteredThreads = useMemo(() => {
     if (!q) return baseThreads;
@@ -254,7 +267,7 @@ function InboxPage() {
             }`}
           >
             <span>Tất cả</span>
-            <span className="text-[11px] opacity-80">({connectedThreads.length})</span>
+            <span className="text-[11px] opacity-80">({allThreads.length})</span>
           </button>
 
           <button

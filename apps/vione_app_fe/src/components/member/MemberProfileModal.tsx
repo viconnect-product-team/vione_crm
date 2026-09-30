@@ -186,7 +186,7 @@ export function MemberProfileModal({
       >
         {/* Fixed Header */}
         <div className="shrink-0 flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02]">
-          <span className="text-[11px] font-black uppercase tracking-wider text-[#003B95] dark:text-amber-400">
+          <span className="text-[11px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
             HỒ SƠ HỘI VIÊN CLB CEO 1983
           </span>
           <button
@@ -214,7 +214,7 @@ export function MemberProfileModal({
                   }}
                 />
               ) : (
-                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-[#003B95] dark:text-amber-400 ring-2 ring-amber-500/30">
+                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 ring-2 ring-amber-500/30">
                   <User className="h-7 w-7" />
                 </div>
               )}
@@ -229,14 +229,14 @@ export function MemberProfileModal({
                   {displayName}
                 </h3>
                 {member.code && (
-                  <span className="rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[9.5px] font-bold text-[#003B95] dark:text-amber-400 shrink-0">
+                  <span className="rounded-md bg-amber-500/10 px-1.5 py-0.5 text-[9.5px] font-bold text-amber-600 dark:text-amber-400 shrink-0">
                     {member.code}
                   </span>
                 )}
               </div>
               {member.name && (
                 <p className="truncate text-[12px] font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                  <Building2 className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400 shrink-0" />
+                  <Building2 className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                   <span>{member.name}</span>
                 </p>
               )}
@@ -263,12 +263,12 @@ export function MemberProfileModal({
             {member.phone && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                  <Phone className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400" />
+                  <Phone className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                   <span>Điện thoại</span>
                 </div>
                 <a
                   href={`tel:${member.phone}`}
-                  className="font-semibold text-[#003B95] dark:text-amber-400 hover:underline"
+                  className="font-semibold text-amber-600 dark:text-amber-400 hover:underline"
                 >
                   {member.phone}
                 </a>
@@ -277,12 +277,12 @@ export function MemberProfileModal({
             {member.email && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                  <Mail className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400" />
+                  <Mail className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                   <span>Email</span>
                 </div>
                 <a
                   href={`mailto:${member.email}`}
-                  className="font-semibold text-[#003B95] dark:text-amber-400 hover:underline truncate max-w-[190px]"
+                  className="font-semibold text-amber-600 dark:text-amber-400 hover:underline truncate max-w-[190px]"
                 >
                   {member.email}
                 </a>
@@ -291,7 +291,7 @@ export function MemberProfileModal({
             {member.address && (
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 shrink-0">
-                  <MapPin className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400" />
+                  <MapPin className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                   <span>Địa chỉ</span>
                 </div>
                 <span className="font-medium text-slate-700 dark:text-slate-300 text-right truncate max-w-[200px]">
@@ -302,14 +302,14 @@ export function MemberProfileModal({
             {member.website && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
-                  <Globe className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400" />
+                  <Globe className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
                   <span>Website</span>
                 </div>
                 <a
                   href={member.website.startsWith("http") ? member.website : `https://${member.website}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-[#003B95] dark:text-amber-400 hover:underline flex items-center gap-1"
+                  className="font-semibold text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
                 >
                   <span>Truy cập</span>
                   <ExternalLink className="h-3 w-3" />
@@ -327,7 +327,7 @@ export function MemberProfileModal({
               to="/card/$code"
               params={{ code: member.code || "M1983-001" }}
               onClick={onClose}
-              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 py-2.5 text-[12.5px] font-bold text-[#003B95] dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition active:scale-95 cursor-pointer shadow-sm text-center"
+              className="flex-1 flex items-center justify-center gap-1.5 rounded-xl border border-amber-500/40 bg-amber-50 dark:bg-amber-950/40 py-2.5 text-[12.5px] font-bold text-amber-600 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition active:scale-95 cursor-pointer shadow-sm text-center"
             >
               <CreditCard className="h-4 w-4 text-amber-600 dark:text-amber-400" />
               <span>Xem danh thiếp số</span>
@@ -339,7 +339,7 @@ export function MemberProfileModal({
               className={`flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-[12.5px] font-bold transition active:scale-95 cursor-pointer shadow-md ${
                 connected
                   ? "border border-rose-200 dark:border-rose-900/50 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/60 shadow-rose-500/10"
-                  : "bg-[#003B95] hover:bg-[#002B70] text-white shadow-blue-900/20"
+                  : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-amber-900/20"
               }`}
             >
               {connected ? (

@@ -49,7 +49,7 @@ export function GroupMembersModal({
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03]">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-[#003B95] dark:text-amber-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
             <div>
@@ -122,7 +122,7 @@ export function GroupMembersModal({
                         className="w-10 h-10 rounded-full object-cover ring-1 ring-slate-200 dark:ring-white/10"
                       />
                     ) : (
-                      <div className="grid w-10 h-10 place-items-center rounded-full bg-gradient-to-tr from-[#003B95] to-[#1E40AF] text-amber-300 text-xs font-bold ring-1 ring-slate-200 dark:ring-white/10">
+                      <div className="grid w-10 h-10 place-items-center rounded-full bg-gradient-to-tr from-amber-500 to-amber-600 text-white text-xs font-bold ring-1 ring-slate-200 dark:ring-white/10">
                         {initialsOf(m.name)}
                       </div>
                     )}
@@ -144,7 +144,7 @@ export function GroupMembersModal({
                   </div>
                 </div>
 
-                <div className="shrink-0 text-slate-400 group-hover:text-[#003B95] dark:group-hover:text-amber-400">
+                <div className="shrink-0 text-slate-400 group-hover:text-amber-600 dark:group-hover:text-amber-400">
                   <ExternalLink className="w-3.5 h-3.5" />
                 </div>
               </div>

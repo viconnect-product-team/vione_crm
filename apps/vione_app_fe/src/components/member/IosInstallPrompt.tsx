@@ -40,7 +40,7 @@ export function IosInstallPrompt() {
       <div className="rounded-3xl border border-amber-500/40 bg-slate-900/95 backdrop-blur-xl p-4 text-white shadow-2xl ring-1 ring-white/10">
         <div className="flex items-start justify-between gap-2 mb-2">
           <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#003B95] to-amber-500 p-0.5 shadow-md shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-600 to-amber-500 p-0.5 shadow-md shrink-0">
               <img
                 src="/apple-touch-icon.png"
                 alt="CEO 1983 App"
@@ -104,7 +104,7 @@ export function IosInstallPrompt() {
             type="button"
             onClick={handleDismiss}
             style={{ color: "#ffffff" }}
-            className="rounded-xl bg-[#003B95] hover:bg-[#002B70] px-3 py-1.5 text-xs font-bold text-white shadow-xs transition active:scale-95 cursor-pointer"
+            className="rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-3 py-1.5 text-xs font-bold text-white shadow-xs transition active:scale-95 cursor-pointer"
           >
             Đã hiểu
           </button>

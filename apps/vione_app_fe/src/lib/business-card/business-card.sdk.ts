@@ -97,13 +97,9 @@ function currentOrigin(origin?: string): string {
 }
 
 const NEST_API =
-  typeof window !== "undefined" &&
-  (window.location.protocol === "https:" ||
-    window.location.port === "5443" ||
-    window.location.port === "5444" ||
-    window.location.port === "5445")
+  typeof window !== "undefined"
     ? ""
-    : (import.meta.env.VITE_API_URL || "http://localhost:3000");
+    : (import.meta.env.VITE_API_URL || "http://localhost:4001");
 const API_URL = NEST_API ? (NEST_API.endsWith("/api") ? NEST_API : `${NEST_API}/api`) : "/api";
 const getHeaders = (): HeadersInit => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('vibe_token') : null;

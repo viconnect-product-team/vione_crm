@@ -218,7 +218,7 @@ export async function downloadProductTemplateExcel(): Promise<void> {
     cell.fill = {
       type: "pattern",
       pattern: "solid",
-      fgColor: { argb: "FF003B95" }, // Deep Navy Blue
+      fgColor: { argb: "FFD97706" }, // ViOne Amber Gold
     };
     cell.font = {
       name: "Arial",
@@ -413,7 +413,7 @@ export async function exportProductsToExcel(
     cell.border = {
       top: { style: "thin", color: { argb: "FFCBD5E1" } },
       left: { style: "thin", color: { argb: "FFCBD5E1" } },
-      bottom: { style: "medium", color: { argb: "FF003B95" } },
+      bottom: { style: "medium", color: { argb: "FFD97706" } },
       right: { style: "thin", color: { argb: "FFCBD5E1" } },
     };
   });

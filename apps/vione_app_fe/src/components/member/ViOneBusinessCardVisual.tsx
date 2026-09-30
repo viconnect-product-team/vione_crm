@@ -29,10 +29,10 @@ export function ViOneBusinessCardVisual({
   showActions = true,
 }: ViOneBusinessCardVisualProps) {
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0B1528] via-[#0E203C] to-[#050B14] p-6 text-white shadow-2xl border border-[#D4AF37]/30">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#14120F] via-[#1E1B16] to-[#0D0B09] p-6 text-white shadow-2xl border border-[#D4AF37]/30">
       {/* Luxury Metallic Accent Lines */}
       <div className="absolute top-0 right-0 h-32 w-32 bg-radial from-[#D4AF37]/20 to-transparent blur-xl pointer-events-none" />
-      <div className="absolute -bottom-10 -left-10 h-40 w-40 bg-radial from-[#003B95]/30 to-transparent blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 h-40 w-40 bg-radial from-[#D4AF37]/15 to-transparent blur-2xl pointer-events-none" />
 
       {/* Header with Brand & Chip */}
       <div className="flex items-center justify-between">
@@ -65,7 +65,7 @@ export function ViOneBusinessCardVisual({
             className="h-16 w-16 rounded-2xl object-cover border-2 border-[#D4AF37]/60 shadow-lg"
           />
         ) : (
-          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-tr from-[#003B95] to-[#1E40AF] text-xl font-bold text-white border-2 border-[#D4AF37]/40 shadow-lg">
+          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-tr from-[#D4AF37] to-[#B8860B] text-xl font-bold text-[#14120F] border-2 border-[#D4AF37]/40 shadow-lg">
             {name.charAt(0)}
           </div>
         )}

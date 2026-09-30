@@ -9,6 +9,15 @@ const emptyMock = path.resolve(__dirname, 'src/mock-empty.js');
 export default defineConfig({
   vite: {
     resolve: {
+      dedupe: [
+        'react',
+        'react-dom',
+        '@tanstack/react-router',
+        '@tanstack/router-core',
+        '@tanstack/history',
+        '@tanstack/react-start',
+        '@tanstack/start-client-core',
+      ],
       alias: {
         'xmlhttprequest-ssl': emptyMock,
         https: 'node:https',
@@ -39,13 +48,18 @@ export default defineConfig({
         ],
       },
       proxy: {
+        '/socket.io': {
+          target: 'http://127.0.0.1:4001',
+          ws: true,
+          changeOrigin: true,
+        },
         '/upload': {
-          target: 'http://localhost:4001',
+          target: 'http://127.0.0.1:4001',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/upload/, '/api/upload'),
         },
         '/api': {
-          target: 'http://localhost:4001',
+          target: 'http://127.0.0.1:4001',
           changeOrigin: true,
         },
       },

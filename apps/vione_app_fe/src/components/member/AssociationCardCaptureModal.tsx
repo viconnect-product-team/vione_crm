@@ -451,8 +451,8 @@ export function AssociationCardCaptureModal({
         className="relative w-full max-w-lg bg-white dark:bg-[#070D18] text-slate-900 dark:text-white rounded-3xl shadow-2xl border border-slate-200 dark:border-amber-500/25 overflow-hidden flex flex-col my-auto max-h-[92dvh] animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header - CEO 1983 Navy Blue & Amber Gold */}
-        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-slate-200 dark:border-white/10 bg-[#003B95] text-white">
+        {/* Header - ViOne Luxury Amber Gold & Slate */}
+        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-slate-200 dark:border-white/10 bg-gradient-to-r from-slate-900 via-amber-950/60 to-slate-900 text-white">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-2xl bg-white/15 text-amber-300 border border-amber-400/40 shadow-xs">
               <Camera className="w-5 h-5" />
@@ -488,7 +488,7 @@ export function AssociationCardCaptureModal({
                 }}
                 className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   activeTab === "camera"
-                    ? "bg-[#003B95] text-white font-bold shadow-md"
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold shadow-md"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -503,7 +503,7 @@ export function AssociationCardCaptureModal({
                 }}
                 className={`flex-1 py-2 rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   activeTab === "upload"
-                    ? "bg-[#003B95] text-white font-bold shadow-md"
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold shadow-md"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
@@ -553,7 +553,7 @@ export function AssociationCardCaptureModal({
                   <div className="mt-3 space-y-3">
                     <div>
                       <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-1">
-                        <User className="w-3.5 h-3.5 text-[#003B95] dark:text-blue-400" />
+                        <User className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                         <span>Họ và tên</span>
                       </label>
                       <input
@@ -561,7 +561,7 @@ export function AssociationCardCaptureModal({
                         value={contactName}
                         onChange={(e) => setContactName(e.target.value)}
                         placeholder="Nhập họ và tên"
-                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#003B95]"
+                        className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
 

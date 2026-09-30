@@ -147,68 +147,16 @@ export function ViOneVoiceAssistant() {
         } catch {}
       }
 
-      // Danh sách doanh nhân ViOne với toạ độ thực tế / phân bổ quanh vị trí người dùng
-      const defaultEntrepreneurs = [
-        {
-          id: "mem_1",
-          name: "Hoàng Minh Tuấn",
-          title: "Giám đốc Công nghệ (CTO)",
-          company: "Công ty Cổ phần Giải pháp Số ViOne",
-          avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
-          phone: "0912345678",
-          distanceMeters: 450,
-          distanceLabel: "450 m",
-          address: "Tòa nhà Keangnam Landmark 72, Cầu Giấy, Hà Nội",
-          isOnline: true,
-        },
-        {
-          id: "mem_2",
-          name: "Trần Mai Lan",
-          title: "Tổng Giám Đốc",
-          company: "Tập đoàn Bất Động Sản Khang Điền",
-          avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
-          phone: "0988776655",
-          distanceMeters: 850,
-          distanceLabel: "850 m",
-          address: "Phố Duy Tân, Dịch Vọng Hậu, Cầu Giấy",
-          isOnline: true,
-        },
-        {
-          id: "mem_3",
-          name: "Nguyễn Quốc Hùng",
-          title: "Chủ tịch HĐQT",
-          company: "Hùng Vương Industrial Logistics",
-          avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
-          phone: "0903334455",
-          distanceMeters: 1400,
-          distanceLabel: "1.4 km",
-          address: "Khu đô thị Trung Hòa Nhân Chính, Thanh Xuân",
-          isOnline: false,
-        },
-        {
-          id: "mem_4",
-          name: "Vũ Thị Bích Hạnh",
-          title: "Giám đốc Tài chính (CFO)",
-          company: "VinaCapital Investment Advisory",
-          avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80",
-          phone: "0934567890",
-          distanceMeters: 2100,
-          distanceLabel: "2.1 km",
-          address: "Đường Trần Thái Tông, Cầu Giấy, Hà Nội",
-          isOnline: true,
-        },
-      ];
-
       // Nếu có members từ backend, map linh hoạt kèm khoảng cách
       let results: NearbyMember[] = [];
       if (membersList.length > 0) {
-        results = membersList.slice(0, 4).map((m: any, idx: number) => {
+        results = membersList.slice(0, 6).map((m: any, idx: number) => {
           const dist = 350 + idx * 450;
           return {
             id: m.id || m.userId || String(idx),
             name: m.displayName || m.name || m.personName || "Doanh nhân ViOne",
-            title: m.jobTitle || m.title || "Giám đốc điều hành",
-            company: m.companyName || m.company || "Hội viên ViOne",
+            title: m.jobTitle || m.title || "Hội viên doanh nghiệp",
+            company: m.companyName || m.company || "Hệ sinh thái ViOne",
             avatarUrl: m.avatarUrl || m.avatar || null,
             phone: m.primaryPhone || m.phone || null,
             distanceMeters: dist,
@@ -217,18 +165,21 @@ export function ViOneVoiceAssistant() {
             isOnline: idx % 2 === 0,
           };
         });
-      } else {
-        results = defaultEntrepreneurs;
       }
 
       setNearbyResults(results);
 
-      const speech = `Tôi đã tìm thấy ${results.length} doanh nhân ViOne ở gần bạn nhất trong bán kính 2 kilomet: Anh ${results[0].name} cách ${results[0].distanceLabel}, Chị ${results[1].name} cách ${results[1].distanceLabel}. Bạn có thể bấm vào thẻ để xem hồ sơ và kết nối ngay!`;
-
-      setAiResponse(
-        `📍 Đã tìm thấy ${results.length} doanh nhân đang sử dụng ViOne ở gần bạn nhất trong khu vực:`,
-      );
-      speakText(speech);
+      if (results.length > 0) {
+        const speech = `Tôi đã tìm thấy ${results.length} doanh nhân ViOne ở gần bạn nhất trong bán kính 2 kilomet: Anh ${results[0].name} cách ${results[0].distanceLabel}. Bạn có thể bấm vào thẻ để xem hồ sơ và kết nối ngay!`;
+        setAiResponse(
+          `📍 Đã tìm thấy ${results.length} doanh nhân đang sử dụng ViOne ở gần bạn nhất trong khu vực:`,
+        );
+        speakText(speech);
+      } else {
+        const speech = "Hiện chưa có hội viên nào trong bán kính định vị gần bạn. Bạn có thể mở danh bạ Mạng lưới để xem toàn bộ thành viên.";
+        setAiResponse("📍 Không tìm thấy hội viên nào ở bán kính gần bạn. Hãy bấm 'Mạng lưới kết nối B2B' để tìm kiếm.");
+        speakText(speech);
+      }
     } catch {
       setAiResponse("Không thể quét vị trí lúc này. Vui lòng cho phép quyền định vị trên trình duyệt.");
       speakText("Không thể định vị toạ độ. Vui lòng kiểm tra lại quyền định vị.");
@@ -474,7 +425,7 @@ export function ViOneVoiceAssistant() {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-[110] flex items-end justify-center bg-black/75 backdrop-blur-md p-0 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[110] flex items-end justify-center bg-black/60 dark:bg-black/75 backdrop-blur-md p-0 animate-in fade-in duration-200"
           onClick={() => {
             if (synthRef.current) synthRef.current.cancel();
             if (recognitionRef.current) {
@@ -486,30 +437,30 @@ export function ViOneVoiceAssistant() {
           }}
         >
           <div
-            className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-[32px] border-t border-[#D8B282]/40 bg-[#070D18] text-white shadow-[0_-10px_50px_rgba(0,0,0,0.8)] flex flex-col transition-transform duration-300 ease-out animate-in slide-in-from-bottom"
+            className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-[32px] border-t border-slate-200 dark:border-[#D8B282]/40 bg-white dark:bg-[#070D18] text-slate-900 dark:text-white shadow-2xl flex flex-col transition-transform duration-300 ease-out animate-in slide-in-from-bottom"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Thanh kéo đỉnh */}
             <div className="flex justify-center pt-3 pb-1">
-              <div className="h-1.5 w-12 rounded-full bg-slate-700/80" />
+              <div className="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700/80" />
             </div>
 
             {/* Header Trợ lý AI */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800/80">
+            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200 dark:border-slate-800/80">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#C29B69] via-[#F6E1C3] to-[#D8B282] p-0.5 shadow-md">
-                  <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0A1224]">
-                    <Sparkles className="h-4 w-4 text-[#F6E1C3]" />
+                  <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 dark:bg-[#0A1224]">
+                    <Sparkles className="h-4 w-4 text-amber-700 dark:text-[#F6E1C3]" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-sm font-black tracking-wide text-[#F6E1C3] flex items-center gap-1.5">
+                  <h3 className="text-sm font-black tracking-wide text-slate-900 dark:text-[#F6E1C3] flex items-center gap-1.5">
                     <span>Trợ Lý Doanh Nhân ViOne AI</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-[#D8B282]/20 text-[#F6E1C3] border border-[#D8B282]/40 uppercase font-mono">
+                    <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-[#D8B282]/20 text-amber-800 dark:text-[#F6E1C3] border border-amber-300 dark:border-[#D8B282]/40 uppercase font-mono">
                       Voice 5.0
                     </span>
                   </h3>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Phân tích không gian, giọng nói & điều hướng thông minh
                   </p>
                 </div>
@@ -527,8 +478,8 @@ export function ViOneVoiceAssistant() {
                   }}
                   className={`grid h-8 w-8 place-items-center rounded-xl border transition cursor-pointer ${
                     voiceEnabled
-                      ? "border-[#D8B282]/50 bg-[#D8B282]/15 text-[#F6E1C3]"
-                      : "border-slate-800 bg-slate-900 text-slate-500"
+                      ? "border-amber-400 dark:border-[#D8B282]/50 bg-amber-50 dark:bg-[#D8B282]/15 text-amber-800 dark:text-[#F6E1C3]"
+                      : "border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500"
                   }`}
                   title={voiceEnabled ? "Tắt giọng nói" : "Bật giọng nói"}
                 >
@@ -546,7 +497,7 @@ export function ViOneVoiceAssistant() {
                     }
                     setIsOpen(false);
                   }}
-                  className="grid h-8 w-8 place-items-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 hover:text-white transition cursor-pointer"
+                  className="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -554,16 +505,16 @@ export function ViOneVoiceAssistant() {
             </div>
 
             {/* Visualizer Area: Holographic Sphere + Soundwaves */}
-            <div className="px-5 py-6 flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-b from-[#0F1B30]/60 to-transparent">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(216,178,130,0.12),transparent_70%)] pointer-events-none" />
+            <div className="px-5 py-6 flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-b from-amber-50/40 via-blue-50/20 to-transparent dark:from-[#0F1B30]/60 dark:to-transparent">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(216,178,130,0.15),transparent_70%)] pointer-events-none" />
 
               {/* Center Holographic Orb with audio reactive pulses */}
               <div className="relative mb-3 flex items-center justify-center">
                 {/* Sóng âm lan toả */}
                 {(isListening || isSpeaking || isScanningLocation) && (
                   <>
-                    <div className="absolute -inset-4 rounded-full border border-[#D8B282]/40 animate-ping [animation-duration:2s]" />
-                    <div className="absolute -inset-8 rounded-full border border-[#D8B282]/20 animate-ping [animation-duration:3s]" />
+                    <div className="absolute -inset-4 rounded-full border border-amber-400/40 dark:border-[#D8B282]/40 animate-ping [animation-duration:2s]" />
+                    <div className="absolute -inset-8 rounded-full border border-amber-400/20 dark:border-[#D8B282]/20 animate-ping [animation-duration:3s]" />
                   </>
                 )}
 
@@ -574,7 +525,7 @@ export function ViOneVoiceAssistant() {
                       ? "bg-gradient-to-tr from-red-600 via-rose-500 to-amber-500 shadow-[0_0_35px_rgba(239,68,68,0.7)] scale-110"
                       : isSpeaking
                       ? "bg-gradient-to-tr from-[#C29B69] via-[#F6E1C3] to-[#D8B282] shadow-[0_0_35px_rgba(216,178,130,0.7)]"
-                      : "bg-gradient-to-tr from-[#1E293B] via-[#0F172A] to-[#1E293B] border-2 border-[#D8B282]/60 hover:border-[#D8B282]"
+                      : "bg-gradient-to-tr from-amber-100 via-[#FFF2DC] to-amber-200 dark:from-[#1E293B] dark:via-[#0F172A] dark:to-[#1E293B] border-2 border-amber-400 dark:border-[#D8B282]/60 hover:border-amber-500 shadow-md"
                   }`}
                 >
                   {isListening ? (
@@ -582,7 +533,7 @@ export function ViOneVoiceAssistant() {
                   ) : isSpeaking ? (
                     <Volume2 className="h-8 w-8 text-[#130F0F] animate-pulse" />
                   ) : (
-                    <Mic className="h-8 w-8 text-[#F6E1C3]" />
+                    <Mic className="h-8 w-8 text-amber-800 dark:text-[#F6E1C3]" />
                   )}
                 </div>
               </div>
@@ -598,10 +549,10 @@ export function ViOneVoiceAssistant() {
                     }}
                     className={`w-1 rounded-full ${
                       isListening
-                        ? "bg-red-400 animate-pulse"
+                        ? "bg-red-500 animate-pulse"
                         : isSpeaking
-                        ? "bg-[#D8B282] animate-pulse"
-                        : "bg-slate-700"
+                        ? "bg-amber-600 dark:bg-[#D8B282] animate-pulse"
+                        : "bg-slate-300 dark:bg-slate-700"
                     }`}
                   />
                 ))}
@@ -609,7 +560,7 @@ export function ViOneVoiceAssistant() {
 
               {/* Trạng thái AI */}
               <div className="text-center">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-800 text-[11.5px] font-semibold text-[#F6E1C3]">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 text-[11.5px] font-semibold text-slate-700 dark:text-[#F6E1C3]">
                   {isScanningLocation ? (
                     <>
                       <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping" />
@@ -640,7 +591,7 @@ export function ViOneVoiceAssistant() {
               {/* Lời nói của người dùng */}
               {transcript && (
                 <div className="flex items-start gap-2.5 justify-end">
-                  <div className="max-w-[85%] rounded-2xl rounded-tr-xs bg-[#D8B282]/20 border border-[#D8B282]/40 px-3.5 py-2 text-xs font-semibold text-[#F6E1C3]">
+                  <div className="max-w-[85%] rounded-2xl rounded-tr-xs bg-amber-100/70 dark:bg-[#D8B282]/20 border border-amber-300/80 dark:border-[#D8B282]/40 px-3.5 py-2 text-xs font-semibold text-amber-900 dark:text-[#F6E1C3]">
                     "{transcript}"
                   </div>
                 </div>
@@ -649,11 +600,11 @@ export function ViOneVoiceAssistant() {
               {/* Phản hồi của AI */}
               <div className="flex items-start gap-2.5">
                 <div className="h-7 w-7 rounded-xl bg-gradient-to-tr from-[#C29B69] to-[#D8B282] p-0.5 shrink-0">
-                  <div className="h-full w-full rounded-[10px] bg-[#0A1224] grid place-items-center">
-                    <Sparkles className="h-3.5 w-3.5 text-[#F6E1C3]" />
+                  <div className="h-full w-full rounded-[10px] bg-amber-50 dark:bg-[#0A1224] grid place-items-center">
+                    <Sparkles className="h-3.5 w-3.5 text-amber-700 dark:text-[#F6E1C3]" />
                   </div>
                 </div>
-                <div className="flex-1 rounded-2xl rounded-tl-xs bg-slate-900/90 border border-slate-800 px-4 py-3 text-xs leading-relaxed text-slate-200">
+                <div className="flex-1 rounded-2xl rounded-tl-xs bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-4 py-3 text-xs leading-relaxed text-slate-800 dark:text-slate-200">
                   {aiResponse}
                 </div>
               </div>
@@ -663,14 +614,14 @@ export function ViOneVoiceAssistant() {
             {nearbyResults && nearbyResults.length > 0 && (
               <div className="px-5 py-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[#D8B282] flex items-center gap-1.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-800 dark:text-[#D8B282] flex items-center gap-1.5">
                     <MapPin className="h-3.5 w-3.5" />
                     <span>Doanh nhân ViOne ở gần nhất ({nearbyResults.length})</span>
                   </span>
                   <button
                     type="button"
                     onClick={() => void findNearbyViOneUsers()}
-                    className="text-[10.5px] font-semibold text-slate-400 hover:text-white"
+                    className="text-[10.5px] font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   >
                     Quét lại
                   </button>
@@ -680,7 +631,7 @@ export function ViOneVoiceAssistant() {
                   {nearbyResults.map((person) => (
                     <div
                       key={person.id}
-                      className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-slate-800 bg-slate-900/70 hover:border-[#D8B282]/60 transition group"
+                      className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/70 hover:border-amber-400 dark:hover:border-[#D8B282]/60 transition group"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <div className="relative shrink-0">
@@ -691,28 +642,28 @@ export function ViOneVoiceAssistant() {
                               className="h-11 w-11 rounded-full object-cover border border-[#D8B282]/50"
                             />
                           ) : (
-                            <div className="h-11 w-11 rounded-full bg-gradient-to-tr from-[#003B95] to-[#1E293B] grid place-items-center text-xs font-bold text-white">
+                            <div className="h-11 w-11 rounded-full bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-500 grid place-items-center text-xs font-bold text-white shadow-xs">
                               {person.name.slice(0, 2).toUpperCase()}
                             </div>
                           )}
                           {person.isOnline && (
-                            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-slate-900" />
+                            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
                           )}
                         </div>
 
                         <div className="min-w-0">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-black text-white truncate">
+                            <span className="text-xs font-black text-slate-900 dark:text-white truncate">
                               {person.name}
                             </span>
-                            <span className="px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-400 text-[9.5px] font-black shrink-0 border border-emerald-500/30">
+                            <span className="px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[9.5px] font-black shrink-0 border border-emerald-500/30">
                               {person.distanceLabel}
                             </span>
                           </div>
-                          <p className="text-[11px] text-[#D8B282] truncate font-medium">
+                          <p className="text-[11px] text-amber-700 dark:text-[#D8B282] truncate font-medium">
                             {person.title}
                           </p>
-                          <p className="text-[10px] text-slate-400 truncate">
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
                             {person.company}
                           </p>
                         </div>
@@ -723,7 +674,7 @@ export function ViOneVoiceAssistant() {
                         {person.phone && (
                           <a
                             href={`tel:${person.phone}`}
-                            className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-950/60 border border-emerald-800/80 text-emerald-400 hover:bg-emerald-900/80 transition"
+                            className="grid h-8 w-8 place-items-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/80 transition"
                             title="Gọi điện"
                           >
                             <Phone className="h-3.5 w-3.5" />
@@ -735,7 +686,7 @@ export function ViOneVoiceAssistant() {
                             setIsOpen(false);
                             void navigate({ to: `/connect-app/network` as any });
                           }}
-                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-[#D8B282] hover:bg-[#c29b69] text-[#130F0F] text-[11px] font-bold shadow-sm transition active:scale-95 cursor-pointer"
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-gradient-to-tr from-[#C29B69] via-[#F6E1C3] to-[#D8B282] hover:brightness-105 text-[#130F0F] text-[11px] font-bold shadow-sm transition active:scale-95 cursor-pointer"
                         >
                           <span>Kết nối</span>
                         </button>
@@ -748,7 +699,7 @@ export function ViOneVoiceAssistant() {
 
             {/* Quick Action Suggestion Chips */}
             <div className="px-5 py-2">
-              <p className="text-[11px] text-slate-400 font-medium mb-2">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-2">
                 Hoặc chạm câu lệnh gợi ý nhanh:
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -763,7 +714,7 @@ export function ViOneVoiceAssistant() {
                     key={idx}
                     type="button"
                     onClick={() => processCommand(hint.replace(/^[^\s]+\s/, ""))}
-                    className="px-2.5 py-1.5 rounded-xl border border-slate-800 bg-slate-900/80 hover:bg-[#D8B282]/15 hover:border-[#D8B282]/50 text-[11px] text-slate-300 hover:text-[#F6E1C3] transition-colors cursor-pointer"
+                    className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/90 dark:bg-slate-900/80 hover:bg-amber-50 dark:hover:bg-[#D8B282]/15 hover:border-amber-400 dark:hover:border-[#D8B282]/50 text-[11px] text-slate-700 dark:text-slate-300 hover:text-amber-900 dark:hover:text-[#F6E1C3] transition-colors cursor-pointer"
                   >
                     {hint}
                   </button>
@@ -772,14 +723,14 @@ export function ViOneVoiceAssistant() {
             </div>
 
             {/* Bottom Input Form (Dành cho lúc không tiện nói) */}
-            <form onSubmit={handleSendText} className="p-4 border-t border-slate-800/80 flex items-center gap-2">
+            <form onSubmit={handleSendText} className="p-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleListening}
                 className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl border transition cursor-pointer ${
                   isListening
                     ? "bg-red-600 text-white border-red-500 animate-pulse"
-                    : "bg-slate-900 border-slate-800 text-[#D8B282] hover:bg-slate-800"
+                    : "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-amber-800 dark:text-[#D8B282] hover:bg-slate-200 dark:hover:bg-slate-800"
                 }`}
                 title={isListening ? "Dừng ghi âm" : "Nói câu lệnh"}
               >
@@ -791,7 +742,7 @@ export function ViOneVoiceAssistant() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Nhập câu hỏi hoặc yêu cầu..."
-                className="flex-1 min-h-10 rounded-xl border border-slate-800 bg-slate-900/90 px-3.5 text-xs text-white placeholder-slate-500 focus:outline-hidden focus:border-[#D8B282]"
+                className="flex-1 min-h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 px-3.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 dark:focus:border-[#D8B282]"
               />
 
               <button

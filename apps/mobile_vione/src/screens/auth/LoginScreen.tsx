@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   View,
   Text,
+  Image,
   TextInput,
   TouchableOpacity,
   StyleSheet,
@@ -52,10 +53,12 @@ export const LoginScreen: React.FC = () => {
         >
           {/* Brand Header */}
           <View style={styles.brandHeader}>
-            <View style={styles.logoBadge}>
-              <Text style={styles.logoV}>V</Text>
-            </View>
-            <Text style={styles.brandTitle}>ViOne Connect</Text>
+            <Image
+              source={require("../../../assets/vione-wordmark.png")}
+              style={styles.logoWordmark}
+              resizeMode="contain"
+            />
+            <Text style={styles.brandSubtitle}>BUSINESS CONNECT</Text>
             <Text style={styles.brandTagline}>
               Mạng Lưới Kết Nối & Danh Thiếp Số C-Level
             </Text>
@@ -201,32 +204,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 28,
   },
-  logoBadge: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: Colors.goldSoft,
-    borderWidth: 2,
-    borderColor: Colors.gold,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 12,
-    shadowColor: Colors.gold,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 6,
+  logoWordmark: {
+    width: 175,
+    height: 66,
+    marginBottom: 4,
   },
-  logoV: {
+  brandSubtitle: {
     color: Colors.gold,
-    fontSize: 32,
-    fontWeight: "900",
-  },
-  brandTitle: {
-    color: Colors.textPrimary,
-    fontSize: 24,
+    fontSize: 10,
     fontWeight: "800",
-    letterSpacing: 0.5,
+    letterSpacing: 2.2,
+    textTransform: "uppercase",
+    marginBottom: 2,
   },
   brandTagline: {
     color: Colors.textMuted,

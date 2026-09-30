@@ -21,13 +21,19 @@ export function getConnectAppSocket(): Socket {
     } as any;
   }
   if (!globalSocket) {
-    globalSocket = io(NEST_API_URL, {
+    const socketEndpoint =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+        ? "http://127.0.0.1:4001"
+        : (NEST_API_URL || undefined);
+
+    globalSocket = io(socketEndpoint as any, {
       transports: ["websocket", "polling"],
       autoConnect: false,
       reconnection: true,
-      reconnectionAttempts: 3,
-      reconnectionDelay: 5000,
-      timeout: 6000,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      timeout: 10000,
     });
 
     // Gracefully handle connection errors to avoid flooding console with uncaught red errors

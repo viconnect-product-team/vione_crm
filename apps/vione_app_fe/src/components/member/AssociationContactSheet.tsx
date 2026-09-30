@@ -66,7 +66,7 @@ export function AssociationContactSheet({
               </div>
               <div>
                 <p className="text-[11px] text-slate-400 font-medium">Hotline Trực Ban</p>
-                <p className="text-[14px] font-bold text-slate-900 dark:text-white group-hover:text-[#003B95] dark:group-hover:text-amber-400 transition-colors">
+                <p className="text-[14px] font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   0983 19 1983
                 </p>
               </div>
@@ -87,7 +87,7 @@ export function AssociationContactSheet({
               </div>
               <div>
                 <p className="text-[11px] text-slate-400 font-medium">Email Ban Thư Ký</p>
-                <p className="text-[13px] font-bold text-slate-900 dark:text-white group-hover:text-[#003B95] dark:group-hover:text-amber-400 transition-colors">
+                <p className="text-[13px] font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                   banthuky@ceo1983.vn
                 </p>
               </div>
@@ -118,7 +118,7 @@ export function AssociationContactSheet({
             onClose();
             if (onOpenChat) onOpenChat();
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#003B95] hover:bg-[#002B70] py-3 text-[13px] font-bold text-white shadow-md shadow-blue-900/20 active:scale-[0.98] transition-all cursor-pointer mt-1"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 py-3 text-[13px] font-bold text-white shadow-md shadow-amber-500/25 active:scale-[0.98] transition-all cursor-pointer mt-1"
         >
           <MessageSquare className="h-4 w-4" />
           <span>Nhắn tin trực tiếp trong ứng dụng</span>

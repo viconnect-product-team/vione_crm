@@ -43,7 +43,7 @@ export function getBaseApiUrl(): string {
   return (
     (typeof process !== "undefined" && (process.env?.NEST_API_URL || process.env?.VITE_API_URL)) ||
     (import.meta.env?.VITE_API_URL as string) ||
-    "http://127.0.0.1:4000"
+    "http://127.0.0.1:4001"
   );
 }
 
@@ -123,21 +123,12 @@ export function getNestApiUrl(endpoint: string): string {
 
 export function getPublicBackendUrl(): string {
   if (typeof window !== "undefined") {
-    if (
-      window.location.protocol === "https:" ||
-      window.location.port === "5443" ||
-      window.location.port === "5444" ||
-      window.location.port === "5445" ||
-      (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1")
-    ) {
-      return window.location.origin;
-    }
-    return "http://localhost:4000";
+    return window.location.origin;
   }
   return (
     (typeof process !== "undefined" &&
       (process.env?.VITE_PUBLIC_API_URL || process.env?.VITE_API_URL)) ||
-    ""
+    "http://127.0.0.1:4001"
   );
 }
 

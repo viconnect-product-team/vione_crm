@@ -30,7 +30,7 @@ export const Route = createFileRoute("/association/news")({
   component: NewsScreen,
 });
 
-export default function NewsScreen() {
+function NewsScreen() {
   const t = useT();
   const fmt = useFmt();
 

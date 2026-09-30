@@ -2,6 +2,7 @@ param (
     [ValidateSet("preview", "production", "development")]
     [string]$Profile = "preview",
     [switch]$Release,
+    [switch]$Debug,
     [switch]$Cloud,
     [switch]$Clean,
     [switch]$Interactive,
@@ -93,11 +94,14 @@ if (-not (Test-Path $localPropPath)) {
         Write-Host "  -> Da tu dong cau hinh Android SDK: $sdkNormalized" -ForegroundColor Green
     }
 }
+# Mac dinh build Release doc lap de JS bundle duoc dong goi san vao APK (khong can Metro server)
+$targetTask = if ($Debug) { "assembleDebug" } else { "assembleRelease" }
+$buildType = if ($Debug) { "debug" } else { "release" }
+$env:EXPO_NO_METRO_WORKSPACE_ROOT = "1"
+$env:NODE_OPTIONS = "--max-old-space-size=4096"
+$env:MAX_WORKERS = "2"
 
-$targetTask = if ($Release) { "assembleRelease" } else { "assembleDebug" }
-$buildType = if ($Release) { "release" } else { "debug" }
-
-Write-Host "`n[2/4] Chay Gradle [$targetTask]..." -ForegroundColor Yellow
+Write-Host "`n[2/4] Chay Gradle [$targetTask] (Che do doc lap: $(if ($Debug) { 'Debug' } else { 'Release Standalone' }))..." -ForegroundColor Yellow
 Push-Location $ANDROID_DIR
 try {
     if ($Clean) {

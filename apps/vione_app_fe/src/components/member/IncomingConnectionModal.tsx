@@ -163,7 +163,7 @@ export function IncomingConnectionModal() {
     <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
       <div className="relative w-full max-w-sm rounded-3xl bg-white dark:bg-[#0c1427] text-slate-900 dark:text-white shadow-2xl border border-amber-500/30 overflow-hidden m-auto">
         {/* Top Header Banner */}
-        <div className="relative h-20 bg-gradient-to-r from-[#003B95] via-[#00224F] to-[#0A1A3A] flex items-center justify-between px-4">
+        <div className="relative h-20 bg-gradient-to-r from-slate-900 via-amber-950/70 to-slate-950 flex items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <div className="grid h-8 w-8 place-items-center rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30">
               <Sparkles className="h-4 w-4" />
@@ -195,7 +195,7 @@ export function IncomingConnectionModal() {
                 className="w-full h-full rounded-2xl object-cover ring-3 ring-white dark:ring-[#0c1427] shadow-lg"
               />
             ) : (
-              <div className="w-full h-full rounded-2xl bg-amber-100 dark:bg-amber-950/80 flex items-center justify-center text-[#003B95] dark:text-amber-400 font-bold text-xl ring-3 ring-white dark:ring-[#0c1427] shadow-lg">
+              <div className="w-full h-full rounded-2xl bg-amber-100 dark:bg-amber-950/80 flex items-center justify-center text-amber-600 dark:text-amber-400 font-bold text-xl ring-3 ring-white dark:ring-[#0c1427] shadow-lg">
                 <User className="h-8 w-8" />
               </div>
             )}
@@ -222,7 +222,7 @@ export function IncomingConnectionModal() {
 
           {/* Company / Business */}
           <div className="rounded-xl bg-slate-50 dark:bg-white/[0.04] p-2.5 border border-slate-100 dark:border-white/5 text-[12px] font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1.5">
-            <Building2 className="h-4 w-4 text-[#003B95] dark:text-amber-400 shrink-0" />
+            <Building2 className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
             <span className="truncate">{company}</span>
           </div>
 
@@ -269,7 +269,7 @@ export function IncomingConnectionModal() {
                   onClick={handleAccept}
                   disabled={accepting}
                   style={{ color: "#ffffff" }}
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#003B95] hover:bg-[#002B70] text-xs font-bold text-white shadow-md shadow-[#003B95]/20 active:scale-98 transition cursor-pointer disabled:opacity-50"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-xs font-bold text-white shadow-md shadow-amber-900/20 active:scale-98 transition cursor-pointer disabled:opacity-50"
                 >
                   <UserCheck className="h-3.5 w-3.5" />
                   <span>{accepting ? "Đang xử lý..." : "Chấp nhận"}</span>

@@ -170,7 +170,7 @@ export function ContactSupportModal({ open, onClose }: ContactSupportModalProps)
         {/* Fixed Header */}
         <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[#003B95]/10 text-[#003B95] dark:text-amber-400 border border-[#003B95]/20">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
               <Building2 className="h-5 w-5" />
             </div>
             <div>
@@ -199,7 +199,7 @@ export function ContactSupportModal({ open, onClose }: ContactSupportModalProps)
             onClick={() => setActiveTab("committees")}
             className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
               activeTab === "committees"
-                ? "border-[#003B95] text-[#003B95] dark:border-amber-400 dark:text-amber-400"
+                ? "border-amber-500 text-amber-600 dark:border-amber-400 dark:text-amber-400"
                 : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800"
             }`}
           >
@@ -212,7 +212,7 @@ export function ContactSupportModal({ open, onClose }: ContactSupportModalProps)
             onClick={() => setActiveTab("form")}
             className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition cursor-pointer flex items-center gap-1.5 ${
               activeTab === "form"
-                ? "border-[#003B95] text-[#003B95] dark:border-amber-400 dark:text-amber-400"
+                ? "border-amber-500 text-amber-600 dark:border-amber-400 dark:text-amber-400"
                 : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800"
             }`}
           >
@@ -232,7 +232,7 @@ export function ContactSupportModal({ open, onClose }: ContactSupportModalProps)
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Tìm ban ngành, lãnh đạo phụ trách..."
-                  className="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-[#003B95]"
+                  className="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-amber-500"
                 />
                 {searchQuery && (
                   <button
@@ -382,7 +382,7 @@ export function ContactSupportModal({ open, onClose }: ContactSupportModalProps)
                         onClick={() => setTopic(opt.id)}
                         className={`rounded-xl py-2 px-1.5 text-[10.5px] font-bold border transition text-center cursor-pointer ${
                           topic === opt.id
-                            ? "border-[#003B95] dark:border-amber-400 bg-blue-50 dark:bg-blue-950/50 text-[#003B95] dark:text-amber-300"
+                            ? "border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300"
                             : "border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] text-slate-600 dark:text-slate-400"
                         }`}
                       >
@@ -402,14 +402,14 @@ export function ContactSupportModal({ open, onClose }: ContactSupportModalProps)
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Mô tả cụ thể vấn đề hoặc đề xuất của Quý CEO..."
-                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] p-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-[#003B95] resize-none"
+                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] p-3 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-amber-500 resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#003B95] hover:bg-[#002B70] py-2.5 text-xs font-bold text-white shadow-md shadow-[#003B95]/20 active:scale-98 transition cursor-pointer disabled:opacity-60"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/25 active:scale-98 transition cursor-pointer disabled:opacity-60"
                 >
                   <Send className="h-3.5 w-3.5" />
                   <span>{submitting ? "Đang gửi..." : "Gửi Yêu Cầu Tới Ban Thư Ký"}</span>

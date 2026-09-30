@@ -51,14 +51,14 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  --shadow-card: 0 1px 3px 0 rgba(0, 59, 149, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 1px 3px 0 rgba(217, 119, 6, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   --shadow-elevated:
-    0 4px 12px -2px rgba(0, 59, 149, 0.1), 0 2px 6px -1px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 8px 32px -8px rgba(0, 59, 149, 0.35);
+    0 4px 12px -2px rgba(217, 119, 6, 0.1), 0 2px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 8px 32px -8px rgba(217, 119, 6, 0.35);
 
-  --gradient-primary: linear-gradient(135deg, #0052CC 0%, #003B95 100%);
-  --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #EFF6FF 100%);
-  --gradient-card: linear-gradient(135deg, #1E40AF 0%, #003B95 100%);
+  --gradient-primary: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  --gradient-sidebar: linear-gradient(180deg, #FFFFFF 0%, #FFFBEB 100%);
+  --gradient-card: linear-gradient(135deg, #D97706 0%, #B45309 100%);
 }
 
 @keyframes subtle-bounce {
@@ -86,19 +86,19 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0.04 265);
 
-  /* CEO 1983 & ViOne Association Blue Identity */
-  --primary: #003B95;
+  /* ViOne Gold & Amber Identity */
+  --primary: #D97706;
   --primary-foreground: #FFFFFF;
-  --primary-glow: #2563EB;
+  --primary-glow: #F59E0B;
 
   --secondary: #F8FAFC;
-  --secondary-foreground: #003B95;
+  --secondary-foreground: #D97706;
 
   --muted: #F8FAFC;
   --muted-foreground: #64748B;
 
-  --accent: #EFF6FF;
-  --accent-foreground: #003B95;
+  --accent: #FEF3C7;
+  --accent-foreground: #B45309;
 
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
@@ -141,18 +141,18 @@
   --card-foreground: #F8FAFC;
   --popover: #111827;
   --popover-foreground: #F8FAFC;
-  --primary: #3B82F6;
-  --primary-foreground: #FFFFFF;
-  --primary-glow: #60A5FA;
+  --primary: #F59E0B;
+  --primary-foreground: #0F172A;
+  --primary-glow: #FBBF24;
   --secondary: #1F2937;
-  --secondary-foreground: #DBEAFE;
+  --secondary-foreground: #FEF3C7;
   --muted: #1F2937;
   --muted-foreground: #94A3B8;
   --accent: #1E293B;
-  --accent-foreground: #93C5FD;
+  --accent-foreground: #FDE68A;
   --border: rgba(255, 255, 255, 0.12);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: #3B82F6;
+  --ring: #F59E0B;
 
   /* State colours tuned for dark surfaces (AA on --card) */
   --destructive: oklch(0.68 0.2 25);
@@ -166,12 +166,12 @@
 
   --sidebar: #0F172A;
   --sidebar-foreground: #F8FAFC;
-  --sidebar-primary: #3B82F6;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-primary: #F59E0B;
+  --sidebar-primary-foreground: #0F172A;
   --sidebar-accent: #1E293B;
-  --sidebar-accent-foreground: #93C5FD;
+  --sidebar-accent-foreground: #FDE68A;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #3B82F6;
+  --sidebar-ring: #F59E0B;
   --gradient-sidebar: linear-gradient(180deg, #0F172A 0%, #020617 100%);
 
   --chart-1: #FBBF24;
@@ -1237,47 +1237,10 @@ html:not(.dark) .bc-app {
   font-weight: 700 !important;
 }
 
-/* ViOne Strict 3 Primary Brand Colors Policy:
-   Primary: ViOne Blue #0052CC (hover #003B95)
-   Secondary: Sky Blue #0284C7 / Deep Navy #0F172A
-   Base: Clean White #FFFFFF / Neutral Slate
-   No orange/amber buttons allowed in ViOne app. */
-.bc-app button[class*="from-amber"],
-.bc-app a[class*="from-amber"],
-.bc-app button[class*="from-orange"],
-.bc-app a[class*="from-orange"],
-.bc-app button[class*="bg-amber"],
-.bc-app a[class*="bg-amber"],
-.bc-app button[class*="bg-orange"],
-.bc-app a[class*="bg-orange"] {
-  background-image: none !important;
-  background-color: #0052CC !important;
-  color: #FFFFFF !important;
-  border-color: transparent !important;
-}
-
-.bc-app button[class*="from-amber"] *,
-.bc-app a[class*="from-amber"] *,
-.bc-app button[class*="from-orange"] *,
-.bc-app a[class*="from-orange"] *,
-.bc-app button[class*="bg-amber"] *,
-.bc-app a[class*="bg-amber"] *,
-.bc-app button[class*="bg-orange"] *,
-.bc-app a[class*="bg-orange"] * {
-  color: #FFFFFF !important;
-}
-
-.bc-app button[class*="from-amber"]:hover,
-.bc-app a[class*="from-amber"]:hover,
-.bc-app button[class*="from-orange"]:hover,
-.bc-app a[class*="from-orange"]:hover,
-.bc-app button[class*="bg-amber"]:hover,
-.bc-app a[class*="bg-amber"]:hover,
-.bc-app button[class*="bg-orange"]:hover,
-.bc-app a[class*="bg-orange"]:hover {
-  background-color: #003B95 !important;
-  color: #FFFFFF !important;
-}
+/* ViOne App Luxury Gold & Charcoal Identity:
+   - Primary: Luxury Gold #D4AF37 / Amber #F59E0B / #D97706
+   - Surface: Warm Ivory / Dark Luxury Slate
+   - Strictly NO blue #0052CC or #003B95 in ViOne App */
 
 .bc-app-viewport {
   background: transparent;

@@ -8,10 +8,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   const themeToastClass =
     theme === "light"
-      ? "group toast group-[.toaster]:bg-white/95 group-[.toaster]:text-slate-900 group-[.toaster]:border-[#003B95]/25 group-[.toaster]:border group-[.toaster]:shadow-[0_12px_36px_rgba(0,59,149,0.12),0_2px_8px_rgba(0,0,0,0.06)] group-[.toaster]:rounded-2xl group-[.toaster]:backdrop-blur-xl group-[.toaster]:font-sans"
+      ? "group toast group-[.toaster]:bg-white/95 group-[.toaster]:text-slate-900 group-[.toaster]:border-amber-500/30 group-[.toaster]:border group-[.toaster]:shadow-[0_12px_36px_rgba(0,0,0,0.08),0_2px_8px_rgba(245,158,11,0.06)] group-[.toaster]:rounded-2xl group-[.toaster]:backdrop-blur-xl group-[.toaster]:font-sans"
       : theme === "contrast"
       ? "group toast group-[.toaster]:bg-black group-[.toaster]:text-white group-[.toaster]:border-2 group-[.toaster]:border-amber-400 group-[.toaster]:shadow-[0_0_24px_rgba(245,158,11,0.5)] group-[.toaster]:rounded-2xl group-[.toaster]:font-sans"
-      : "group toast group-[.toaster]:bg-[#070D1A]/95 group-[.toaster]:text-slate-100 group-[.toaster]:border-[#003B95]/50 group-[.toaster]:border group-[.toaster]:shadow-[0_12px_36px_rgba(0,0,0,0.6),0_0_15px_rgba(245,158,11,0.2)] group-[.toaster]:rounded-2xl group-[.toaster]:backdrop-blur-xl group-[.toaster]:font-sans";
+      : "group toast group-[.toaster]:bg-[#070D1A]/95 group-[.toaster]:text-slate-100 group-[.toaster]:border-amber-500/40 group-[.toaster]:border group-[.toaster]:shadow-[0_12px_36px_rgba(0,0,0,0.6),0_0_15px_rgba(245,158,11,0.2)] group-[.toaster]:rounded-2xl group-[.toaster]:backdrop-blur-xl group-[.toaster]:font-sans";
 
   const themeDescClass =
     theme === "light"
@@ -22,7 +22,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   const themeActionClass =
     theme === "light"
-      ? "group-[.toast]:bg-[#003B95] group-[.toast]:text-white font-bold group-[.toast]:rounded-xl"
+      ? "group-[.toast]:bg-gradient-to-r group-[.toast]:from-amber-500 group-[.toast]:to-amber-600 group-[.toast]:text-white font-bold group-[.toast]:rounded-xl"
       : theme === "contrast"
       ? "group-[.toast]:bg-amber-400 group-[.toast]:text-black font-black group-[.toast]:rounded-xl"
       : "group-[.toast]:bg-gradient-to-r group-[.toast]:from-amber-400 group-[.toast]:to-amber-500 group-[.toast]:text-slate-950 font-bold group-[.toast]:rounded-xl";

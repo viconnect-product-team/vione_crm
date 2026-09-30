@@ -76,12 +76,14 @@ cd android
 > **Lưu ý sống còn:** Khi sửa file `capacitor.config.ts` (ví dụ đổi URL hay đổi thông tin App), BẮT BUỘC phải chạy `npx cap copy android` trước khi chạy `gradlew.bat` để Capacitor nạp cấu hình mới nhất vào `android/app/src/main/assets/capacitor.config.json`. Nếu dùng script `npm run mobile:ceo1983:apk:local`, hệ thống đã tự động chạy bước đồng bộ này.
 
 #### 3. Vị trí nhận file APK sau khi hoàn tất:
-- **ViOne Connect:**  
-  👉 `apps/mobile_vione/android/app/build/outputs/apk/debug/ViOne-Connect-v1.0-debug.apk`
-- **CEO 1983:**  
-  👉 `apps/mobile_ceo1983/android/app/build/outputs/apk/debug/CEO1983-v1.0-debug.apk`
+- **ViOne Connect (Bản Độc Lập Standalone Release):**  
+  👉 [release_apk/ViOne-Connect-latest.apk](file:///d:/download/VICONNECT/CEO_VIONE_PROJECT/vione_project/release_apk/ViOne-Connect-latest.apk) (~84.7 MB, đã đóng gói sẵn mã JavaScript và tài nguyên vào APK, mở app chạy ngay trên điện thoại không cần kết nối máy tính hay bật Metro).
+- **Lệnh build 1-click:**  
+  ```powershell
+  .\build-apk.ps1
+  ```
 
-> **Cách cài đặt:** Copy file `.apk` vào điện thoại Android qua dây cáp USB, hoặc gửi qua Zalo / Telegram / Google Drive rồi nhấn cài đặt trực tiếp.
+> **Cách cài đặt:** Gỡ bỏ bản cũ trên điện thoại (nếu có), copy file `ViOne-Connect-latest.apk` vào điện thoại qua Zalo/Drive/USB rồi nhấn Cài đặt (Install). Mở ứng dụng sẽ chạy ngay lập tức.
 
 ---
 

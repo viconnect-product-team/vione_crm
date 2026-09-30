@@ -26,7 +26,7 @@ export const EVENT_TYPE_TEMPLATES: Record<EventTypeKey, EventTypeTemplate> = {
     name: "DIỄN ĐÀN DOANH NHÂN TIÊN PHONG 2026: BỨT PHÁ TĂNG TRƯỞNG & ĐỔI MỚI SỐ",
     badge: "🏛️ DIỄN ĐÀN THƯỢNG ĐỈNH DOANH NHÂN",
     tagline: "Quy tụ 200+ Lãnh đạo, Chủ tịch & CEO dẫn dắt tương lai kinh tế",
-    themeGradient: "linear-gradient(135deg, #071322 0%, #003B95 55%, #0A2540 100%)",
+    themeGradient: "linear-gradient(135deg, #0B0F17 0%, #1E1B16 55%, #0B0F17 100%)",
     badgeBg: "rgba(245, 158, 11, 0.2)",
     badgeText: "#F59E0B",
     textColor: "#FFFFFF",

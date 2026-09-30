@@ -489,7 +489,7 @@ export function VoiceNavAssistant() {
             onClick={handleOpenAssistant}
             title="Chạm để ra lệnh giọng nói điều hướng AI"
             aria-label="Mở Trợ lý giọng nói AI"
-            className="animate-robot-wobble relative flex items-center justify-center h-14 w-14 sm:h-15 sm:w-15 rounded-2xl bg-gradient-to-br from-[#0B2F64] via-[#003B95] to-[#040C20] border-2 border-amber-400 text-white shadow-xl hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+            className="animate-robot-wobble relative flex items-center justify-center h-14 w-14 sm:h-15 sm:w-15 rounded-2xl bg-gradient-to-br from-slate-900 via-amber-950/70 to-slate-950 border-2 border-amber-400 text-white shadow-xl hover:scale-105 active:scale-95 transition-transform cursor-pointer"
           >
             {/* Robot Face SVG Graphic */}
             <div className="relative flex flex-col items-center justify-center">
@@ -534,9 +534,9 @@ export function VoiceNavAssistant() {
             aria-modal="true"
           >
             {/* Header */}
-            <div className="relative flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-white/10 bg-gradient-to-r from-[#003B95]/10 via-amber-500/10 to-transparent">
+            <div className="relative flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-white/10 bg-gradient-to-r from-amber-500/10 via-amber-600/10 to-transparent">
               <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[#003B95] to-[#0B2F64] text-amber-300 border border-amber-400/50 shadow-md">
+                <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-amber-600 to-amber-700 text-amber-300 border border-amber-400/50 shadow-md">
                   <Bot className="h-5 w-5" />
                 </div>
                 <div>
@@ -571,7 +571,7 @@ export function VoiceNavAssistant() {
                 className={`relative grid h-20 w-20 place-items-center rounded-full transition-all cursor-pointer ${
                   isListening
                     ? "animate-robot-listening bg-gradient-to-tr from-amber-500 to-rose-500 text-white shadow-[0_0_30px_rgba(245,158,11,0.6)]"
-                    : "bg-gradient-to-tr from-[#003B95] via-[#0B2F64] to-[#040C20] text-amber-300 border-2 border-amber-400 shadow-xl hover:scale-105"
+                    : "bg-gradient-to-tr from-slate-900 via-amber-950/70 to-slate-950 text-amber-300 border-2 border-amber-400 shadow-xl hover:scale-105"
                 }`}
                 aria-label={isListening ? "Dừng ghi âm" : "Bắt đầu nói"}
               >

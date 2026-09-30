@@ -737,7 +737,7 @@ function ProductsScreen() {
             {/* Corner Perk Badge: Liên kết trực tiếp đến ưu đãi App Hiệp Hội (/association/perks) */}
             <Link
               to="/association/perks"
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
               className="absolute right-2 bottom-2 z-10 flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:scale-105 active:scale-95 text-white px-2 py-0.5 text-[9px] font-black shadow-md shadow-amber-500/30 transition border border-amber-300/40"
               title="Ưu đãi độc quyền liên kết App Hiệp Hội"
             >

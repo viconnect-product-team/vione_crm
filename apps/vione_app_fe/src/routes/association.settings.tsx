@@ -467,4 +467,3 @@ function AssociationSettingsScreen() {
     </div>
   );
 }
-export default AssociationSettingsScreen;

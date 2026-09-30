@@ -3,9 +3,18 @@ const client = new Client({ connectionString: 'postgresql://app1:5%5ES0CEpvYwC1(
 
 async function run() {
   await client.connect();
-  const m = await client.query("SELECT code, name, user_id, contact, email, phone FROM public.members");
-  console.log('Total members count:', m.rows.length);
-  console.log('All members codes:', m.rows.map(r => ({ code: r.code, name: r.name, user_id: r.user_id, email: r.email })));
+  const authCols = await client.query(`
+    SELECT column_name FROM information_schema.columns WHERE table_schema = 'auth' AND table_name = 'users';
+  `);
+  console.log('auth.users columns:', authCols.rows.map(r => r.column_name));
+
+  const authUsers = await client.query('SELECT id, email FROM auth.users LIMIT 10;');
+  console.log('auth.users rows:', authUsers.rows);
+
+  const pubUsers = await client.query('SELECT id, email, username FROM public.users LIMIT 10;');
+  console.log('public.users rows:', pubUsers.rows);
+
   await client.end();
 }
+
 run().catch(console.error);
