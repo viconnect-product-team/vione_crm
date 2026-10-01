@@ -22,15 +22,15 @@ import { ScanQrModal } from "../screens/quick-connect/ScanQrModal";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const DarkTheme = {
+const LightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: Colors.background,
-    card: Colors.surface,
-    text: Colors.textPrimary,
-    border: Colors.surfaceBorder,
-    primary: Colors.gold,
+    background: "#FFFFFF",
+    card: "#FFFFFF",
+    text: "#0F172A",
+    border: "#E2E8F0",
+    primary: "#B45309",
   },
 };
 
@@ -42,7 +42,9 @@ const MainTabs: React.FC<{ onVPress: () => void }> = ({ onVPress }) => {
         headerShown: false,
       }}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home">
+        {(props) => <HomeScreen {...props} onOpenV={onVPress} />}
+      </Tab.Screen>
       <Tab.Screen name="Network" component={NetworkScreen} />
       <Tab.Screen name="Community" component={CommunityScreen} />
       <Tab.Screen name="Me" component={ProfileScreen} />
@@ -65,7 +67,7 @@ export const AppNavigator: React.FC = () => {
   }
 
   return (
-    <NavigationContainer theme={DarkTheme}>
+    <NavigationContainer theme={LightTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isAuthenticated ? (
           <Stack.Screen name="Login" component={LoginScreen} />

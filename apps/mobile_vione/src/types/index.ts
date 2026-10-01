@@ -86,3 +86,34 @@ export interface MomentPost {
   taggedPersonName?: string | null;
   likesCount?: number;
 }
+
+export interface DmThreadSummary {
+  threadId: string;
+  counterpartUserId: string;
+  counterpartPersonId?: string;
+  displayName: string;
+  headline?: string;
+  companyName?: string;
+  avatarUrl?: string | null;
+  lastMessagePreview?: string;
+  lastMessageAt?: string | null;
+  lastMessageFromMe?: boolean;
+  unreadCount?: number;
+  isConnected?: boolean;
+  isOnline?: boolean;
+  isGroup?: boolean;
+  membersCount?: number;
+}
+
+export interface DmMessage {
+  id: string;
+  threadId: string;
+  senderUserId: string;
+  senderName?: string;
+  senderAvatar?: string | null;
+  body: string;
+  createdAt: string;
+  isFromMe?: boolean;
+  isSystem?: boolean;
+}
+

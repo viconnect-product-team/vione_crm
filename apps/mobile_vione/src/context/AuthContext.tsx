@@ -19,10 +19,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // Dữ liệu mẫu C-Level dự phòng khi chạy offline hoặc thử nghiệm nhanh
 const DEMO_EXECUTIVE_PROFILE: UserProfile = {
   id: "exec-vione-01",
-  email: "executive@vione.vn",
-  displayName: "Nguyễn Văn Hùng",
-  name: "Nguyễn Văn Hùng",
-  title: "Tổng Giám Đốc",
+  email: "admin@vione.vn",
+  displayName: "Administrator",
+  name: "Administrator",
+  title: "Doanh Nhân ViOne",
   company: "Tập Đoàn Công Nghệ ViOne",
   phone: "0988 123 456",
   bio: "Chuyên gia chuyển đổi số doanh nghiệp & Kết nối đầu tư B2B.",
