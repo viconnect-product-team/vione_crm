@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkloadRouteImport } from './routes/workload'
+import { Route as WorkflowRouteImport } from './routes/workflow'
 import { Route as VotingRouteImport } from './routes/voting'
 import { Route as VioneAppRouteImport } from './routes/vione-app'
 import { Route as VerifyRouteImport } from './routes/verify'
@@ -23,6 +25,7 @@ import { Route as RenewalRouteImport } from './routes/renewal'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PerksRouteImport } from './routes/perks'
+import { Route as PaymentApprovalsRouteImport } from './routes/payment-approvals'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as NewsRouteImport } from './routes/news'
@@ -54,6 +57,7 @@ import { Route as BusinessConnectRouteImport } from './routes/business-connect'
 import { Route as BusinessCardsRouteImport } from './routes/business-cards'
 import { Route as BenefitsRouteImport } from './routes/benefits'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as AssociationRouteImport } from './routes/association'
 import { Route as AiRouteImport } from './routes/ai'
 import { Route as ActivityRouteImport } from './routes/activity'
@@ -244,6 +248,16 @@ import { Route as ApiPublicIdentityTokenContactRouteImport } from './routes/api/
 import { Route as ApiPublicCardSlugContactRouteImport } from './routes/api/public/card.$slug.contact'
 import { Route as ApiPublicAvatarOwnerFileRouteImport } from './routes/api/public/avatar.$owner.$file'
 
+const WorkloadRoute = WorkloadRouteImport.update({
+  id: '/workload',
+  path: '/workload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkflowRoute = WorkflowRouteImport.update({
+  id: '/workflow',
+  path: '/workflow',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VotingRoute = VotingRouteImport.update({
   id: '/voting',
   path: '/voting',
@@ -312,6 +326,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const PerksRoute = PerksRouteImport.update({
   id: '/perks',
   path: '/perks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentApprovalsRoute = PaymentApprovalsRouteImport.update({
+  id: '/payment-approvals',
+  path: '/payment-approvals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OpportunitiesRoute = OpportunitiesRouteImport.update({
@@ -467,6 +486,11 @@ const BenefitsRoute = BenefitsRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AttendanceRoute = AttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssociationRoute = AssociationRouteImport.update({
@@ -1471,6 +1495,7 @@ export interface FileRoutesByFullPath {
   '/activity': typeof ActivityRoute
   '/ai': typeof AiRoute
   '/association': typeof AssociationRouteWithChildren
+  '/attendance': typeof AttendanceRoute
   '/auth': typeof AuthRoute
   '/benefits': typeof BenefitsRoute
   '/business-cards': typeof BusinessCardsRoute
@@ -1502,6 +1527,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
   '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/payment-approvals': typeof PaymentApprovalsRoute
   '/perks': typeof PerksRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
@@ -1516,6 +1542,8 @@ export interface FileRoutesByFullPath {
   '/verify': typeof VerifyRoute
   '/vione-app': typeof VioneAppRoute
   '/voting': typeof VotingRoute
+  '/workflow': typeof WorkflowRoute
+  '/workload': typeof WorkloadRoute
   '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
   '/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren
   '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
@@ -1705,6 +1733,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/ai': typeof AiRoute
+  '/attendance': typeof AttendanceRoute
   '/auth': typeof AuthRoute
   '/benefits': typeof BenefitsRoute
   '/business-cards': typeof BusinessCardsRoute
@@ -1726,6 +1755,7 @@ export interface FileRoutesByTo {
   '/network': typeof NetworkRoute
   '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
+  '/payment-approvals': typeof PaymentApprovalsRoute
   '/perks': typeof PerksRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
@@ -1740,6 +1770,8 @@ export interface FileRoutesByTo {
   '/verify': typeof VerifyRoute
   '/vione-app': typeof VioneAppRoute
   '/voting': typeof VotingRoute
+  '/workflow': typeof WorkflowRoute
+  '/workload': typeof WorkloadRoute
   '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
   '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
   '/admin/demo-leads': typeof AdminDemoLeadsRoute
@@ -1913,6 +1945,7 @@ export interface FileRoutesById {
   '/activity': typeof ActivityRoute
   '/ai': typeof AiRoute
   '/association': typeof AssociationRouteWithChildren
+  '/attendance': typeof AttendanceRoute
   '/auth': typeof AuthRoute
   '/benefits': typeof BenefitsRoute
   '/business-cards': typeof BusinessCardsRoute
@@ -1944,6 +1977,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/notifications': typeof NotificationsRoute
   '/opportunities': typeof OpportunitiesRouteWithChildren
+  '/payment-approvals': typeof PaymentApprovalsRoute
   '/perks': typeof PerksRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
@@ -1958,6 +1992,8 @@ export interface FileRoutesById {
   '/verify': typeof VerifyRoute
   '/vione-app': typeof VioneAppRoute
   '/voting': typeof VotingRoute
+  '/workflow': typeof WorkflowRoute
+  '/workload': typeof WorkloadRoute
   '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
   '/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren
   '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
@@ -2151,6 +2187,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/ai'
     | '/association'
+    | '/attendance'
     | '/auth'
     | '/benefits'
     | '/business-cards'
@@ -2182,6 +2219,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/notifications'
     | '/opportunities'
+    | '/payment-approvals'
     | '/perks'
     | '/profile'
     | '/register'
@@ -2196,6 +2234,8 @@ export interface FileRouteTypes {
     | '/verify'
     | '/vione-app'
     | '/voting'
+    | '/workflow'
+    | '/workload'
     | '/account-settings/notifications'
     | '/admin/business-cards'
     | '/admin/cta-analytics'
@@ -2385,6 +2425,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/ai'
+    | '/attendance'
     | '/auth'
     | '/benefits'
     | '/business-cards'
@@ -2406,6 +2447,7 @@ export interface FileRouteTypes {
     | '/network'
     | '/news'
     | '/notifications'
+    | '/payment-approvals'
     | '/perks'
     | '/profile'
     | '/register'
@@ -2420,6 +2462,8 @@ export interface FileRouteTypes {
     | '/verify'
     | '/vione-app'
     | '/voting'
+    | '/workflow'
+    | '/workload'
     | '/account-settings/notifications'
     | '/admin/cta-analytics'
     | '/admin/demo-leads'
@@ -2592,6 +2636,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/ai'
     | '/association'
+    | '/attendance'
     | '/auth'
     | '/benefits'
     | '/business-cards'
@@ -2623,6 +2668,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/notifications'
     | '/opportunities'
+    | '/payment-approvals'
     | '/perks'
     | '/profile'
     | '/register'
@@ -2637,6 +2683,8 @@ export interface FileRouteTypes {
     | '/verify'
     | '/vione-app'
     | '/voting'
+    | '/workflow'
+    | '/workload'
     | '/account-settings/notifications'
     | '/admin/business-cards'
     | '/admin/cta-analytics'
@@ -2829,6 +2877,7 @@ export interface RootRouteChildren {
   ActivityRoute: typeof ActivityRoute
   AiRoute: typeof AiRoute
   AssociationRoute: typeof AssociationRouteWithChildren
+  AttendanceRoute: typeof AttendanceRoute
   AuthRoute: typeof AuthRoute
   BenefitsRoute: typeof BenefitsRoute
   BusinessCardsRoute: typeof BusinessCardsRoute
@@ -2860,6 +2909,7 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRoute
   NotificationsRoute: typeof NotificationsRoute
   OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
+  PaymentApprovalsRoute: typeof PaymentApprovalsRoute
   PerksRoute: typeof PerksRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
@@ -2874,6 +2924,8 @@ export interface RootRouteChildren {
   VerifyRoute: typeof VerifyRoute
   VioneAppRoute: typeof VioneAppRoute
   VotingRoute: typeof VotingRoute
+  WorkflowRoute: typeof WorkflowRoute
+  WorkloadRoute: typeof WorkloadRoute
   AdminBusinessCardsRoute: typeof AdminBusinessCardsRouteWithChildren
   AdminCtaAnalyticsRoute: typeof AdminCtaAnalyticsRoute
   AdminDemoLeadsRoute: typeof AdminDemoLeadsRoute
@@ -2905,6 +2957,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workload': {
+      id: '/workload'
+      path: '/workload'
+      fullPath: '/workload'
+      preLoaderRoute: typeof WorkloadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workflow': {
+      id: '/workflow'
+      path: '/workflow'
+      fullPath: '/workflow'
+      preLoaderRoute: typeof WorkflowRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/voting': {
       id: '/voting'
       path: '/voting'
@@ -3001,6 +3067,13 @@ declare module '@tanstack/react-router' {
       path: '/perks'
       fullPath: '/perks'
       preLoaderRoute: typeof PerksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-approvals': {
+      id: '/payment-approvals'
+      path: '/payment-approvals'
+      fullPath: '/payment-approvals'
+      preLoaderRoute: typeof PaymentApprovalsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/opportunities': {
@@ -3218,6 +3291,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/attendance': {
+      id: '/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AttendanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/association': {
@@ -5228,6 +5308,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActivityRoute: ActivityRoute,
   AiRoute: AiRoute,
   AssociationRoute: AssociationRouteWithChildren,
+  AttendanceRoute: AttendanceRoute,
   AuthRoute: AuthRoute,
   BenefitsRoute: BenefitsRoute,
   BusinessCardsRoute: BusinessCardsRoute,
@@ -5259,6 +5340,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRoute,
   NotificationsRoute: NotificationsRoute,
   OpportunitiesRoute: OpportunitiesRouteWithChildren,
+  PaymentApprovalsRoute: PaymentApprovalsRoute,
   PerksRoute: PerksRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
@@ -5273,6 +5355,8 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyRoute: VerifyRoute,
   VioneAppRoute: VioneAppRoute,
   VotingRoute: VotingRoute,
+  WorkflowRoute: WorkflowRoute,
+  WorkloadRoute: WorkloadRoute,
   AdminBusinessCardsRoute: AdminBusinessCardsRouteWithChildren,
   AdminCtaAnalyticsRoute: AdminCtaAnalyticsRoute,
   AdminDemoLeadsRoute: AdminDemoLeadsRoute,

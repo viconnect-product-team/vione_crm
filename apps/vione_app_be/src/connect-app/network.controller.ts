@@ -7,6 +7,11 @@ import { ConnectAppService } from './connect-app.service';
 export class NetworkController {
   constructor(private readonly connectAppService: ConnectAppService) {}
 
+  @Get()
+  async getNetworkRoot(@Request() req, @Query('limit') limit?: string) {
+    return this.connectAppService.listConnections(req.user.id);
+  }
+
   @Get('connections')
   async listConnections(@Request() req) {
     return this.connectAppService.listConnections(req.user.id);

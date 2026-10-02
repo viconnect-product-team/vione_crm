@@ -184,7 +184,7 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.backBtn} onPress={onClose}>
-            <ArrowLeft size={22} color="#0F172A" />
+            <ArrowLeft size={22} color="#FFFFFF" />
           </TouchableOpacity>
 
           <View style={styles.headerInfo}>
@@ -333,16 +333,16 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#0A0A0B",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0A0A0B",
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: "rgba(216, 178, 130, 0.2)",
   },
   backBtn: {
     padding: 6,
@@ -364,12 +364,12 @@ const styles = StyleSheet.create({
   headerName: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
   groupBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FEF3C7",
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
@@ -378,21 +378,22 @@ const styles = StyleSheet.create({
   groupBadgeText: {
     fontSize: 10,
     fontWeight: "700",
-    color: "#B45309",
+    color: "#D8B282",
     marginLeft: 2,
   },
   headerSubtitle: {
     fontSize: 12,
-    color: "#64748B",
+    color: "#94A3B8",
     marginTop: 1,
   },
   actionBtn: {
     padding: 8,
     borderRadius: 20,
-    backgroundColor: "#FEF3C7",
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
   },
   chatArea: {
     flex: 1,
+    backgroundColor: "#0A0A0B",
   },
   centerLoading: {
     flex: 1,
@@ -408,14 +409,16 @@ const styles = StyleSheet.create({
     marginVertical: 12,
   },
   systemPill: {
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#181D2A",
     paddingHorizontal: 12,
     paddingVertical: 5,
     borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
   },
   systemPillText: {
     fontSize: 11,
-    color: "#475569",
+    color: "#D4C3A3",
     fontWeight: "500",
   },
   msgRow: {
@@ -436,13 +439,13 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   bubbleLeft: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#181D2A",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "rgba(255, 255, 255, 0.08)",
     borderBottomLeftRadius: 4,
   },
   bubbleRight: {
-    backgroundColor: "#D97706",
+    backgroundColor: "#D8B282",
     borderBottomRightRadius: 4,
   },
   bubbleText: {
@@ -450,10 +453,11 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   bubbleTextLeft: {
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
   bubbleTextRight: {
-    color: "#FFFFFF",
+    color: "#050C15",
+    fontWeight: "600",
   },
   bubbleFooter: {
     flexDirection: "row",
@@ -468,39 +472,41 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
   },
   bubbleTimeRight: {
-    color: "rgba(255,255,255,0.75)",
+    color: "rgba(5, 12, 21, 0.7)",
   },
   inputBar: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0A0A0B",
     borderTopWidth: 1,
-    borderTopColor: "#E2E8F0",
+    borderTopColor: "rgba(216, 178, 130, 0.2)",
   },
   textInput: {
     flex: 1,
     minHeight: 40,
     maxHeight: 100,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#181D2A",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 10,
     fontSize: 14,
-    color: "#0F172A",
+    color: "#FFFFFF",
     marginRight: 10,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
   },
   sendBtn: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#D97706",
+    backgroundColor: "#D8B282",
     alignItems: "center",
     justifyContent: "center",
   },
   sendBtnDisabled: {
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#334155",
   },
 });

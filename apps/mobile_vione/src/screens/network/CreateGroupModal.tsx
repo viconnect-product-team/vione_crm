@@ -85,7 +85,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-            <X size={22} color="#0F172A" />
+            <X size={22} color="#FFFFFF" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Tạo Nhóm Làm Việc</Text>
           <TouchableOpacity
@@ -188,7 +188,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#0A0A0B",
   },
   header: {
     flexDirection: "row",
@@ -196,9 +196,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0A0A0B",
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: "rgba(216, 178, 130, 0.2)",
   },
   closeBtn: {
     padding: 4,
@@ -206,30 +206,30 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
   createHeaderBtn: {
-    backgroundColor: "#D97706",
+    backgroundColor: "#D8B282",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 16,
   },
   createHeaderBtnDisabled: {
-    backgroundColor: "#CBD5E1",
+    backgroundColor: "#334155",
   },
   createHeaderText: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: "#050C15",
   },
   content: {
     flex: 1,
   },
   nameSection: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#12151F",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E2E8F0",
+    borderBottomColor: "rgba(255, 255, 255, 0.08)",
   },
   emojiPicker: {
     flexDirection: "row",
@@ -240,27 +240,27 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: "#181D2A",
     alignItems: "center",
     justifyContent: "center",
   },
   emojiBtnActive: {
-    backgroundColor: "#FEF3C7",
+    backgroundColor: "rgba(216, 178, 130, 0.2)",
     borderWidth: 2,
-    borderColor: "#D97706",
+    borderColor: "#D8B282",
   },
   emojiText: {
     fontSize: 20,
   },
   nameInput: {
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#181D2A",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 14,
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
   suggestionsWrap: {
     flexDirection: "row",
@@ -271,16 +271,16 @@ const styles = StyleSheet.create({
   sugChip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFBEB",
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#FDE68A",
+    borderColor: "rgba(216, 178, 130, 0.3)",
   },
   sugChipText: {
     fontSize: 11,
-    color: "#92400E",
+    color: "#F6E1C3",
     fontWeight: "600",
   },
   membersSectionHeader: {
@@ -293,11 +293,11 @@ const styles = StyleSheet.create({
   membersTitle: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
   selectedCountText: {
     fontSize: 12,
-    color: "#D97706",
+    color: "#D8B282",
     fontWeight: "600",
   },
   membersList: {
@@ -306,16 +306,16 @@ const styles = StyleSheet.create({
   memberItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#12151F",
     padding: 12,
     borderRadius: 14,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "rgba(255, 255, 255, 0.08)",
   },
   memberItemSelected: {
-    borderColor: "#D97706",
-    backgroundColor: "#FFFBEB",
+    borderColor: "#D8B282",
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
   },
   memberInfo: {
     flex: 1,
@@ -324,11 +324,11 @@ const styles = StyleSheet.create({
   memberName: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#0F172A",
+    color: "#FFFFFF",
   },
   memberCompany: {
     fontSize: 12,
-    color: "#64748B",
+    color: "#94A3B8",
     marginTop: 2,
   },
   checkbox: {
@@ -336,12 +336,12 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 11,
     borderWidth: 2,
-    borderColor: "#CBD5E1",
+    borderColor: "rgba(255, 255, 255, 0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   checkboxActive: {
-    backgroundColor: "#D97706",
-    borderColor: "#D97706",
+    backgroundColor: "#D8B282",
+    borderColor: "#D8B282",
   },
 });

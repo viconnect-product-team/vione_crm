@@ -13,6 +13,7 @@
 
 import { Link } from "@tanstack/react-router";
 import {
+  Activity,
   ArrowRight,
   Bell,
   CalendarDays,
@@ -20,12 +21,14 @@ import {
   ChevronRight,
   CircleCheck,
   Handshake,
+  Layers,
   Loader2,
   MapPin,
   MessageSquare,
   Pencil,
   Phone,
   RefreshCw,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   User,
@@ -63,6 +66,9 @@ import { TodayItem } from "./TodayItem";
 import { VIconMark } from "./VIconMark";
 import { EventDetailMobileSheet } from "./EventDetailMobileSheet";
 import { PersonalProfileBottomSheet } from "@/components/common/PersonalProfileBottomSheet";
+import { AttendanceMobileSheet } from "./AttendanceMobileSheet";
+import { WorkflowMobileSheet } from "./WorkflowMobileSheet";
+import { ApprovalsMobileSheet } from "./ApprovalsMobileSheet";
 
 export type CrmEvent = {
   id: string;
@@ -111,6 +117,9 @@ export function ExecutiveHome() {
   const [selectedEvent, setSelectedEvent] = useState<CrmEvent | null>(null);
   const [eventSheetOpen, setEventSheetOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
+  const [attendanceSheetOpen, setAttendanceSheetOpen] = useState(false);
+  const [workflowSheetOpen, setWorkflowSheetOpen] = useState(false);
+  const [approvalsSheetOpen, setApprovalsSheetOpen] = useState(false);
 
   const handleOpenEvent = (ev: CrmEvent) => {
     setSelectedEvent(ev);
@@ -238,13 +247,13 @@ export function ExecutiveHome() {
       list.push({
         id: `meeting-${m.id}`,
         type: "meeting",
-        title: m.title || `Cuộc gặp 1-1: ${m.partnerName || m.counterpart || "Hội viên Doanh nhân"}`,
+        title: m.title || `Cuộc gặp 1-1: ${m.partnerName || m.counterpart || "Doanh nhân Đối tác"}`,
         counterpart: m.partnerName || m.counterpart || "Doanh nhân đối tác",
         phone: m.phone || m.partnerPhone,
         date: mDate,
         time: m.time || "14:30",
         format: m.format || (m.location?.toLowerCase().includes("meet") ? "online" : "offline"),
-        location: m.location || (m.format === "online" ? "Google Meet Trực Tuyến" : "Văn phòng Hiệp hội"),
+        location: m.location || (m.format === "online" ? "Google Meet Trực Tuyến" : "Văn phòng Doanh nghiệp"),
         status: m.status || "confirmed",
       });
     }
@@ -257,7 +266,7 @@ export function ExecutiveHome() {
           id: `event-reminder-${ev.id}`,
           type: "event",
           title: `Nhắc lịch sự kiện: ${ev.title || ev.name}`,
-          counterpart: ev.associationName || ev.communityName || "CLB CEO 1983",
+          counterpart: ev.associationName || ev.communityName || "Cộng đồng Doanh nghiệp ViOne",
           date: ev.date || ev.startDate || dt.toISOString(),
           time: dt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
           format: (ev as any).type === "online" ? "online" : "offline",
@@ -570,6 +579,12 @@ export function ExecutiveHome() {
 
             <QuickActions />
 
+            <EnterpriseOperationsCard
+              onOpenAttendance={() => setAttendanceSheetOpen(true)}
+              onOpenWorkflow={() => setWorkflowSheetOpen(true)}
+              onOpenApprovals={() => setApprovalsSheetOpen(true)}
+            />
+
             {/* BC-Mobile-6A — calm intelligence: own query, never blocks Home. */}
             <div id="tour-vione-ai-suggestions">
               <RelationshipSuggestions />
@@ -587,6 +602,20 @@ export function ExecutiveHome() {
               open={eventSheetOpen}
               onOpenChange={setEventSheetOpen}
               event={selectedEvent}
+            />
+
+            {/* In-App Native Operational Sheets — Không chuyển hướng ra web CRM */}
+            <AttendanceMobileSheet
+              open={attendanceSheetOpen}
+              onClose={() => setAttendanceSheetOpen(false)}
+            />
+            <WorkflowMobileSheet
+              open={workflowSheetOpen}
+              onClose={() => setWorkflowSheetOpen(false)}
+            />
+            <ApprovalsMobileSheet
+              open={approvalsSheetOpen}
+              onClose={() => setApprovalsSheetOpen(false)}
             />
           </div>
         )}
@@ -803,6 +832,135 @@ function InsightCard() {
   );
 }
 
+/** Giám sát Vận hành & Tiến độ nhân sự theo chuẩn BRD Master 5.0 — Mở Sheet Native in-app */
+function EnterpriseOperationsCard({
+  onOpenAttendance,
+  onOpenWorkflow,
+  onOpenApprovals,
+}: {
+  onOpenAttendance: () => void;
+  onOpenWorkflow: () => void;
+  onOpenApprovals: () => void;
+}) {
+  return (
+    <section
+      aria-labelledby="bc-home-ops"
+      className="relative mt-5 overflow-hidden rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-5 shadow-xs transition-all hover:border-[var(--bc-mobile-border-gold)]"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Activity className="h-4 w-4 text-[var(--bc-mobile-accent)]" strokeWidth={1.8} />
+          <h2
+            id="bc-home-ops"
+            className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--bc-mobile-muted)]"
+          >
+            GIÁM SÁT VẬN HÀNH & NHÂN SỰ
+          </h2>
+        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          THỜI GIAN THỰC
+        </span>
+      </div>
+
+      <p className="mt-3 text-[18px] font-bold leading-tight text-[var(--bc-mobile-text)] uppercase">
+        TỔNG THỂ QUY TRÌNH & TIẾN ĐỘ NHÂN VIÊN
+      </p>
+      <p className="mt-1 text-[13px] leading-relaxed text-[var(--bc-mobile-muted)]">
+        Kiểm soát luồng công việc BPMN, khối lượng tải làm việc của từng nhân sự, chấm công GPS và phê duyệt chi 3 cấp theo chuẩn BRD.
+      </p>
+
+      {/* Grid 3 thẻ nghiệp vụ chuẩn BRD — Không chuyển hướng ra CRM */}
+      <div className="mt-4 flex flex-col gap-3">
+        {/* Thẻ 1: Chấm công GPS & FaceID */}
+        <button
+          type="button"
+          onClick={onOpenAttendance}
+          className="group w-full text-left block rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3.5 transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <MapPin className="h-4 w-4" />
+              </span>
+              <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
+                Chấm công GPS & AI FaceID
+              </span>
+            </div>
+            <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600 dark:text-emerald-400">
+              42/45 CÓ MẶT (93.3%)
+            </span>
+          </div>
+          <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
+            Bán kính ≤ 50m (BR-HRM-01) · Khớp mặt ≥ 92% (BR-HRM-02) · 1-chạm điểm danh
+          </p>
+          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
+            <span>Mở bảng điểm danh & xin nghỉ</span>
+            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </button>
+
+        {/* Thẻ 2: Quy trình & Tiến độ nhân sự */}
+        <button
+          type="button"
+          onClick={onOpenWorkflow}
+          className="group w-full text-left block rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3.5 transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                <Layers className="h-4 w-4" />
+              </span>
+              <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
+                Quy trình & Tiến độ nhân sự
+              </span>
+            </div>
+            <span className="flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10.5px] font-bold text-rose-600 dark:text-rose-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+              2 VIỆC TRỄ HẠN
+            </span>
+          </div>
+          <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
+            12 việc đang xử lý · WIP ≤ 5 (BR-WRK-06) · 1 nhân sự quá tải &gt; 45h/tuần (BR-WRK-14)
+          </p>
+          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
+            <span>Theo dõi tiến độ đội ngũ & Kanban</span>
+            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </button>
+
+        {/* Thẻ 3: Phê duyệt chi 3 cấp */}
+        <button
+          type="button"
+          onClick={onOpenApprovals}
+          className="group w-full text-left block rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3.5 transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
+                Phê duyệt chi 3 cấp
+              </span>
+            </div>
+            <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10.5px] font-bold text-amber-600 dark:text-amber-400">
+              3 TỜ TRÌNH CHỜ DUYỆT
+            </span>
+          </div>
+          <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
+            Maker → Checker → Approver · Hạn mức &gt; 20 triệu thẩm quyền CEO duyệt (BR-FIN-02)
+          </p>
+          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
+            <span>Ký duyệt chi & Napas VietQR</span>
+            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </div>
+        </button>
+      </div>
+    </section>
+  );
+}
+
 // ── Header affordances ───────────────────────────────────────────────────────
 
 function initialsOf(identity: BcMobileHomeIdentity | null): string | null {
@@ -854,7 +1012,7 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
     profileIdentity?.displayName ||
     identity.displayName ||
     identity.email?.split("@")[0] ||
-    "Hội viên ViOne";
+    "Doanh nhân ViOne";
 
   // Số điện thoại
   const phone =

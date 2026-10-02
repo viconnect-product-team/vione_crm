@@ -59,17 +59,12 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
 
   const query = term.trim().toLowerCase();
 
-  const ceoOnlyCommunities = useMemo(() => {
-    return communities.filter((c: any) => {
-      const id = String(c.communityId || "");
-      const name = String(c.name || "");
-      const slug = String(c.slug || "");
-      return id === "c1983000-0000-4000-8000-000000001983" || slug === "ceo1983" || name.includes("1983");
-    });
+  const enterpriseCommunities = useMemo(() => {
+    return communities;
   }, [communities]);
 
   const visible = useMemo(() => {
-    return ceoOnlyCommunities.filter((c: any) => {
+    return enterpriseCommunities.filter((c: any) => {
       if (tab === "admin" && c.viewerRole !== "admin") return false;
       if (tab === "joined") {
         const isJoined = c.viewerRole === "member" || c.viewerRole === "admin" || c.isMember || c.membershipStatus === "active";
@@ -78,9 +73,9 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
       if (!query) return true;
       return c.name.toLowerCase().includes(query);
     });
-  }, [ceoOnlyCommunities, query, tab]);
+  }, [enterpriseCommunities, query, tab]);
 
-  const hasAdmin = ceoOnlyCommunities.some((c) => c.viewerRole === "admin");
+  const hasAdmin = enterpriseCommunities.some((c) => c.viewerRole === "admin");
 
   return (
     <>
@@ -187,7 +182,7 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
             <MobileSearchBar
               value={term}
               onChange={setTerm}
-              placeholder="Tìm hiệp hội, nhóm, sự kiện..."
+              placeholder="Tìm cộng đồng, liên minh, sự kiện..."
             />
             </form>
 
@@ -232,8 +227,8 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
                 <CommunityJoinStatusCards term={term} />
 
                 {/* Sắp diễn ra & Cơ hội kinh doanh trong cộng đồng */}
-                <CommunityUpcomingEvents communities={ceoOnlyCommunities} />
-                <CommunityOpportunitiesSection communities={ceoOnlyCommunities} />
+                <CommunityUpcomingEvents communities={enterpriseCommunities} />
+                <CommunityOpportunitiesSection communities={enterpriseCommunities} />
 
                 {/* F — Cộng đồng gợi ý (yêu cầu tham gia) */}
                 {!query ? (

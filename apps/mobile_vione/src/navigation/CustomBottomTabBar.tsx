@@ -9,6 +9,7 @@ import {
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { Home, Network, Users, User } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Colors } from "../theme/colors";
 
 interface CustomBottomTabBarProps extends BottomTabBarProps {
   onVPress: () => void;
@@ -21,9 +22,9 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
   onVPress,
 }) => {
   const getTabIcon = (routeName: string, isFocused: boolean) => {
-    const color = isFocused ? "#B45309" : "#64748B";
-    const size = 21;
-    const strokeWidth = isFocused ? 2.2 : 1.7;
+    const color = isFocused ? Colors.gold : Colors.tabInactive;
+    const size = 20;
+    const strokeWidth = isFocused ? 2.3 : 1.7;
 
     switch (routeName) {
       case "Home":
@@ -83,11 +84,11 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
                   <TouchableOpacity
                     style={styles.vBtnTouch}
                     onPress={onVPress}
-                    activeOpacity={0.85}
+                    activeOpacity={0.88}
                   >
                     <View style={styles.vBtnGlowRing}>
                       <LinearGradient
-                        colors={["#F8E7D1", "#D8B282", "#A67A47"]}
+                        colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.vBtnGradient}
@@ -107,7 +108,7 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
                 {/* Active Indicator Top Line */}
                 {isFocused && <View style={styles.activeIndicator} />}
 
-                <View style={styles.iconWrap}>
+                <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
                   {getTabIcon(route.name, isFocused)}
                 </View>
 
@@ -125,23 +126,23 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   tabBarContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0A0A0B",
   },
   tabBarInner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#0A0A0B",
     borderTopWidth: 1,
-    borderTopColor: "#E2E8F0",
+    borderTopColor: "rgba(216, 178, 130, 0.18)",
     height: Platform.OS === "ios" ? 84 : 68,
     paddingBottom: Platform.OS === "ios" ? 22 : 8,
     paddingHorizontal: 10,
     position: "relative",
-    shadowColor: "#0F172A",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 4,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 16,
+    elevation: 10,
   },
   tabItem: {
     flex: 1,
@@ -156,21 +157,30 @@ const styles = StyleSheet.create({
     width: 26,
     height: 3,
     borderRadius: 2,
-    backgroundColor: "#B45309",
+    backgroundColor: "#D8B282",
+    shadowColor: "#D8B282",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.6,
+    shadowRadius: 4,
   },
   iconWrap: {
-    padding: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
+  iconWrapActive: {
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
+  },
   tabLabel: {
-    color: "#64748B",
+    color: "#94A3B8",
     fontSize: 10.5,
     fontWeight: "500",
     marginTop: 2,
   },
   tabLabelActive: {
-    color: "#B45309",
+    color: "#D8B282",
     fontWeight: "700",
   },
   vBtnHolder: {
@@ -180,38 +190,45 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   vBtnTouch: {
-    top: -16,
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    top: -18,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
   },
   vBtnGlowRing: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
-    padding: 2,
-    backgroundColor: "#FEF3C7",
-    shadowColor: "#D4AF37",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    padding: 3,
+    backgroundColor: "rgba(216, 178, 130, 0.35)",
+    borderWidth: 1.5,
+    borderColor: "rgba(246, 225, 195, 0.6)",
+    shadowColor: "#D8B282",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOpacity: 0.85,
+    shadowRadius: 16,
+    elevation: 12,
   },
   vBtnGradient: {
     width: "100%",
     height: "100%",
-    borderRadius: 25,
+    borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1.5,
-    borderColor: "#FFFBEB",
+    borderWidth: 1.8,
+    borderColor: "#FFF2DC",
+    shadowColor: "#F6E1C3",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
   },
   vBtnText: {
-    color: "#2C1802",
-    fontSize: 24,
+    color: "#050C15",
+    fontSize: 26,
     fontWeight: "900",
     letterSpacing: -0.5,
   },
 });
+

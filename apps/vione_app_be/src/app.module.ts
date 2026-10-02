@@ -19,6 +19,7 @@ import { SponsorsModule } from './sponsors/sponsors.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { VotingModule } from './voting/voting.module';
 import { MeetingsModule } from './meetings/meetings.module';
+import { OperationsModule } from './operations/operations.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { MeetingsModule } from './meetings/meetings.module';
     SponsorsModule,
     ReviewsModule,
     VotingModule,
+    OperationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

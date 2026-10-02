@@ -27,9 +27,20 @@ import {
   CircleAlert,
   Clock,
   Play,
+  FileSpreadsheet,
+  UploadCloud,
+  Mic,
+  MicOff,
+  Volume2,
+  VolumeX,
+  FileText,
+  Download,
+  Eye,
+  ArrowUpRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { safeRandomUUID } from "@/lib/utils";
+import { fetchNestApi } from "@/lib/api-client";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/hooks/use-role";
@@ -85,11 +96,11 @@ import { useServerFn } from "@tanstack/react-start";
 export const Route = createFileRoute("/ai")({
   head: () => ({
     meta: [
-      { title: "Trợ lý AI — Nền tảng quản trị Hiệp hội" },
+      { title: "Trợ lý AI Copilot 5.0 — Hệ Điều Hành Doanh Nghiệp ViOne" },
       {
         name: "description",
         content:
-          "Lớp điều phối AI cho Hiệp hội — định tuyến năng lực, phản hồi có cấu trúc, dẫn chứng và hành động gợi ý, luôn tôn trọng phân quyền.",
+          "Trợ lý AI điều hành doanh nghiệp ViOne Platform 5.0 — Tự động soạn thảo văn bản, nhập liệu Excel thông minh, báo cáo realtime, điều phối vận hành đa phân hệ.",
       },
     ],
   }),
@@ -114,6 +125,15 @@ type StructuredAnswer = {
   providerStatus?: "real" | "fallback" | "mock";
   /** Model/engine label reported by the server gateway. */
   model?: string;
+  document?: {
+    id?: string;
+    code: string;
+    name: string;
+    category: string;
+    description?: string;
+    content?: string;
+  };
+  voiceText?: string;
 };
 
 type ChatMessage = {
@@ -145,6 +165,9 @@ function AiAssistantPage() {
   const [usingContext, setUsingContext] = useState(false);
   const [activeRun, setActiveRun] = useState<WorkflowRun | null>(null);
   const [workflowHistory, setWorkflowHistory] = useState<WorkflowRun[]>([]);
+  const [excelModalOpen, setExcelModalOpen] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef<any>(null);
   const lastCapabilityRef = useRef<CapabilityId | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -392,6 +415,39 @@ function AiAssistantPage() {
       // 2) Call the server gateway (auth + RLS + mock provider server-side).
       const runGateway = async () => {
         try {
+          // Primary: Call live ViOne AI Copilot API directly from NestJS backend
+          try {
+            const nestRes = await fetchNestApi<any>("/ai/chat", {
+              method: "POST",
+              body: JSON.stringify({
+                message: trimmed,
+                selectedContextSources: memory.selectedContextSources,
+                clientMemorySummary: memory.lastAssistantSummary?.slice(0, 500) ?? undefined,
+              }),
+            });
+            if (nestRes && nestRes.ok && nestRes.answer) {
+              finish({
+                capabilityId: capId,
+                answer: nestRes.answer,
+                reasoning: nestRes.reasoningSummary || "Phân tích tự động từ dữ liệu thực tế CRM & ViOne App",
+                evidence: (nestRes.evidence || []) as ContextSource[],
+                limitations: nestRes.limitations || [],
+                actions: (nestRes.suggestedActions || []) as SuggestedAction[],
+                relatedModules: cap.relatedModules,
+                clarificationQuestion: nestRes.confidence === "low" ? nestRes.clarificationQuestion : undefined,
+                providerStatus: "real",
+                model: nestRes.model || "ViOne Copilot 5.0 (NestJS Core)",
+                plan: nestRes.plan,
+                workflow: nestRes.workflow,
+                document: nestRes.document,
+                voiceText: nestRes.voiceText,
+              });
+              return;
+            }
+          } catch (backendErr) {
+            console.warn("Direct NestJS /ai/chat call failed, falling back to askAi:", backendErr);
+          }
+
           const res = await askAi({
             data: {
               message: trimmed,
@@ -460,6 +516,99 @@ function AiAssistantPage() {
     [sending, rank, memory, askAi],
   );
 
+  const startListening = useCallback(() => {
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRec) {
+      toast.error("Trình duyệt không hỗ trợ nhận diện giọng nói. Vui lòng sử dụng Google Chrome hoặc MS Edge.");
+      return;
+    }
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsListening(false);
+      return;
+    }
+    try {
+      const rec = new SpeechRec();
+      rec.lang = "vi-VN";
+      rec.continuous = false;
+      rec.interimResults = true;
+      recognitionRef.current = rec;
+
+      rec.onstart = () => {
+        setIsListening(true);
+        toast.info("Đang lắng nghe giọng nói tiếng Việt...");
+      };
+
+      rec.onresult = (evt: any) => {
+        let spoken = "";
+        for (let i = evt.resultIndex; i < evt.results.length; ++i) {
+          spoken += evt.results[i][0].transcript;
+        }
+        setInput(spoken);
+        if (evt.results[0]?.isFinal && spoken.trim()) {
+          setIsListening(false);
+          send(spoken.trim());
+        }
+      };
+
+      rec.onerror = (e: any) => {
+        console.warn("Speech recognition error:", e.error);
+        setIsListening(false);
+      };
+
+      rec.onend = () => {
+        setIsListening(false);
+      };
+
+      rec.start();
+    } catch (err: any) {
+      console.error("Speech error:", err);
+      setIsListening(false);
+    }
+  }, [isListening, send]);
+
+  const handleExcelImportSuccess = useCallback(
+    (count: number, category: string, filename: string) => {
+      const categoryNames: Record<string, string> = {
+        companies: "Doanh nghiệp thành viên (public.companies)",
+        members: "Danh bạ & Khách hàng (public.members)",
+        opportunities: "Cơ hội giao thương B2B (public.business_opportunities)",
+        products: "Sản phẩm Marketplace (public.products)",
+        tasks: "Công việc & Tiến độ (public.tasks)",
+      };
+      const targetLabel = categoryNames[category] || category;
+      const userMsg: ChatMessage = {
+        id: safeRandomUUID(),
+        role: "user",
+        content: `📁 Đã tải lên và nhập dữ liệu từ tệp: ${filename}`,
+      };
+      const assistantMsg: ChatMessage = {
+        id: safeRandomUUID(),
+        role: "assistant",
+        content: `📊 **Hoàn tất nhập liệu tự động vào CSDL PostgreSQL!**\n\n- **Tệp nguồn:** \`${filename}\`\n- **Phân hệ tiếp nhận:** **${targetLabel}**\n- **Số dòng hợp lệ đã nạp:** **${count}** bản ghi\n- **Trạng thái:** Dữ liệu đã sẵn sàng trên toàn bộ hệ thống ViOne Platform 5.0.\n\nAnh/chị có thể vào phân hệ tương ứng để tra cứu hoặc yêu cầu em phân tích dữ liệu vừa nhập bất cứ lúc nào!`,
+        structured: {
+          capabilityId: activeCapability,
+          answer: `📊 **Hoàn tất nhập liệu tự động vào CSDL PostgreSQL!**\n\n- **Tệp nguồn:** \`${filename}\`\n- **Phân hệ tiếp nhận:** **${targetLabel}**\n- **Số dòng hợp lệ đã nạp:** **${count}** bản ghi\n- **Trạng thái:** Dữ liệu đã sẵn sàng trên toàn bộ hệ sinh thái ViOne Platform 5.0.`,
+          reasoning: `AI Ingestion Processor đọc tệp ${filename}, tự động ánh xạ schema và ghi trực tiếp vào bảng cơ sở dữ liệu.`,
+          evidence: [
+            { id: "ev-xls-done", type: "document" as any, title: `Đã nạp ${count} bản ghi từ ${filename}`, safeSummary: `Phân hệ ${targetLabel}` }
+          ],
+          limitations: [],
+          actions: [
+            { label: "Xem danh sách Doanh nghiệp", route: "/companies" },
+            { label: "Xem cơ hội B2B", route: "/opportunities" }
+          ],
+          relatedModules: [],
+          providerStatus: "real",
+          model: "ViOne Copilot 5.0 (NestJS Core)",
+          voiceText: `Dạ em đã tự động nạp thành công ${count} dòng dữ liệu từ tệp ${filename} vào cơ sở dữ liệu hệ thống. Anh Chị có thể kiểm tra ngay.`,
+        },
+      };
+      setMessages((m) => [...m, userMsg, assistantMsg]);
+    },
+    [activeCapability],
+  );
+
   const copyAnswer = useCallback(async (msg: ChatMessage) => {
     try {
       await navigator.clipboard.writeText(msg.content);
@@ -499,10 +648,9 @@ function AiAssistantPage() {
           <Sparkles className="h-5 w-5" />
         </div>
         <div>
-          <h1 className="text-[24px] font-bold tracking-tight text-foreground">Trợ lý AI</h1>
+          <h1 className="text-[24px] font-bold tracking-tight text-foreground">Trợ lý AI Copilot 5.0</h1>
           <p className="text-sm text-muted-foreground">
-            Lớp điều phối thông minh cho Hiệp hội — định tuyến năng lực, phản hồi có cấu trúc, dẫn
-            chứng và hành động.
+            Trung tâm điều phối thông minh cho Doanh nghiệp — Soạn thảo văn bản, tự động nhập liệu Excel, báo cáo realtime và hỗ trợ giọng nói 2 chiều.
           </p>
         </div>
       </div>
@@ -536,6 +684,22 @@ function AiAssistantPage() {
 
           {/* Composer */}
           <div className="border-t border-border bg-card p-3 sm:p-4">
+            {isListening && (
+              <div className="mb-2.5 flex items-center justify-between rounded-xl border border-red-500/40 bg-red-500/10 px-3 py-2 text-[12px] font-medium text-red-600 dark:text-red-400 animate-pulse">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2.5 w-2.5 animate-ping rounded-full bg-red-500" />
+                  Đang lắng nghe giọng nói... Hãy nói "soạn hợp đồng", "báo cáo doanh thu" hoặc "nhập file excel".
+                </div>
+                <button
+                  type="button"
+                  onClick={() => recognitionRef.current?.stop()}
+                  className="rounded-lg bg-red-500/20 px-2 py-0.5 text-[11px] font-semibold hover:bg-red-500/30"
+                >
+                  Dừng
+                </button>
+              </div>
+            )}
+
             {usingContext && (
               <div className="mb-2 flex items-center gap-1.5 rounded-lg bg-primary/5 px-2.5 py-1.5 text-[11px] font-medium text-primary">
                 <History className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -572,13 +736,18 @@ function AiAssistantPage() {
                 )}
               </div>
             )}
-            <div className="mb-2 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-              <Layers className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
-              Năng lực đang hoạt động:
-              <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-foreground">
-                <activeCap.icon className="h-3 w-3" aria-hidden="true" />
-                {activeCap.label}
-              </span>
+            <div className="mb-2 flex items-center justify-between text-[11px] text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <Layers className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+                Năng lực:
+                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 font-medium text-foreground">
+                  <activeCap.icon className="h-3 w-3" aria-hidden="true" />
+                  {activeCap.label}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block" /> CSDL PostgreSQL Realtime
+              </div>
             </div>
             <form
               onSubmit={(e) => {
@@ -587,6 +756,28 @@ function AiAssistantPage() {
               }}
               className="flex items-end gap-2"
             >
+              <button
+                type="button"
+                onClick={() => setExcelModalOpen(true)}
+                title="Nhập dữ liệu thông minh từ Excel (.xlsx, .xls, .csv)"
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-border bg-card text-muted-foreground transition-colors hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-600 focus-visible:ring-2 focus-visible:ring-ring dark:hover:bg-emerald-950/30"
+              >
+                <FileSpreadsheet className="h-5 w-5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={startListening}
+                title={isListening ? "Đang lắng nghe... bấm để dừng" : "Nói với Trợ lý AI (tiếng Việt)"}
+                className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl border transition-all ${
+                  isListening
+                    ? "animate-pulse border-red-500 bg-red-50 text-red-600 shadow-sm dark:bg-red-950/40"
+                    : "border-border bg-card text-muted-foreground hover:border-primary hover:bg-primary/5 hover:text-primary"
+                }`}
+              >
+                {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
+              </button>
+
               <label htmlFor="ai-input" className="sr-only">
                 Nhập câu hỏi cho Trợ lý AI
               </label>
@@ -602,7 +793,7 @@ function AiAssistantPage() {
                   }
                 }}
                 rows={1}
-                placeholder="Hỏi bất cứ điều gì về hiệp hội của bạn…"
+                placeholder="Hỏi bất cứ điều gì về doanh nghiệp hoặc yêu cầu AI: 'Soạn hợp đồng B2B', 'Báo cáo doanh thu', 'Nhập file Excel'…"
                 className="max-h-40 min-h-[48px] flex-1 resize-none rounded-xl border border-border bg-background px-4 py-3 text-[16px] text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               />
               <button
@@ -869,10 +1060,15 @@ function AiAssistantPage() {
 
           <div className="rounded-2xl border border-border bg-muted/40 p-4">
             <h2 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-foreground">
-              <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" /> Nguyên tắc an toàn
+              <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" /> Tiêu chuẩn vận hành AI Doanh nghiệp
             </h2>
             <ul className="space-y-1.5">
-              {GUARDRAILS.map((g) => (
+              {[
+                "AI chỉ phân tích dựa trên dữ liệu doanh nghiệp mà bạn có thẩm quyền.",
+                "Tự động đối soát và bảo mật dữ liệu theo chuẩn Enterprise PostgreSQL.",
+                "Hỗ trợ nhập Excel / CSV tự động ánh xạ schema vào hệ thống.",
+                "Tự động tạo văn bản chuẩn Word / PDF để trình ký ban giám đốc.",
+              ].map((g) => (
                 <li
                   key={g}
                   className="flex items-start gap-2 text-[12px] leading-snug text-muted-foreground"
@@ -885,6 +1081,12 @@ function AiAssistantPage() {
           </div>
         </aside>
       </div>
+
+      <ExcelImportModal
+        open={excelModalOpen}
+        onClose={() => setExcelModalOpen(false)}
+        onImportSuccess={handleExcelImportSuccess}
+      />
     </AppShell>
   );
 }
@@ -910,12 +1112,10 @@ function WelcomePanel({
           <Sparkles className="h-6 w-6" />
         </div>
         <h2 className="text-xl font-bold text-foreground">
-          Xin chào, tôi là Trợ lý AI của Hiệp hội
+          Xin chào, tôi là Trợ lý AI Điều Hành ViOne Platform 5.0
         </h2>
         <p className="mx-auto mt-2 max-w-lg text-sm text-muted-foreground">
-          Tôi điều phối nhiều năng lực chuyên biệt — tài liệu, hội viên, kết nối, hội phí, sự kiện,
-          marketplace, thông báo và điều hành — và luôn trả lời dựa trên dữ liệu bạn có quyền truy
-          cập.
+          Tôi hỗ trợ lãnh đạo tự động hóa quy trình quản trị — tự động soạn thảo hợp đồng B2B, nhập liệu thông minh từ tệp Excel, quản trị cơ hội giao thương, chấm công GPS FaceID, kiểm soát duyệt chi ngân sách và phân tích hiệu suất C-Level.
         </p>
         <div className="mx-auto mt-4 flex max-w-lg items-start gap-2 rounded-xl border border-border bg-muted/40 p-3 text-left">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
@@ -954,7 +1154,7 @@ function WelcomePanel({
       {hasRestricted && (
         <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-[11px] text-muted-foreground">
           <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-          Một số năng lực (như hội phí, điều hành) chỉ dành cho quản trị viên.
+          Một số năng lực chuyên sâu (như duyệt chi, điều hành) chỉ dành cho ban giám đốc và quản trị viên.
         </p>
       )}
     </div>
@@ -989,6 +1189,26 @@ function MessageBubble({
   }
 
   const s = msg.structured;
+  const [speaking, setSpeaking] = useState(false);
+
+  const toggleSpeak = useCallback(() => {
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      setSpeaking(false);
+      return;
+    }
+    const text = s?.voiceText || s?.answer || msg.content;
+    if (!text) return;
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[\*\#\`\_]/g, " ").replace(/\s+/g, " ").trim();
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = "vi-VN";
+    utterance.rate = 1.05;
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    setSpeaking(true);
+    window.speechSynthesis.speak(utterance);
+  }, [speaking, s, msg.content]);
 
   return (
     <div className="flex gap-3">
@@ -1227,7 +1447,100 @@ function MessageBubble({
               </div>
             )}
 
-            <div className="mt-3 flex items-center gap-1">
+            {/* Document Card if document was generated */}
+            {s?.document && (
+              <div className="mt-3.5 rounded-2xl border border-primary/30 bg-primary/5 p-4 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-primary/20 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[14px] font-bold text-foreground">{s.document.name}</span>
+                        <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                          {s.document.code}
+                        </span>
+                      </div>
+                      <p className="text-[12px] text-muted-foreground">{s.document.category} • Đã lưu vào CSDL PostgreSQL</p>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                    <CircleCheck className="h-3.5 w-3.5" /> Sẵn sàng trình ký
+                  </span>
+                </div>
+
+                {s.document.description && (
+                  <p className="mt-2.5 text-[12px] leading-relaxed text-muted-foreground">{s.document.description}</p>
+                )}
+
+                {s.document.content && (
+                  <div className="mt-3 max-h-48 overflow-y-auto rounded-xl border border-border/80 bg-background/80 p-3 font-mono text-[11px] leading-relaxed text-foreground">
+                    <pre className="whitespace-pre-wrap font-sans">{s.document.content.slice(0, 1000)}...</pre>
+                  </div>
+                )}
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const blob = new Blob([s.document?.content || s.document?.name || ""], { type: "application/msword;charset=utf-8" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `${s.document?.code || "van-ban-vione"}.doc`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      toast.success("Đang tải xuống văn bản Word (.doc)...");
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-[12px] font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90"
+                  >
+                    <Download className="h-3.5 w-3.5" /> Tải văn bản Word (.doc)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const printWindow = window.open("", "_blank");
+                      if (printWindow) {
+                        printWindow.document.write(`
+                          <html>
+                            <head>
+                              <title>${s.document?.name || "Văn bản ViOne"}</title>
+                              <style>
+                                body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #111; line-height: 1.6; }
+                                h1 { color: #8a6d3b; font-size: 20px; border-bottom: 2px solid #8a6d3b; padding-bottom: 8px; }
+                                .code { color: #666; font-size: 13px; margin-bottom: 20px; }
+                                pre { white-space: pre-wrap; font-family: inherit; font-size: 14px; }
+                              </style>
+                            </head>
+                            <body>
+                              <h1>${s.document?.name}</h1>
+                              <div class="code">Mã hiệu: ${s.document?.code} | Phân loại: ${s.document?.category}</div>
+                              <pre>${s.document?.content || ""}</pre>
+                              <script>window.print();</script>
+                            </body>
+                          </html>
+                        `);
+                        printWindow.document.close();
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground hover:bg-muted"
+                  >
+                    <Eye className="h-3.5 w-3.5" /> In & Lưu PDF (.pdf)
+                  </button>
+
+                  <Link
+                    to="/documents"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3 py-1.5 text-[12px] font-medium text-foreground hover:bg-muted"
+                  >
+                    Kho Tài liệu CRM <ArrowUpRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-3 flex items-center gap-2">
               <button
                 type="button"
                 onClick={onCopy}
@@ -1240,6 +1553,27 @@ function MessageBubble({
                   <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                 )}
                 {copied ? "Đã sao chép" : "Sao chép"}
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleSpeak}
+                aria-label={speaking ? "Dừng đọc" : "Nghe AI đọc câu trả lời"}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[12px] transition-colors focus-visible:ring-2 focus-visible:ring-ring ${
+                  speaking
+                    ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                {speaking ? (
+                  <>
+                    <VolumeX className="h-3.5 w-3.5 animate-pulse" /> Dừng đọc
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="h-3.5 w-3.5 text-primary" /> Nghe AI đọc
+                  </>
+                )}
               </button>
             </div>
           </>
@@ -1607,3 +1941,209 @@ function Section({
     </div>
   );
 }
+
+function ExcelImportModal({
+  open,
+  onClose,
+  onImportSuccess,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onImportSuccess: (count: number, category: string, filename: string) => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [category, setCategory] = useState<string>("companies");
+  const [loading, setLoading] = useState(false);
+  const [previewRows, setPreviewRows] = useState<any[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) processFile(f);
+  };
+
+  const processFile = (f: File) => {
+    setFile(f);
+    if (f.name.endsWith(".csv")) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const text = evt.target?.result as string;
+        const lines = text.split("\n").filter((l) => l.trim().length > 0);
+        const headers = lines[0]?.split(",").map((h) => h.trim().replace(/^["']|["']$/g, "")) || [];
+        const parsed = lines.slice(1, 6).map((line) => {
+          const vals = line.split(",").map((v) => v.trim().replace(/^["']|["']$/g, ""));
+          const obj: any = {};
+          headers.forEach((h, idx) => {
+            obj[h] = vals[idx] || "";
+          });
+          return obj;
+        });
+        setPreviewRows(parsed);
+      };
+      reader.readAsText(f);
+    } else {
+      setPreviewRows([
+        { "Mẫu dữ liệu": "Tệp bảng tính Microsoft Excel (.xlsx)", "Định dạng": "Nhị phân bảo mật", "Trạng thái": "Sẵn sàng nạp vào CSDL PostgreSQL" },
+      ]);
+    }
+  };
+
+  const handleImport = async () => {
+    if (!file) {
+      toast.error("Vui lòng chọn tệp Excel hoặc CSV để nhập.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = reader.result as string;
+        const res = await fetchNestApi<any>("/ai/excel-import", {
+          method: "POST",
+          body: JSON.stringify({
+            fileBase64: base64,
+            filename: file.name,
+            category,
+          }),
+        });
+        setLoading(false);
+        if (res && res.success) {
+          toast.success(`Đã tự động nạp thành công ${res.count} dòng dữ liệu vào CSDL PostgreSQL!`);
+          onImportSuccess(res.count, category, file.name);
+          onClose();
+        } else {
+          toast.error(res?.message || "Lỗi khi nhập dữ liệu Excel.");
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err: any) {
+      setLoading(false);
+      toast.error("Không thể xử lý tệp: " + err.message);
+    }
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in">
+      <div className="relative w-full max-w-xl rounded-2xl border border-border bg-card p-6 shadow-2xl">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+        >
+          <X className="h-5 w-5" />
+        </button>
+
+        <div className="flex items-center gap-3 border-b border-border pb-4">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-500/10 text-emerald-600">
+            <FileSpreadsheet className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-foreground">AI Tự Động Nhập Liệu Excel / CSV</h3>
+            <p className="text-xs text-muted-foreground">Tự động nhận diện schema, ánh xạ cột và lưu vào CSDL PostgreSQL</p>
+          </div>
+        </div>
+
+        <div className="mt-4 space-y-4">
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground">Phân hệ tiếp nhận dữ liệu:</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-primary"
+            >
+              <option value="companies">🏢 Danh sách Doanh nghiệp thành viên (public.companies)</option>
+              <option value="members">👥 Danh bạ & Khách hàng CRM (public.members)</option>
+              <option value="opportunities">💼 Cơ hội Giao thương B2B (public.business_opportunities)</option>
+              <option value="products">🛒 Sản phẩm Marketplace B2B (public.products)</option>
+              <option value="tasks">📋 Công việc & Tiến độ (public.tasks)</option>
+            </select>
+          </div>
+
+          <div
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const f = e.dataTransfer.files?.[0];
+              if (f) processFile(f);
+            }}
+            className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border/80 bg-muted/20 p-6 text-center transition-colors hover:border-primary/50"
+          >
+            <UploadCloud className="h-10 w-10 text-primary/80" />
+            <p className="mt-2 text-sm font-semibold text-foreground">
+              {file ? file.name : "Kéo thả tệp Excel (.xlsx, .xls) hoặc CSV vào đây"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {file ? `${(file.size / 1024).toFixed(1)} KB` : "Hỗ trợ định dạng Microsoft Excel 2016+, CSV UTF-8"}
+            </p>
+            <label className="mt-3 cursor-pointer rounded-xl bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/20">
+              Chọn tệp từ máy tính
+              <input
+                type="file"
+                accept=".xlsx,.xls,.csv"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          {previewRows.length > 0 && (
+            <div>
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">Xem trước cấu trúc ({previewRows.length} dòng mẫu):</span>
+                <span className="text-[11px] font-medium text-emerald-600">✓ Sẵn sàng import</span>
+              </div>
+              <div className="max-h-36 overflow-auto rounded-xl border border-border bg-background text-[11px]">
+                <table className="w-full text-left">
+                  <thead className="bg-muted text-muted-foreground">
+                    <tr>
+                      {Object.keys(previewRows[0] || {}).slice(0, 4).map((h) => (
+                        <th key={h} className="border-b border-border px-2.5 py-1.5 font-medium">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {previewRows.map((r, i) => (
+                      <tr key={i} className="border-b border-border/50 hover:bg-muted/40">
+                        {Object.values(r).slice(0, 4).map((v: any, j) => (
+                          <td key={j} className="truncate px-2.5 py-1 text-foreground max-w-[120px]">{String(v)}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-end gap-2 pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl border border-border px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-muted"
+            >
+              Hủy
+            </button>
+            <button
+              type="button"
+              disabled={!file || loading}
+              onClick={handleImport}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:opacity-90 disabled:opacity-50"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Đang nạp dữ liệu...
+                </>
+              ) : (
+                <>
+                  <CircleCheck className="h-4 w-4" /> Xác nhận nạp vào CSDL
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+

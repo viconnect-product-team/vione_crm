@@ -6,18 +6,41 @@ import {
   TouchableOpacity,
   StyleSheet,
   TouchableWithoutFeedback,
-  Alert,
+  ScrollView,
+  Dimensions,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { QrCode, ScanLine, Radio, Camera, X, Sparkles } from "lucide-react-native";
+import {
+  QrCode,
+  ScanLine,
+  Nfc,
+  IdCard,
+  NotebookPen,
+  X,
+  MapPin,
+  Layers,
+  ShieldCheck,
+  ChevronRight,
+  Globe,
+  Contact,
+  Wallet,
+} from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { useAuth } from "../context/AuthContext";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 interface VActionSheetProps {
   visible: boolean;
   onClose: () => void;
   onOpenMyQr: () => void;
   onOpenScanQr: () => void;
+  onOpenCardScan?: () => void;
   onPostMoment?: () => void;
+  onOpenAttendance?: () => void;
+  onOpenWorkflow?: () => void;
+  onOpenApprovals?: () => void;
 }
 
 export const VActionSheet: React.FC<VActionSheetProps> = ({
@@ -25,64 +48,25 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
   onClose,
   onOpenMyQr,
   onOpenScanQr,
+  onOpenCardScan,
   onPostMoment,
+  onOpenAttendance,
+  onOpenWorkflow,
+  onOpenApprovals,
 }) => {
-  const handleNfcTap = () => {
-    onClose();
-    Alert.alert(
-      "Sẵn sàng chạm thẻ NFC",
-      "Hãy đưa mặt sau điện thoại chạm vào thẻ danh thiếp thông minh Titanium của đối tác để trao đổi danh thiếp 1-chạm.",
-      [{ text: "Đã hiểu", style: "default" }]
-    );
-  };
+  const { user } = useAuth();
 
-  const actions = [
-    {
-      id: "my-qr",
-      title: "Mã QR của tôi",
-      subtitle: "Hiển thị danh thiếp số để đối tác quét",
-      icon: QrCode,
-      color: Colors.gold,
-      onPress: () => {
-        onClose();
-        onOpenMyQr();
-      },
-    },
-    {
-      id: "scan-qr",
-      title: "Quét mã QR / Chụp danh thiếp",
-      subtitle: "Mở camera lưu thông tin đối tác trong 1 giây",
-      icon: ScanLine,
-      color: Colors.info,
-      onPress: () => {
-        onClose();
-        onOpenScanQr();
-      },
-    },
-    {
-      id: "nfc-tap",
-      title: "Chạm thẻ NFC 1-chạm",
-      subtitle: "Đọc danh thiếp thông minh Titanium",
-      icon: Radio,
-      color: Colors.success,
-      onPress: handleNfcTap,
-    },
-    {
-      id: "post-moment",
-      title: "Tạo khoảnh khắc B2B",
-      subtitle: "Lưu lại ghi chú & hình ảnh cuộc gặp gỡ",
-      icon: Sparkles,
-      color: "#C084FC",
-      onPress: () => {
-        onClose();
-        if (onPostMoment) {
-          onPostMoment();
-        } else {
-          Alert.alert("Tạo khoảnh khắc", "Tính năng lưu ghi chú và ảnh gặp gỡ đối tác.");
-        }
-      },
-    },
-  ];
+  const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
+  const jobTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
+  const companyName = user?.company || "Tập đoàn Đầu tư & Công nghệ ViOne";
+  const location = "Hà Nội, Việt Nam";
+  const website = user?.website || "https://vione.vn";
+
+  const getInitial = (name: string) => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 0) return "V";
+    return parts[parts.length - 1][0].toUpperCase();
+  };
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -90,46 +74,302 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
         <View style={styles.backdrop}>
           <TouchableWithoutFeedback>
             <View style={styles.sheetContainer}>
-              {/* Header */}
-              <View style={styles.header}>
-                <View style={styles.headerLeft}>
-                  <View style={styles.vBadge}>
-                    <Text style={styles.vBadgeText}>V</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.headerTitle}>ViOne Quick Connect</Text>
-                    <Text style={styles.headerSubtitle}>Kết nối kinh doanh trong tầm tay</Text>
+              <ScrollView
+                style={{ maxHeight: SCREEN_HEIGHT * 0.85 }}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+              >
+                {/* Header */}
+                <Text style={styles.sheetHeaderLabel}>DANH TÍNH DOANH NGHIỆP</Text>
+                <Text style={styles.sheetHeaderSubtitle}>
+                  Chạm hoặc quét để trao đổi danh thiếp với đối tác trong 1 giây
+                </Text>
+
+                {/* Identity Card with Gold V Watermark */}
+                <View style={styles.identityCardWrapper}>
+                  <LinearGradient
+                    colors={["#181D2A", "#12151F", "#0A0A0B"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.identityCardGradient}
+                  >
+                    {/* Giant Watermark V */}
+                    <Text style={styles.watermarkV}>V</Text>
+
+                    <View style={styles.identityCardBody}>
+                      <View style={styles.identityTopRow}>
+                        {/* Avatar */}
+                        {user?.avatarUrl ? (
+                          <Image source={{ uri: user.avatarUrl }} style={styles.avatarImg} />
+                        ) : (
+                          <LinearGradient
+                            colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                            style={styles.avatarCircle}
+                          >
+                            <Text style={styles.avatarInitial}>{getInitial(displayName)}</Text>
+                          </LinearGradient>
+                        )}
+
+                        <View style={styles.identityInfo}>
+                          <Text style={styles.userName} numberOfLines={1}>
+                            {displayName}
+                          </Text>
+                          <Text style={styles.userTitle} numberOfLines={1}>
+                            {jobTitle}
+                          </Text>
+                          <Text style={styles.userCompany} numberOfLines={1}>
+                            {companyName}
+                          </Text>
+                          <View style={styles.memberBadge}>
+                            <ShieldCheck size={11} color="#D8B282" style={{ marginRight: 4 }} />
+                            <Text style={styles.memberBadgeText}>DOANH NHÂN VIONE XÁC THỰC</Text>
+                          </View>
+                        </View>
+                      </View>
+
+                      <View style={styles.cardDivider} />
+
+                      {/* Meta Location & Web */}
+                      <View style={styles.metaRow}>
+                        <View style={styles.metaItem}>
+                          <MapPin size={12} color="#D8B282" style={{ marginRight: 4 }} />
+                          <Text style={styles.metaText} numberOfLines={1}>
+                            {location}
+                          </Text>
+                        </View>
+                        <View style={styles.metaDot} />
+                        <View style={styles.metaItem}>
+                          <Globe size={12} color="#D8B282" style={{ marginRight: 4 }} />
+                          <Text style={styles.metaText} numberOfLines={1}>
+                            {website}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </LinearGradient>
+                </View>
+
+                {/* Core 5 Capabilities */}
+                <View style={styles.actionsContainer}>
+                  {/* Action 1: Đưa mã QR - HERO GOLD CTA */}
+                  <TouchableOpacity
+                    style={styles.heroGoldBtn}
+                    onPress={() => {
+                      onClose();
+                      onOpenMyQr();
+                    }}
+                    activeOpacity={0.88}
+                  >
+                    <LinearGradient
+                      colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.heroGoldGradient}
+                    >
+                      <View style={styles.heroIconBox}>
+                        <QrCode size={24} color="#050C15" />
+                      </View>
+                      <View style={styles.heroTexts}>
+                        <Text style={styles.heroTitle}>Đưa mã QR của bạn</Text>
+                        <Text style={styles.heroSubtitle}>
+                          Mở danh thiếp cá nhân để đối tác quét kết nối
+                        </Text>
+                      </View>
+                      <ChevronRight size={18} color="#050C15" />
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* Action 2: Chạm thẻ NFC */}
+                  <TouchableOpacity
+                    style={styles.actionRow}
+                    onPress={() => {
+                      onClose();
+                      onOpenMyQr();
+                    }}
+                    activeOpacity={0.75}
+                  >
+                    <View style={styles.actionIconBox}>
+                      <Nfc size={22} color="#D8B282" />
+                    </View>
+                    <View style={styles.actionTexts}>
+                      <Text style={styles.actionTitle}>Chạm thẻ NFC</Text>
+                      <Text style={styles.actionSubtitle}>
+                        Chạm mặt sau điện thoại vào thẻ thông minh
+                      </Text>
+                    </View>
+                    <ChevronRight size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+
+                  {/* Action 3: Quét mã QR */}
+                  <TouchableOpacity
+                    style={styles.actionRow}
+                    onPress={() => {
+                      onClose();
+                      onOpenScanQr();
+                    }}
+                    activeOpacity={0.75}
+                  >
+                    <View style={styles.actionIconBox}>
+                      <ScanLine size={22} color="#D8B282" />
+                    </View>
+                    <View style={styles.actionTexts}>
+                      <Text style={styles.actionTitle}>Quét mã QR</Text>
+                      <Text style={styles.actionSubtitle}>
+                        Mở máy ảnh quét mã kết nối của đối tác
+                      </Text>
+                    </View>
+                    <ChevronRight size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+
+                  {/* Action 4: Quét danh thiếp */}
+                  <TouchableOpacity
+                    style={styles.actionRow}
+                    onPress={() => {
+                      onClose();
+                      if (onOpenCardScan) {
+                        onOpenCardScan();
+                      } else {
+                        onOpenScanQr();
+                      }
+                    }}
+                    activeOpacity={0.75}
+                  >
+                    <View style={styles.actionIconBox}>
+                      <IdCard size={22} color="#D8B282" />
+                    </View>
+                    <View style={styles.actionTexts}>
+                      <Text style={styles.actionTitle}>Quét danh thiếp</Text>
+                      <Text style={styles.actionSubtitle}>
+                        Chụp danh thiếp giấy để AI nhận diện
+                      </Text>
+                    </View>
+                    <ChevronRight size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+
+                  {/* Action 5: Ghi chú cuộc gặp */}
+                  <TouchableOpacity
+                    style={styles.actionRow}
+                    onPress={() => {
+                      onClose();
+                      if (onPostMoment) onPostMoment();
+                    }}
+                    activeOpacity={0.75}
+                  >
+                    <View style={styles.actionIconBox}>
+                      <NotebookPen size={22} color="#D8B282" />
+                    </View>
+                    <View style={styles.actionTexts}>
+                      <Text style={styles.actionTitle}>Ghi chú cuộc gặp</Text>
+                      <Text style={styles.actionSubtitle}>
+                        Lưu ảnh & thỏa thuận hợp tác sau buổi gặp
+                      </Text>
+                    </View>
+                    <ChevronRight size={16} color="#94A3B8" />
+                  </TouchableOpacity>
+                </View>
+
+                {/* Section Quick Tiles (3 cols) */}
+                <View style={styles.quickTilesRow}>
+                  <TouchableOpacity
+                    style={styles.quickTile}
+                    onPress={() => {
+                      onClose();
+                      onOpenMyQr();
+                    }}
+                  >
+                    <View style={styles.quickTileCircle}>
+                      <Contact size={18} color="#D8B282" />
+                    </View>
+                    <Text style={styles.quickTileTitle}>Danh thiếp số</Text>
+                    <Text style={styles.quickTileDesc}>Xem thẻ của tôi</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.quickTile}
+                    onPress={() => {
+                      onClose();
+                      onOpenMyQr();
+                    }}
+                  >
+                    <View style={styles.quickTileCircle}>
+                      <Wallet size={18} color="#D8B282" />
+                    </View>
+                    <Text style={styles.quickTileTitle}>Ví thẻ</Text>
+                    <Text style={styles.quickTileDesc}>Danh bạ thẻ lưu</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.quickTile}
+                    onPress={() => {
+                      onClose();
+                    }}
+                  >
+                    <View style={styles.quickTileCircle}>
+                      <ShieldCheck size={18} color="#D8B282" />
+                    </View>
+                    <Text style={styles.quickTileTitle}>Bảo mật</Text>
+                    <Text style={styles.quickTileDesc}>Quyền riêng tư</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Group 2: VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP */}
+                <View style={styles.opsGroup}>
+                  <Text style={styles.opsGroupTitle}>VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP</Text>
+                  <View style={styles.opsRow}>
+                    <TouchableOpacity
+                      style={styles.opsColItem}
+                      onPress={() => {
+                        onClose();
+                        if (onOpenAttendance) onOpenAttendance();
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.18)" }]}>
+                        <MapPin size={18} color="#D8B282" />
+                      </View>
+                      <Text style={styles.opsColTitle}>Chấm công</Text>
+                      <Text style={styles.opsColSub}>GPS & FaceID</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.opsColItem}
+                      onPress={() => {
+                        onClose();
+                        if (onOpenWorkflow) onOpenWorkflow();
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(56, 189, 248, 0.15)" }]}>
+                        <Layers size={18} color="#38BDF8" />
+                      </View>
+                      <Text style={styles.opsColTitle}>Quy trình</Text>
+                      <Text style={styles.opsColSub}>BPMN Kanban</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.opsColItem}
+                      onPress={() => {
+                        onClose();
+                        if (onOpenApprovals) onOpenApprovals();
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(168, 85, 247, 0.15)" }]}>
+                        <ShieldCheck size={18} color="#C084FC" />
+                      </View>
+                      <Text style={styles.opsColTitle}>Phê duyệt</Text>
+                      <Text style={styles.opsColSub}>3 cấp chuẩn</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-                <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-                  <X size={20} color={Colors.textMuted} />
-                </TouchableOpacity>
-              </View>
 
-              <View style={styles.divider} />
-
-              {/* Actions List */}
-              <View style={styles.actionsList}>
-                {actions.map((act) => {
-                  const Icon = act.icon;
-                  return (
-                    <TouchableOpacity
-                      key={act.id}
-                      style={styles.actionItem}
-                      onPress={act.onPress}
-                      activeOpacity={0.7}
-                    >
-                      <View style={[styles.iconWrap, { backgroundColor: `${act.color}15`, borderColor: act.color }]}>
-                        <Icon size={22} color={act.color} />
-                      </View>
-                      <View style={styles.actionTexts}>
-                        <Text style={styles.actionTitle}>{act.title}</Text>
-                        <Text style={styles.actionSubtitle}>{act.subtitle}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                {/* Circular Close Button at bottom */}
+                <View style={styles.closeRow}>
+                  <TouchableOpacity style={styles.circularCloseBtn} onPress={onClose} activeOpacity={0.8}>
+                    <X size={20} color="#D8B282" strokeWidth={2} />
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -141,99 +381,304 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.75)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
     justifyContent: "flex-end",
   },
   sheetContainer: {
-    backgroundColor: Colors.surface,
+    backgroundColor: "#0A0A0B",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
+    borderTopWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+    paddingTop: 16,
+    paddingBottom: 24,
+  },
+  scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 18,
-    paddingBottom: 36,
-    borderWidth: 1,
-    borderColor: Colors.surfaceBorder,
+    paddingBottom: 24,
   },
-  header: {
+  sheetHeaderLabel: {
+    textAlign: "center",
+    color: "#D8B282",
+    fontSize: 12,
+    fontWeight: "700",
+    letterSpacing: 3,
+    textTransform: "uppercase",
+  },
+  sheetHeaderSubtitle: {
+    textAlign: "center",
+    color: "#94A3B8",
+    fontSize: 13,
+    marginTop: 4,
+    marginBottom: 16,
+  },
+  identityCardWrapper: {
+    borderRadius: 22,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.35)",
+    marginBottom: 16,
+  },
+  identityCardGradient: {
+    padding: 16,
+    position: "relative",
+  },
+  watermarkV: {
+    position: "absolute",
+    right: -10,
+    bottom: -30,
+    fontSize: 130,
+    fontWeight: "900",
+    color: "rgba(216, 178, 130, 0.12)",
+    fontFamily: "serif",
+  },
+  identityCardBody: {
+    position: "relative",
+    zIndex: 2,
+  },
+  identityTopRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
   },
-  headerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
+  avatarImg: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderWidth: 1.5,
+    borderColor: "#D8B282",
+    marginRight: 14,
   },
-  vBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.goldSoft,
-    borderWidth: 1,
-    borderColor: Colors.gold,
+  avatarCircle: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
+    borderWidth: 1.5,
+    borderColor: "#D8B282",
+    marginRight: 14,
   },
-  vBadgeText: {
-    color: Colors.gold,
-    fontSize: 18,
+  avatarInitial: {
+    color: "#050C15",
+    fontSize: 24,
     fontWeight: "900",
   },
-  headerTitle: {
-    color: Colors.textPrimary,
-    fontSize: 17,
+  identityInfo: {
+    flex: 1,
+  },
+  userName: {
+    color: "#FFFFFF",
+    fontSize: 18,
     fontWeight: "700",
   },
-  headerSubtitle: {
-    color: Colors.textMuted,
+  userTitle: {
+    color: "#D8B282",
+    fontSize: 13,
+    fontWeight: "600",
+    marginTop: 2,
+  },
+  userCompany: {
+    color: "rgba(255, 255, 255, 0.8)",
     fontSize: 12,
     marginTop: 2,
   },
-  closeBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.surfaceLight,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: Colors.surfaceBorderLight,
-    marginVertical: 16,
-  },
-  actionsList: {
-    gap: 10,
-  },
-  actionItem: {
+  memberBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.surfaceLight,
-    padding: 14,
-    borderRadius: 16,
+    alignSelf: "flex-start",
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
     borderWidth: 1,
-    borderColor: Colors.surfaceBorderLight,
+    borderColor: "rgba(216, 178, 130, 0.35)",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 20,
+    marginTop: 6,
   },
-  iconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    borderWidth: 1,
+  memberBadgeText: {
+    color: "#D8B282",
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+  },
+  cardDivider: {
+    height: 1,
+    backgroundColor: "rgba(216, 178, 130, 0.2)",
+    marginVertical: 12,
+  },
+  metaRow: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+  },
+  metaItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  metaText: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 11.5,
+  },
+  metaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: "#D8B282",
+    marginHorizontal: 8,
+  },
+  actionsContainer: {
+    gap: 10,
+    marginBottom: 16,
+  },
+  heroGoldBtn: {
+    borderRadius: 18,
+    overflow: "hidden",
+    shadowColor: "#D8B282",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  heroGoldGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  heroIconBox: {
+    marginRight: 14,
+  },
+  heroTexts: {
+    flex: 1,
+  },
+  heroTitle: {
+    color: "#050C15",
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  heroSubtitle: {
+    color: "rgba(5, 12, 21, 0.8)",
+    fontSize: 12,
+    marginTop: 2,
+  },
+  actionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#12151F",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 13,
+  },
+  actionIconBox: {
     marginRight: 14,
   },
   actionTexts: {
     flex: 1,
   },
   actionTitle: {
-    color: Colors.textPrimary,
+    color: "#FFFFFF",
     fontSize: 15,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   actionSubtitle: {
-    color: Colors.textMuted,
+    color: "#94A3B8",
     fontSize: 12,
     marginTop: 2,
+  },
+  quickTilesRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.08)",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.08)",
+    marginBottom: 16,
+  },
+  quickTile: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  quickTileCircle: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.4)",
+    backgroundColor: "#181D2A",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 6,
+  },
+  quickTileTitle: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+  quickTileDesc: {
+    color: "#94A3B8",
+    fontSize: 10,
+    marginTop: 1,
+  },
+  opsGroup: {
+    marginBottom: 16,
+  },
+  opsGroupTitle: {
+    color: "#94A3B8",
+    fontSize: 11,
+    fontWeight: "700",
+    letterSpacing: 1,
+    marginBottom: 10,
+  },
+  opsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  opsColItem: {
+    flex: 1,
+    backgroundColor: "#12151F",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    padding: 12,
+    alignItems: "center",
+  },
+  opsIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  opsColTitle: {
+    color: "#FFFFFF",
+    fontSize: 12.5,
+    fontWeight: "700",
+  },
+  opsColSub: {
+    color: "#94A3B8",
+    fontSize: 10,
+    marginTop: 2,
+  },
+  closeRow: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 8,
+  },
+  circularCloseBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 1.5,
+    borderColor: "rgba(216, 178, 130, 0.5)",
+    backgroundColor: "#181D2A",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

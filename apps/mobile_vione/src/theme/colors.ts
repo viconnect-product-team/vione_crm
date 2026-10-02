@@ -1,32 +1,38 @@
 export const Colors = {
-  // Backgrounds
-  background: "#05070E",
-  backgroundSecondary: "#0A0D18",
+  // Backgrounds - Dark Obsidian luxury
+  background: "#0A0A0B",
+  backgroundSecondary: "#0F1424",
+  backgroundDeep: "#05070A",
   
   // Surfaces & Cards
-  surface: "#0F1424",
-  surfaceLight: "#161E34",
-  surfaceElevated: "#1D2744",
-  surfaceBorder: "rgba(216, 178, 130, 0.22)",
-  surfaceBorderLight: "rgba(255, 255, 255, 0.08)",
+  surface: "#12151F",
+  surface2: "#181D2A",
+  surfaceLight: "#1D2436",
+  surfaceElevated: "#232B40",
+  surfaceBorder: "rgba(255, 255, 255, 0.08)",
+  surfaceBorderLight: "rgba(255, 255, 255, 0.05)",
+  surfaceBorderGold: "rgba(216, 178, 130, 0.45)",
+  surfaceBorderActive: "rgba(216, 178, 130, 0.70)",
 
-  // Luxury Champagne Gold (ViOne brand identity)
-  gold: "#D4AF37",
-  goldLight: "#F5E6A3",
-  goldDark: "#997A1E",
-  goldGradient: ["#F5E6A3", "#D4AF37", "#997A1E"] as const,
-  goldSoft: "rgba(212, 175, 55, 0.12)",
+  // Luxury Bronze Gold (ViOne brand identity matching responsive PWA)
+  gold: "#D8B282",
+  goldLight: "#F6E1C3",
+  goldDark: "#C29B69",
+  goldBrown: "#8C653B",
+  goldGradient: ["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"] as const,
+  goldSoft: "rgba(216, 178, 130, 0.22)",
 
-  // Royal Cobalt Navy
+  // Royal Cobalt Navy accents
   navy: "#003B95",
   navyLight: "#0284C7",
   navyDark: "#00225A",
 
   // Text
   textPrimary: "#FFFFFF",
-  textSecondary: "#94A3B8",
-  textMuted: "#64748B",
-  textGold: "#E2C366",
+  textSecondary: "#F6E1C3",
+  textMuted: "#94A3B8",
+  textGold: "#D8B282",
+  textDisabled: "#64748B",
 
   // Status & Utility
   success: "#10B981",
@@ -36,9 +42,10 @@ export const Colors = {
   dangerSoft: "rgba(239, 68, 68, 0.15)",
   info: "#38BDF8",
 
-  // Tab & Nav
-  tabBarBg: "rgba(10, 13, 24, 0.95)",
-  tabBarBorder: "rgba(216, 178, 130, 0.15)",
-  tabActive: "#D4AF37",
-  tabInactive: "#64748B",
+  // Tab & Navigation
+  tabBarBg: "#0A0A0B",
+  tabBarBorder: "rgba(216, 178, 130, 0.18)",
+  tabActive: "#D8B282",
+  tabInactive: "#94A3B8",
 };
+

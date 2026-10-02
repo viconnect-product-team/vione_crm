@@ -17,6 +17,9 @@ import {
   ScanLine,
   QrCode as QrCodeIcon,
   Handshake,
+  Kanban,
+  Activity,
+  UserCheck,
   Package,
   FileBarChart,
   Wallet,
@@ -105,6 +108,38 @@ const vioneConnectSuite: Item[] = [
     icon: Users,
     to: "/network",
     label: "Mạng Lưới ViOne Connect",
+  },
+];
+
+// QUY TRÌNH & VẬN HÀNH DOANH NGHIỆP (BRD ViOne Platform 5.0)
+const vioneWorkflowSuite: Item[] = [
+  {
+    key: "nav.vioneWorkflow" as TKey,
+    icon: Kanban,
+    to: "/workflow",
+    label: "Quy Trình & Công Việc",
+    badge: "BPMN",
+  },
+  {
+    key: "nav.vioneWorkload" as TKey,
+    icon: Activity,
+    to: "/workload",
+    label: "Theo Dõi Nhân Viên & Tải Việc",
+    badge: "Heatmap",
+  },
+  {
+    key: "nav.vioneAttendance" as TKey,
+    icon: UserCheck,
+    to: "/attendance",
+    label: "Chấm Công & Ca Làm Việc",
+    badge: "GPS 50m",
+  },
+  {
+    key: "nav.vioneApprovals" as TKey,
+    icon: ShieldCheck,
+    to: "/payment-approvals",
+    label: "Phê Duyệt Chi Tiền 3 Cấp",
+    badge: "3-Tier",
   },
 ];
 
@@ -549,6 +584,15 @@ export function Sidebar({
               <div className="h-px w-full bg-slate-800/80" />
             </div>
           )}
+
+          {/* BRD Quy Trình & Vận Hành Doanh Nghiệp */}
+          <Group
+            label="QUY TRÌNH & VẬN HÀNH"
+            items={vioneWorkflowSuite}
+            pathname={pathname}
+            collapsed={isCollapsed}
+            onNavigate={onNavigate}
+          />
 
           {/* Additional CRM Modules */}
           <Group

@@ -6,7 +6,7 @@
 - **Backend (@vibe/api)**: NestJS, Passport, JWT.
 - **Database (@vibe/db)**: Prisma ORM, PostgreSQL.
 - **Mobile Apps**:
-  - `apps/mobile_vione/`: **Pure Native React Native App (Expo SDK 52)** cho ViOne Business Connect (App ID: `com.vione.app`, bundle ID: `ViOneBusinessConnect`). Giao diện chuẩn ViOne Luxury Warm-Light: Header logo ViOne wordmark + lời chào theo thời gian thực + chuông; Thẻ Doanh Nhân ViOne (Identity Card) với ảnh bìa tối Obsidian Slate bo góc 24px, huy hiệu `DOANH NHÂN VIONE`, tên hiển thị thật từ `useAuth()`, Avatar tròn viền vàng monogram; Phân hệ HÔM NAY với ngày tháng tiếng Việt tự động, 3 tabs `[Hôm nay]` `[Sắp tới]` `[Nhắc lịch]`, trạng thái êm ả *"Hôm nay thật yên tĩnh"* kèm nút *"Mở V để kết nối"*; Khối Insight 15 cơ hội kết nối; Thanh Bottom Tab Bar nền trắng viền mờ với 5 mục: `Trang chủ`, `Network` (tích hợp danh bạ Đối tác kinh doanh & Hộp thư tin nhắn Messenger 4 tab: Tất cả [bao gồm toàn bộ cuộc trò chuyện do mình chủ động gửi `lastMessageFromMe`], Chưa đọc, Nhóm, Tin nhắn chờ; Khung chat thời gian thực `ChatThreadModal.tsx` và Tạo nhóm B2B `CreateGroupModal.tsx`), `Nút V mạ vàng` ở giữa (kích hoạt `VActionSheet`: Mã QR của tôi, Quét QR Camera, Chạm NFC, Đăng khoảnh khắc B2B), `Cộng đồng`, `Tôi`. Kết nối trực tiếp NestJS API qua `src/api/client.ts`. Lưu phiên offline bằng `AsyncStorage`.
+  - `apps/mobile_vione/`: **Pure Native React Native App (Expo SDK 52)** cho ViOne Business Connect (App ID: `com.vione.app`, bundle ID: `ViOneBusinessConnect`). Đạt 100% Full Parity với Web PWA: Header logo ViOne wordmark + lời chào thời gian thực; Thẻ Doanh Nhân ViOne; Tabs lịch trình `[Hôm nay] [Sắp tới] [Nhắc lịch]`; Khối Insight 15 cơ hội; Quick Actions; Khối Điều hành & Giám sát vận hành BPMN 3 cấp (Chấm công GPS & AI FaceID, Tiến độ nhân sự Kanban/WIP, Phê duyệt chi 3 cấp Napas VietQR); Màn hình `Network` tích hợp Khoảnh khắc 24h Stories Strip (`StoryViewerModal`, `CreateStoryModal`), danh sách Chăm sóc đối tác (Nurture List kèm Hẹn 1-1, Nhắn tin, Gọi), Quản lý khách hàng B2B CRM (`CustomerDetailModal`), Quét danh thiếp OCR thông minh (`CardScanReviewModal`), Hộp thư Messenger 4 tabs (`ChatThreadModal`, `CreateGroupModal`); Màn hình `Cộng đồng` tích hợp Danh mục liên minh (`CreateCommunityGroupModal`), Chi tiết sự kiện & Thẻ vé QR VIP (`EventDetailModal`), Cơ hội giao thương B2B (`OpportunityDetailModal`, `CreateOpportunityModal`); Màn hình `Tôi` tích hợp Danh thiếp Titanium 3D, Quyền riêng tư danh tính (`IdentityPrivacyModal`), Ví danh thiếp đối tác vCard (.vcf) (`CardVaultModal`); Lịch hẹn cuộc gặp 1-1 (`ScheduleMeetingModal`), Đăng khoảnh khắc & Bình luận B2B (`PostMomentModal`, `MomentCommentModal`). Nút V mạ vàng phát sáng ở giữa mở `VActionSheet` 1-chạm kết nối. Kết nối trực tiếp NestJS API qua `src/api/client.ts`. Lưu phiên offline bằng `AsyncStorage`.
   - `apps/mobile_ceo1983/`: CEO 1983 Association Native Wrapper (Android APK & iOS IPA/TestFlight).
 - **Environment**: Node.js >= 22 (Node 22 is required for native globalThis.WebSocket support on both local and server runtime environments).
 
@@ -786,3 +786,84 @@ The project is deployed to a remote server (`14.225.217.232`) with 2 primary pro
      - **Xuất Bản Bản In PDF Hướng Dẫn Sử Dụng A4 Chuyên Nghiệp (`generate_pdf_manuals.js`)**:
        * Tài liệu hướng dẫn sử dụng phải bao quát toàn diện cả tính năng chính và mọi tính năng nhỏ (micro-features: cài đặt ẩn danh thiếp, tải vCard, timeline Agenda sự kiện, bỏ phiếu kín điện tử, báo giá B2B, soát vé QR 1s, sơ đồ ghế VIP Cinema map kéo thả, v.v.).
        * BẮT BUỘC xuất bản song song cả bản Markdown `.md` và bản PDF `.pdf` chuẩn A4 (sử dụng Playwright với Microsoft Edge headless `channel: 'msedge'`), nhúng trực tiếp ảnh base64 sắc nét, CSS in ấn `@media print` trang nhã và header/footer đánh số trang chuyên nghiệp.
+
+- **Chuẩn Hóa Bộ Tài Liệu HDSD & SRS Toàn Diện ViOne (Phone Mockup & ISO Use Cases)**:
+  - Tài liệu Hướng Dẫn Sử Dụng (`document/HDSD_HE_THONG_VIONE_TOAN_DIEN.html` & `.pdf`): Sử dụng phong cách thiết kế ViOne Luxury tone Đen Thạch Anh Obsidian (`#0A0A0B`), Vàng Kim Champagne (`#D8B282` / `#D4AF37`) và viền titanium. Mọi ảnh chụp giao diện Mobile App bắt buộc phải đặt trong khung mô phỏng điện thoại `.phone-mockup` (chiều rộng tối đa 275px, viền kim loại 8px bo góc tròn `36px`, notch camera Dynamic Island và bóng đổ 3D mềm mại), tuyệt đối không kéo giãn ảnh dọc sang khổ ngang tràn màn hình.
+  - Bản Đặc Tả Yêu Cầu Phần Mềm SRS (`document/SRS_CHI_TIET_VIONE_HE_THONG_TOAN_DIEN.md` & `.docx`): Tuân thủ chuẩn ISO/IEC/IEEE 29148 với đầy đủ 16 Use Case (UC-01 đến UC-16), ảnh mobile tự động co tỷ lệ dọc chuẩn `220 x 440 pt` và ảnh CRM desktop tỷ lệ ngang `520 x 290 pt`.
+  - Luồng Dữ Liệu Thực Tế Xuyên Suốt (FE -> BE -> DB): Mọi thao tác người dùng (hồ sơ định danh, doanh nghiệp, cơ hội kinh doanh, giao dịch thu/chi, tài liệu, lịch họp) bắt buộc kết nối trực tiếp API Backend NestJS và lưu trữ đồng bộ vào cơ sở dữ liệu PostgreSQL (`business_identities`, `user_profiles`, `members`, `transactions`). Tuyệt đối cấm sử dụng dữ liệu rác, mock tĩnh hay fake profile trên giao diện production.
+204. **Quy Chuẩn Đồng Bộ Toàn Diện BRD Master 5.0: Quản Trị Quy Trình, Giám Sát Tiến Độ Nhân Viên, Chấm Công GPS & Phê Duyệt 3 Cấp Trên CRM ViOne, App ViOne Native & Landing Web Vàng Nâu (`landing_web_vione/index.html`, `apps/vione_app_fe`, `apps/mobile_vione`)**:
+     - **Landing Page Vàng Nâu ViOne Độc Quyền (Warm Bronze Gold Luxury)**:
+       * Bảng màu chủ đạo đồng bộ 100% với nút Vione ở App ViOne: Vàng Nâu (`#D8B282`), Vàng Đồng Hoàng Gia (`#A67A47`), Vàng Kim Nhạt (`#F8E7D1`), và chữ nâu đậm tương phản cao (`#3C240E`).
+       * Loại bỏ hoàn toàn sắc vàng chanh (`#EAB308`). Nút CTA chính phủ gradient: `linear-gradient(135deg, #F8E7D1 0%, #D8B282 48%, #A67A47 100%)` với bóng đổ kim loại `0 4px 20px rgba(216, 178, 130, 0.45)`.
+       * Tích hợp đầy đủ các phần giới thiệu 5 phân hệ cốt lõi BRD, giải pháp quản trị quy trình làm việc, theo dõi nhân sự, chấm công GPS $\le 50\text{m}$, FaceID liveness $\ge 92\%$, phê duyệt 3 cấp và khung ROI 3 năm (144.4% $\rightarrow$ 283.3% $\rightarrow$ 416.7%).
+     - **Phân Hệ Vận Hành Doanh Nghiệp Trên Web CRM ViOne (`apps/vione_app_fe`)**:
+       * **BPMN Kanban Quy Trình (`/workflow`)**: 4 cột Kanban (To Do, In Progress, Review, Done). Khóa giới hạn WIP $\le 5$ (BR-WRK-06), cảnh báo đỏ phát sáng quá hạn (BR-WRK-02), bắt buộc 100% checklist trước khi Done (BR-WRK-07), chuyển đổi biểu đồ Gantt tiến độ.
+       * **Bản Đồ Nhiệt Tải Làm Việc (`/workload`)**: Heatmap theo dõi giờ làm việc tuần của từng nhân viên (BR-WRK-14), tự động kích hoạt cảnh báo đỏ "Quá tải" khi $> 45\text{h/tuần}$, thống kê tỷ lệ hoàn thành KPI (BR-WRK-15).
+       * **Giám Sát Chấm Công Thời Gian Thực (`/attendance`)**: Định vị GPS bán kính $\le 50\text{m}$ (BR-HRM-01), AI FaceID liveness $\ge 92\%$ (BR-HRM-02), cảnh báo đi muộn $> 15\text{m}$ (BR-HRM-05), khóa chốt bảng công tự động vào 23:59 ngày 02 hàng tháng (BR-HRM-14).
+       * **Phê Duyệt Thanh Toán 3 Cấp (`/payment-approvals`)**: Luồng Maker $\rightarrow$ Checker $\rightarrow$ Approver (BR-FIN-01). Phân quyền theo hạn mức: $< 5\text{tr}$ Trưởng bộ phận, $5 - 20\text{tr}$ CFO, $> 20\text{tr}$ CEO ký duyệt (BR-FIN-02). Tích hợp VietQR Napas 24/7 gạch nợ tức thì 1 giây (BR-FIN-06) và phát hiện hóa đơn trùng lặp (BR-FIN-07).
+     - **100% Parity Giữa React Native App (`apps/mobile_vione`) & Responsive PWA (`/connect-app/*`)**:
+       * Cả hai nền tảng đồng bộ khối **"ĐIỀU HÀNH & GIÁM SÁT DOANH NGHIỆP"** (Enterprise Operations Briefing) ngay trên Trang chủ: Chấm công GPS (42/45 có mặt, 93.3%), Quy trình & Tiến độ nhân sự (12 việc đang làm, 2 việc trễ hạn đỏ phát sáng, 1 nhân sự quá tải $> 45\text{h}$), và Phê duyệt chi 3 cấp (3 tờ trình chờ duyệt).
+       * `VActionSheet` trên cả hai nền tảng tích hợp đầy đủ 3 lối tắt vận hành một chạm mở trực tiếp các modal/màn hình tương ứng.
+     - **Chuẩn Hóa 100% RESTful API Phân Hệ Vận Hành Doanh Nghiệp (`/api/operations`)**:
+       * Toàn bộ 16 API endpoints quản trị quy trình, tải nhân sự, chấm công GPS/FaceID và duyệt chi 3 cấp tuân thủ nghiêm ngặt chuẩn RESTful quốc tế.
+       * HTTP Methods chính xác: `GET` (đọc tài nguyên, query filter), `POST` (tạo mới tài nguyên trả về status `201 Created`), `PUT` (cập nhật trạng thái/tiến độ trả về status `200 OK`), `DELETE` (xóa tài nguyên).
+       * HTTP Status Codes chuẩn mực: `200 OK` (thao tác thành công), `201 Created` (tạo mới thành công), `400 Bad Request` (vi phạm quy tắc nghiệp vụ BRD: GPS $> 50\text{m}$, FaceID $< 92\%$, quá tải WIP $> 5$, checklist $< 100\%$ khi Done, trùng hóa đơn), `401 Unauthorized` (chưa đăng nhập), `404 Not Found` (không tìm thấy tài nguyên).
+       * Response Envelope đồng nhất: Thành công trả về `{ success: true, statusCode: 200/201, data: ..., message?: string }`; Thất bại trả về `{ success: false, statusCode: 400/404, message: string, errors?: Record<string, string>, timestamp: string, path: string }`.
+205. **Quy Chuẩn React Native Mobile ViOne Đạt Chuẩn 100% Giao Diện Responsive PWA (Dark Luxury Obsidian & Bronze Gold Parity - `apps/mobile_vione`, `apps/vione_app_fe`)**:
+     - **Bản Sắc Nhận Diện Dark Luxury Obsidian Bắt Buộc**:
+       * Toàn bộ ứng dụng React Native Mobile (`apps/mobile_vione`) TUYỆT ĐỐI KHÔNG DÙNG NỀN TRẮNG `#FFFFFF` hay màu chữ `#0F172A` làm tone giao diện chính.
+       * Phải sử dụng thống nhất tone Đen Thạch Anh Obsidian (`#0A0A0B`) cho nền chính (`Colors.background`), bề mặt thẻ `#12151F` & `#181D2A` (`Colors.surface`, `Colors.surface2`), viền mạ vàng `rgba(216, 178, 130, 0.45)`, chữ trắng sáng `#FFFFFF` (`Colors.textPrimary`), chữ vàng nhạt `#F6E1C3` (`Colors.textSecondary`) và chữ phụ `#94A3B8` (`Colors.textMuted`).
+     - **Màn Hình Đăng Nhập (`LoginScreen.tsx` vs `ConnectAppSignIn.tsx`)**:
+       * Ảnh nền `connect-auth-bg.jpg` phủ overlay tối gradient mượt mà.
+       * Bộ chuyển đổi ngôn ngữ thu nhỏ góc trên (VI / EN).
+       * Hai nút đăng nhập mạng xã hội dạng kéo dài: Google & Apple.
+       * Phân cách chữ "HOẶC" viền mạ vàng hairline.
+       * Trường nhập Email/Password với icon chìm, nút ẩn/hiện mật khẩu, checkbox ghi nhớ đăng nhập mạ vàng.
+       * Nút Đăng nhập phủ gradient vàng đồng hoàng gia: `["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]` với chữ đen than `#050C15` và icon mũi tên.
+       * Nút Đăng ký tài khoản doanh nhân, Khám phá Web Landing ViOne, và Nút Chạm thẻ NFC / Quét QR.
+     - **Màn Hình Trang Chủ (`HomeScreen.tsx` vs `ExecutiveHome.tsx`)**:
+       * Header: ViOne wordmark + Lời chào theo thời gian thực (Sáng/Chiều/Tối) + Chuông thông báo đính badge đỏ.
+       * Thẻ Doanh Nhân ViOne: Ảnh bìa `vba-hero.jpg` có nút bút chì chỉnh sửa riêng biệt góc trên phải + Khối thông tin gồm badge "DOANH NHÂN VIONE", Họ tên, Số điện thoại bên trái và Avatar tròn viền vàng mạ kép bên phải.
+       * Bộ 3 Tabs lịch trình: Hôm nay / Sắp tới / Nhắc lịch với tab active nền gradient vàng chữ đen than.
+       * Thẻ Insight: "SỐ CƠ HỘI KẾT NỐI TIỀM NĂNG" (15 cơ hội kết nối tiềm năng cao) + CTA "Khám phá ngay".
+       * Bộ 3 Phím tắt Quick Actions: "Cuộc gặp 1-1", "Quét thẻ", "Thẻ của tôi" trong 1 hàng 3 cột cân đối.
+       * Khối Điều hành & Giám sát vận hành BRD: Chấm công GPS/FaceID, Tiến độ nhân sự Kanban/WIP, Phê duyệt chi 3 cấp.
+     - **Thanh Điều Hướng Dưới Đáy (`CustomBottomTabBar.tsx` vs `BusinessConnectBottomNav.tsx`)**:
+       * Nền tối `#0A0A0B`, viền trên mạ vàng `rgba(216, 178, 130, 0.18)`.
+       * Vạch chỉ báo tab đang chọn màu vàng `#D8B282`.
+       * Nút V mạ vàng nổi bật ở chính giữa với vầng sáng hoàng kim và gradient `["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]`.
+
+
+
+
+206. **Quy Chuẩn ViOne Enterprise Platform 5.0 (AI Copilot Đa Năng, Zero CRM Web Redirects Trên Mobile, Dữ Liệu Thực PostgreSQL & MinIO)**:
+     - **Chuẩn Hóa Thuật Ngữ B2B Doanh Nghiệp (Enterprise Standard)**:
+       * TUYỆT ĐỐI KHÔNG SỬ DỤNG các từ "hội viên", "hiệp hội", "câu lạc bộ", "CEO 1983" trong bất kỳ giao diện, API, schema, tài liệu, hay văn bản của ViOne.
+       * Luôn sử dụng thuật ngữ chuẩn doanh nghiệp: "Doanh nghiệp", "Tổ chức", "Khách hàng B2B", "Nhân sự / Nhân viên", "Quản lý / Lãnh đạo", "Đối tác chiến lược".
+     - **AI Copilot Doanh Nghiệp 5.0 Đa Năng (`/ai`, `ai.service.ts`)**:
+       * Trí tuệ nhân tạo tương tác tự nhiên, thông minh, hỗ trợ giọng nói 2 chiều: Lắng nghe (Web Speech STT) và Trả lời phát âm tiếng Việt (Web Speech Synthesis TTS).
+       * Nhận diện và Xử lý tệp Excel/CSV linh hoạt: Tự động phân tích cấu trúc cột, hiển thị modal xem trước (preview modal), cho phép xác nhận và nạp trực tiếp vào CSDL PostgreSQL (`public.companies`, `public.members`, `public.business_opportunities`, `public.products`, `public.tasks`).
+       * Tự động soạn thảo văn bản hành chính doanh nghiệp chuẩn mực (Hợp đồng B2B, Biên bản cuộc họp HĐQT, Tờ trình thanh toán, Kế hoạch kinh doanh) với tính năng xem trước và xuất file Word (`.doc`), in/lưu PDF (`.pdf`), lưu trữ vào danh mục tài liệu.
+     - **Tuyệt Đối Không Redirect Ra Web CRM Trên Mobile (Zero Out-of-App Web Redirects)**:
+       * Các chức năng Vận hành doanh nghiệp (Chấm công GPS/FaceID, Quy trình Kanban/Checklist, Phê duyệt thanh toán 3 cấp) trên App ViOne (cả Responsive PWA `/connect-app/*` và React Native Mobile `apps/mobile_vione`) PHẢI được hiển thị qua In-App Native Sheets / Bottom Modals nội bộ.
+       * TUYỆT ĐỐI KHÔNG dùng thẻ `<Link to="/attendance">` hay `<Link to="/workflow">` để điều hướng người dùng mobile ra màn hình CRM web desktop gây gãy vỡ trải nghiệm người dùng.
+     - **Dữ Liệu Thực 100% Qua RESTful API, PostgreSQL & MinIO S3**:
+       * Mọi dữ liệu hiển thị và thao tác trên CRM và Mobile App đều phải tương tác thông qua RESTful API kết nối trực tiếp CSDL PostgreSQL (`vione_project`) và MinIO S3 Object Storage (`vione-standalone-bucket`), TUYỆT ĐỐI KHÔNG dùng mock data tĩnh hoặc dữ liệu giả lập.
+
+207. **Quy Chuẩn Đồng Bộ 100% Giữa App ViOne Native (`apps/mobile_vione`) & Responsive PWA (`vione_app_fe`)**:
+     - **Thanh Bottom Navigation 5 Vị Trí & Nút V Phát Sáng Ở Giữa (`CustomBottomTabBar.tsx`)**:
+       * 4 Tab biểu tượng chuẩn: Trang chủ, Network, Cộng đồng, Tôi. Vạch chỉ báo active mạ vàng `#D8B282`.
+       * Nút V nhô cao ở giữa (`-18px`) với vòng hào quang phát sáng đa tầng `vBtnGlowRing` (`shadowRadius: 16`, `shadowOpacity: 0.85`, `elevation: 12`, viền `rgba(246, 225, 195, 0.6)`), mặt nút mạ vàng dập nổi chữ V hoàng gia.
+       * Chạm nút V kích hoạt `VActionSheet.tsx`: Nút Hero Gold "Đưa mã QR của bạn" (mở `MyQrModal`), "Quét mã QR" (mở `ScanQrModal` với camera viewfinder, tia laser quét chuyển động, đèn flash toggle và fallback nhập mã thủ công), Chạm thẻ NFC, Quét danh thiếp AI, và 3 lối tắt vận hành (Chấm công GPS, Quy trình BPMN, Phê duyệt 3 cấp).
+     - **Sticky Header Thống Nhất**: Logo ViOne wordmark bên trái + Lời chào thời gian thực + Nút Hộp thư tin nhắn (kèm badge số đếm chưa đọc thời gian thực, 1-chạm chuyển ngay sang tab Tin nhắn) + Chuông thông báo.
+     - **Màn Hình Trang Chủ (`HomeScreen.tsx`)**: Thẻ Danh tính Doanh nhân ViOne, Phân hệ Lịch trình (3 tabs: Hôm nay, Sắp tới, Nhắc lịch), Thẻ Insight (15 cơ hội kết nối), Bộ 3 Phím tắt (Cuộc gặp 1-1, Quét thẻ, Thẻ của tôi), Khối Giám sát Vận hành & Nhân sự (Chấm công GPS & AI FaceID, Quy trình BPMN, Phê duyệt chi 3 cấp), Khối V · Gợi ý hôm nay từ AI.
+     - **Màn Hình Network (`NetworkScreen.tsx`)**:
+       * **Khoảnh Khắc 24h (Stories Strip)**: Nút `+ Đăng story` / `Đăng khoảnh khắc` mở `CreateStoryModal.tsx` (soạn nội dung, chọn ảnh, gắn hashtag B2B), dải story các doanh nhân với avatar viền vàng, tag chủ đề và thời gian; chạm vào story mở `StoryViewerModal.tsx` toàn màn hình với thanh tiến độ tự động (0-100%), nút thả tim và chia sẻ.
+       * **Khách Hàng & Đối Tác Cần Chăm Sóc (Nurture List)**: Khối "CẦN GIỮ KẾT NỐI & CHĂM SÓC" cảnh báo đối tác 14 ngày chưa tương tác, chờ phê duyệt hợp đồng hoặc hồ sơ liên danh; tích hợp 3 phím tắt nhanh 1-chạm: `Hẹn 1-1`, `Nhắn tin`, `Gọi`.
+       * 5 Tabs danh mục: Mạng lưới, Khách hàng, Gợi ý, Tin nhắn (kèm badge chưa đọc), Lời mời kết nối.
+       * Messenger In-App: Hộp thư 4 danh mục (Tất cả, Chưa đọc, Nhóm, Tin nhắn chờ) tích hợp `ChatThreadModal.tsx` và `CreateGroupModal.tsx`.
+     - **Màn Hình Cộng Đồng (`CommunityScreen.tsx`)**:
+       * Nút `+ Tạo nhóm` mạ vàng trên Header mở `CreateCommunityGroupModal.tsx` khởi tạo liên minh/cộng đồng doanh nghiệp mới với tên nhóm, phân loại ngành nghề, tôn chỉ và tự động cấp quyền Ban Điều Hành.
+       * 4 Tabs danh mục: Tất cả, Đã tham gia, Ban Điều Hành, Sự kiện B2B.
+       * Phân hệ **Cơ Hội Kinh Doanh Trong Cộng Đồng** (`CommunityOpportunitiesSection` parity): Banner chỉ số cơ hội B2B đang mở, danh sách thẻ cơ hội (quy mô 15 tỷ, 850 triệu, 5.2 tỷ), thời hạn, và nút hành động "Quan tâm" gửi hồ sơ năng lực 1-chạm.
+     - **Màn Hình Tôi (`ProfileScreen.tsx`)**: Thẻ Hero Doanh nhân ViOne, 4 Phím tắt (Chia sẻ link, Mã QR, Thẻ NFC, Xem trước), Thẻ danh thiếp điện tử Titanium 3D với chip thông minh và NFC, Showcase Về tôi, Thông tin liên hệ và Cài đặt bảo mật.

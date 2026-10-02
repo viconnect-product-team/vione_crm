@@ -18,21 +18,27 @@ import { CustomBottomTabBar } from "./CustomBottomTabBar";
 import { VActionSheet } from "../components/VActionSheet";
 import { MyQrModal } from "../screens/quick-connect/MyQrModal";
 import { ScanQrModal } from "../screens/quick-connect/ScanQrModal";
+import { AttendanceModal } from "../components/AttendanceModal";
+import { WorkflowModal } from "../components/WorkflowModal";
+import { ApprovalsModal } from "../components/ApprovalsModal";
+import { CardScanReviewModal } from "../components/CardScanReviewModal";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const LightTheme = {
+const DarkTheme = {
   ...DefaultTheme,
+  dark: true,
   colors: {
     ...DefaultTheme.colors,
-    background: "#FFFFFF",
-    card: "#FFFFFF",
-    text: "#0F172A",
-    border: "#E2E8F0",
-    primary: "#B45309",
+    background: "#0A0A0B",
+    card: "#0A0A0B",
+    text: "#F5F7FA",
+    border: "rgba(216, 178, 130, 0.18)",
+    primary: "#D8B282",
   },
 };
+
 
 const MainTabs: React.FC<{ onVPress: () => void }> = ({ onVPress }) => {
   return (
@@ -57,6 +63,10 @@ export const AppNavigator: React.FC = () => {
   const [vSheetVisible, setVSheetVisible] = useState(false);
   const [myQrVisible, setMyQrVisible] = useState(false);
   const [scanQrVisible, setScanQrVisible] = useState(false);
+  const [cardScanVisible, setCardScanVisible] = useState(false);
+  const [attendanceVisible, setAttendanceVisible] = useState(false);
+  const [workflowVisible, setWorkflowVisible] = useState(false);
+  const [approvalsVisible, setApprovalsVisible] = useState(false);
 
   if (isLoading) {
     return (
@@ -67,7 +77,7 @@ export const AppNavigator: React.FC = () => {
   }
 
   return (
-    <NavigationContainer theme={LightTheme}>
+    <NavigationContainer theme={DarkTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isAuthenticated ? (
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -84,10 +94,22 @@ export const AppNavigator: React.FC = () => {
         onClose={() => setVSheetVisible(false)}
         onOpenMyQr={() => setMyQrVisible(true)}
         onOpenScanQr={() => setScanQrVisible(true)}
+        onOpenCardScan={() => setCardScanVisible(true)}
+        onOpenAttendance={() => setAttendanceVisible(true)}
+        onOpenWorkflow={() => setWorkflowVisible(true)}
+        onOpenApprovals={() => setApprovalsVisible(true)}
       />
 
       <MyQrModal visible={myQrVisible} onClose={() => setMyQrVisible(false)} />
       <ScanQrModal visible={scanQrVisible} onClose={() => setScanQrVisible(false)} />
+      <CardScanReviewModal
+        visible={cardScanVisible}
+        onClose={() => setCardScanVisible(false)}
+        onSaveContact={() => setCardScanVisible(false)}
+      />
+      <AttendanceModal visible={attendanceVisible} onClose={() => setAttendanceVisible(false)} />
+      <WorkflowModal visible={workflowVisible} onClose={() => setWorkflowVisible(false)} />
+      <ApprovalsModal visible={approvalsVisible} onClose={() => setApprovalsVisible(false)} />
     </NavigationContainer>
   );
 };

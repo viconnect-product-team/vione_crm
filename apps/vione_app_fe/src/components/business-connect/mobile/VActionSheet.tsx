@@ -12,6 +12,7 @@ import {
   Contact,
   Globe,
   IdCard,
+  Layers,
   MapPin,
   Nfc,
   NotebookPen,
@@ -234,6 +235,71 @@ export function VActionSheet({
               descKey="bc.mobile.sheet.tile.privacy.desc"
               onClick={() => go("/connect-app/me")}
             />
+          </div>
+
+          {/* Vận hành doanh nghiệp chuẩn BRD */}
+          <div className="mt-5 border-t border-[var(--bc-mobile-border)] pt-4">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--bc-mobile-muted)] px-1">
+              VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP
+            </p>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenChange(false);
+                  void navigate({ to: "/attendance" as any });
+                }}
+                className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-2.5 text-center transition-all hover:border-[var(--bc-mobile-border-gold)]"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                  <MapPin className="h-5 w-5" />
+                </span>
+                <span className="text-[12px] font-semibold text-[var(--bc-mobile-text)]">
+                  Chấm công
+                </span>
+                <span className="text-[10px] text-[var(--bc-mobile-muted)]">
+                  GPS & FaceID
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenChange(false);
+                  void navigate({ to: "/workflow" as any });
+                }}
+                className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-2.5 text-center transition-all hover:border-[var(--bc-mobile-border-gold)]"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                  <Layers className="h-5 w-5" />
+                </span>
+                <span className="text-[12px] font-semibold text-[var(--bc-mobile-text)]">
+                  Quy trình
+                </span>
+                <span className="text-[10px] text-[var(--bc-mobile-muted)]">
+                  BPMN Kanban
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenChange(false);
+                  void navigate({ to: "/payment-approvals" as any });
+                }}
+                className="flex flex-col items-center gap-1.5 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-2.5 text-center transition-all hover:border-[var(--bc-mobile-border-gold)]"
+              >
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400">
+                  <ShieldCheck className="h-5 w-5" />
+                </span>
+                <span className="text-[12px] font-semibold text-[var(--bc-mobile-text)]">
+                  Phê duyệt
+                </span>
+                <span className="text-[10px] text-[var(--bc-mobile-muted)]">
+                  3 cấp chuẩn
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Circular close */}
