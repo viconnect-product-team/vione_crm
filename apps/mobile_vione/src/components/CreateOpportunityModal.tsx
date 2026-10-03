@@ -24,6 +24,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
 import { CommunityOpportunityItem } from "./OpportunityDetailModal";
+import { opportunityApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -67,7 +68,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!title.trim()) {
       Alert.alert("Thiếu thông tin", "Vui lòng nhập tên dự án hoặc gói thầu B2B.");
       return;
@@ -78,26 +79,35 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
     }
 
     setSubmitting(true);
-    setTimeout(() => {
-      const newOpp: CommunityOpportunityItem = {
-        id: `opp-${Date.now()}`,
-        title: title.trim(),
-        organization: "Doanh nghiệp thành viên ViOne",
-        communityName,
-        dealValue: dealValue.trim(),
-        category,
-        daysLeft: `Còn ${duration} ngày`,
-        interested: false,
-      };
+    const newOpp: CommunityOpportunityItem = {
+      id: `opp-${Date.now()}`,
+      title: title.trim(),
+      organization: "Doanh nghiệp thành viên ViOne",
+      communityName,
+      dealValue: dealValue.trim(),
+      category,
+      daysLeft: `Còn ${duration} ngày`,
+      interested: false,
+    };
 
-      onCreate(newOpp);
-      setSubmitting(false);
-      Alert.alert("Thành công", "Cơ hội kinh doanh B2B đã được công bố trên mạng lưới cộng đồng ViOne.");
-      setTitle("");
-      setDealValue("");
-      setDescription("");
-      onClose();
-    }, 400);
+    try {
+      await opportunityApi.createOpportunity({
+        title: title.trim(),
+        description: description.trim() || undefined,
+        category,
+        duration: `${duration} ngày`,
+      });
+    } catch (err) {
+      console.warn("Lỗi tạo opportunity lên API:", err);
+    }
+
+    onCreate(newOpp);
+    setSubmitting(false);
+    Alert.alert("Thành công", "Cơ hội kinh doanh B2B đã được công bố trên mạng lưới cộng đồng ViOne.");
+    setTitle("");
+    setDealValue("");
+    setDescription("");
+    onClose();
   };
 
   return (

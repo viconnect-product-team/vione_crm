@@ -237,23 +237,21 @@ function WorkflowPage() {
     const current = tasks.find((t) => t.id === taskId);
     if (!current) return;
 
-    // BR-WRK-04: Giới hạn WIP không quá 5 task cùng In Progress cho 1 nhân sự
     if (newStatus === "in_progress") {
       const currentWip = tasks.filter(
         (t) => t.assignee.id === current.assignee.id && t.status === "in_progress" && t.id !== taskId
       ).length;
       if (currentWip >= 5) {
-        toast.error(`Vi phạm BR-WRK-04: Nhân viên ${current.assignee.name} đã có 5 việc Đang Làm. Không được vượt giới hạn WIP.`);
+        toast.error(`Nhân viên ${current.assignee.name} đã có 5 việc Đang Làm. Vui lòng hoàn thành bớt trước khi nhận việc mới.`);
         return;
       }
     }
 
-    // BR-WRK-15: Khi chuyển sang Done, bắt buộc phải hoàn tất toàn bộ checklist
     if (newStatus === "done") {
       const unfinished = current.checklist.filter((c) => !c.done);
       if (unfinished.length > 0) {
         toast.warning(
-          `Cảnh báo BR-WRK-15: Còn ${unfinished.length} mục kiểm tra chưa hoàn tất. Đã tự động đánh dấu kiểm tra hợp lệ.`
+          `Còn ${unfinished.length} mục kiểm tra chưa hoàn tất. Đã tự động đánh dấu kiểm tra hợp lệ.`
         );
       }
     }
@@ -304,7 +302,7 @@ function WorkflowPage() {
     };
 
     setTasks((prev) => [newTask, ...prev]);
-    toast.success("Đã khởi tạo công việc mới chuẩn BPMN 2.0 (BR-WRK-01)");
+    toast.success("Đã khởi tạo công việc mới vào quy trình");
     setCreateModalOpen(false);
     setNewTitle("");
   };
@@ -329,7 +327,7 @@ function WorkflowPage() {
         {/* Header */}
         <PageHeader
           title="Quy Trình & Giám Sát Công Việc Doanh Nghiệp"
-          subtitle="Hệ thống quản lý quy trình BPMN 2.0, theo dõi quá trình nhân viên làm việc 24/7 và kiểm soát tiến độ chuẩn 80 Quy tắc BRD ViOne 5.0."
+          subtitle="Hệ thống quản lý quy trình công việc tự động, theo dõi tiến độ nhân viên và phân bổ khối lượng công việc khoa học."
           actions={
             <div className="flex flex-wrap items-center gap-2.5">
               <div className="flex items-center rounded-xl bg-slate-200 dark:bg-slate-800 p-1">
@@ -378,23 +376,23 @@ function WorkflowPage() {
             icon={<ListTodo className="size-5" />}
           />
           <StatCard
-            label="Đang triển khai (WIP)"
+            label="Đang triển khai"
             value={inProgressTasks.length}
-            hint="Kiểm soát WIP <= 5/nhân sự"
+            hint="Tối đa 5 việc/nhân sự"
             tone="info"
             icon={<TrendingUp className="size-5" />}
           />
           <StatCard
             label="Cảnh báo quá hạn đỏ"
             value={tasks.filter((t) => t.isOverdue).length}
-            hint="Vi phạm tiến độ BR-WRK-02"
+            hint="Trễ hạn cần xử lý ngay"
             tone="danger"
             icon={<AlertTriangle className="size-5" />}
           />
           <StatCard
             label="Tỷ lệ hoàn thành đúng hạn"
             value="98.2%"
-            hint="Đạt mục tiêu SMART BRD"
+            hint="Đạt mục tiêu đề ra"
             tone="success"
             icon={<CheckCircle2 className="size-5" />}
           />
@@ -450,7 +448,7 @@ function WorkflowPage() {
             {/* Col 2: In Progress */}
             <KanbanColumn
               title="ĐANG LÀM"
-              sub="In Progress (WIP ≤ 5)"
+              sub="Đang thực hiện (Tối đa 5 việc)"
               count={inProgressTasks.length}
               status="in_progress"
               tasks={inProgressTasks}
@@ -463,7 +461,7 @@ function WorkflowPage() {
             {/* Col 3: Review */}
             <KanbanColumn
               title="CHỜ NGHIỆM THU"
-              sub="Review & Approve (BR-WRK-03)"
+              sub="Kiểm tra & Phê duyệt"
               count={reviewTasks.length}
               status="review"
               tasks={reviewTasks}
@@ -476,7 +474,7 @@ function WorkflowPage() {
             {/* Col 4: Done */}
             <KanbanColumn
               title="ĐÃ HOÀN THÀNH"
-              sub="Done (Nghiệm thu đạt 100%)"
+              sub="Đã hoàn thành (100%)"
               count={doneTasks.length}
               status="done"
               tasks={doneTasks}
@@ -495,7 +493,7 @@ function WorkflowPage() {
               <div className="flex items-center gap-2">
                 <Calendar className="size-4 text-[#D8B282]" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                  Biểu Đồ Phụ Thuộc Gantt Chart (Finish-to-Start BR-WRK-06)
+                  Biểu Đồ Tiến Độ (Gantt Chart)
                 </h3>
               </div>
               <span className="text-xs text-slate-500 font-mono">Tháng 10 / 2026</span>
@@ -562,7 +560,7 @@ function WorkflowPage() {
                     </span>
                     {selectedTask.isOverdue && (
                       <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-500 text-white animate-pulse">
-                        QUÁ HẠN (BR-WRK-02)
+                        QUÁ HẠN
                       </span>
                     )}
                   </div>
@@ -580,7 +578,7 @@ function WorkflowPage() {
               {/* Chi tiết nội dung */}
               <div className="grid grid-cols-2 gap-4 py-4 border-b border-slate-200 dark:border-slate-800 text-xs">
                 <div>
-                  <span className="text-slate-400 block mb-1">Người phụ trách (Assignee):</span>
+                  <span className="text-slate-400 block mb-1">Người phụ trách:</span>
                   <div className="flex items-center gap-2 font-bold">
                     <img src={selectedTask.assignee.avatar} alt="" className="size-6 rounded-full object-cover" />
                     <span>{selectedTask.assignee.name}</span>
@@ -588,18 +586,18 @@ function WorkflowPage() {
                   </div>
                 </div>
                 <div>
-                  <span className="text-slate-400 block mb-1">Hạn chót (Deadline BR-WRK-01):</span>
+                  <span className="text-slate-400 block mb-1">Hạn chót:</span>
                   <div className="font-mono font-bold flex items-center gap-1.5 text-amber-500">
                     <Clock className="size-3.5" />
                     {selectedTask.deadline}
                   </div>
                 </div>
                 <div>
-                  <span className="text-slate-400 block mb-1">Ghi giờ Timesheet (BR-WRK-07):</span>
+                  <span className="text-slate-400 block mb-1">Thời gian làm việc:</span>
                   <div className="font-bold">{selectedTask.timesheetHours} giờ thực tế</div>
                 </div>
                 <div>
-                  <span className="text-slate-400 block mb-1">Kiểm soát ngân sách (BR-WRK-05):</span>
+                  <span className="text-slate-400 block mb-1">Ngân sách dự kiến:</span>
                   <div className="font-bold">
                     {selectedTask.spentVnd.toLocaleString("vi-VN")} / {selectedTask.budgetVnd.toLocaleString("vi-VN")} VNĐ
                   </div>
@@ -609,7 +607,7 @@ function WorkflowPage() {
               {/* Checklist con */}
               <div className="py-4 space-y-2.5">
                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Mục kiểm tra nghiệm thu (Checklist BR-WRK-15)
+                  Mục kiểm tra nghiệm thu (Checklist)
                 </div>
                 {selectedTask.checklist.map((item) => (
                   <label
@@ -691,7 +689,7 @@ function WorkflowPage() {
                   <div className="size-7 rounded-lg bg-gradient-to-r from-[#D8B282] to-[#A67A47] flex items-center justify-center text-[#3C240E] font-black text-sm">
                     +
                   </div>
-                  <h3 className="text-base font-bold">Giao Việc / Tạo Task Mới (BR-WRK-01)</h3>
+                  <h3 className="text-base font-bold">Giao Việc / Tạo Task Mới</h3>
                 </div>
                 <button onClick={() => setCreateModalOpen(false)} className="text-slate-400">✕</button>
               </div>
@@ -702,7 +700,7 @@ function WorkflowPage() {
                   <input
                     type="text"
                     required
-                    placeholder="Ví dụ: Hoàn tất đối soát gạch nợ VietQR với kế toán"
+                    placeholder="Ví dụ: Hoàn tất đối soát chuyển khoản ngân hàng"
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]"
@@ -737,7 +735,7 @@ function WorkflowPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-500 mb-1 font-bold">Người phụ trách (Assignee) *</label>
+                    <label className="block text-slate-500 mb-1 font-bold">Người phụ trách *</label>
                     <select
                       value={newAssigneeName}
                       onChange={(e) => setNewAssigneeName(e.target.value)}
@@ -751,7 +749,7 @@ function WorkflowPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-slate-500 mb-1 font-bold">Hạn chót (Deadline) *</label>
+                    <label className="block text-slate-500 mb-1 font-bold">Hạn chót *</label>
                     <input
                       type="text"
                       required
@@ -765,7 +763,7 @@ function WorkflowPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-500 mb-1 font-bold">Ưu tiên (BR-WRK-13)</label>
+                    <label className="block text-slate-500 mb-1 font-bold">Mức độ ưu tiên</label>
                     <select
                       value={newPriority}
                       onChange={(e) => setNewPriority(e.target.value as TaskPriority)}

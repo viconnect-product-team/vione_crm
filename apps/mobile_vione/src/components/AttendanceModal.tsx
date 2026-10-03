@@ -21,6 +21,7 @@ import {
   UserCheck,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { operationsApi } from "../api/services";
 
 interface AttendanceModalProps {
   visible: boolean;
@@ -35,20 +36,32 @@ export const AttendanceModal: React.FC<AttendanceModalProps> = ({ visible, onClo
   const officeDistance = 18; // 18m (< 50m chuẩn BR-HRM-01)
   const faceScore = 98.4; // 98.4% (>= 92% chuẩn BR-HRM-02)
 
-  const handleCheckIn = () => {
+  const handleCheckIn = async () => {
     setIsVerifying(true);
-    setTimeout(() => {
-      setIsVerifying(false);
-      setCheckedIn(true);
-      const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
-      setCheckInTime(timeStr);
-      Alert.alert(
-        "Chấm Công Thành Công!",
-        `• Tọa độ GPS: Hợp lệ (${officeDistance}m so với Trụ sở ViOne Tower)\n• Nhận diện FaceID: Khớp ${faceScore}% (Liveness Verified)\n• Thời gian ghi nhận: ${timeStr}`,
-        [{ text: "Đã hiểu", style: "default" }]
-      );
-    }, 900);
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+
+    try {
+      await operationsApi.recordCheckIn({
+        employeeName: "Doanh nhân ViOne",
+        employeeCode: "VN-8888",
+        faceConfidence: faceScore,
+        distanceMeters: officeDistance,
+        latitude: 21.0168,
+        longitude: 105.7838,
+      });
+    } catch (err) {
+      console.warn("Lỗi ghi nhận check-in lên API:", err);
+    }
+
+    setIsVerifying(false);
+    setCheckedIn(true);
+    setCheckInTime(timeStr);
+    Alert.alert(
+      "Chấm Công Thành Công!",
+      `• Tọa độ GPS: Hợp lệ (${officeDistance}m so với Trụ sở ViOne Tower)\n• Nhận diện FaceID: Khớp ${faceScore}% (Liveness Verified)\n• Thời gian ghi nhận: ${timeStr}`,
+      [{ text: "Đã hiểu", style: "default" }]
+    );
   };
 
   return (

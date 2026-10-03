@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Alert,
   TextInput,
   Image,
+  RefreshControl,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -27,8 +28,18 @@ import {
   Clock,
   ShieldCheck,
   Check,
+  Phone,
+  Mail,
+  MessageSquare,
+  Handshake,
+  Flame,
+  Crown,
+  Star,
+  ScanLine,
+  Filter,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
+import { useTheme } from "../../context/ThemeContext";
 import { CommunityItem, B2BEvent } from "../../types";
 import { CreateCommunityGroupModal } from "../../components/CreateCommunityGroupModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
@@ -37,6 +48,88 @@ import {
   CommunityOpportunityItem,
 } from "../../components/OpportunityDetailModal";
 import { CreateOpportunityModal } from "../../components/CreateOpportunityModal";
+import { CardScanReviewModal, CustomerLeadTier } from "../../components/CardScanReviewModal";
+import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
+import { communityApi, eventsApi, opportunityApi, customerApi, B2BCustomerData } from "../../api";
+
+export interface CustomerLeadItem {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  phone: string;
+  email: string;
+  dealValue: string;
+  tier: CustomerLeadTier;
+  stage: "prospect" | "qualified" | "proposal" | "negotiation";
+  assignedStaff: string;
+  notes: string;
+  nextAction: string;
+  source: string;
+}
+
+const MOCK_LEADS: CustomerLeadItem[] = [
+  {
+    id: "lead-1",
+    name: "Nguyễn Văn Hùng",
+    title: "Tổng Giám Đốc",
+    company: "Tập Đoàn Đầu Tư Hạ Tầng Hùng Cường",
+    phone: "0918 889 999",
+    email: "hung.nguyen@hungcuonggroup.vn",
+    dealValue: "1.5 Tỷ VNĐ",
+    tier: "hot",
+    stage: "prospect",
+    assignedStaff: "Trần Minh Hoàng (Trưởng phòng KD)",
+    notes: "Đã quét danh thiếp tại sự kiện. Cần báo giá ViOne ERP và hệ thống danh thiếp số 250 tài khoản.",
+    nextAction: "Hẹn gặp 1-1 tại Landmark 81 chiều nay",
+    source: "Card Scan AI OCR",
+  },
+  {
+    id: "lead-2",
+    name: "Phạm Hải Yến",
+    title: "Chủ Tịch HĐQT",
+    company: "Chuỗi Khách Sạn & Nghỉ Dưỡng Grand Sapphire",
+    phone: "0903 222 111",
+    email: "yen.pham@grandsapphire.vn",
+    dealValue: "3.2 Tỷ VNĐ",
+    tier: "vip",
+    stage: "proposal",
+    assignedStaff: "Lê Thu Hà (Chuyên viên CSKH)",
+    notes: "Nhu cầu số hóa quản trị tài sản và thẻ hội viên VIP cho 5 cụm resort Đà Nẵng - Phú Quốc.",
+    nextAction: "Gửi bản trình diễn tính năng và dự thảo hợp đồng",
+    source: "Cộng đồng ViOne",
+  },
+  {
+    id: "lead-3",
+    name: "Vũ Quang Vinh",
+    title: "Giám Đốc Cung Ứng Toàn Cầu",
+    company: "Tập Đoàn Logistics & Xuất Nhập Khẩu Vinh Phát",
+    phone: "0938 777 666",
+    email: "vinh.vu@vinhphatlogistics.com",
+    dealValue: "800 Triệu VNĐ",
+    tier: "care24h",
+    stage: "negotiation",
+    assignedStaff: "Trần Minh Hoàng (Trưởng phòng KD)",
+    notes: "Cần care gấp trong 24h: Khách hàng muốn chốt hợp đồng trước thứ 2 tuần tới.",
+    nextAction: "Gọi điện chốt phương án chiết khấu thanh toán",
+    source: "Đối tác kết nối B2B",
+  },
+  {
+    id: "lead-4",
+    name: "Lê Hoàng Long",
+    title: "Phó Tổng Giám Đốc Công Nghệ",
+    company: "Công Ty Cổ Phần Năng Lượng Tái Tạo Solaria",
+    phone: "0977 444 333",
+    email: "long.le@solariaenergy.vn",
+    dealValue: "650 Triệu VNĐ",
+    tier: "featured",
+    stage: "prospect",
+    assignedStaff: "Lê Thu Hà (Chuyên viên CSKH)",
+    notes: "Khách hàng nổi bật tại Diễn đàn Đầu tư B2B, quan tâm mở rộng chuỗi cung ứng điện mặt trời.",
+    nextAction: "Xếp lịch cà phê CEO 1-1",
+    source: "Sự kiện B2B",
+  },
+];
 
 const MOCK_OPPORTUNITIES: CommunityOpportunityItem[] = [
   {
@@ -135,10 +228,11 @@ const MOCK_EVENTS: B2BEvent[] = [
   },
 ];
 
-type CommunityTab = "all" | "joined" | "admin" | "events";
+type CommunityTab = "all" | "joined" | "admin" | "events" | "leads";
 
 export const CommunityScreen: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<CommunityTab>("all");
+  const { colors, isDark } = useTheme();
+  const [activeTab, setActiveTab] = useState<CommunityTab>("leads");
   const [searchQuery, setSearchQuery] = useState("");
   const [communities, setCommunities] = useState<CommunityItem[]>(MOCK_COMMUNITIES);
   const [events, setEvents] = useState<B2BEvent[]>(MOCK_EVENTS);
@@ -149,6 +243,107 @@ export const CommunityScreen: React.FC = () => {
   const [selectedOpp, setSelectedOpp] = useState<CommunityOpportunityItem | null>(null);
   const [oppModalVisible, setOppModalVisible] = useState(false);
   const [createOppVisible, setCreateOppVisible] = useState(false);
+  const [cardScanVisible, setCardScanVisible] = useState(false);
+  const [scheduleMeetingVisible, setScheduleMeetingVisible] = useState(false);
+  const [selectedLeadForMeeting, setSelectedLeadForMeeting] = useState<CustomerLeadItem | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // CRM Leads Pipeline State
+  const [leadsList, setLeadsList] = useState<CustomerLeadItem[]>(MOCK_LEADS);
+  const [leadTierFilter, setLeadTierFilter] = useState<"all" | CustomerLeadTier>("all");
+
+  const loadData = async () => {
+    try {
+      // 1. Communities
+      const commRes = await communityApi.getMyCommunities();
+      const commList = Array.isArray(commRes?.data) ? commRes.data : [];
+      if (commList.length > 0) {
+        setCommunities(commList);
+      }
+    } catch (e) {
+      // fallback
+    }
+
+    try {
+      // 2. Events
+      const eventsRes = await eventsApi.getEvents();
+      const eventsList = Array.isArray(eventsRes?.data) ? eventsRes.data : [];
+      if (eventsList.length > 0) {
+        setEvents(eventsList);
+      }
+    } catch (e) {
+      // fallback
+    }
+
+    try {
+      // 3. Opportunities
+      const oppRes = await opportunityApi.getOpportunities();
+      const oppList = Array.isArray(oppRes?.data) ? oppRes.data : [];
+      if (oppList.length > 0) {
+        setOpportunities(
+          oppList.map((op: any, idx: number) => ({
+            id: op.id || `opp-${idx}`,
+            title: op.title || "Cơ hội kinh doanh B2B",
+            organization: op.organization || op.companyName || "Doanh nghiệp ViOne",
+            communityName: op.communityName || "Cộng đồng ViOne",
+            dealValue: op.budget ? `${op.budget.toLocaleString("vi-VN")} đ` : (op.dealValue || "Thỏa thuận"),
+            category: op.category || "Hợp tác kinh doanh",
+            daysLeft: op.duration || "Còn 7 ngày",
+            interested: !!op.interested,
+          }))
+        );
+      }
+    } catch (e) {
+      // fallback
+    }
+
+    try {
+      // 4. CRM Customers & Leads
+      const custRes = await customerApi.getCustomers();
+      const custList = Array.isArray(custRes?.data) ? custRes.data : [];
+      if (custList.length > 0) {
+        const mapped = custList.map((c: any, idx: number) => {
+          const tierStr = (c.tags || []).join(" ").toLowerCase();
+          const tier: CustomerLeadTier = tierStr.includes("hot")
+            ? "hot"
+            : tierStr.includes("vip")
+            ? "vip"
+            : tierStr.includes("24h")
+            ? "care24h"
+            : "featured";
+
+          return {
+            id: c.id || `lead-api-${idx}`,
+            name: c.name || c.displayName || c.contactPerson || "Khách hàng B2B",
+            title: c.title || "Lãnh đạo Doanh nghiệp",
+            company: c.company || c.companyName || "Doanh nghiệp ViOne",
+            phone: c.phone || "0900 000 000",
+            email: c.email || "partner@vione.vn",
+            dealValue: c.dealValue || (c.expectedValue ? `${Number(c.expectedValue).toLocaleString("vi-VN")} đ` : "500 Triệu VNĐ"),
+            tier: tier,
+            stage: (c.stage as any) || "prospect",
+            assignedStaff: c.assignedStaff || "Trần Minh Hoàng (Trưởng phòng KD)",
+            notes: c.notes || c.note || "Nhu cầu hợp tác phát triển thị trường",
+            nextAction: c.nextAction || "Liên hệ tư vấn trong 24h",
+            source: c.sourceLabel || "Card Scan AI OCR",
+          };
+        });
+        setLeadsList(mapped);
+      }
+    } catch (e) {
+      // fallback
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadData();
+    setRefreshing(false);
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -157,14 +352,24 @@ export const CommunityScreen: React.FC = () => {
     return "Chào buổi tối,";
   };
 
-  const handleRegisterEvent = (id: string, title: string) => {
+  const handleRegisterEvent = async (id: string, title: string) => {
+    try {
+      await eventsApi.registerEvent(id);
+    } catch (e) {
+      // Silent error or fallback
+    }
     setEvents((prev) =>
       prev.map((e) => (e.id === id ? { ...e, isRegistered: true } : e))
     );
     Alert.alert("Đăng ký thành công", `Bạn đã đăng ký tham gia: ${title}. Thẻ vé điện tử QR đã được cấp.`);
   };
 
-  const handleInterestOpportunity = (id: string, title: string) => {
+  const handleInterestOpportunity = async (id: string, title: string) => {
+    try {
+      await opportunityApi.expressInterest(id, "high");
+    } catch (e) {
+      // Silent error or fallback
+    }
     setOpportunities((prev) =>
       prev.map((op) => (op.id === id ? { ...op, interested: true } : op))
     );
@@ -209,7 +414,18 @@ export const CommunityScreen: React.FC = () => {
 
       <View style={styles.headerDivider} />
 
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#D8B282"
+            colors={["#D8B282"]}
+          />
+        }
+      >
         {/* 2. Tiêu Đề Phân Hệ & Nút Tạo Liên Minh */}
         <View style={styles.titleSection}>
           <View style={styles.titleRow}>
@@ -261,7 +477,8 @@ export const CommunityScreen: React.FC = () => {
           contentContainerStyle={styles.tabsScroll}
         >
           {[
-            { id: "all", label: "Tất cả" },
+            { id: "leads", label: "🎯 Khách hàng tiềm năng & Cần care" },
+            { id: "all", label: "Tất cả cộng đồng" },
             { id: "joined", label: "Đã tham gia" },
             { id: "admin", label: "Ban Điều Hành" },
             { id: "events", label: "Sự kiện B2B" },
@@ -284,7 +501,205 @@ export const CommunityScreen: React.FC = () => {
         </ScrollView>
 
         {/* 5. Content theo Tab */}
-        {activeTab !== "events" ? (
+        {activeTab === "leads" ? (
+          <View style={styles.leadsSection}>
+            {/* Hero Banner: Trung Tâm Chăm Sóc Khách Hàng Tiềm Năng */}
+            <View style={[styles.leadHeroBanner, { backgroundColor: isDark ? "#141824" : "#F1F5F9", borderColor: isDark ? "rgba(216, 178, 130, 0.35)" : "rgba(163, 112, 60, 0.4)" }]}>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Flame size={16} color="#F59E0B" style={{ marginRight: 6 }} />
+                  <Text style={[styles.leadHeroTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    PIPELINE KHÁCH HÀNG & ĐỐI TÁC CẦN CARE
+                  </Text>
+                </View>
+                <Text style={[styles.leadHeroSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                  {leadsList.length} khách hàng tiềm năng · 4 Hot Leads · 6.15 Tỷ VNĐ giá trị dự kiến
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={styles.scanLeadBtn}
+                onPress={() => setCardScanVisible(true)}
+                activeOpacity={0.85}
+              >
+                <LinearGradient
+                  colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.scanLeadGradient}
+                >
+                  <ScanLine size={13} color="#050C15" style={{ marginRight: 4 }} />
+                  <Text style={styles.scanLeadBtnText}>Quét Card</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            {/* Bộ Lọc Tier: Hot Lead / VIP / Cần care 24h / Nổi bật */}
+            <View style={{ marginBottom: 12 }}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+                {[
+                  { id: "all", label: "Tất cả khách hàng" },
+                  { id: "hot", label: "⭐ Hot Lead" },
+                  { id: "vip", label: "💎 VIP C-Level" },
+                  { id: "care24h", label: "🎯 Cần care 24h" },
+                  { id: "featured", label: "🌟 Nổi bật" },
+                ].map((tierItem) => {
+                  const active = leadTierFilter === tierItem.id;
+                  return (
+                    <TouchableOpacity
+                      key={tierItem.id}
+                      style={[
+                        styles.tierFilterChip,
+                        { borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(15, 23, 42, 0.1)", backgroundColor: isDark ? "#181D2A" : "#FFFFFF" },
+                        active && {
+                          backgroundColor: isDark ? "rgba(216, 178, 130, 0.22)" : "#FEF3C7",
+                          borderColor: isDark ? "#D8B282" : "#A3703C",
+                        },
+                      ]}
+                      onPress={() => setLeadTierFilter(tierItem.id as any)}
+                    >
+                      <Text
+                        style={[
+                          styles.tierFilterChipText,
+                          { color: isDark ? "#94A3B8" : "#64748B" },
+                          active && { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" },
+                        ]}
+                      >
+                        {tierItem.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+
+            {/* Danh Sách Khách Hàng Tiềm Năng */}
+            <View style={{ gap: 12 }}>
+              {leadsList
+                .filter((l) => leadTierFilter === "all" || l.tier === leadTierFilter)
+                .filter((l) => {
+                  if (!searchQuery.trim()) return true;
+                  const q = searchQuery.toLowerCase().trim();
+                  return (
+                    l.name.toLowerCase().includes(q) ||
+                    l.company.toLowerCase().includes(q) ||
+                    l.notes.toLowerCase().includes(q)
+                  );
+                })
+                .map((lead) => (
+                  <View
+                    key={lead.id}
+                    style={[
+                      styles.leadCard,
+                      {
+                        backgroundColor: isDark ? "#181D2A" : "#FFFFFF",
+                        borderColor: lead.tier === "hot" ? "#EF4444" : lead.tier === "vip" ? "#F59E0B" : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)",
+                      },
+                    ]}
+                  >
+                    {/* Header Lead Card */}
+                    <View style={styles.leadCardHeader}>
+                      <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                          <Text style={[styles.leadName, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>{lead.name}</Text>
+                          <View
+                            style={[
+                              styles.leadTierBadge,
+                              lead.tier === "hot" && { backgroundColor: "rgba(239, 68, 68, 0.15)", borderColor: "#EF4444" },
+                              lead.tier === "vip" && { backgroundColor: "rgba(245, 158, 11, 0.15)", borderColor: "#F59E0B" },
+                              lead.tier === "care24h" && { backgroundColor: "rgba(16, 185, 129, 0.15)", borderColor: "#10B981" },
+                              lead.tier === "featured" && { backgroundColor: "rgba(56, 189, 248, 0.15)", borderColor: "#38BDF8" },
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                styles.leadTierBadgeText,
+                                lead.tier === "hot" && { color: "#EF4444" },
+                                lead.tier === "vip" && { color: "#F59E0B" },
+                                lead.tier === "care24h" && { color: "#10B981" },
+                                lead.tier === "featured" && { color: "#38BDF8" },
+                              ]}
+                            >
+                              {lead.tier === "hot"
+                                ? "⭐ HOT LEAD"
+                                : lead.tier === "vip"
+                                ? "💎 VIP C-LEVEL"
+                                : lead.tier === "care24h"
+                                ? "🎯 CẦN CARE 24H"
+                                : "🌟 NỔI BẬT"}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <Text style={[styles.leadTitleCompany, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                          {lead.title} · {lead.company}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* Metadata Row: Deal Value & PIC */}
+                    <View style={[styles.leadMetaBox, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}>
+                      <View style={styles.leadMetaCol}>
+                        <Text style={[styles.leadMetaLabel, { color: isDark ? "#D8B282" : "#A3703C" }]}>GIÁ TRỊ DEAL DỰ KIẾN</Text>
+                        <Text style={[styles.leadMetaVal, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>{lead.dealValue}</Text>
+                      </View>
+                      <View style={{ width: 1, height: 28, backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)" }} />
+                      <View style={styles.leadMetaCol}>
+                        <Text style={[styles.leadMetaLabel, { color: isDark ? "#D8B282" : "#A3703C" }]}>NHÂN SỰ PHỤ TRÁCH (PIC)</Text>
+                        <Text style={[styles.leadMetaVal, { color: isDark ? "#FFFFFF" : "#0F172A" }]} numberOfLines={1}>{lead.assignedStaff}</Text>
+                      </View>
+                    </View>
+
+                    {/* Nhu cầu & Hành động tiếp theo */}
+                    <View style={{ marginTop: 8 }}>
+                      <Text style={[styles.leadNoteText, { color: isDark ? "#E2E8F0" : "#334155" }]}>
+                        💡 Nhu cầu: {lead.notes}
+                      </Text>
+                      <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
+                        <Clock size={11} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
+                        <Text style={[styles.leadDeadlineText, { color: isDark ? "#D8B282" : "#A3703C" }]}>
+                          Hạn chót: {lead.nextAction}
+                        </Text>
+                      </View>
+                    </View>
+
+                    {/* Hành Động Nhanh 1-Chạm: Gọi điện, Nhắn tin, Hẹn 1-1 */}
+                    <View style={[styles.leadActionsRow, { borderTopColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(15, 23, 42, 0.06)" }]}>
+                      <TouchableOpacity
+                        style={[styles.leadActionBtn, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}
+                        onPress={() => Alert.alert("Gọi điện", `Đang kết nối tới ${lead.name} qua số ${lead.phone}`)}
+                        activeOpacity={0.8}
+                      >
+                        <Phone size={13} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
+                        <Text style={[styles.leadActionBtnText, { color: isDark ? "#D8B282" : "#A3703C" }]}>Gọi điện</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.leadActionBtn, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}
+                        onPress={() => Alert.alert("Nhắn tin", `Mở khung chat ViOne với đối tác ${lead.name}`)}
+                        activeOpacity={0.8}
+                      >
+                        <MessageSquare size={13} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
+                        <Text style={[styles.leadActionBtnText, { color: isDark ? "#D8B282" : "#A3703C" }]}>Nhắn tin</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.leadActionBtn, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}
+                        onPress={() => {
+                          setSelectedLeadForMeeting(lead);
+                          setScheduleMeetingVisible(true);
+                        }}
+                        activeOpacity={0.8}
+                      >
+                        <Handshake size={13} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
+                        <Text style={[styles.leadActionBtnText, { color: isDark ? "#D8B282" : "#A3703C" }]}>Hẹn 1-1</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+            </View>
+          </View>
+        ) : activeTab !== "events" ? (
           <View style={styles.communityList}>
             {filteredCommunities.map((c) => (
               <View key={c.id} style={styles.communityCard}>
@@ -528,6 +943,41 @@ export const CommunityScreen: React.FC = () => {
         onCreate={(newOpp) => {
           setOpportunities((prev) => [newOpp, ...prev]);
         }}
+      />
+
+      {/* Modal Quét Danh Thiếp OCR & Chuyển Thành Khách Hàng Tiềm Năng */}
+      <CardScanReviewModal
+        visible={cardScanVisible}
+        onClose={() => setCardScanVisible(false)}
+        onSaveContact={(contact) => {
+          Alert.alert("Danh bạ", `Đã lưu ${contact.name} vào danh bạ.`);
+        }}
+        onSaveCustomerLead={(newLead) => {
+          const item: CustomerLeadItem = {
+            id: `lead-${Date.now()}`,
+            name: newLead.name,
+            title: "Tổng Giám Đốc",
+            company: newLead.company || "Doanh nghiệp đối tác",
+            phone: newLead.phone || "—",
+            email: newLead.email || "—",
+            dealValue: newLead.dealValue || "500 Triệu VNĐ",
+            tier: newLead.tier,
+            stage: (newLead.stage as any) || "prospect",
+            assignedStaff: newLead.assignedStaff,
+            notes: newLead.notes || "",
+            nextAction: "Liên hệ tư vấn trong 24h",
+            source: "Card Scan AI OCR",
+          };
+          setLeadsList((prev) => [item, ...prev]);
+        }}
+      />
+
+      {/* Modal Đặt Lịch Hẹn Kinh Doanh 1-1 Cho Khách Hàng Tiềm Năng */}
+      <ScheduleMeetingModal
+        visible={scheduleMeetingVisible}
+        partnerName={selectedLeadForMeeting?.name}
+        partnerCompany={selectedLeadForMeeting?.company}
+        onClose={() => setScheduleMeetingVisible(false)}
       />
     </SafeAreaView>
   );
@@ -1025,6 +1475,129 @@ const styles = StyleSheet.create({
   interestBtnText: {
     color: "#050C15",
     fontSize: 12,
+    fontWeight: "700",
+  },
+  /* Leads Pipeline Styles */
+  leadsSection: {
+    marginTop: 6,
+    marginBottom: 20,
+  },
+  leadHeroBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 14,
+  },
+  leadHeroTitle: {
+    fontSize: 12.5,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+  },
+  leadHeroSubtitle: {
+    fontSize: 11,
+    marginTop: 3,
+  },
+  scanLeadBtn: {
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  scanLeadGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  scanLeadBtnText: {
+    color: "#050C15",
+    fontSize: 11.5,
+    fontWeight: "800",
+  },
+  tierFilterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  tierFilterChipText: {
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  leadCard: {
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+  },
+  leadCardHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  leadName: {
+    fontSize: 14.5,
+    fontWeight: "700",
+  },
+  leadTierBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  leadTierBadgeText: {
+    fontSize: 9.5,
+    fontWeight: "800",
+  },
+  leadTitleCompany: {
+    fontSize: 11.5,
+    marginTop: 3,
+  },
+  leadMetaBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  leadMetaCol: {
+    flex: 1,
+  },
+  leadMetaLabel: {
+    fontSize: 9.5,
+    fontWeight: "700",
+    letterSpacing: 0.4,
+  },
+  leadMetaVal: {
+    fontSize: 12,
+    fontWeight: "700",
+    marginTop: 2,
+  },
+  leadNoteText: {
+    fontSize: 11.5,
+    lineHeight: 16,
+  },
+  leadDeadlineText: {
+    fontSize: 10.5,
+    fontWeight: "600",
+  },
+  leadActionsRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+  },
+  leadActionBtn: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 7,
+    borderRadius: 8,
+  },
+  leadActionBtnText: {
+    fontSize: 11,
     fontWeight: "700",
   },
 });

@@ -24,6 +24,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RenewalRouteImport } from './routes/renewal'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PerksRouteImport } from './routes/perks'
 import { Route as PaymentApprovalsRouteImport } from './routes/payment-approvals'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
@@ -35,6 +36,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MeetingsRouteImport } from './routes/meetings'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MRouteImport } from './routes/m'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LandingRouteImport } from './routes/landing'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as IncomeRouteImport } from './routes/income'
@@ -118,6 +120,7 @@ import { Route as ConnectNetworkRouteImport } from './routes/connect.network'
 import { Route as ConnectMeetingsRouteImport } from './routes/connect.meetings'
 import { Route as ConnectConnectionsRouteImport } from './routes/connect.connections'
 import { Route as ConnectCalendarSettingsRouteImport } from './routes/connect.calendar-settings'
+import { Route as ConnectAppSignInRouteImport } from './routes/connect-app.sign-in'
 import { Route as ConnectAppNotificationsRouteImport } from './routes/connect-app.notifications'
 import { Route as ConnectAppNfcTagsRouteImport } from './routes/connect-app.nfc-tags'
 import { Route as ConnectAppNetworkRouteImport } from './routes/connect-app.network'
@@ -323,6 +326,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PerksRoute = PerksRouteImport.update({
   id: '/perks',
   path: '/perks',
@@ -376,6 +384,11 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
 const MRoute = MRouteImport.update({
   id: '/m',
   path: '/m',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LandingRoute = LandingRouteImport.update({
@@ -793,6 +806,11 @@ const ConnectCalendarSettingsRoute = ConnectCalendarSettingsRouteImport.update({
   id: '/calendar-settings',
   path: '/calendar-settings',
   getParentRoute: () => ConnectRoute,
+} as any)
+const ConnectAppSignInRoute = ConnectAppSignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => ConnectAppRoute,
 } as any)
 const ConnectAppNotificationsRoute = ConnectAppNotificationsRouteImport.update({
   id: '/notifications',
@@ -1518,6 +1536,7 @@ export interface FileRoutesByFullPath {
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
   '/landing': typeof LandingRouteWithChildren
+  '/login': typeof LoginRoute
   '/m': typeof MRouteWithChildren
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/meetings': typeof MeetingsRoute
@@ -1529,6 +1548,7 @@ export interface FileRoutesByFullPath {
   '/opportunities': typeof OpportunitiesRouteWithChildren
   '/payment-approvals': typeof PaymentApprovalsRoute
   '/perks': typeof PerksRoute
+  '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/renewal': typeof RenewalRoute
@@ -1597,6 +1617,7 @@ export interface FileRoutesByFullPath {
   '/connect-app/network': typeof ConnectAppNetworkRouteWithChildren
   '/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute
   '/connect-app/notifications': typeof ConnectAppNotificationsRoute
+  '/connect-app/sign-in': typeof ConnectAppSignInRoute
   '/connect/calendar-settings': typeof ConnectCalendarSettingsRoute
   '/connect/connections': typeof ConnectConnectionsRoute
   '/connect/meetings': typeof ConnectMeetingsRouteWithChildren
@@ -1749,6 +1770,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
+  '/login': typeof LoginRoute
   '/meetings': typeof MeetingsRoute
   '/messages': typeof MessagesRoute
   '/my-permissions': typeof MyPermissionsRoute
@@ -1757,6 +1779,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/payment-approvals': typeof PaymentApprovalsRoute
   '/perks': typeof PerksRoute
+  '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/renewal': typeof RenewalRoute
@@ -1815,6 +1838,7 @@ export interface FileRoutesByTo {
   '/connect-app/card-scan': typeof ConnectAppCardScanRoute
   '/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute
   '/connect-app/notifications': typeof ConnectAppNotificationsRoute
+  '/connect-app/sign-in': typeof ConnectAppSignInRoute
   '/connect/calendar-settings': typeof ConnectCalendarSettingsRoute
   '/connect/connections': typeof ConnectConnectionsRoute
   '/connect/saved-cards': typeof ConnectSavedCardsRoute
@@ -1968,6 +1992,7 @@ export interface FileRoutesById {
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
   '/landing': typeof LandingRouteWithChildren
+  '/login': typeof LoginRoute
   '/m': typeof MRouteWithChildren
   '/marketplace': typeof MarketplaceRouteWithChildren
   '/meetings': typeof MeetingsRoute
@@ -1979,6 +2004,7 @@ export interface FileRoutesById {
   '/opportunities': typeof OpportunitiesRouteWithChildren
   '/payment-approvals': typeof PaymentApprovalsRoute
   '/perks': typeof PerksRoute
+  '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/renewal': typeof RenewalRoute
@@ -2047,6 +2073,7 @@ export interface FileRoutesById {
   '/connect-app/network': typeof ConnectAppNetworkRouteWithChildren
   '/connect-app/nfc-tags': typeof ConnectAppNfcTagsRoute
   '/connect-app/notifications': typeof ConnectAppNotificationsRoute
+  '/connect-app/sign-in': typeof ConnectAppSignInRoute
   '/connect/calendar-settings': typeof ConnectCalendarSettingsRoute
   '/connect/connections': typeof ConnectConnectionsRoute
   '/connect/meetings': typeof ConnectMeetingsRouteWithChildren
@@ -2210,6 +2237,7 @@ export interface FileRouteTypes {
     | '/income'
     | '/install'
     | '/landing'
+    | '/login'
     | '/m'
     | '/marketplace'
     | '/meetings'
@@ -2221,6 +2249,7 @@ export interface FileRouteTypes {
     | '/opportunities'
     | '/payment-approvals'
     | '/perks'
+    | '/products'
     | '/profile'
     | '/register'
     | '/renewal'
@@ -2289,6 +2318,7 @@ export interface FileRouteTypes {
     | '/connect-app/network'
     | '/connect-app/nfc-tags'
     | '/connect-app/notifications'
+    | '/connect-app/sign-in'
     | '/connect/calendar-settings'
     | '/connect/connections'
     | '/connect/meetings'
@@ -2441,6 +2471,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/income'
     | '/install'
+    | '/login'
     | '/meetings'
     | '/messages'
     | '/my-permissions'
@@ -2449,6 +2480,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/payment-approvals'
     | '/perks'
+    | '/products'
     | '/profile'
     | '/register'
     | '/renewal'
@@ -2507,6 +2539,7 @@ export interface FileRouteTypes {
     | '/connect-app/card-scan'
     | '/connect-app/nfc-tags'
     | '/connect-app/notifications'
+    | '/connect-app/sign-in'
     | '/connect/calendar-settings'
     | '/connect/connections'
     | '/connect/saved-cards'
@@ -2659,6 +2692,7 @@ export interface FileRouteTypes {
     | '/income'
     | '/install'
     | '/landing'
+    | '/login'
     | '/m'
     | '/marketplace'
     | '/meetings'
@@ -2670,6 +2704,7 @@ export interface FileRouteTypes {
     | '/opportunities'
     | '/payment-approvals'
     | '/perks'
+    | '/products'
     | '/profile'
     | '/register'
     | '/renewal'
@@ -2738,6 +2773,7 @@ export interface FileRouteTypes {
     | '/connect-app/network'
     | '/connect-app/nfc-tags'
     | '/connect-app/notifications'
+    | '/connect-app/sign-in'
     | '/connect/calendar-settings'
     | '/connect/connections'
     | '/connect/meetings'
@@ -2900,6 +2936,7 @@ export interface RootRouteChildren {
   IncomeRoute: typeof IncomeRoute
   InstallRoute: typeof InstallRoute
   LandingRoute: typeof LandingRouteWithChildren
+  LoginRoute: typeof LoginRoute
   MRoute: typeof MRouteWithChildren
   MarketplaceRoute: typeof MarketplaceRouteWithChildren
   MeetingsRoute: typeof MeetingsRoute
@@ -2911,6 +2948,7 @@ export interface RootRouteChildren {
   OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
   PaymentApprovalsRoute: typeof PaymentApprovalsRoute
   PerksRoute: typeof PerksRoute
+  ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   RenewalRoute: typeof RenewalRoute
@@ -3062,6 +3100,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/perks': {
       id: '/perks'
       path: '/perks'
@@ -3137,6 +3182,13 @@ declare module '@tanstack/react-router' {
       path: '/m'
       fullPath: '/m'
       preLoaderRoute: typeof MRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/landing': {
@@ -3719,6 +3771,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/connect/calendar-settings'
       preLoaderRoute: typeof ConnectCalendarSettingsRouteImport
       parentRoute: typeof ConnectRoute
+    }
+    '/connect-app/sign-in': {
+      id: '/connect-app/sign-in'
+      path: '/sign-in'
+      fullPath: '/connect-app/sign-in'
+      preLoaderRoute: typeof ConnectAppSignInRouteImport
+      parentRoute: typeof ConnectAppRoute
     }
     '/connect-app/notifications': {
       id: '/connect-app/notifications'
@@ -5078,6 +5137,7 @@ interface ConnectAppRouteChildren {
   ConnectAppNetworkRoute: typeof ConnectAppNetworkRouteWithChildren
   ConnectAppNfcTagsRoute: typeof ConnectAppNfcTagsRoute
   ConnectAppNotificationsRoute: typeof ConnectAppNotificationsRoute
+  ConnectAppSignInRoute: typeof ConnectAppSignInRoute
   ConnectAppIndexRoute: typeof ConnectAppIndexRoute
   ConnectAppInviteTokenRoute: typeof ConnectAppInviteTokenRoute
 }
@@ -5093,6 +5153,7 @@ const ConnectAppRouteChildren: ConnectAppRouteChildren = {
   ConnectAppNetworkRoute: ConnectAppNetworkRouteWithChildren,
   ConnectAppNfcTagsRoute: ConnectAppNfcTagsRoute,
   ConnectAppNotificationsRoute: ConnectAppNotificationsRoute,
+  ConnectAppSignInRoute: ConnectAppSignInRoute,
   ConnectAppIndexRoute: ConnectAppIndexRoute,
   ConnectAppInviteTokenRoute: ConnectAppInviteTokenRoute,
 }
@@ -5331,6 +5392,7 @@ const rootRouteChildren: RootRouteChildren = {
   IncomeRoute: IncomeRoute,
   InstallRoute: InstallRoute,
   LandingRoute: LandingRouteWithChildren,
+  LoginRoute: LoginRoute,
   MRoute: MRouteWithChildren,
   MarketplaceRoute: MarketplaceRouteWithChildren,
   MeetingsRoute: MeetingsRoute,
@@ -5342,6 +5404,7 @@ const rootRouteChildren: RootRouteChildren = {
   OpportunitiesRoute: OpportunitiesRouteWithChildren,
   PaymentApprovalsRoute: PaymentApprovalsRoute,
   PerksRoute: PerksRoute,
+  ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   RenewalRoute: RenewalRoute,

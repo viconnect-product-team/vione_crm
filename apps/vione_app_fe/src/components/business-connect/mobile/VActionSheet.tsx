@@ -277,7 +277,7 @@ export function VActionSheet({
                   Quy trình
                 </span>
                 <span className="text-[10px] text-[var(--bc-mobile-muted)]">
-                  BPMN Kanban
+                  Tiến độ công việc
                 </span>
               </button>
 

@@ -6,7 +6,7 @@
 - **Backend (@vibe/api)**: NestJS, Passport, JWT.
 - **Database (@vibe/db)**: Prisma ORM, PostgreSQL.
 - **Mobile Apps**:
-  - `apps/mobile_vione/`: **Pure Native React Native App (Expo SDK 52)** cho ViOne Business Connect (App ID: `com.vione.app`, bundle ID: `ViOneBusinessConnect`). Đạt 100% Full Parity với Web PWA: Header logo ViOne wordmark + lời chào thời gian thực; Thẻ Doanh Nhân ViOne; Tabs lịch trình `[Hôm nay] [Sắp tới] [Nhắc lịch]`; Khối Insight 15 cơ hội; Quick Actions; Khối Điều hành & Giám sát vận hành BPMN 3 cấp (Chấm công GPS & AI FaceID, Tiến độ nhân sự Kanban/WIP, Phê duyệt chi 3 cấp Napas VietQR); Màn hình `Network` tích hợp Khoảnh khắc 24h Stories Strip (`StoryViewerModal`, `CreateStoryModal`), danh sách Chăm sóc đối tác (Nurture List kèm Hẹn 1-1, Nhắn tin, Gọi), Quản lý khách hàng B2B CRM (`CustomerDetailModal`), Quét danh thiếp OCR thông minh (`CardScanReviewModal`), Hộp thư Messenger 4 tabs (`ChatThreadModal`, `CreateGroupModal`); Màn hình `Cộng đồng` tích hợp Danh mục liên minh (`CreateCommunityGroupModal`), Chi tiết sự kiện & Thẻ vé QR VIP (`EventDetailModal`), Cơ hội giao thương B2B (`OpportunityDetailModal`, `CreateOpportunityModal`); Màn hình `Tôi` tích hợp Danh thiếp Titanium 3D, Quyền riêng tư danh tính (`IdentityPrivacyModal`), Ví danh thiếp đối tác vCard (.vcf) (`CardVaultModal`); Lịch hẹn cuộc gặp 1-1 (`ScheduleMeetingModal`), Đăng khoảnh khắc & Bình luận B2B (`PostMomentModal`, `MomentCommentModal`). Nút V mạ vàng phát sáng ở giữa mở `VActionSheet` 1-chạm kết nối. Kết nối trực tiếp NestJS API qua `src/api/client.ts`. Lưu phiên offline bằng `AsyncStorage`.
+  - `apps/mobile_vione/`: **Pure Native React Native App (Expo SDK 52)** cho ViOne Business Connect (App ID: `com.vione.app`, bundle ID: `ViOneBusinessConnect`). Đạt 100% Full Parity với Web PWA: Header logo ViOne wordmark + lời chào thời gian thực; Thẻ Doanh Nhân ViOne; Tabs lịch trình `[Hôm nay] [Sắp tới] [Nhắc lịch]`; Khối Insight 15 cơ hội; Quick Actions; Khối Điều hành & Giám sát vận hành BPMN 3 cấp (Chấm công GPS & AI FaceID, Tiến độ nhân sự Kanban/WIP, Phê duyệt chi 3 cấp Napas VietQR); Màn hình `Network` tích hợp Khoảnh khắc 24h Stories Strip (`StoryViewerModal`, `CreateStoryModal`), danh sách Chăm sóc đối tác (Nurture List kèm Hẹn 1-1, Nhắn tin, Gọi), Quản lý khách hàng B2B CRM (`CustomerDetailModal`), Quét danh thiếp OCR thông minh (`CardScanReviewModal`), Hộp thư Messenger 4 tabs (`ChatThreadModal`, `CreateGroupModal`); Màn hình `Cộng đồng` tích hợp Danh mục liên minh (`CreateCommunityGroupModal`), Chi tiết sự kiện & Thẻ vé QR VIP (`EventDetailModal`), Cơ hội giao thương B2B (`OpportunityDetailModal`, `CreateOpportunityModal`); Màn hình `Tôi` tích hợp Danh thiếp Titanium 3D, Quyền riêng tư danh tính (`IdentityPrivacyModal`), Ví danh thiếp đối tác vCard (.vcf) (`CardVaultModal`); Lịch hẹn cuộc gặp 1-1 (`ScheduleMeetingModal`), Đăng khoảnh khắc & Bình luận B2B (`PostMomentModal`, `MomentCommentModal`). Nút V mạ vàng phát sáng ở giữa mở `VActionSheet` 1-chạm kết nối. Kết nối trực tiếp NestJS API qua `src/api/client.ts`, `src/api/endpoints.ts` và tầng typed services `src/api/services.ts` (13 module bao quát 50+ RESTful endpoints lớn nhỏ, timeout 10s AbortController, tự động fallback HTTP direct cổng 5001). Lưu phiên offline bằng `AsyncStorage`.
   - `apps/mobile_ceo1983/`: CEO 1983 Association Native Wrapper (Android APK & iOS IPA/TestFlight).
 - **Environment**: Node.js >= 22 (Node 22 is required for native globalThis.WebSocket support on both local and server runtime environments).
 
@@ -867,3 +867,72 @@ The project is deployed to a remote server (`14.225.217.232`) with 2 primary pro
        * 4 Tabs danh mục: Tất cả, Đã tham gia, Ban Điều Hành, Sự kiện B2B.
        * Phân hệ **Cơ Hội Kinh Doanh Trong Cộng Đồng** (`CommunityOpportunitiesSection` parity): Banner chỉ số cơ hội B2B đang mở, danh sách thẻ cơ hội (quy mô 15 tỷ, 850 triệu, 5.2 tỷ), thời hạn, và nút hành động "Quan tâm" gửi hồ sơ năng lực 1-chạm.
      - **Màn Hình Tôi (`ProfileScreen.tsx`)**: Thẻ Hero Doanh nhân ViOne, 4 Phím tắt (Chia sẻ link, Mã QR, Thẻ NFC, Xem trước), Thẻ danh thiếp điện tử Titanium 3D với chip thông minh và NFC, Showcase Về tôi, Thông tin liên hệ và Cài đặt bảo mật.
+
+208. **Quy Chuẩn Giám Sát Hoạt Động Nhân Sự C-Level, Quét Card Lưu Lead CRM Pipeline, Chăm Sóc Khách Hàng Tiềm Năng & Theme Động Sáng/Tối**:
+     - **Giám Sát Hoạt Động Nhân Sự Trong Ngày Của Cấp Bậc Giám Đốc (`StaffDailyActivityModal.tsx` & `GET /api/operations/staff/daily-activities`)**:
+       * Cấp bậc Giám đốc / Lãnh đạo C-Level có quyền truy cập trực tiếp khối "Giám sát hoạt động nhân sự trong ngày" tại Trang chủ `HomeScreen.tsx`.
+       * Hiển thị KPI thời gian thực: Tổng nhân sự (45), Có mặt (42), Đang đi gặp đối tác / khách hàng (8), Làm việc tại văn phòng (34), Tỷ lệ hoàn thành công việc trong ngày (82.5%).
+       * Bộ lọc phân loại 3 trạng thái: [Tất cả nhân sự] [🏢 Tại văn phòng] [🤝 Đang gặp đối tác].
+       * Tìm kiếm nhanh đa trường: Tên nhân viên, Chức vụ, Phòng ban, Khách hàng/đối tác đang gặp.
+       * Thẻ chi tiết nhân sự: Avatar, Họ tên, Phòng ban/chức vụ, Badge trạng thái có chấm nhấp nháy, Lịch trình gặp khách ngoài văn phòng (Tên đối tác, địa chỉ, khung giờ), Tiến độ checklist BPMN, Lịch sử check-in GPS & 2 nút tương tác 1-chạm: Gọi điện thoại trực tiếp (`tel:`) và Nhắc việc qua hệ thống.
+     - **Mở Rộng Quét Danh Thiếp AI OCR Lưu Khách Hàng Tiềm Năng & Đối Tác Cần Care (`CardScanReviewModal.tsx`)**:
+       * Khi chụp/quét danh thiếp, modal bóc tách dữ liệu tích hợp Switch chuyển đổi "Lưu thành Khách Hàng Tiềm Năng (Lead)".
+       * Chọn Phân hạng Tier khách hàng: ⭐ Hot Lead, 💎 VIP C-Level, 🌟 Nổi bật, 🎯 Cần care 24h.
+       * Chọn Giai đoạn CRM Pipeline: Tiếp cận (`prospect`), Đề xuất giải pháp (`proposal`), Đàm phán chốt hợp đồng (`negotiation`).
+       * Nhập Giá trị thương vụ dự kiến (Deal Value), Nhân sự phụ trách (PIC), Nhu cầu ban đầu và Thời hạn hành động tiếp theo.
+       * Gọi đồng thời `cardScanApi.saveCard` và `customerApi.createCustomer` để dữ liệu thật lập tức xuất hiện trong CRM Pipeline mà không bị gián đoạn hay chững luồng.
+     - **Phân Hệ Chăm Sóc Khách Hàng Tiềm Năng & Đối Tác Cần Care Tại Tab Cộng Đồng (`CommunityScreen.tsx`)**:
+       * Khôi phục Tab trọng tâm `{ id: "leads", label: "🎯 Khách hàng tiềm năng & Cần care" }` trong phân hệ Cộng đồng.
+       * Hero Banner Pipeline: Tổng quan số lượng Leads, số Hot Leads, Tổng giá trị thương vụ dự kiến (6.15 Tỷ VNĐ) kèm nút "Quét Card" mở `CardScanReviewModal.tsx`.
+       * Bộ lọc phân hạng Tier nhanh: [Tất cả] [⭐ Hot Lead] [💎 VIP C-Level] [🎯 Cần care 24h] [🌟 Nổi bật].
+       * Thẻ Lead trực quan: Tên khách hàng, Doanh nghiệp, Chức vụ, Badge Tier, Giai đoạn CRM, Giá trị thương vụ nổi bật màu vàng đồng, Nhân sự phụ trách (PIC), Nhu cầu ban đầu & Hạn xử lý tiếp theo.
+       * Bộ 3 nút hành động 1-chạm: Gọi điện thoại ngay (`tel:`), Nhắn tin trao đổi B2B, Hẹn gặp 1-1 (`ScheduleMeetingModal.tsx`).
+     - **Khôi Phục Bộ Lọc Phạm Vi & Ngành Nghề Ở "V · Gợi Ý Hôm Nay" (`HomeScreen.tsx`)**:
+       * Bổ sung 2 thanh Filter Chips ngang cuộn mượt mà:
+         - Lọc không gian/khoảng cách: `[ Tất cả phạm vi ]` `[ 📍 Gần tôi (10km) ]` `[ 🏢 Cùng thành phố ]` `[ 🌐 Toàn quốc ]`.
+         - Lọc chuỗi giá trị & ngành nghề: `[ Tất cả ngành ]` `[ 📦 Chuỗi cung ứng & Bán lẻ ]` `[ 💻 Công nghệ & AI ]` `[ 💎 Quỹ đầu tư & Vốn ]` `[ 🏗️ Xây dựng ]` `[ 📢 Truyền thông B2B ]`.
+       * Tự động lọc danh sách đối tác đề xuất `filteredAiPartners` mượt mà, phản hồi tức thì khi người dùng bấm chip.
+     - **Hệ Thống Theme Động Sáng / Tối (Dynamic Light & Dark Theme Parity)**:
+       * Hỗ trợ song song 2 bảng màu cao cấp:
+         - **Dark Obsidian**: Nền `#0A0A0B`, Surface `#12151F`, `#181D2A`, Accent Bronze Gold `#D8B282`, Text `#FFFFFF`.
+         - **Luxury Executive Light**: Nền `#F8FAFC`, Surface `#FFFFFF`, `#F1F5F9`, Accent Bronze Gold `#B48250` / `#94632B`, Text `#0F172A`.
+       * `ThemeContext.tsx` quản lý `themeMode`, `isDark`, `colors`, `toggleTheme()`, lưu cấu hình vào `AsyncStorage` key `@vione_app_theme`.
+       * Nút Theme Switcher (☀️ / 🌙) đặt tại Header trang chủ `HomeScreen.tsx` cho phép chuyển đổi 1-chạm mượt mà, đồng bộ thanh trạng thái `StatusBar` của thiết bị di động.
+
+  - **Rule 205: Localhost E2E Integration Testing & Test Data Hygiene (Quy chuẩn kiểm thử E2E Localhost & Dọn dẹp dữ liệu test)**:
+    - Khi kiểm thử toàn diện trên môi trường localhost, luôn duy trì tính toàn vẹn của Master Data (bảo tồn nguyên vẹn 12 tài khoản doanh nhân `vione_users`, danh bạ `companies`, `members`, `events`, `opportunities`, `products`).
+    - Dữ liệu test rác (junk dynamic records: tin nhắn demo, thông báo rác, lead thử nghiệm) phải được dọn dẹp sạch sẽ sau mỗi lần kiểm thử bằng kịch bản chuyên dụng.
+    - Bộ kiểm thử E2E phải bao quát tuần tự cả 2 phân hệ: Web CRM và App ViOne Mobile (Bao gồm Frontend Routes HTTP 200/307, Vite Proxy chuyển tiếp, RESTful API Endpoints 4001, C-Level Operations, BPMN Workflow, Chấm công, Phê duyệt chi, Khách hàng CRM, và AI Copilot Chat).
+    - Mọi endpoint tạo dữ liệu (e.g. `POST /api/connect-app/customers`) phải xử lý an toàn các trường tùy chọn (`personId?: string`), tự động sinh định danh fallback (`crypto.randomUUID()`) và không bao giờ để xảy ra unhandled exception (500 TypeError).
+    - Mọi lệnh ghi log hệ thống (`activity_log`) phải kiểm tra và ánh xạ an toàn category vào tập hợp hợp lệ của check constraint (`['auth', 'member', 'fee', 'event', 'system']`).
+
+209. **Quy Chuẩn Quản Trị Nền Tảng RBAC, Khử Thuật Ngữ Kỹ Thuật CRM, Khớp AI Audit & Đồng Bộ Web-Native Parity**:
+     - **Khử Triệt Để Thuật Ngữ Kỹ Thuật Code / BRD Khỏi Giao Diện CRM (Strict Business Jargon Rule)**:
+       * TUYỆT ĐỐI CẤM hiển thị các thuật ngữ kỹ thuật chuyên sâu lập trình và mã quy tắc BRD ra giao diện người dùng cuối: `BPMN 2.0`, `WIP <= 5`, `Maker - Checker - Approver`, `BR-WRK-*`, `BR-FIN-*`, `BR-HRM-*`, `VietQR Napas 24/7 gạch nợ trong 1 giây`, `GPS <= 50m`, `FaceID >= 92%`.
+       * Bắt buộc chuyển hóa thành ngôn ngữ quản trị doanh nhân chuẩn mực:
+         - `Maker - Checker - Approver` $\rightarrow$ "Người lập $\rightarrow$ Kế toán kiểm tra $\rightarrow$ Lãnh đạo phê duyệt".
+         - `VietQR Napas 24/7 gạch nợ 1s` $\rightarrow$ "Chuyển khoản QR ngân hàng", "Tự động đối soát và xác nhận thanh toán".
+         - `BPMN 2.0 / Kanban / WIP` $\rightarrow$ "Quy trình công việc tự động", "Số việc đồng thời $\le$ 5", "Tiến độ công việc".
+         - `Workload Heatmap / Overload > 45h` $\rightarrow$ "Khối lượng công việc nhân sự", "Nhân sự quá giờ".
+         - `GPS 50m & FaceID 92%` $\rightarrow$ "Định vị văn phòng", "Nhận diện khuôn mặt", "Chấm công tự động".
+     - **Tái Thiết Kế Phân Quyền RBAC Gắn Liền Chức Năng Nền Tảng (`/platform` & `/platform/permissions`)**:
+       * TUYỆT ĐỐI KHÔNG để phân quyền tại Cài đặt hệ thống (`/settings`) và TUYỆT ĐỐI KHÔNG CÓ PHẦN HIỆP HỘI trong Chức năng nền tảng (`/platform`).
+       * Phân quyền RBAC quản trị gắn liền trực tiếp với 9 Modules cốt lõi của nền tảng: (1) Tổng quan điều hành C-Level, (2) Khách hàng & Cơ hội kinh doanh, (3) Sản phẩm & Sàn thương mại, (4) Sự kiện & Kết nối giao thương, (5) Quy trình công việc tự động, (6) Giám sát nhân sự & Chấm công, (7) Phê duyệt tài chính & Chi phí, (8) Trợ lý AI Copilot & Tự động hóa, (9) Quản trị nền tảng & Cấu hình.
+       * Ma trận phân quyền kiểm soát 7 Nhóm Quyền (Role Groups: CEO, COO, CFO, Sales Manager, Admin, Staff, Partner) x 6 Thao Tác (Xem, Tạo, Sửa, Xóa, Duyệt, Xuất).
+       * Cung cấp giao diện Quản lý nhóm quyền chi tiết, Gán quyền cho người dùng cụ thể và lưu cấu hình ma trận tùy biến vào `localStorage` (`vione_rbac_custom_matrix_v1`).
+     - **Khớp Chuẩn 6 Tính Năng AI Vào Lịch Sử AI Audit (`/platform/ai-audit` & `ai.service.ts`)**:
+       * Lịch sử nhật ký AI bắt buộc phân loại và hiển thị khớp chính xác 6 tính năng AI thực tế của hệ thống:
+         1. `copilot`: AI Copilot Đàm Thoại Điều Hành C-Level.
+         2. `card_scan`: Quét & Nhận Diện Danh Thiếp OCR AI.
+         3. `excel_import`: Tự Động Hóa Nhập Liệu & Đối Soát Excel.
+         4. `contract_gen`: Trợ Lý Soạn Thảo Hợp Đồng & Văn Bản Doanh Nghiệp.
+         5. `partner_match`: Gợi Ý Đối Tác & Ghép Nối Chuỗi Giá Trị.
+         6. `workload_alert`: Giám Sát Tải Nhân Sự & Cảnh Báo Vận Hành.
+       * Bộ lọc trạng thái, bộ lọc tính năng và badge nhận diện màu sắc rõ ràng (Xanh ngọc, Tím, Xanh lá, Cam, Vàng hổ phách, Đỏ).
+     - **Tích Hợp 'Danh Mục Theo Sản Phẩm' Trên Mọi Dashboard & Khử Chữ 'B2B' Khỏi Sự Kiện**:
+       * Mọi trang Dashboard (`ExecutiveDashboard.tsx`, `finance-report.tsx`) bắt buộc tích hợp panel "Danh Mục Theo Sản Phẩm & Dịch Vụ Doanh Nghiệp" hiển thị tỷ trọng theo ngành hàng, giá trị niêm yết, số sản phẩm đang giao dịch và thanh tiến độ gradient liên kết tới `/marketplace`.
+       * Loại bỏ chữ "B2B" khỏi Sự kiện trên toàn bộ CRM, chuyển đổi thành "Sự Kiện", "Lịch Sự Kiện Doanh Nghiệp", "Cơ Hội Kinh Doanh".
+     - **Đồng Bộ Theme Switcher & Filter Chips Web ViOne App vs Native App**:
+       * Web App PWA (`ExecutiveHome.tsx`) và Native App (`HomeScreen.tsx`) đồng bộ đầy đủ nút Theme Switcher Sáng/Tối tại Header cạnh thông báo.
+       * Khối "V · Gợi ý hôm nay (AI)" luôn hiển thị 2 thanh Filter Chips phân loại Không gian (Tất cả, Gần tôi, Cùng TP, Toàn quốc) & Lĩnh vực (Công nghệ & AI, Chuỗi cung ứng & Bán lẻ, Quỹ đầu tư & Vốn...) kèm dữ liệu fallback C-Level `DEMO_RECOMMENDATIONS` chống rỗng state.
+

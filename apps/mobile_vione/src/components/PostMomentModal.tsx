@@ -26,6 +26,7 @@ import {
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
 import { Avatar } from "./common/Avatar";
+import { momentApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -79,34 +80,42 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
   const userTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
   const userCompany = user?.company || "Tập đoàn ViOne";
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!content.trim()) {
       Alert.alert("Thiếu nội dung", "Vui lòng nhập nội dung chia sẻ khoảnh khắc doanh nhân.");
       return;
     }
 
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      const newMoment = {
-        id: `moment-${Date.now()}`,
-        authorName: displayName,
-        authorTitle: userTitle,
-        authorCompany: userCompany,
-        authorAvatar: user?.avatarUrl ?? undefined,
-        content: content.trim(),
-        imageUrl: selectedPhoto || undefined,
-        tag: selectedTag,
-        timeAgo: "Vừa xong",
-        likesCount: 1,
-        commentsCount: 0,
-      };
+    const newMoment = {
+      id: `moment-${Date.now()}`,
+      authorName: displayName,
+      authorTitle: userTitle,
+      authorCompany: userCompany,
+      authorAvatar: user?.avatarUrl ?? undefined,
+      content: content.trim(),
+      imageUrl: selectedPhoto || undefined,
+      tag: selectedTag,
+      timeAgo: "Vừa xong",
+      likesCount: 1,
+      commentsCount: 0,
+    };
 
-      onPostSuccess(newMoment);
-      Alert.alert("Thành công", "Khoảnh khắc giao thương đã được công bố trên bản tin ViOne.");
-      setContent("");
-      onClose();
-    }, 400);
+    try {
+      await momentApi.createMoment({
+        content: content.trim(),
+        photoUrls: selectedPhoto ? [selectedPhoto] : [],
+        visibility: audience,
+      });
+    } catch (err) {
+      console.warn("Lỗi đăng moment lên API:", err);
+    }
+
+    setSubmitting(false);
+    onPostSuccess(newMoment);
+    Alert.alert("Thành công", "Khoảnh khắc giao thương đã được công bố trên bản tin ViOne.");
+    setContent("");
+    onClose();
   };
 
   return (

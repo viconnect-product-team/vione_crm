@@ -46,7 +46,7 @@ const FALLBACK_TRANSACTIONS: Transaction[] = [
     date: "2026-03-09",
     type: "income",
     category: "Vé sự kiện",
-    description: "Thu vé tham dự Diễn đàn Kết nối Giao thương B2B Quốc Tế",
+    description: "Thu vé tham dự Diễn đàn Kết nối Giao thương Doanh Nghiệp",
     amount: 15000000,
     method: "bank",
     status: "completed",
@@ -68,7 +68,7 @@ const FALLBACK_TRANSACTIONS: Transaction[] = [
     date: "2026-03-06",
     type: "income",
     category: "Thu đột xuất",
-    description: "Đăng ký bổ sung gian hàng triển lãm B2B Tech Expo",
+    description: "Đăng ký bổ sung gian hàng triển lãm Công Nghệ Doanh Nghiệp",
     amount: 8000000,
     method: "cash",
     status: "completed",
@@ -101,7 +101,7 @@ const FALLBACK_TRANSACTIONS: Transaction[] = [
     date: "2026-03-09",
     type: "expense",
     category: "Tiệc chiêu đãi & F&B",
-    description: "Tiệc trà teabreak & gala dinner đại biểu B2B",
+    description: "Tiệc trà teabreak & gala dinner đại biểu doanh nghiệp",
     amount: 18000000,
     method: "bank",
     status: "completed",
@@ -138,7 +138,7 @@ const FALLBACK_TRANSACTIONS: Transaction[] = [
     amount: 4500000,
     method: "cash",
     status: "completed",
-    recipient: "Văn phòng Hiệp hội VIONE",
+    recipient: "Văn phòng Điều hành ViOne",
   },
 ];
 
@@ -520,6 +520,52 @@ function FinanceReport() {
           </div>
         </Card>
       </div>
+
+      {/* Product Categories Revenue Breakdown Card */}
+      <Card className="mb-6 p-5 border border-border shadow-sm">
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <span className="text-base">📦</span>
+              <span>Cơ Cấu Doanh Số &amp; Danh Mục Theo Sản Phẩm</span>
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Phân tích tỷ trọng doanh thu giao thương theo từng nhóm ngành hàng sản phẩm trên hệ thống
+            </p>
+          </div>
+          <span className="text-xs font-bold text-primary px-2.5 py-1 rounded-full bg-primary/10">
+            Tổng 6 ngành hàng
+          </span>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { name: "Công nghệ & Giải pháp số", count: 45, value: "3.5 tỷ VNĐ", pct: 28, color: "from-blue-500 to-indigo-600" },
+            { name: "Nông sản & Thực phẩm chế biến", count: 38, value: "2.8 tỷ VNĐ", pct: 24, color: "from-emerald-500 to-teal-600" },
+            { name: "Cơ khí & Vật liệu xây dựng", count: 28, value: "2.2 tỷ VNĐ", pct: 18, color: "from-amber-500 to-orange-600" },
+            { name: "Dịch vụ Doanh nghiệp & Pháp lý", count: 22, value: "1.7 tỷ VNĐ", pct: 14, color: "from-purple-500 to-pink-600" },
+            { name: "Vận tải & Chuỗi Logistics", count: 15, value: "1.2 tỷ VNĐ", pct: 10, color: "from-cyan-500 to-blue-600" },
+            { name: "Hàng tiêu dùng & Tiện ích", count: 10, value: "800 tr VNĐ", pct: 6, color: "from-rose-500 to-red-600" },
+          ].map((item) => (
+            <div key={item.name} className="p-3.5 rounded-xl border border-border bg-secondary/30">
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="font-semibold text-foreground truncate pr-2">{item.name}</span>
+                <span className="font-mono font-bold text-primary shrink-0">{item.pct}%</span>
+              </div>
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
+                <span>{item.count} sản phẩm niêm yết</span>
+                <span className="font-semibold text-foreground">{item.value}</span>
+              </div>
+              <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                <div
+                  className={`h-full rounded-full bg-gradient-to-r ${item.color}`}
+                  style={{ width: `${item.pct * 3}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       {/* Comprehensive Transaction Ledger Table */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">

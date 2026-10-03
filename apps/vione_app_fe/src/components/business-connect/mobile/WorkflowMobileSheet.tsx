@@ -112,7 +112,7 @@ export function WorkflowMobileSheet({ open, onClose }: WorkflowMobileSheetProps)
       setCreating(false);
       setShowCreate(false);
       setNewTitle("");
-      toast.success("✓ Đã tạo công việc BPMN mới và giao cho nhân sự!");
+      toast.success("✓ Đã tạo công việc mới và giao cho nhân sự!");
     } catch {
       setCreating(false);
       setShowCreate(false);
@@ -143,7 +143,7 @@ export function WorkflowMobileSheet({ open, onClose }: WorkflowMobileSheetProps)
                 Quy Trình & Tiến Độ Nhân Sự
               </h3>
               <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
-                Chuẩn BPMN · Giới hạn WIP ≤ 5 · Kiểm soát quá tải
+                Quy trình tự động · Tối đa 5 việc/nhân sự · Kiểm soát quá tải
               </p>
             </div>
           </div>
@@ -189,7 +189,7 @@ export function WorkflowMobileSheet({ open, onClose }: WorkflowMobileSheetProps)
         {/* Create Task Form */}
         {showCreate && (
           <form onSubmit={handleCreateTask} className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-sky-500/5 space-y-3">
-            <h4 className="text-xs font-bold text-sky-800 dark:text-sky-300">Khởi tạo & Giao việc BPMN</h4>
+            <h4 className="text-xs font-bold text-sky-800 dark:text-sky-300">Khởi tạo & Giao việc cho đội ngũ</h4>
             <div>
               <input
                 type="text"

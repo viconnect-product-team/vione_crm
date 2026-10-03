@@ -24,6 +24,7 @@ import {
   ShieldCheck,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { meApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -43,7 +44,22 @@ export const IdentityPrivacyModal: React.FC<IdentityPrivacyModalProps> = ({
   const [anonymousAtEvents, setAnonymousAtEvents] = useState(false);
   const [watermarkCard, setWatermarkCard] = useState(true);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    try {
+      await meApi.updateVisibility([
+        { fieldKey: "phone", isPublic: showPhone },
+        { fieldKey: "email", isPublic: showEmail },
+      ]);
+      await meApi.saveSettings({
+        allowDirectMeeting,
+        allowAiMatching,
+        anonymousAtEvents,
+        watermarkCard,
+      });
+    } catch (err) {
+      console.warn("Lỗi lưu cài đặt riêng tư lên API:", err);
+    }
+
     Alert.alert(
       "Đã cập nhật quyền riêng tư",
       "Cấu hình bảo mật danh tính doanh nhân ViOne đã được đồng bộ an toàn lên hệ sinh thái."

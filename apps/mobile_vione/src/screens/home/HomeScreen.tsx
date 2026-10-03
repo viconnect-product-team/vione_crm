@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,20 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+
+interface AiPartnerItem {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  industry: string;
+  industryKey: string;
+  location: string;
+  distanceTier: "near" | "city" | "national";
+  suggestion: string;
+  matchScore: string;
+  initial: string;
+}
 import {
   Bell,
   Pencil,
@@ -37,9 +51,12 @@ import {
   Briefcase,
   Building2,
   UserPlus,
+  Sun,
+  Moon,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import { MyQrModal } from "../quick-connect/MyQrModal";
 import { ScanQrModal } from "../quick-connect/ScanQrModal";
 import { AttendanceModal } from "../../components/AttendanceModal";
@@ -48,6 +65,8 @@ import { ApprovalsModal } from "../../components/ApprovalsModal";
 import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
 import { CardScanReviewModal } from "../../components/CardScanReviewModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
+import { StaffDailyActivityModal } from "../../components/StaffDailyActivityModal";
+import { meApi, eventsApi, meetingsApi, networkApi } from "../../api";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -58,6 +77,7 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) => {
   const { user } = useAuth();
+  const { isDark, toggleTheme, colors } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<"today" | "upcoming" | "reminders">("today");
   const [myQrVisible, setMyQrVisible] = useState(false);
@@ -65,17 +85,224 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const [attendanceVisible, setAttendanceVisible] = useState(false);
   const [workflowVisible, setWorkflowVisible] = useState(false);
   const [approvalsVisible, setApprovalsVisible] = useState(false);
+  const [staffDailyModalVisible, setStaffDailyModalVisible] = useState(false);
   const [scheduleMeetingVisible, setScheduleMeetingVisible] = useState(false);
   const [selectedPartnerForMeeting, setSelectedPartnerForMeeting] = useState<{ name: string; company: string } | null>(null);
   const [cardScanReviewVisible, setCardScanReviewVisible] = useState(false);
   const [eventDetailModalVisible, setEventDetailModalVisible] = useState(false);
   const [selectedEventForDetail, setSelectedEventForDetail] = useState<any | null>(null);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(2);
 
-  const onRefresh = () => {
+  // Bộ lọc phạm vi & ngành nghề cho V · Gợi ý hôm nay
+  const [distanceFilter, setDistanceFilter] = useState<"all" | "near" | "city" | "national">("all");
+  const [industryFilter, setIndustryFilter] = useState<string>("all");
+
+  // Danh sách sự kiện sắp tới
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([
+    {
+      id: "ev-1",
+      title: "Giao lưu Kết nối C-Level & Khởi nghiệp 2026",
+      date: "05/10/2026",
+      time: "09:30",
+      location: "Khách sạn Daewoo Hà Nội",
+      community: "CLB Doanh Nhân ViOne",
+    },
+  ]);
+
+  // Danh sách nhắc lịch
+  const [remindersList, setRemindersList] = useState<any[]>([
+    {
+      id: "rem-1",
+      title: "Cuộc gặp 1-1: Đối tác Đầu tư Công nghệ",
+      date: "02/10/2026",
+      time: "14:30",
+      location: "Trụ sở ViOne Connect",
+      type: "meeting",
+    },
+  ]);
+
+  // Danh sách đối tác gợi ý bởi AI phong phú theo khu vực & ngành nghề
+  const [aiSuggestedPartners, setAiSuggestedPartners] = useState<AiPartnerItem[]>([
+    {
+      id: "ai-1",
+      name: "Hoàng Gia Bảo",
+      title: "Phó Tổng Giám Đốc",
+      company: "Chuỗi Bán Lẻ & Logistics Toàn Quốc",
+      industry: "Bán Lẻ & Chuỗi Cung Ứng",
+      industryKey: "logistics",
+      location: "Hà Nội",
+      distanceTier: "near",
+      suggestion: "Tìm thấy cơ hội liên kết chuỗi logistics và hệ sinh thái phân phối bán lẻ",
+      matchScore: "94% tương đồng chuỗi cung ứng",
+      initial: "B",
+    },
+    {
+      id: "ai-2",
+      name: "Đặng Quang Huy",
+      title: "Nhà Sáng Lập & CEO",
+      company: "Huy Đặng Media & Digital Marketing",
+      industry: "Truyền Thông Doanh Nghiệp",
+      industryKey: "media",
+      location: "TP. Hồ Chí Minh",
+      distanceTier: "city",
+      suggestion: "Đối tác tiềm năng hỗ trợ mở rộng nhận diện thương hiệu doanh nghiệp đa kênh",
+      matchScore: "88% khớp hồ sơ hợp tác B2B",
+      initial: "H",
+    },
+    {
+      id: "ai-3",
+      name: "Trần Nhật Long",
+      title: "Giám Đốc Quỹ Đầu Tư",
+      company: "ViOne Capital Ventures",
+      industry: "Đầu Tư & Tài Chính",
+      industryKey: "investment",
+      location: "Hà Nội",
+      distanceTier: "near",
+      suggestion: "Đang tìm kiếm doanh nghiệp tăng trưởng nhanh để rót vốn chiến lược giai đoạn 2026",
+      matchScore: "96% tương thích danh mục đầu tư",
+      initial: "L",
+    },
+    {
+      id: "ai-4",
+      name: "Nguyễn Thị Phương Thảo",
+      title: "Chủ Tịch HĐQT",
+      company: "Tập Đoàn Hạ Tầng Cloud & AI",
+      industry: "Công Nghệ & AI",
+      industryKey: "tech",
+      location: "TP. Hồ Chí Minh",
+      distanceTier: "city",
+      suggestion: "Cơ hội liên kết cung cấp giải pháp máy chủ điện toán đám mây và trung tâm dữ liệu",
+      matchScore: "92% khớp chuỗi giá trị số",
+      initial: "T",
+    },
+    {
+      id: "ai-5",
+      name: "Bùi Anh Tuấn",
+      title: "Tổng Giám Đốc",
+      company: "Tập Đoàn Xây Dựng & Bất Động Sản Vicone",
+      industry: "Đầu Tư & Xây Dựng",
+      industryKey: "construction",
+      location: "Đà Nẵng",
+      distanceTier: "national",
+      suggestion: "Tìm kiếm nhà thầu phụ và nhà cung ứng vật tư xây dựng quy mô lớn khu vực miền Trung",
+      matchScore: "85% tương thích dự án hạ tầng",
+      initial: "T",
+    },
+    {
+      id: "ai-6",
+      name: "Vũ Kim Ngân",
+      title: "Giám Đốc Chuỗi Cung Ứng",
+      company: "Global Express Logistics",
+      industry: "Bán Lẻ & Chuỗi Cung Ứng",
+      industryKey: "logistics",
+      location: "Hà Nội",
+      distanceTier: "near",
+      suggestion: "Tối ưu hóa chi phí vận chuyển đường bộ và hệ thống kho bãi thông minh",
+      matchScore: "90% tương thích logistics",
+      initial: "N",
+    },
+  ]);
+
+  // Bộ lọc gợi ý AI theo phạm vi và ngành nghề
+  const filteredAiPartners = useMemo(() => {
+    return aiSuggestedPartners.filter((p) => {
+      if (distanceFilter !== "all") {
+        if (distanceFilter === "near" && p.distanceTier !== "near") return false;
+        if (distanceFilter === "city" && p.distanceTier !== "near" && p.distanceTier !== "city") return false;
+        if (distanceFilter === "national" && p.distanceTier !== "national") return false;
+      }
+      if (industryFilter !== "all") {
+        if (p.industryKey !== industryFilter) return false;
+      }
+      return true;
+    });
+  }, [aiSuggestedPartners, distanceFilter, industryFilter]);
+
+  const loadData = async () => {
+    try {
+      // 1. Unread notifications count
+      const notifRes = await meApi.getUnreadNotificationCount();
+      if (notifRes?.data?.count !== undefined) {
+        setUnreadNotificationsCount(notifRes.data.count);
+      }
+    } catch (e) {
+      // Keep initial count
+    }
+
+    try {
+      // 2. Events
+      const eventsRes = await eventsApi.getEvents();
+      const eventsList = Array.isArray(eventsRes?.data) ? eventsRes.data : [];
+      if (eventsList.length > 0) {
+        setUpcomingEvents(
+          eventsList.map((ev: any) => ({
+            id: ev.id,
+            title: ev.title,
+            date: ev.startsAt ? new Date(ev.startsAt).toLocaleDateString("vi-VN") : "05/10/2026",
+            time: ev.startsAt ? new Date(ev.startsAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "09:30",
+            location: ev.location || "ViOne Business Hub",
+            community: ev.category || "Cộng đồng ViOne",
+          }))
+        );
+      }
+    } catch (e) {
+      // Keep fallback
+    }
+
+    try {
+      // 3. Meetings
+      const meetingsRes = await meetingsApi.getMeetings();
+      const meetingsList = Array.isArray(meetingsRes?.data) ? meetingsRes.data : [];
+      if (meetingsList.length > 0) {
+        setRemindersList(
+          meetingsList.map((m: any) => ({
+            id: m.id || `m-${Math.random()}`,
+            title: m.title || "Cuộc gặp 1-1",
+            date: m.meetingDate ? new Date(m.meetingDate).toLocaleDateString("vi-VN") : "Hôm nay",
+            time: m.meetingTime || "14:30",
+            location: m.locationName || (m.locationType === "online" ? "Trực tuyến (Google Meet)" : "Trụ sở ViOne Connect"),
+            type: "meeting",
+          }))
+        );
+      }
+    } catch (e) {
+      // Keep fallback
+    }
+
+    try {
+      // 4. AI Recommendations
+      const recoRes = await networkApi.getTodayRecommendations();
+      const recoList = Array.isArray(recoRes?.data) ? recoRes.data : [];
+      if (recoList.length > 0) {
+        setAiSuggestedPartners(
+          recoList.map((r: any, idx: number): AiPartnerItem => ({
+            id: r.id || `reco-${idx}`,
+            name: r.name || r.displayName || "Doanh nhân đối tác",
+            title: r.title || "Lãnh đạo Doanh nghiệp",
+            company: r.company || r.companyName || "Tập đoàn Đối tác",
+            industry: r.industry || "Kinh doanh & Đầu tư",
+            industryKey: r.industryKey || "tech",
+            location: r.location || "Hà Nội",
+            distanceTier: r.distanceTier || "near",
+            suggestion: r.suggestion || r.reason || "Tìm thấy tiềm năng hợp tác chiến lược giữa hai doanh nghiệp",
+            matchScore: r.matchScore || "92% phù hợp B2B",
+            initial: (r.name || r.displayName || "V").trim().slice(-1).toUpperCase(),
+          }))
+        );
+      }
+    } catch (e) {
+      // Keep fallback
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const onRefresh = async () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 600);
+    await loadData();
+    setRefreshing(false);
   };
 
   // Lời chào theo thời gian thực (Chào buổi sáng / chiều / tối)
@@ -115,56 +342,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const userPhone = user?.phone || "0912 345 678";
   const avatarInitial = getInitial(displayName);
 
-  // Danh sách sự kiện sắp tới
-  const upcomingEvents = [
-    {
-      id: "ev-1",
-      title: "Giao lưu Kết nối C-Level & Khởi nghiệp 2026",
-      date: "05/10/2026",
-      time: "09:30",
-      location: "Khách sạn Daewoo Hà Nội",
-      community: "CLB Doanh Nhân ViOne",
-    },
-  ];
-
-  // Danh sách nhắc lịch
-  const remindersList = [
-    {
-      id: "rem-1",
-      title: "Cuộc gặp 1-1: Đối tác Đầu tư Công nghệ",
-      date: "02/10/2026",
-      time: "14:30",
-      location: "Trụ sở ViOne Connect",
-      type: "meeting",
-    },
-  ];
-
-  // Danh sách đối tác gợi ý bởi AI (Tương đương RelationshipSuggestions trên web)
-  const aiSuggestedPartners = [
-    {
-      id: "ai-1",
-      name: "Hoàng Gia Bảo",
-      title: "Phó Tổng Giám Đốc",
-      company: "Chuỗi Bán Lẻ & Logistics Toàn Quốc",
-      industry: "Bán Lẻ & Chuỗi Cung Ứng",
-      location: "Hà Nội",
-      suggestion: "Tìm thấy cơ hội liên kết chuỗi logistics và hệ sinh thái phân phối bán lẻ",
-      matchScore: "94% tương đồng chuỗi cung ứng",
-      initial: "B",
-    },
-    {
-      id: "ai-2",
-      name: "Đặng Quang Huy",
-      title: "Nhà Sáng Lập & CEO",
-      company: "Huy Đặng Media & Digital Marketing",
-      industry: "Truyền Thông Doanh Nghiệp",
-      location: "TP. Hồ Chí Minh",
-      suggestion: "Đối tác tiềm năng hỗ trợ mở rộng nhận diện thương hiệu doanh nghiệp đa kênh",
-      matchScore: "88% khớp hồ sơ hợp tác B2B",
-      initial: "H",
-    },
-  ];
-
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <ScrollView
@@ -193,10 +370,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           <View style={styles.headerRightActions}>
             <TouchableOpacity
               style={styles.headerIconBtn}
+              onPress={toggleTheme}
+              activeOpacity={0.7}
+            >
+              {isDark ? (
+                <Sun size={19} color="#D8B282" strokeWidth={1.8} />
+              ) : (
+                <Moon size={19} color="#A3703C" strokeWidth={1.8} />
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.headerIconBtn}
               onPress={() => navigation?.navigate("Network")}
               activeOpacity={0.7}
             >
-              <MessageSquare size={20} color="#D8B282" strokeWidth={1.8} />
+              <MessageSquare size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
               <View style={styles.bellBadge}>
                 <Text style={styles.bellBadgeText}>1</Text>
               </View>
@@ -204,13 +393,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
 
             <TouchableOpacity
               style={styles.headerIconBtn}
-              onPress={() => Alert.alert("Thông báo", "Bạn có 2 thông báo kết nối doanh nghiệp mới.")}
+              onPress={() => Alert.alert("Thông báo", `Bạn có ${unreadNotificationsCount} thông báo kết nối doanh nghiệp mới.`)}
               activeOpacity={0.7}
             >
-              <Bell size={20} color="#D8B282" strokeWidth={1.8} />
-              <View style={styles.bellBadge}>
-                <Text style={styles.bellBadgeText}>2</Text>
-              </View>
+              <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
+              {unreadNotificationsCount > 0 && (
+                <View style={styles.bellBadge}>
+                  <Text style={styles.bellBadgeText}>{unreadNotificationsCount}</Text>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -551,7 +742,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             Kiểm soát luồng công việc BPMN, khối lượng tải làm việc của từng nhân sự, chấm công GPS và phê duyệt chi 3 cấp theo chuẩn BRD.
           </Text>
 
-          {/* Grid 3 Thẻ Nghiệp Vụ */}
+          {/* Grid 4 Thẻ Nghiệp Vụ Giám Sát C-Level */}
           <View style={styles.opsCardsCol}>
             {/* Thẻ 1: Chấm công GPS & AI FaceID */}
             <TouchableOpacity
@@ -577,7 +768,35 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               </View>
             </TouchableOpacity>
 
-            {/* Thẻ 2: Quy trình & Tiến độ nhân sự */}
+            {/* Thẻ 2: Giám sát lịch trình & hoạt động nhân sự trong ngày (MỚI CHO CẤP GIÁM ĐỐC) */}
+            <TouchableOpacity
+              style={[styles.opsCard, { borderColor: isDark ? "rgba(216, 178, 130, 0.45)" : "rgba(163, 112, 60, 0.5)" }]}
+              onPress={() => setStaffDailyModalVisible(true)}
+              activeOpacity={0.8}
+            >
+              <View style={styles.opsCardTop}>
+                <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.25)" }]}>
+                  <Activity size={18} color={isDark ? "#D8B282" : "#A3703C"} />
+                </View>
+                <View style={[styles.opsCardBadgeGreen, { backgroundColor: "rgba(216, 178, 130, 0.22)" }]}>
+                  <Text style={[styles.opsCardBadgeGreenText, { color: isDark ? "#D8B282" : "#A3703C" }]}>
+                    8 ĐANG GẶP ĐỐI TÁC
+                  </Text>
+                </View>
+              </View>
+              <Text style={styles.opsCardTitle}>Giám sát hoạt động nhân sự trong ngày</Text>
+              <Text style={styles.opsCardDesc}>
+                Phân hệ Giám Đốc: Xem nhân sự làm gì hôm nay · Lịch đi gặp khách · Check-in GPS & báo cáo công việc thời gian thực
+              </Text>
+              <View style={styles.opsCardFooter}>
+                <Text style={[styles.opsCardActionText, { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
+                  Mở bảng giám sát nhân sự C-Level
+                </Text>
+                <ChevronRight size={14} color={isDark ? "#D8B282" : "#A3703C"} />
+              </View>
+            </TouchableOpacity>
+
+            {/* Thẻ 3: Quy trình & Tiến độ nhân sự */}
             <TouchableOpacity
               style={styles.opsCard}
               onPress={() => setWorkflowVisible(true)}
@@ -602,7 +821,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               </View>
             </TouchableOpacity>
 
-            {/* Thẻ 3: Phê duyệt chi 3 cấp */}
+            {/* Thẻ 4: Phê duyệt chi 3 cấp */}
             <TouchableOpacity
               style={styles.opsCard}
               onPress={() => setApprovalsVisible(true)}
@@ -650,66 +869,156 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             Hệ sinh thái AI tự động tính toán dữ liệu năng lực, chuỗi giá trị và đề xuất đối tác C-Level tương thích cao nhất.
           </Text>
 
-          <View style={styles.aiListCol}>
-            {aiSuggestedPartners.map((item) => (
-              <View key={item.id} style={styles.aiPartnerCard}>
-                <View style={styles.aiPartnerTop}>
-                  <LinearGradient
-                    colors={["#2A2016", "#14110E"]}
-                    style={styles.aiAvatarCircle}
+          {/* THANH BỘ LỌC PHẠM VI KHOẢNG CÁCH (KHÔI PHỤC THEO YÊU CẦU NGƯỜI DÙNG) */}
+          <View style={{ marginTop: 12, marginBottom: 6 }}>
+            <Text style={{ fontSize: 10, fontWeight: "700", color: isDark ? "#D8B282" : "#A3703C", letterSpacing: 0.6, marginBottom: 6 }}>
+              LỌC THEO PHẠM VI KHÔNG GIAN
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              {[
+                { id: "all", label: "Tất cả phạm vi" },
+                { id: "near", label: "📍 Gần tôi (10km)" },
+                { id: "city", label: "🏢 Cùng thành phố" },
+                { id: "national", label: "🌐 Toàn quốc" },
+              ].map((df) => {
+                const active = distanceFilter === df.id;
+                return (
+                  <TouchableOpacity
+                    key={df.id}
+                    style={[
+                      styles.aiFilterChip,
+                      active && {
+                        backgroundColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#FEF3C7",
+                        borderColor: isDark ? "#D8B282" : "#A3703C",
+                      },
+                    ]}
+                    onPress={() => setDistanceFilter(df.id as any)}
                   >
-                    <Text style={styles.aiAvatarInitial}>{item.initial}</Text>
-                  </LinearGradient>
+                    <Text style={[styles.aiFilterChipText, active && { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
+                      {df.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
 
-                  <View style={styles.aiPartnerInfo}>
-                    <View style={styles.aiNameRow}>
-                      <Text style={styles.aiPartnerName} numberOfLines={1}>{item.name}</Text>
-                      <View style={styles.aiLocationTag}>
-                        <MapPin size={10} color="#D8B282" style={{ marginRight: 2 }} />
-                        <Text style={styles.aiLocationText}>{item.location}</Text>
+          {/* THANH BỘ LỌC THEO NGÀNH NGHỀ / LIÊN MINH */}
+          <View style={{ marginTop: 6, marginBottom: 12 }}>
+            <Text style={{ fontSize: 10, fontWeight: "700", color: isDark ? "#D8B282" : "#A3703C", letterSpacing: 0.6, marginBottom: 6 }}>
+              LỌC THEO LĨNH VỰC & CHUỖI GIÁ TRỊ
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+              {[
+                { id: "all", label: "Tất cả ngành nghề" },
+                { id: "logistics", label: "📦 Chuỗi cung ứng & Bán lẻ" },
+                { id: "tech", label: "💻 Công nghệ & AI" },
+                { id: "investment", label: "💎 Quỹ đầu tư & Vốn" },
+                { id: "construction", label: "🏗️ Xây dựng & Bất động sản" },
+                { id: "media", label: "📢 Truyền thông B2B" },
+              ].map((ind) => {
+                const active = industryFilter === ind.id;
+                return (
+                  <TouchableOpacity
+                    key={ind.id}
+                    style={[
+                      styles.aiFilterChip,
+                      active && {
+                        backgroundColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#FEF3C7",
+                        borderColor: isDark ? "#D8B282" : "#A3703C",
+                      },
+                    ]}
+                    onPress={() => setIndustryFilter(ind.id)}
+                  >
+                    <Text style={[styles.aiFilterChipText, active && { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
+                      {ind.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+
+          {/* DANH SÁCH ĐỐI TÁC GỢI Ý ĐÃ LỌC */}
+          <View style={styles.aiListCol}>
+            {filteredAiPartners.length === 0 ? (
+              <View style={{ paddingVertical: 20, alignItems: "center" }}>
+                <Text style={{ color: "#94A3B8", fontSize: 12 }}>
+                  Không có gợi ý trong phạm vi này. Vui lòng mở rộng bộ lọc.
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    setDistanceFilter("all");
+                    setIndustryFilter("all");
+                  }}
+                  style={{ marginTop: 8 }}
+                >
+                  <Text style={{ color: "#D8B282", fontSize: 12, fontWeight: "700" }}>
+                    Đặt lại bộ lọc
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              filteredAiPartners.map((item: AiPartnerItem) => (
+                <View key={item.id} style={styles.aiPartnerCard}>
+                  <View style={styles.aiPartnerTop}>
+                    <LinearGradient
+                      colors={["#2A2016", "#14110E"]}
+                      style={styles.aiAvatarCircle}
+                    >
+                      <Text style={styles.aiAvatarInitial}>{item.initial}</Text>
+                    </LinearGradient>
+
+                    <View style={styles.aiPartnerInfo}>
+                      <View style={styles.aiNameRow}>
+                        <Text style={styles.aiPartnerName} numberOfLines={1}>{item.name}</Text>
+                        <View style={styles.aiLocationTag}>
+                          <MapPin size={10} color="#D8B282" style={{ marginRight: 2 }} />
+                          <Text style={styles.aiLocationText}>{item.location}</Text>
+                        </View>
+                      </View>
+                      <View style={styles.aiMetaRow}>
+                        <Briefcase size={11} color="#D8B282" style={{ marginRight: 4 }} />
+                        <Text style={styles.aiMetaText} numberOfLines={1}>
+                          {item.title} · {item.company}
+                        </Text>
+                      </View>
+                      <View style={styles.aiMetaRow}>
+                        <Building2 size={11} color="#D8B282" style={{ marginRight: 4 }} />
+                        <Text style={styles.aiIndustryText} numberOfLines={1}>
+                          {item.industry}
+                        </Text>
                       </View>
                     </View>
-                    <View style={styles.aiMetaRow}>
-                      <Briefcase size={11} color="#D8B282" style={{ marginRight: 4 }} />
-                      <Text style={styles.aiMetaText} numberOfLines={1}>
-                        {item.title} · {item.company}
-                      </Text>
-                    </View>
-                    <View style={styles.aiMetaRow}>
-                      <Building2 size={11} color="#D8B282" style={{ marginRight: 4 }} />
-                      <Text style={styles.aiIndustryText} numberOfLines={1}>
-                        {item.industry}
-                      </Text>
-                    </View>
+                  </View>
+
+                  <View style={styles.aiReasonBox}>
+                    <Text style={styles.aiSuggestionText}>{item.suggestion}</Text>
+                    <Text style={styles.aiMatchScoreText}>★ {item.matchScore}</Text>
+                  </View>
+
+                  <View style={styles.aiActionRow}>
+                    <TouchableOpacity
+                      style={styles.aiConnectBtn}
+                      onPress={() => Alert.alert("Kết nối", `Đã gửi lời mời kết nối doanh nghiệp tới ${item.name}.`)}
+                      activeOpacity={0.8}
+                    >
+                      <UserPlus size={13} color="#050C15" style={{ marginRight: 4 }} />
+                      <Text style={styles.aiConnectBtnText}>Kết nối ngay</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.aiMessageBtn}
+                      onPress={() => navigation?.navigate("Network")}
+                      activeOpacity={0.8}
+                    >
+                      <MessageSquare size={13} color="#D8B282" style={{ marginRight: 4 }} />
+                      <Text style={styles.aiMessageBtnText}>Nhắn tin</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-
-                <View style={styles.aiReasonBox}>
-                  <Text style={styles.aiSuggestionText}>{item.suggestion}</Text>
-                  <Text style={styles.aiMatchScoreText}>★ {item.matchScore}</Text>
-                </View>
-
-                <View style={styles.aiActionRow}>
-                  <TouchableOpacity
-                    style={styles.aiConnectBtn}
-                    onPress={() => Alert.alert("Kết nối", `Đã gửi lời mời kết nối doanh nghiệp tới ${item.name}.`)}
-                    activeOpacity={0.8}
-                  >
-                    <UserPlus size={13} color="#050C15" style={{ marginRight: 4 }} />
-                    <Text style={styles.aiConnectBtnText}>Kết nối ngay</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.aiMessageBtn}
-                    onPress={() => navigation?.navigate("Network")}
-                    activeOpacity={0.8}
-                  >
-                    <MessageSquare size={13} color="#D8B282" style={{ marginRight: 4 }} />
-                    <Text style={styles.aiMessageBtnText}>Nhắn tin</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
+              ))
+            )}
           </View>
         </View>
       </ScrollView>
@@ -720,6 +1029,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
       <AttendanceModal visible={attendanceVisible} onClose={() => setAttendanceVisible(false)} />
       <WorkflowModal visible={workflowVisible} onClose={() => setWorkflowVisible(false)} />
       <ApprovalsModal visible={approvalsVisible} onClose={() => setApprovalsVisible(false)} />
+      <StaffDailyActivityModal visible={staffDailyModalVisible} onClose={() => setStaffDailyModalVisible(false)} />
       <ScheduleMeetingModal
         visible={scheduleMeetingVisible}
         partnerName={selectedPartnerForMeeting?.name}
@@ -1422,6 +1732,19 @@ const styles = StyleSheet.create({
   aiListCol: {
     marginTop: 12,
     gap: 10,
+  },
+  aiFilterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.04)",
+  },
+  aiFilterChipText: {
+    fontSize: 11,
+    color: "#94A3B8",
+    fontWeight: "600",
   },
   aiPartnerCard: {
     backgroundColor: "#181D2A",

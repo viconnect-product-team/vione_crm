@@ -68,15 +68,15 @@ export const navGroups: NavGroup[] = [
   {
     label: "TIỆN ÍCH & GIAO THƯƠNG",
     items: [
-      { key: "nav.vioneMarketplace" as TKey, icon: Store, to: "/marketplace", label: "Sàn Marketplace B2B" },
-      { key: "nav.vioneOpportunities" as TKey, icon: FileBarChart, to: "/opportunities", label: "Cơ Hội Giao Thương & Deals" },
+      { key: "nav.vioneMarketplace" as TKey, icon: Store, to: "/marketplace", label: "Sàn Sản Phẩm & Dịch Vụ" },
+      { key: "nav.vioneOpportunities" as TKey, icon: FileBarChart, to: "/opportunities", label: "Cơ Hội Giao Thương & Hợp Tác" },
       { key: "nav.vioneQuotes" as TKey, icon: ClipboardList, to: "/marketplace/my-quotes", label: "Yêu Cầu Báo Giá VIP" },
     ],
   },
   {
-    label: "SỰ KIỆN & CHECK-IN B2B",
+    label: "SỰ KIỆN & ĐIỂM DANH",
     items: [
-      { key: "nav.vioneEventList" as TKey, icon: Calendar, to: "/events", label: "Lịch Sự Kiện B2B" },
+      { key: "nav.vioneEventList" as TKey, icon: Calendar, to: "/events", label: "Lịch Sự Kiện" },
       { key: "nav.vioneEventReg" as TKey, icon: ClipboardList, to: "/event-registrations", label: "Đăng Ký & Khách Mời" },
       { key: "nav.vioneCheckin" as TKey, icon: QrCode, to: "/checkin-qr", label: "Soát Vé NFC & QR Pass" },
       { key: "eventsOverview.title" as TKey, icon: Calendar, to: "/events-overview", label: "Tổng quan sự kiện" },
@@ -94,12 +94,11 @@ export const navGroups: NavGroup[] = [
   {
     label: "CẤU HÌNH & HỆ THỐNG",
     items: [
-      { key: "nav.vioneSettings" as TKey, icon: Settings, to: "/settings", label: "Cài Đặt Nền Tảng" },
+      { key: "nav.vioneSettings" as TKey, icon: Settings, to: "/settings", label: "Cài Đặt Hệ Thống" },
       { key: "nav.vioneLandingTpl" as TKey, icon: FolderOpen, to: "/admin/landing-templates", label: "Landing Page Doanh Nghiệp" },
       { key: "nav.vioneAudit" as TKey, icon: History, to: "/activity", label: "Nhật Ký Kiểm Toán" },
-      { key: "nav.vionePermissions" as TKey, icon: ShieldCheck, to: "/platform/permissions", label: "Ma Trận Phân Quyền" },
       { key: "nav.account" as TKey, icon: UserCog, to: "/account-settings", label: "Tài khoản cá nhân" },
-      { key: "nav.platform" as TKey, icon: ShieldCheck, to: "/platform", label: "Quản trị ViOne Platform", platformOnly: true },
+      { key: "nav.platform" as TKey, icon: ShieldCheck, to: "/platform", label: "Quản trị Nền Tảng & Phân Quyền", platformOnly: true },
     ],
   },
 ];

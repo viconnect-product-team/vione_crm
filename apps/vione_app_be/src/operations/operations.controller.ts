@@ -27,7 +27,7 @@ export class OperationsController {
   // ==========================================
   // WORKFLOW & BPMN TASKS (RESTful: /api/operations/workflow/tasks)
   // ==========================================
-  @Get('workflow/tasks')
+  @Get(['workflow', 'workflow/tasks'])
   getTasks(
     @Query('status') status?: string,
     @Query('department') department?: string,
@@ -99,6 +99,15 @@ export class OperationsController {
   }
 
   // ==========================================
+  // STAFF DAILY ACTIVITY (RESTful: /api/operations/staff/daily-activities)
+  // Giám sát hoạt động nhân sự trong ngày: lịch gặp khách hàng, công việc, GPS Check-in
+  // ==========================================
+  @Get('staff/daily-activities')
+  getStaffDailyActivities() {
+    return this.opsService.getStaffDailyActivities();
+  }
+
+  // ==========================================
   // ATTENDANCE & AI FACEID (RESTful: /api/operations/attendance)
   // ==========================================
   @Get('attendance')
@@ -159,7 +168,7 @@ export class OperationsController {
   // ==========================================
   // FINANCIAL APPROVALS 3-TIER (RESTful: /api/operations/finance/approvals)
   // ==========================================
-  @Get('finance/approvals')
+  @Get(['approvals', 'finance/approvals'])
   getPaymentApprovals() {
     const data = this.opsService.getPaymentApprovals();
     return {

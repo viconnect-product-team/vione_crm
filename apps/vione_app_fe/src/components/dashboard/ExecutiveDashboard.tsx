@@ -916,10 +916,10 @@ export function ExecutiveDashboard({ authReady }: { authReady: boolean }) {
             <span className="text-[11px] font-semibold text-muted-foreground mr-1">Bộ lọc danh mục:</span>
             {[
               { id: "all", label: "Tất cả", count: searchResults ? searchResults.total : (s.totalMembers + s.openOpportunities + s.upcomingEvents + s.paidInvoices + s.unpaidInvoices) },
-              { id: "members", label: "Hội viên CRM", count: searchResults ? searchResults.members.length : s.totalMembers },
-              { id: "opps", label: "Cơ hội B2B", count: searchResults ? searchResults.opps.length : s.openOpportunities },
-              { id: "invoices", label: "Hóa đơn & Phí", count: searchResults ? searchResults.invoices.length : (s.paidInvoices + s.unpaidInvoices) },
-              { id: "events", label: "Sự kiện B2B", count: searchResults ? searchResults.events.length : s.upcomingEvents },
+              { id: "members", label: "Khách hàng & Hội viên", count: searchResults ? searchResults.members.length : s.totalMembers },
+              { id: "opps", label: "Cơ hội kinh doanh", count: searchResults ? searchResults.opps.length : s.openOpportunities },
+              { id: "invoices", label: "Hóa đơn & Doanh thu", count: searchResults ? searchResults.invoices.length : (s.paidInvoices + s.unpaidInvoices) },
+              { id: "events", label: "Sự kiện", count: searchResults ? searchResults.events.length : s.upcomingEvents },
             ].map((cat) => (
               <button
                 key={cat.id}
@@ -1060,7 +1060,7 @@ export function ExecutiveDashboard({ authReady }: { authReady: boolean }) {
                     <div>
                       <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
                         <CalendarClock className="h-3.5 w-3.5 text-blue-500" />
-                        <span>Sự kiện B2B ({searchResults.events.length})</span>
+                        <span>Sự kiện doanh nghiệp ({searchResults.events.length})</span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         {searchResults.events.slice(0, 4).map((evt: any) => (
@@ -1304,6 +1304,127 @@ export function ExecutiveDashboard({ authReady }: { authReady: boolean }) {
           )}
         </Panel>
       </div>
+
+      {/* ── 3.5. Danh Mục Theo Sản Phẩm & Dịch Vụ Doanh Nghiệp (Product Categories Breakdown) ── */}
+      <Panel
+        title="Danh Mục Theo Sản Phẩm &amp; Dịch Vụ Doanh Nghiệp"
+        sub="Cơ cấu phân bổ sản phẩm, giải pháp niêm yết và tỷ trọng doanh số theo từng nhóm ngành hàng trên sàn ViOne"
+        action={<ViewAll to="/marketplace" label="Xem tất cả sàn sản phẩm" />}
+      >
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2 space-y-3.5">
+            {[
+              {
+                name: "Công nghệ, Phần mềm & Giải pháp số",
+                count: 45,
+                valueText: "3.5 tỷ VNĐ",
+                percent: 28,
+                emoji: "💻",
+                gradient: "linear-gradient(90deg, #3b82f6 0%, #2563eb 100%)",
+              },
+              {
+                name: "Nông sản, Thực phẩm chế biến & Đồ uống",
+                count: 38,
+                valueText: "2.8 tỷ VNĐ",
+                percent: 24,
+                emoji: "🌾",
+                gradient: "linear-gradient(90deg, #10b981 0%, #059669 100%)",
+              },
+              {
+                name: "Cơ khí, Chế tạo & Vật liệu xây dựng",
+                count: 28,
+                valueText: "2.2 tỷ VNĐ",
+                percent: 18,
+                emoji: "⚙️",
+                gradient: "linear-gradient(90deg, #f59e0b 0%, #d97706 100%)",
+              },
+              {
+                name: "Dịch vụ Doanh nghiệp, Đào tạo & Pháp lý",
+                count: 22,
+                valueText: "1.7 tỷ VNĐ",
+                percent: 14,
+                emoji: "⚖️",
+                gradient: "linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%)",
+              },
+              {
+                name: "Vận tải, Kho bãi & Chuỗi Logistics",
+                count: 15,
+                valueText: "1.2 tỷ VNĐ",
+                percent: 10,
+                emoji: "🚚",
+                gradient: "linear-gradient(90deg, #06b6d4 0%, #0891b2 100%)",
+              },
+              {
+                name: "Hàng tiêu dùng, Thời trang & Nội thất",
+                count: 10,
+                valueText: "800 tr VNĐ",
+                percent: 6,
+                emoji: "🛋️",
+                gradient: "linear-gradient(90deg, #ec4899 0%, #db2777 100%)",
+              },
+            ].map((cat) => (
+              <div key={cat.name} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-semibold text-foreground flex items-center gap-1.5">
+                    <span className="text-base">{cat.emoji}</span>
+                    {cat.name}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-muted-foreground">{cat.count} sản phẩm</span>
+                    <span className="font-bold text-primary">{cat.valueText}</span>
+                    <span className="font-mono text-[11px] font-semibold text-muted-foreground w-9 text-right">
+                      {cat.percent}%
+                    </span>
+                  </div>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${cat.percent}%`,
+                      background: cat.gradient,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col justify-between p-4 rounded-xl border border-border bg-secondary/30">
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                Tổng Quan Sàn Sản Phẩm
+              </div>
+              <div className="text-2xl font-black text-foreground mb-1">158 Sản Phẩm</div>
+              <div className="text-xs text-muted-foreground mb-4">
+                Được niêm yết bởi 68 doanh nghiệp đối tác
+              </div>
+
+              <div className="space-y-2 border-t border-border/60 pt-3 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Tổng giá trị niêm yết:</span>
+                  <span className="font-bold text-foreground">12.2 Tỷ VNĐ</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Danh mục ngành hàng:</span>
+                  <span className="font-bold text-foreground">6 Nhóm chính</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Tỷ lệ tương tác:</span>
+                  <span className="font-bold text-emerald-600">89.4% Đang mở</span>
+                </div>
+              </div>
+            </div>
+
+            <Link
+              to="/marketplace"
+              className="mt-4 w-full py-2 px-3 text-center text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:brightness-105 transition-all shadow-sm"
+            >
+              Mở Sàn Sản Phẩm &amp; Dịch Vụ
+            </Link>
+          </div>
+        </div>
+      </Panel>
 
       {/* ── 4. Omnichannel SLA & Operational Metrics (Figma) ──────────────────── */}
       <div className="border-t border-border/70 pt-6">

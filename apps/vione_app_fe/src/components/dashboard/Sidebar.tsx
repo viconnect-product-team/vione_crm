@@ -89,19 +89,19 @@ const vioneConnectSuite: Item[] = [
     key: "nav.vioneCommunities" as TKey,
     icon: Building2,
     to: "/platform",
-    label: "Cộng Đồng & Chi Hội B2B",
+    label: "Cộng Đồng Doanh Nghiệp",
   },
   {
     key: "nav.vioneIntroductions" as TKey,
     icon: Handshake,
     to: "/business-connect/connections",
-    label: "Kết Nối B2B & Lời Giới Thiệu",
+    label: "Kết Nối & Giới Thiệu Đối Tác",
   },
   {
     key: "nav.vioneAi" as TKey,
     icon: Sparkles,
     to: "/ai",
-    label: "AI Matchmaking Doanh Nghiệp",
+    label: "Trợ Lý Trí Tuệ Nhân Tạo AI",
   },
   {
     key: "nav.vioneNetwork" as TKey,
@@ -118,44 +118,44 @@ const vioneWorkflowSuite: Item[] = [
     icon: Kanban,
     to: "/workflow",
     label: "Quy Trình & Công Việc",
-    badge: "BPMN",
+    badge: "Tự động",
   },
   {
     key: "nav.vioneWorkload" as TKey,
     icon: Activity,
     to: "/workload",
     label: "Theo Dõi Nhân Viên & Tải Việc",
-    badge: "Heatmap",
+    badge: "Tải việc",
   },
   {
     key: "nav.vioneAttendance" as TKey,
     icon: UserCheck,
     to: "/attendance",
     label: "Chấm Công & Ca Làm Việc",
-    badge: "GPS 50m",
+    badge: "Văn phòng",
   },
   {
     key: "nav.vioneApprovals" as TKey,
     icon: ShieldCheck,
     to: "/payment-approvals",
     label: "Phê Duyệt Chi Tiền 3 Cấp",
-    badge: "3-Tier",
+    badge: "3 cấp",
   },
 ];
 
-// 2. GIAO THƯƠNG & B2B DEALS
+// 2. GIAO THƯƠNG & HỢP TÁC DOANH NGHIỆP
 const vioneCommerce: Item[] = [
   {
     key: "nav.vioneMarketplace" as TKey,
     icon: Store,
     to: "/marketplace",
-    label: "Sàn Marketplace B2B",
+    label: "Sàn Sản Phẩm & Dịch Vụ",
   },
   {
     key: "nav.vioneOpportunities" as TKey,
     icon: FileBarChart,
     to: "/opportunities",
-    label: "Cơ Hội Giao Thương & Deals",
+    label: "Cơ Hội Giao Thương & Hợp Tác",
   },
   {
     key: "nav.vioneQuotes" as TKey,
@@ -199,7 +199,7 @@ const vioneEvents: Item[] = [
     key: "nav.vioneEventList" as TKey,
     icon: Calendar,
     to: "/events",
-    label: "Lịch Sự Kiện B2B",
+    label: "Lịch Sự Kiện",
   },
   {
     key: "nav.vioneEventReg" as TKey,
@@ -249,7 +249,7 @@ const vioneSystem: Item[] = [
     key: "nav.vioneSettings" as TKey,
     icon: Settings,
     to: "/settings",
-    label: "Cài Đặt Nền Tảng",
+    label: "Cài Đặt Hệ Thống",
   },
   {
     key: "nav.vioneLandingTpl" as TKey,
@@ -264,10 +264,10 @@ const vioneSystem: Item[] = [
     label: "Nhật Ký Kiểm Toán",
   },
   {
-    key: "nav.vionePermissions" as TKey,
+    key: "nav.platform" as TKey,
     icon: ShieldCheck,
-    to: "/platform/permissions",
-    label: "Ma Trận Phân Quyền",
+    to: "/platform",
+    label: "Chức Năng Nền Tảng & RBAC",
   },
 ];
 

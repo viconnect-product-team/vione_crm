@@ -31,6 +31,8 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
+  Sun,
+  Moon,
   User,
   Users,
   Video,
@@ -38,6 +40,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect, useMemo, useRef } from "react";
+import { useTheme } from "@/lib/theme";
 import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { hasTKey, useFmt, useLang, useT, type TKey } from "@/lib/i18n";
 import { getVNTimeGreeting } from "@/lib/utils";
@@ -106,6 +109,7 @@ export const isEventToday = (ev: CrmEvent): boolean => {
 
 export function ExecutiveHome() {
   const t = useT();
+  const { theme, toggle: toggleTheme } = useTheme();
   const { openV } = useVSheet();
   const home = useBusinessConnectHome();
   const data = home.data;
@@ -298,6 +302,19 @@ export function ExecutiveHome() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Chuyển đổi giao diện Sáng / Tối"
+            title={theme === "dark" ? "Chuyển sang giao diện Sáng" : "Chuyển sang giao diện Tối"}
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] text-[var(--bc-mobile-text)] transition-colors hover:text-[var(--bc-mobile-accent)] active:scale-95"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4 text-amber-400" />
+            ) : (
+              <Moon className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+            )}
+          </button>
           <HomeNotificationsMenu unreadCount={unread} />
         </div>
       </header>
@@ -867,7 +884,7 @@ function EnterpriseOperationsCard({
         TỔNG THỂ QUY TRÌNH & TIẾN ĐỘ NHÂN VIÊN
       </p>
       <p className="mt-1 text-[13px] leading-relaxed text-[var(--bc-mobile-muted)]">
-        Kiểm soát luồng công việc BPMN, khối lượng tải làm việc của từng nhân sự, chấm công GPS và phê duyệt chi 3 cấp theo chuẩn BRD.
+        Kiểm soát quy trình tự động, phân bổ khối lượng công việc đội ngũ, điểm danh văn phòng và phê duyệt đề xuất thanh toán.
       </p>
 
       {/* Grid 3 thẻ nghiệp vụ chuẩn BRD — Không chuyển hướng ra CRM */}
@@ -884,7 +901,7 @@ function EnterpriseOperationsCard({
                 <MapPin className="h-4 w-4" />
               </span>
               <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
-                Chấm công GPS & AI FaceID
+                Chấm công GPS & Điểm danh khuôn mặt
               </span>
             </div>
             <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600 dark:text-emerald-400">
@@ -892,7 +909,7 @@ function EnterpriseOperationsCard({
             </span>
           </div>
           <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-            Bán kính ≤ 50m (BR-HRM-01) · Khớp mặt ≥ 92% (BR-HRM-02) · 1-chạm điểm danh
+            Định vị tại văn phòng · Nhận diện khuôn mặt chính chủ · 1-chạm điểm danh nhanh
           </p>
           <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
             <span>Mở bảng điểm danh & xin nghỉ</span>
@@ -921,7 +938,7 @@ function EnterpriseOperationsCard({
             </span>
           </div>
           <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-            12 việc đang xử lý · WIP ≤ 5 (BR-WRK-06) · 1 nhân sự quá tải &gt; 45h/tuần (BR-WRK-14)
+            12 việc đang xử lý · Tối đa 5 việc/nhân sự cùng lúc · Cảnh báo nhân sự quá giờ
           </p>
           <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
             <span>Theo dõi tiến độ đội ngũ & Kanban</span>
@@ -949,10 +966,10 @@ function EnterpriseOperationsCard({
             </span>
           </div>
           <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-            Maker → Checker → Approver · Hạn mức &gt; 20 triệu thẩm quyền CEO duyệt (BR-FIN-02)
+            Quy trình 3 cấp: Người lập → Kế toán kiểm tra → Lãnh đạo phê duyệt
           </p>
           <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
-            <span>Ký duyệt chi & Napas VietQR</span>
+            <span>Ký duyệt chi & Chuyển khoản QR ngân hàng</span>
             <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
           </div>
         </button>

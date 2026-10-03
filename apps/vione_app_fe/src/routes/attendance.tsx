@@ -198,15 +198,15 @@ function AttendancePage() {
       <div className="space-y-6">
         <PageHeader
           title="Bảng Giám Sát Chấm Công & Ca Làm Việc Thời Gian Thực"
-          subtitle="Hệ thống chấm công di động GPS bán kính 50m (BR-HRM-01), nhận diện khuôn mặt AI 92% (BR-HRM-02) và quản trị đơn từ trực tuyến."
+          subtitle="Hệ thống chấm công di động định vị văn phòng, nhận diện khuôn mặt và quản trị đơn từ trực tuyến."
           actions={
             <div className="flex items-center gap-2">
               <button
-                onClick={() => toast.success("Bảng chấm công toàn công ty sẽ tự động khóa lúc 23:59 ngày mùng 2 hàng tháng (BR-HRM-14).")}
+                onClick={() => toast.success("Bảng chấm công toàn công ty sẽ tự động chốt định kỳ vào ngày 02 hàng tháng.")}
                 className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-200"
               >
                 <Lock className="size-3.5" />
-                Khóa Công Ngày 02 (BR-HRM-14)
+                Khóa Công Ngày 02
               </button>
               <button
                 onClick={() => toast.success("Đã kết xuất báo cáo E-Payslip bảo mật gửi tới email nhân viên.")}
@@ -231,7 +231,7 @@ function AttendancePage() {
           <StatCard
             label="Đi muộn (> 15 phút)"
             value={`${lateCount} Người`}
-            hint="Quy tắc BR-HRM-03"
+            hint="Vượt quá thời gian quy định"
             tone="warning"
             icon={<Clock className="size-5" />}
           />
@@ -299,8 +299,8 @@ function AttendancePage() {
                     <th className="py-3 px-4">Nhân sự</th>
                     <th className="py-3 px-4">Phòng ban</th>
                     <th className="py-3 px-4">Giờ Check-in</th>
-                    <th className="py-3 px-4">Định vị GPS (BR-HRM-01)</th>
-                    <th className="py-3 px-4">AI FaceID (BR-HRM-02)</th>
+                    <th className="py-3 px-4">Định vị văn phòng</th>
+                    <th className="py-3 px-4">Nhận diện khuôn mặt</th>
                     <th className="py-3 px-4">Trạng thái</th>
                     <th className="py-3 px-4">Ghi chú</th>
                   </tr>

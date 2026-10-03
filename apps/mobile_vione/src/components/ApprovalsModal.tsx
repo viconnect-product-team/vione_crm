@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -22,6 +22,7 @@ import {
   QrCode,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { operationsApi } from "../api/services";
 
 interface ApprovalsModalProps {
   visible: boolean;
@@ -65,9 +66,33 @@ export const ApprovalsModal: React.FC<ApprovalsModalProps> = ({ visible, onClose
     },
   ]);
 
+  useEffect(() => {
+    if (visible) {
+      operationsApi.getPaymentApprovals().then((res) => {
+        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const apiPayments = res.data.data.map((p: any, idx: number) => ({
+            id: p.id || `pay-api-${idx}`,
+            code: p.invoiceNumber || `CHI-10${idx + 4}`,
+            title: p.title || "Tờ trình thanh toán doanh nghiệp",
+            amountVnd: p.amount || 15000000,
+            department: p.department || "Vận Hành",
+            maker: p.makerName || "Kế toán viên",
+            checkerApproved: p.checkerApproved ?? true,
+            ceoStatus: p.ceoStatus || "pending",
+            tier: p.amount > 20000000 ? "approver" : "checker",
+          }));
+          setPayments(apiPayments);
+        }
+      }).catch((err) => console.warn("Lỗi tải approvals từ API:", err));
+    }
+  }, [visible]);
+
   const handleCeoApprove = (id: string) => {
     setPayments((prev) =>
       prev.map((p) => (p.id === id ? { ...p, ceoStatus: "approved" } : p))
+    );
+    operationsApi.approvePayment(id, "approver", "CEO ViOne").catch((err) =>
+      console.warn("Lỗi gửi ký duyệt lên API:", err)
     );
     Alert.alert("Đã Phê Duyệt!", "Bạn đã ký điện tử duyệt chi thành công khoản tiền > 20 triệu VNĐ theo chuẩn BR-FIN-01.");
   };
@@ -75,6 +100,9 @@ export const ApprovalsModal: React.FC<ApprovalsModalProps> = ({ visible, onClose
   const handleLeaveApprove = (id: string) => {
     setLeaveRequests((prev) =>
       prev.map((r) => (r.id === id ? { ...r, status: "approved" } : r))
+    );
+    operationsApi.approveLeave(id, true).catch((err) =>
+      console.warn("Lỗi duyệt đơn lên API:", err)
     );
     Alert.alert("Đã Duyệt Đơn!", "Đơn đăng ký OT đã được phê duyệt và ghi nhận vào bảng tính lương BR-HRM-06.");
   };

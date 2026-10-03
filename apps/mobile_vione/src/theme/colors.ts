@@ -1,4 +1,4 @@
-export const Colors = {
+export const darkColors = {
   // Backgrounds - Dark Obsidian luxury
   background: "#0A0A0B",
   backgroundSecondary: "#0F1424",
@@ -49,3 +49,58 @@ export const Colors = {
   tabInactive: "#94A3B8",
 };
 
+export const lightColors = {
+  // Backgrounds - Luxury Executive Light
+  background: "#F8FAFC",
+  backgroundSecondary: "#FFFFFF",
+  backgroundDeep: "#F1F5F9",
+  
+  // Surfaces & Cards
+  surface: "#FFFFFF",
+  surface2: "#F8FAFC",
+  surfaceLight: "#F1F5F9",
+  surfaceElevated: "#FFFFFF",
+  surfaceBorder: "rgba(15, 23, 42, 0.08)",
+  surfaceBorderLight: "rgba(15, 23, 42, 0.04)",
+  surfaceBorderGold: "rgba(180, 130, 80, 0.40)",
+  surfaceBorderActive: "rgba(180, 130, 80, 0.70)",
+
+  // Luxury Bronze Gold (ViOne brand identity on light mode)
+  gold: "#A3703C",
+  goldLight: "#FDF8F3",
+  goldDark: "#7C4E1E",
+  goldBrown: "#573512",
+  goldGradient: ["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"] as const,
+  goldSoft: "rgba(194, 155, 105, 0.16)",
+
+  // Royal Cobalt Navy accents
+  navy: "#003B95",
+  navyLight: "#0284C7",
+  navyDark: "#00225A",
+
+  // Text
+  textPrimary: "#0F172A",
+  textSecondary: "#334155",
+  textMuted: "#64748B",
+  textGold: "#A3703C",
+  textDisabled: "#94A3B8",
+
+  // Status & Utility
+  success: "#059669",
+  successSoft: "rgba(5, 150, 105, 0.12)",
+  warning: "#D97706",
+  danger: "#DC2626",
+  dangerSoft: "rgba(220, 38, 38, 0.12)",
+  info: "#0284C7",
+
+  // Tab & Navigation
+  tabBarBg: "#FFFFFF",
+  tabBarBorder: "rgba(15, 23, 42, 0.08)",
+  tabActive: "#A3703C",
+  tabInactive: "#64748B",
+};
+
+export type ColorTheme = typeof darkColors;
+
+// Default export Colors points to darkColors for backwards compatibility
+export const Colors = darkColors;

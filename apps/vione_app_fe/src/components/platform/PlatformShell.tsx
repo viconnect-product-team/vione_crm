@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  Building2,
+  LayoutGrid,
   ShieldCheck,
   ArrowLeft,
   Menu,
@@ -11,6 +11,7 @@ import {
   ReceiptText,
   Bot,
   Activity,
+  Boxes,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
@@ -22,17 +23,17 @@ type NavItem = { to: string; label: string; icon: LucideIcon };
 function useNav(): NavItem[] {
   const t = useT();
   return [
-    { to: "/platform", label: t("platform.tab.assoc"), icon: Building2 },
-    { to: "/platform/admins", label: t("platform.tab.admins"), icon: ShieldCheck },
-    { to: "/platform/permissions", label: t("platform.tab.permissions"), icon: KeyRound },
-    { to: "/platform/audit", label: t("platform.tab.audit"), icon: ScrollText },
-    { to: "/platform/ai-audit", label: t("platform.tab.aiaudit"), icon: Bot },
+    { to: "/platform", label: "Chức Năng Nền Tảng", icon: LayoutGrid },
+    { to: "/platform/permissions", label: "Phân Quyền RBAC", icon: KeyRound },
+    { to: "/platform/admins", label: "Quản Trị Viên", icon: ShieldCheck },
+    { to: "/platform/audit", label: "Nhật Ký Hệ Thống", icon: ScrollText },
+    { to: "/platform/ai-audit", label: "Nhật Ký Trí Tuệ Nhân Tạo (AI)", icon: Bot },
     {
       to: "/platform/renewal-audit",
-      label: t("platform.tab.renewalAudit"),
+      label: "Lịch Sử Gia Hạn",
       icon: ReceiptText,
     },
-    { to: "/platform/introduction-operations", label: t("nav.platform.introOps"), icon: Activity },
+    { to: "/platform/introduction-operations", label: "Vận Hành Kết Nối", icon: Activity },
   ];
 }
 

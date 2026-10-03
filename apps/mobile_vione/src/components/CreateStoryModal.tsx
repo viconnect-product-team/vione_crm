@@ -15,6 +15,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
 import { StoryItemData } from "./StoryViewerModal";
+import { momentApi } from "../api";
 
 interface CreateStoryModalProps {
   visible: boolean;
@@ -48,11 +49,24 @@ export const CreateStoryModal: React.FC<CreateStoryModalProps> = ({
   const [caption, setCaption] = useState("");
   const [selectedTag, setSelectedTag] = useState("Cơ hội hợp tác");
   const [selectedImage, setSelectedImage] = useState(SAMPLE_STORY_IMAGES[0]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!caption.trim()) {
       Alert.alert("Thông báo", "Vui lòng nhập nội dung chia sẻ khoảnh khắc.");
       return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await momentApi.createMoment({
+        content: `[${selectedTag}] ${caption.trim()}`,
+        photoUrls: [selectedImage],
+      });
+    } catch (e) {
+      // Offline fallback
+    } finally {
+      setIsSubmitting(false);
     }
 
     const newStory: StoryItemData = {

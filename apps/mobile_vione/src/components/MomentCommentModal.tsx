@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -24,6 +24,7 @@ import {
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
 import { Avatar } from "./common/Avatar";
+import { momentApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -87,6 +88,27 @@ export const MomentCommentModal: React.FC<MomentCommentModalProps> = ({
   const [comments, setComments] = useState<CommentItem[]>(INITIAL_COMMENTS);
   const [inputText, setInputText] = useState("");
 
+  useEffect(() => {
+    if (visible && moment?.id) {
+      momentApi.getComments(moment.id).then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const apiComments: CommentItem[] = res.data.map((c: any, idx: number) => ({
+            id: c.id || `cm-api-${idx}`,
+            authorName: c.authorName || c.userName || "Doanh nhân ViOne",
+            authorRole: c.authorRole || c.userTitle || "Thành viên C-Level",
+            authorCompany: c.authorCompany || c.companyName || "Đối tác ViOne",
+            authorAvatar: c.authorAvatar || c.avatarUrl,
+            content: c.body || c.content || "",
+            timeAgo: c.timeAgo || "Gần đây",
+            likesCount: c.likesCount || 0,
+            liked: Boolean(c.liked),
+          }));
+          setComments(apiComments);
+        }
+      }).catch((err) => console.warn("Lỗi tải comments từ API:", err));
+    }
+  }, [visible, moment?.id]);
+
   if (!moment) return null;
 
   const handleSendComment = (textToSend?: string) => {
@@ -107,6 +129,10 @@ export const MomentCommentModal: React.FC<MomentCommentModalProps> = ({
 
     setComments((prev) => [newComment, ...prev]);
     setInputText("");
+
+    momentApi.addComment(moment.id, text.trim()).catch((err) =>
+      console.warn("Lỗi gửi comment lên API:", err)
+    );
   };
 
   const handleToggleLikeComment = (commentId: string) => {
@@ -120,6 +146,10 @@ export const MomentCommentModal: React.FC<MomentCommentModalProps> = ({
             }
           : c
       )
+    );
+
+    momentApi.likeComment(moment.id, commentId).catch((err) =>
+      console.warn("Lỗi like comment:", err)
     );
   };
 

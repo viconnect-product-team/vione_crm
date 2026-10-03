@@ -12,6 +12,7 @@ import {
 import { X, Users, Award, ShieldCheck, Sparkles, Building2 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { CommunityItem } from "../types";
+import { communityApi } from "../api/services";
 
 interface CreateCommunityGroupModalProps {
   visible: boolean;
@@ -36,7 +37,7 @@ export const CreateCommunityGroupModal: React.FC<CreateCommunityGroupModalProps>
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!name.trim()) {
       Alert.alert("Thông báo", "Vui lòng nhập tên cộng đồng / nhóm doanh nghiệp.");
       return;
@@ -50,6 +51,16 @@ export const CreateCommunityGroupModal: React.FC<CreateCommunityGroupModalProps>
       isMember: true,
       role: "Ban Điều Hành",
     };
+
+    try {
+      await communityApi.createCommunity({
+        name: name.trim(),
+        description: description.trim() || undefined,
+        category,
+      });
+    } catch (err) {
+      console.warn("Lỗi tạo community lên API:", err);
+    }
 
     onGroupCreated(newCommunity);
     Alert.alert("Thành công", `Đã khởi tạo liên minh/cộng đồng: ${name.trim()}`);

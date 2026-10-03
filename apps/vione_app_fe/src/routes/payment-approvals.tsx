@@ -132,7 +132,7 @@ function PaymentApprovalsPage() {
         return p;
       })
     );
-    toast.success("Tổng Giám Đốc (Approver) đã ký điện tử duyệt chi thành công (BR-FIN-01).");
+    toast.success("Lãnh đạo đã ký điện tử duyệt chi thành công.");
   };
 
   return (
@@ -140,11 +140,11 @@ function PaymentApprovalsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Quy Trình Phê Duyệt Chi Tiền 3 Cấp & Dòng Tiền Thực"
-          subtitle="Nguyên tắc 3 cấp (Maker - Checker - Approver BR-FIN-01), hạn mức chức danh (BR-FIN-02) và gạch nợ tự động VietQR Napas 24/7 trong 1 giây (BR-FIN-03)."
+          subtitle="Quy trình 3 cấp (Người lập → Kế toán kiểm tra → Lãnh đạo phê duyệt), kiểm soát hạn mức chức danh và chuyển khoản mã QR ngân hàng nhanh chóng."
           actions={
             <div className="flex items-center gap-2">
               <span className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold font-mono">
-                VIETQR NAPAS 24/7 ACTIVE
+                CHUYỂN KHOẢN QR HOẠT ĐỘNG
               </span>
             </div>
           }
@@ -167,16 +167,16 @@ function PaymentApprovalsPage() {
             icon={<Clock className="size-5" />}
           />
           <StatCard
-            label="Đã duyệt & Gạch nợ VietQR"
+            label="Đã duyệt & Thanh toán"
             value={`${(totalApprovedAmount / 1000000).toFixed(1)} tr VNĐ`}
-            hint="Gạch nợ tức thời 1 giây"
+            hint="Tự động đối soát chuyển khoản"
             tone="success"
             icon={<CheckCircle2 className="size-5" />}
           />
           <StatCard
             label="Chống chi trùng hóa đơn"
             value="100% An toàn"
-            hint="Quét mã cơ quan thuế BR-FIN-07"
+            hint="Kiểm tra hóa đơn hợp lệ trên hệ thống"
             tone="primary"
             icon={<FileText className="size-5" />}
           />
@@ -247,7 +247,7 @@ function PaymentApprovalsPage() {
                     Số HĐ: {item.invoiceNumber}
                   </span>
                   <span className="text-[10px] text-emerald-600 font-mono">
-                    Ngân sách còn {item.budgetRemainingPercent}% (BR-FIN-04)
+                    Ngân sách còn {item.budgetRemainingPercent}%
                   </span>
                 </div>
 
@@ -258,30 +258,30 @@ function PaymentApprovalsPage() {
                 <div className="text-xs text-slate-500 flex items-center gap-3">
                   <span>Phòng: <strong className="text-slate-700 dark:text-slate-300">{item.department}</strong></span>
                   <span>•</span>
-                  <span>Người đề xuất (Maker): <strong className="text-slate-700 dark:text-slate-300">{item.maker.name}</strong></span>
+                  <span>Người đề xuất: <strong className="text-slate-700 dark:text-slate-300">{item.maker.name}</strong></span>
                   <span>({item.maker.date})</span>
                 </div>
               </div>
 
               {/* Middle Column: 3-Tier Status Stepper */}
               <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 text-xs">
-                {/* Maker */}
+                {/* Người lập */}
                 <div className="flex items-center gap-1.5 text-emerald-600 font-bold">
                   <CheckCircle2 className="size-4" />
-                  <span>Maker</span>
+                  <span>Người lập</span>
                 </div>
                 <span className="text-slate-300 dark:text-slate-600">&rarr;</span>
 
-                {/* Checker */}
+                {/* Kế toán */}
                 <div className={`flex items-center gap-1.5 font-bold ${
                   item.checker?.status === "approved" ? "text-emerald-600" : "text-amber-500 animate-pulse"
                 }`}>
                   {item.checker?.status === "approved" ? <CheckCircle2 className="size-4" /> : <Clock className="size-4" />}
-                  <span>Checker</span>
+                  <span>Kế toán</span>
                 </div>
                 <span className="text-slate-300 dark:text-slate-600">&rarr;</span>
 
-                {/* Approver */}
+                {/* Lãnh đạo phê duyệt */}
                 <div className={`flex items-center gap-1.5 font-bold ${
                   item.status === "approved_paid"
                     ? "text-emerald-600"
@@ -296,7 +296,7 @@ function PaymentApprovalsPage() {
                   ) : (
                     <span>-</span>
                   )}
-                  <span>Approver (CEO)</span>
+                  <span>Lãnh đạo duyệt</span>
                 </div>
               </div>
 
@@ -317,7 +317,7 @@ function PaymentApprovalsPage() {
                     onClick={() => handleCheckerApprove(item.id)}
                     className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-white font-bold text-xs shadow-sm"
                   >
-                    Checker Duyệt
+                    Kế Toán Duyệt
                   </button>
                 )}
 
@@ -326,7 +326,7 @@ function PaymentApprovalsPage() {
                     onClick={() => handleCEOApprove(item.id)}
                     className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-xs shadow-md animate-bounce"
                   >
-                    CEO Ký Duyệt
+                    Lãnh Đạo Duyệt
                   </button>
                 )}
 
@@ -336,7 +336,7 @@ function PaymentApprovalsPage() {
                     className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold text-xs"
                   >
                     <QrCode className="size-4" />
-                    <span>Xem VietQR Napas</span>
+                    <span>Xem Mã QR Ngân Hàng</span>
                   </button>
                 )}
               </div>
@@ -349,7 +349,7 @@ function PaymentApprovalsPage() {
           <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-3xl p-6 border border-[#D8B282]/40 shadow-2xl text-center space-y-4">
               <div className="flex justify-between items-center pb-2 border-b border-slate-200 dark:border-slate-800">
-                <span className="text-xs font-mono font-bold text-[#D8B282]">VIETQR NAPAS 24/7</span>
+                <span className="text-xs font-mono font-bold text-[#D8B282]">MÃ QR CHUYỂN KHOẢN NGÂN HÀNG</span>
                 <button onClick={() => setQrModalItem(null)} className="text-slate-400">✕</button>
               </div>
 
@@ -368,12 +368,12 @@ function PaymentApprovalsPage() {
                   className="size-44"
                 />
                 <span className="text-[10px] text-slate-500 font-mono mt-2">
-                  Cú pháp gạch nợ: {qrModalItem.code}
+                  Nội dung chuyển khoản: {qrModalItem.code}
                 </span>
               </div>
 
               <div className="text-[11px] text-slate-500">
-                Chuẩn Napas 24/7 tự động gạch nợ trong 1 giây sau khi chuyển khoản thành công (Quy tắc BR-FIN-03).
+                Tự động đối soát và xác nhận thanh toán ngay sau khi hoàn tất giao dịch ngân hàng.
               </div>
 
               <button

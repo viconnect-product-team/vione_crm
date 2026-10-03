@@ -29,6 +29,7 @@ import {
   Check,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { opportunityApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -63,24 +64,28 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
 
   if (!opportunity) return null;
 
-  const handleApply = () => {
+  const handleApply = async () => {
     if (!proposalNote.trim()) {
       Alert.alert("Thiếu thông tin", "Vui lòng nhập tóm tắt năng lực hoặc đề xuất của Quý Doanh nghiệp.");
       return;
     }
 
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setHasApplied(true);
-      if (onApplyOpportunity) {
-        onApplyOpportunity(opportunity.id);
-      }
-      Alert.alert(
-        "Gửi hồ sơ thành công",
-        `Đã chuyển hồ sơ năng lực và đề xuất báo giá tới Ban thẩm định dự án của ${opportunity.organization}.`
-      );
-    }, 600);
+    try {
+      await opportunityApi.expressInterest(opportunity.id, "high");
+    } catch (err) {
+      console.warn("Lỗi gửi quan tâm cơ hội lên API:", err);
+    }
+
+    setSubmitting(false);
+    setHasApplied(true);
+    if (onApplyOpportunity) {
+      onApplyOpportunity(opportunity.id);
+    }
+    Alert.alert(
+      "Gửi hồ sơ thành công",
+      `Đã chuyển hồ sơ năng lực và đề xuất báo giá tới Ban thẩm định dự án của ${opportunity.organization}.`
+    );
   };
 
   const handleShare = async () => {

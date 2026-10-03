@@ -28,6 +28,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
 import { B2BEvent } from "../types";
+import { eventsApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -54,12 +55,19 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
     if (onRegisterToggle) {
       onRegisterToggle(event.id);
     }
+
     if (nextState) {
+      eventsApi.registerEvent(event.id).catch((err) =>
+        console.warn("Lỗi đăng ký sự kiện lên API:", err)
+      );
       Alert.alert(
         "Đăng ký thành công",
         `Bạn đã nhận vé mời VIP tham gia: ${event.title}.\nMã vé QR đã được kích hoạt trên hệ thống ViOne.`
       );
     } else {
+      eventsApi.cancelEventRegistration(event.id).catch((err) =>
+        console.warn("Lỗi hủy đăng ký sự kiện:", err)
+      );
       Alert.alert("Hủy đăng ký", "Bạn đã hủy đăng ký tham gia sự kiện này.");
     }
   };

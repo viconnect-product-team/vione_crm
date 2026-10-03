@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -26,6 +26,7 @@ import {
   TrendingUp,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { operationsApi } from "../api/services";
 
 interface WorkflowModalProps {
   visible: boolean;
@@ -128,13 +129,54 @@ export const WorkflowModal: React.FC<WorkflowModalProps> = ({ visible, onClose }
     },
   ];
 
+  useEffect(() => {
+    if (visible) {
+      operationsApi.getTasks().then((res) => {
+        if (res.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          const apiTasks = res.data.data.map((t: any, idx: number) => ({
+            id: t.id || `t-api-${idx}`,
+            code: t.code || `TSK-0${idx + 80}`,
+            title: t.title || "Công việc BPMN",
+            project: t.project || "Vận hành ViOne",
+            deadline: t.deadline || "Hôm nay",
+            isOverdue: Boolean(t.isOverdue),
+            priority: t.priority || "normal",
+            status: t.status || "in_progress",
+            checklist: Array.isArray(t.checklist)
+              ? t.checklist.map((item: any, cIdx: number) => ({
+                  id: `c-${cIdx}`,
+                  text: typeof item === "string" ? item : item.text || "Checklist",
+                  done: typeof item === "object" ? Boolean(item.done) : false,
+                }))
+              : [
+                  { id: "c1", text: "Khảo sát và thẩm định", done: true },
+                  { id: "c2", text: "Thực hiện và nghiệm thu", done: false },
+                ],
+          }));
+          setMyTasks(apiTasks);
+        }
+      }).catch((err) => console.warn("Lỗi tải tasks từ API:", err));
+    }
+  }, [visible]);
+
   const toggleChecklist = (taskId: string, checkId: string) => {
     setMyTasks((prev) =>
       prev.map((t) => {
         if (t.id === taskId) {
+          const updatedChecklist = t.checklist.map((c) =>
+            c.id === checkId ? { ...c, done: !c.done } : c
+          );
+          const doneIndices = updatedChecklist
+            .map((c, i) => (c.done ? i : -1))
+            .filter((i) => i >= 0);
+
+          operationsApi.updateTask(taskId, {
+            completedChecklistIndices: doneIndices,
+          }).catch((err) => console.warn("Lỗi cập nhật task lên API:", err));
+
           return {
             ...t,
-            checklist: t.checklist.map((c) => (c.id === checkId ? { ...c, done: !c.done } : c)),
+            checklist: updatedChecklist,
           };
         }
         return t;

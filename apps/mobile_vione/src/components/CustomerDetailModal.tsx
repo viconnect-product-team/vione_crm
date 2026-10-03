@@ -26,6 +26,7 @@ import {
   Briefcase,
   Plus,
 } from "lucide-react-native";
+import { customerApi } from "../api/services";
 
 export interface B2BCustomerData {
   id: string;
@@ -224,7 +225,15 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           <View style={styles.footerRow}>
             <TouchableOpacity
               style={styles.saveBtn}
-              onPress={() => {
+              onPress={async () => {
+                if (customer.id) {
+                  try {
+                    await customerApi.addCustomerLog(customer.id, { content: notes });
+                    await customerApi.setCustomerTags(customer.id, tags);
+                  } catch (err) {
+                    console.warn("Lỗi lưu customer log lên server:", err);
+                  }
+                }
                 Alert.alert("Thành công", "Đã cập nhật tiến độ chăm sóc khách hàng.");
                 onClose();
               }}

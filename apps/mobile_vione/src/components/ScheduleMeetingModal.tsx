@@ -24,6 +24,7 @@ import {
   Send,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
+import { meetingsApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -66,30 +67,42 @@ export const ScheduleMeetingModal: React.FC<ScheduleMeetingModalProps> = ({
   const [agenda, setAgenda] = useState("Trao đổi cơ hội hợp tác chuỗi cung ứng & liên danh dự án Q4");
   const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      const meetingData = {
+    const meetingDateStr = selectedDate === "today" ? "Hôm nay" : selectedDate === "tomorrow" ? "Ngày mai" : customDate;
+    const meetingData = {
+      title: `Cuộc gặp 1-1: ${partnerName}`,
+      partnerName,
+      partnerCompany,
+      date: meetingDateStr,
+      time: selectedTime,
+      location: isOnline ? "Google Meet (Link tự động)" : location,
+      isOnline,
+    };
+
+    try {
+      await meetingsApi.createMeeting({
         title: `Cuộc gặp 1-1: ${partnerName}`,
-        partnerName,
-        partnerCompany,
-        date: selectedDate === "today" ? "Hôm nay" : selectedDate === "tomorrow" ? "Ngày mai" : customDate,
-        time: selectedTime,
-        location: isOnline ? "Google Meet (Link tự động)" : location,
-        isOnline,
-      };
+        description: agenda,
+        meetingDate: customDate || "2026-10-06",
+        meetingTime: selectedTime,
+        locationType: isOnline ? "online" : "offline",
+        locationName: isOnline ? "Google Meet" : location,
+      });
+    } catch (err) {
+      console.warn("Lỗi gửi cuộc hẹn lên API:", err);
+    }
 
-      if (onScheduleSuccess) {
-        onScheduleSuccess(meetingData);
-      }
+    setSubmitting(false);
+    if (onScheduleSuccess) {
+      onScheduleSuccess(meetingData);
+    }
 
-      Alert.alert(
-        "Đã gửi lời mời cuộc hẹn 1-1",
-        `Lời mời lịch hẹn lúc ${selectedTime} đã được gửi tới ${partnerName} (${partnerCompany}).\nThông báo sẽ cập nhật khi đối tác xác nhận.`
-      );
-      onClose();
-    }, 400);
+    Alert.alert(
+      "Đã gửi lời mời cuộc hẹn 1-1",
+      `Lời mời lịch hẹn lúc ${selectedTime} đã được gửi tới ${partnerName} (${partnerCompany}).\nThông báo sẽ cập nhật khi đối tác xác nhận.`
+    );
+    onClose();
   };
 
   return (

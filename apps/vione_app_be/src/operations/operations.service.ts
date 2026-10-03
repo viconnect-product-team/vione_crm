@@ -618,4 +618,207 @@ export class OperationsService {
       clearingTime: '1s (BR-FIN-06)',
     };
   }
+
+  // ==========================================
+  // 5. STAFF DAILY ACTIVITY MONITORING (EXECUTIVE / CEO LEVEL)
+  // Giám sát hoạt động nhân sự trong ngày: lịch gặp khách hàng, công việc, GPS Check-in
+  // ==========================================
+  getStaffDailyActivities() {
+    const today = new Date().toISOString().split('T')[0];
+
+    const staffList = [
+      {
+        id: 'EMP-001',
+        name: 'Trần Minh Hoàng',
+        role: 'Trưởng phòng Phát triển Kinh Doanh',
+        department: 'Kinh Doanh & Đối Tác',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+        phone: '0988 776 655',
+        email: 'hoang.tran@vione.vn',
+        currentStatus: 'meeting_client',
+        statusLabel: 'Đang gặp khách hàng',
+        gpsCheckIn: {
+          time: '08:15',
+          location: 'Văn phòng ViOne Connect - Tầng 12 Landmark 81',
+          distance: 18,
+          status: 'on_time',
+        },
+        todaySchedule: [
+          {
+            id: 'sch-1',
+            time: '09:00 - 10:30',
+            title: 'Họp chiến lược ký kết hợp đồng ViOne Cloud ERP',
+            clientName: 'Tập đoàn Bất động sản SunGroup',
+            location: 'Tòa nhà SunGroup Plaza, Q.1',
+            status: 'done',
+          },
+          {
+            id: 'sch-2',
+            time: '14:30 - 16:00',
+            title: 'Tư vấn giải pháp CRM & Chăm sóc khách hàng VIP',
+            clientName: 'Công ty Cổ phần Xây dựng Coteccons',
+            location: 'Trụ sở Coteccons Bình Thạnh',
+            status: 'in_progress',
+          },
+        ],
+        todayTasks: [
+          {
+            id: 'task-1',
+            code: 'TSK-2026-081',
+            title: 'Soạn thảo phụ lục đàm phán hợp đồng ERP SunGroup',
+            progress: 85,
+            checklistDone: 3,
+            checklistTotal: 4,
+            deadline: '17:00 hôm nay',
+          },
+        ],
+        recentLogs: [
+          { time: '14:25', action: 'GPS Check-in tại VP Đối tác Coteccons', note: 'Bắt đầu buổi làm việc với Ban Giám Đốc' },
+          { time: '10:45', action: 'Hoàn tất biên bản làm việc với SunGroup', note: 'Khách hàng đồng ý gói dịch vụ 1.2 Tỷ' },
+        ],
+      },
+      {
+        id: 'EMP-002',
+        name: 'Lê Thu Hà',
+        role: 'Chuyên viên Chăm sóc Khách hàng C-Level',
+        department: 'Kinh Doanh & Đối Tác',
+        avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
+        phone: '0912 334 455',
+        email: 'ha.le@vione.vn',
+        currentStatus: 'in_office',
+        statusLabel: 'Đang làm việc tại văn phòng',
+        gpsCheckIn: {
+          time: '08:22',
+          location: 'Văn phòng ViOne Connect - Tầng 12 Landmark 81',
+          distance: 12,
+          status: 'on_time',
+        },
+        todaySchedule: [
+          {
+            id: 'sch-3',
+            time: '10:00 - 11:00',
+            title: 'Cuộc gọi thẩm định nhu cầu triển khai thẻ doanh nhân NFC',
+            clientName: 'Tập đoàn May Việt Tiến',
+            location: 'Họp trực tuyến qua ViOne Meet',
+            status: 'done',
+          },
+          {
+            id: 'sch-4',
+            time: '15:30 - 16:30',
+            title: 'Demo tính năng quét danh thiếp AI OCR & CRM',
+            clientName: 'Chuỗi Bán Lẻ Con Cưng',
+            location: 'Văn phòng ViOne Connect',
+            status: 'upcoming',
+          },
+        ],
+        todayTasks: [
+          {
+            id: 'task-2',
+            code: 'TSK-2026-084',
+            title: 'Gọi điện chăm sóc 12 khách hàng tiềm năng Hot Lead',
+            progress: 60,
+            checklistDone: 7,
+            checklistTotal: 12,
+            deadline: '16:30 hôm nay',
+          },
+        ],
+        recentLogs: [
+          { time: '13:50', action: 'Cập nhật trạng thái Hot Lead cho đối tác Việt Tiến', note: 'Chuyển sang giai đoạn gửi báo giá' },
+          { time: '11:15', action: 'Tạo phiếu ghi nhận nhu cầu thẻ danh nhân số', note: 'Số lượng đặt trước 250 thẻ' },
+        ],
+      },
+      {
+        id: 'EMP-003',
+        name: 'Phạm Đức Anh',
+        role: 'Kỹ sư Trưởng Hạ tầng & Devops',
+        department: 'Kỹ thuật & Công nghệ',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
+        phone: '0909 555 888',
+        email: 'ducanh.pham@vione.vn',
+        currentStatus: 'in_office',
+        statusLabel: 'Đang làm việc tại văn phòng',
+        gpsCheckIn: {
+          time: '08:10',
+          location: 'Văn phòng ViOne Connect - Tầng 12 Landmark 81',
+          distance: 25,
+          status: 'on_time',
+        },
+        todaySchedule: [
+          {
+            id: 'sch-5',
+            time: '14:00 - 15:00',
+            title: 'Review kiến trúc bảo mật cụm cơ sở dữ liệu Dedicated Tenant',
+            clientName: 'Nội bộ khối Công Nghệ',
+            location: 'Phòng họp Tech Hub',
+            status: 'in_progress',
+          },
+        ],
+        todayTasks: [
+          {
+            id: 'task-3',
+            code: 'TSK-2026-079',
+            title: 'Nâng cấp cụm Docker Redis & Tối ưu hóa API Response < 50ms',
+            progress: 75,
+            checklistDone: 3,
+            checklistTotal: 4,
+            deadline: '18:00 hôm nay',
+          },
+        ],
+        recentLogs: [
+          { time: '14:10', action: 'Triển khai bản vá bảo mật SSL Reverse Proxy', note: 'Toàn bộ endpoint đạt chuẩn HTTPS A+' },
+        ],
+      },
+      {
+        id: 'EMP-004',
+        name: 'Vũ Thị Mai',
+        role: 'Chuyên viên Kế toán & Phê duyệt chi',
+        department: 'Tài Chính & Kế Toán',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80',
+        phone: '0933 221 100',
+        email: 'mai.vu@vione.vn',
+        currentStatus: 'in_office',
+        statusLabel: 'Đang làm việc tại văn phòng',
+        gpsCheckIn: {
+          time: '08:28',
+          location: 'Văn phòng ViOne Connect - Tầng 12 Landmark 81',
+          distance: 30,
+          status: 'on_time',
+        },
+        todaySchedule: [],
+        todayTasks: [
+          {
+            id: 'task-4',
+            code: 'TSK-2026-088',
+            title: 'Kiểm tra hồ sơ & hóa đơn 3 tờ trình thanh toán trước khi trình CEO',
+            progress: 100,
+            checklistDone: 3,
+            checklistTotal: 3,
+            deadline: '12:00 hôm nay',
+          },
+        ],
+        recentLogs: [
+          { time: '11:45', action: 'Trình CEO phê duyệt tờ trình thanh toán hạ tầng server AWS', note: 'Giá trị 45.000.000 VNĐ' },
+        ],
+      },
+    ];
+
+    return {
+      success: true,
+      statusCode: 200,
+      today,
+      summary: {
+        totalStaff: 45,
+        presentCount: 42,
+        meetingClientsCount: 8,
+        inOfficeCount: 34,
+        onLeaveCount: 3,
+        kpiAverage: 95.1,
+        totalTasksToday: 30,
+        completedTasksToday: 18,
+        pendingTasksToday: 12,
+      },
+      staff: staffList,
+    };
+  }
 }
+

@@ -29,7 +29,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @Post('login')
+  @Post(['login', 'mobile/login'])
   async login(@Request() req) {
     return this.authService.login(req.user);
   }

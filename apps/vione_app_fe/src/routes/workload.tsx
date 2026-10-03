@@ -195,8 +195,8 @@ function WorkloadPage() {
     <AppShell>
       <div className="space-y-6">
         <PageHeader
-          title="Theo Dõi Quá Trình Nhân Viên Làm Việc & Workload"
-          subtitle="Giám sát tải làm việc (Workload Heatmap), nhật ký Timesheet và cảnh báo quá tải > 45h/tuần theo quy tắc nghiệp vụ BR-WRK-14."
+          title="Theo Dõi Quá Trình Nhân Viên Làm Việc & Khối Lượng Tải"
+          subtitle="Giám sát tải làm việc đội ngũ, nhật ký thời gian làm việc và cảnh báo nhân sự quá giờ."
           actions={
             <div className="flex items-center gap-2">
               <span className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs font-bold font-mono">
@@ -225,7 +225,7 @@ function WorkloadPage() {
           <StatCard
             label="Cảnh báo quá tải (>45h)"
             value={`${overloadedCount} Nhân sự`}
-            hint="Quy tắc BR-WRK-14 gắn cờ đỏ"
+            hint="Nhân sự làm việc quá giờ"
             tone="danger"
             icon={<AlertTriangle className="size-5" />}
           />
@@ -354,7 +354,7 @@ function WorkloadPage() {
                       <div className="text-base font-extrabold text-blue-600 dark:text-blue-400 font-mono">
                         {emp.activeTasksCount}
                       </div>
-                      <div className="text-[10px] text-slate-400">Đang Làm (WIP)</div>
+                      <div className="text-[10px] text-slate-400">Đang Làm</div>
                     </div>
 
                     <div className="text-center">
@@ -421,7 +421,7 @@ function WorkloadPage() {
                     <strong className="text-sm font-mono text-[#D8B282]">{selectedEmp.hoursWorkedWeek} giờ</strong>
                   </div>
                   <div>
-                    <span className="text-slate-400 block mb-0.5">Đánh giá quá tải (BR-WRK-14):</span>
+                    <span className="text-slate-400 block mb-0.5">Tình trạng khối lượng việc:</span>
                     <strong className={selectedEmp.hoursWorkedWeek > 45 ? "text-red-500 font-bold" : "text-emerald-500 font-bold"}>
                       {selectedEmp.hoursWorkedWeek > 45 ? "BỊ GẮN CỜ QUÁ TẢI" : "TẢI CÔNG VIỆC TỐI ƯU"}
                     </strong>

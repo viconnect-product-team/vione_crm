@@ -6089,7 +6089,13 @@ export class ConnectAppService implements OnModuleInit {
   }
 
   async createBcCustomer(userId: string, input: any) {
-    const { targetKind, targetUserId, targetCardId, targetGuestId } = parsePersonId(input.personId);
+    let personId = input.personId;
+    if (!personId) {
+      const fallbackGuestId = crypto.randomUUID();
+      personId = `g:${fallbackGuestId}`;
+    }
+
+    const { targetKind, targetUserId, targetCardId, targetGuestId } = parsePersonId(personId);
 
     if (targetUserId === userId) {
       throw new BadRequestException('cannot_add_self_as_customer');
@@ -6099,20 +6105,33 @@ export class ConnectAppService implements OnModuleInit {
     const targetCardUuid = targetCardId ? targetCardId : null;
     const targetGuestUuid = targetGuestId ? targetGuestId : null;
 
-    const existing = await this.prisma.$queryRaw<any[]>`
-      SELECT id FROM public.bc_customers
-      WHERE owner_user_id = ${userId}::uuid
-        AND target_kind = ${targetKind}::public.bc_customer_target_kind
-        AND (
-          (target_kind = 'connection'::public.bc_customer_target_kind AND target_user_id = ${targetUserUuid}::uuid) OR
-          (target_kind = 'saved_card'::public.bc_customer_target_kind AND target_card_id = ${targetCardUuid}::uuid) OR
-          (target_kind = 'guest_contact'::public.bc_customer_target_kind AND target_guest_id = ${targetGuestUuid}::uuid)
-        )
-      LIMIT 1
-    `.catch(() => [] as any[]);
-
-    if (existing.length > 0) {
-      throw new BadRequestException('customer_already_exists');
+    if (targetKind === 'connection' && targetUserUuid) {
+      const existing = await this.prisma.$queryRaw<any[]>`
+        SELECT id FROM public.bc_customers
+        WHERE owner_user_id = ${userId}::uuid
+          AND target_kind = 'connection'::public.bc_customer_target_kind
+          AND target_user_id = ${targetUserUuid}::uuid
+        LIMIT 1
+      `.catch(() => [] as any[]);
+      if (existing.length > 0) throw new BadRequestException('customer_already_exists');
+    } else if (targetKind === 'saved_card' && targetCardUuid) {
+      const existing = await this.prisma.$queryRaw<any[]>`
+        SELECT id FROM public.bc_customers
+        WHERE owner_user_id = ${userId}::uuid
+          AND target_kind = 'saved_card'::public.bc_customer_target_kind
+          AND target_card_id = ${targetCardUuid}::uuid
+        LIMIT 1
+      `.catch(() => [] as any[]);
+      if (existing.length > 0) throw new BadRequestException('customer_already_exists');
+    } else if (targetKind === 'guest_contact' && targetGuestUuid) {
+      const existing = await this.prisma.$queryRaw<any[]>`
+        SELECT id FROM public.bc_customers
+        WHERE owner_user_id = ${userId}::uuid
+          AND target_kind = 'guest_contact'::public.bc_customer_target_kind
+          AND target_guest_id = ${targetGuestUuid}::uuid
+        LIMIT 1
+      `.catch(() => [] as any[]);
+      if (existing.length > 0) throw new BadRequestException('customer_already_exists');
     }
 
     const customerId = crypto.randomUUID();
@@ -6156,7 +6175,7 @@ export class ConnectAppService implements OnModuleInit {
       ok: true,
       customer: {
         id: c.id,
-        personId: input.personId,
+        personId: personId,
         displayName: c.display_name,
         companyName: c.company_name,
         stage: c.stage,
@@ -12676,9 +12695,18 @@ export class ConnectAppService implements OnModuleInit {
 // OCR & AI Suggestions Global Helper Functions
 // ==========================================
 
-function parsePersonId(personId: string) {
+function parsePersonId(personId?: string) {
+  if (!personId || typeof personId !== 'string') {
+    const fallbackGuestId = crypto.randomUUID();
+    return {
+      targetKind: 'guest_contact',
+      targetUserId: null,
+      targetCardId: null,
+      targetGuestId: fallbackGuestId,
+    };
+  }
   const kindChar = personId.substring(0, 1);
-  const idVal = personId.substring(2);
+  const idVal = personId.includes(':') ? personId.substring(2) : personId;
   let targetKind = 'connection';
   let targetUserId: string | null = null;
   let targetCardId: string | null = null;
@@ -12691,6 +12719,9 @@ function parsePersonId(personId: string) {
     targetKind = 'saved_card';
     targetCardId = idVal;
   } else if (kindChar === 'g') {
+    targetKind = 'guest_contact';
+    targetGuestId = idVal;
+  } else {
     targetKind = 'guest_contact';
     targetGuestId = idVal;
   }

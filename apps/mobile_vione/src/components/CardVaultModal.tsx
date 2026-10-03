@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Modal,
   View,
@@ -26,6 +26,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
 import { Avatar } from "./common/Avatar";
+import { networkApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -102,6 +103,28 @@ export const CardVaultModal: React.FC<CardVaultModalProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [cards, setCards] = useState<CollectedCard[]>(INITIAL_VAULT_CARDS);
+
+  useEffect(() => {
+    if (visible) {
+      networkApi.getSavedCards(searchQuery).then((res) => {
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const apiCards: CollectedCard[] = res.data.map((c: any, idx: number) => ({
+            id: c.id || `card-api-${idx}`,
+            name: c.displayName || c.name || "Đối tác ViOne",
+            title: c.title || "Lãnh đạo Doanh nghiệp",
+            company: c.companyName || c.company || "Tập đoàn Đối tác",
+            phone: c.phone || "0912 345 678",
+            email: c.email || "partner@vione.vn",
+            industry: c.industry || "Đa ngành",
+            collectedAt: c.collectedAt || "Đã lưu vào ví",
+            tag: c.tag || "Đối tác kết nối",
+            avatarUrl: c.avatarUrl,
+          }));
+          setCards(apiCards);
+        }
+      }).catch((err) => console.warn("Lỗi tải saved cards từ API:", err));
+    }
+  }, [visible, searchQuery]);
 
   const filteredCards = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
