@@ -156,7 +156,7 @@ function OmnichannelMessagesPage() {
           assignee: "Trưởng phòng Kinh Doanh",
           status: "in_progress",
           unreadCount: 1,
-          lastMessage: "Báo cáo tiếp cận 33 hội viên doanh nghiệp tuần này",
+          lastMessage: "Báo cáo tiếp cận 33 tài khoản doanh nghiệp tuần này",
           lastTime: "09:30",
           membersCount: 12,
           isGroup: true,

@@ -107,7 +107,7 @@ function NewsScreen() {
                 {selectedNews.excerpt}
               </p>
               <p className="text-white/80">
-                Hiệp hội doanh nhân CEO 1983 không ngừng đẩy mạnh các hoạt động xúc tiến kết nối giao thương nội khối, xây dựng chuỗi cung ứng bền vững và lan tỏa giá trị kinh tế thiết thực đến từng hội viên trong kỷ nguyên chuyển đổi số toàn diện.
+                Hệ sinh thái ViOne Connect không ngừng đẩy mạnh các hoạt động xúc tiến kết nối giao thương nội khối, xây dựng chuỗi cung ứng bền vững và lan tỏa giá trị kinh tế thiết thực đến từng tài khoản doanh nghiệp trong kỷ nguyên chuyển đổi số toàn diện.
               </p>
             </div>
 

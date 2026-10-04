@@ -7,11 +7,11 @@ const appIcon = "/app-icon.png";
 export const Route = createFileRoute("/install")({
   head: () => ({
     meta: [
-      { title: "Cài đặt ứng dụng ViOne Hội viên — Hiệp hội Doanh nghiệp Việt Nam" },
+      { title: "Cài đặt ứng dụng ViOne Connect — Nền Tảng Doanh Nghiệp Việt Nam" },
       {
         name: "description",
         content:
-          "Quét mã QR để cài đặt ứng dụng hội viên ViOne lên màn hình chính. Hướng dẫn chi tiết cho iOS và Android.",
+          "Quét mã QR để cài đặt ứng dụng ViOne Connect lên màn hình chính. Hướng dẫn chi tiết cho iOS và Android.",
       },
     ],
   }),
@@ -43,12 +43,12 @@ function InstallPage() {
             width={80}
             height={80}
           />
-          <h1 className="mt-4 text-2xl font-extrabold vba-gold-text">ViOne — Ứng dụng Hội viên</h1>
+          <h1 className="mt-4 text-2xl font-extrabold vba-gold-text">ViOne — Ứng dụng Tài Khoản Số</h1>
           <p className="mt-1 text-[13px] text-[var(--vba-text-muted)]">
-            Hiệp hội Doanh nghiệp Việt Nam
+            Nền Tảng Doanh Nghiệp & Kết Nối Giao Thương
           </p>
           <p className="mt-3 max-w-md text-[13px] leading-relaxed text-[var(--vba-text-muted)]">
-            Cài đặt ứng dụng lên màn hình chính để truy cập thẻ hội viên, sự kiện, cơ hội kinh doanh
+            Cài đặt ứng dụng lên màn hình chính để truy cập thẻ tài khoản, sự kiện, cơ hội kinh doanh
             và ưu đãi — nhanh như một ứng dụng thật, không cần qua kho ứng dụng.
           </p>
         </div>

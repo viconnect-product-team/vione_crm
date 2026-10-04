@@ -6,6 +6,7 @@ import { ShieldCheck, Search, RefreshCcw, ScrollText } from "lucide-react";
 import { PlatformShell } from "@/components/platform/PlatformShell";
 import { Card, PageHeader, Pill } from "@/components/dashboard/PageKit";
 import { useServerData } from "@/hooks/use-server-data";
+import { useRole } from "@/hooks/use-role";
 import { useTableControls } from "@/hooks/use-table-controls";
 import { Pagination } from "@/components/dashboard/DataTablePagination";
 import { useLang, useT } from "@/lib/i18n";
@@ -24,12 +25,12 @@ export const Route = createFileRoute("/platform/renewal-audit")({
       {
         name: "description",
         content:
-          "Tra cứu toàn bộ lần thanh toán gia hạn hội viên theo hội viên hoặc hiệp hội, kèm trạng thái thanh toán, bấm lặp và thất bại.",
+          "Tra cứu toàn bộ lần thanh toán gia hạn tài khoản theo tài khoản hoặc tổ chức, kèm trạng thái thanh toán, bấm lặp và thất bại.",
       },
       { property: "og:title", content: "Tra cứu nhật ký gia hạn" },
       {
         property: "og:description",
-        content: "Lịch sử tất cả lần thanh toán gia hạn theo hội viên và hiệp hội.",
+        content: "Lịch sử tất cả lần thanh toán gia hạn theo tài khoản và tổ chức.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -45,6 +46,7 @@ type EventFilter = "" | "payment" | "idempotent_noop" | "failure";
 function RenewalAuditAdminPage() {
   const t = useT();
   const { lang } = useLang();
+  const { isPlatformAdmin, isAdmin } = useRole();
   const locale = lang === "vi" ? "vi-VN" : "en-US";
 
   const fetchScope = useServerFn(getRenewalAuditScopeFn);
@@ -61,7 +63,7 @@ function RenewalAuditAdminPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
-  const allowed = scope.isPlatformAdmin || scope.associations.length > 0;
+  const allowed = scope.isPlatformAdmin || scope.associations.length > 0 || isPlatformAdmin || isAdmin;
 
   const {
     data: rows,

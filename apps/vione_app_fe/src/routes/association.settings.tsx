@@ -162,17 +162,17 @@ function AssociationSettingsScreen() {
     <div className="vba-animate pb-28 min-h-screen bg-slate-50 dark:bg-[#070D1A] text-slate-900 dark:text-white">
       <MemberHeader
         title="Bảo mật & Cài đặt"
-        subtitle="Hiệp hội Doanh nhân CEO 1983"
+        subtitle="Hiệp hội Doanh nhân ViOne Connect"
         back
       />
 
       <div className="mx-4 mt-4 space-y-4">
-        {/* CEO 1983 Association Badge Header */}
+        {/* ViOne Connect Association Badge Header */}
         <div className="p-4 rounded-2xl border-2 border-amber-400/50 bg-gradient-to-br from-[#00224F] via-[#003B95] to-[#0A1A3A] text-white shadow-md relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center gap-3.5 relative z-10">
             <div className="h-14 w-14 rounded-2xl bg-white p-1.5 shadow-md flex items-center justify-center shrink-0 border border-amber-400/60">
-              <img src="/ceo1983-logo.png" alt="CEO 1983" className="h-full w-full object-contain" />
+              <img src="/landing_web_vione/vione-logo.png" alt="ViOne Connect" className="h-full w-full object-contain" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="text-[10px] uppercase font-extrabold tracking-widest text-amber-300">
@@ -424,7 +424,7 @@ function AssociationSettingsScreen() {
 
             <form onSubmit={handleDeactivateAccount} className="space-y-3.5 pt-3">
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Tài khoản của bạn sẽ tạm dừng quyền truy cập vào các tính năng của CLB CEO 1983. Vui lòng nhập mật khẩu xác nhận để tiếp tục:
+                Tài khoản của bạn sẽ tạm dừng quyền truy cập vào các tính năng của CLB ViOne Connect. Vui lòng nhập mật khẩu xác nhận để tiếp tục:
               </p>
 
               <div>

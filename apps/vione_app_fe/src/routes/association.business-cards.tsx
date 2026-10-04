@@ -144,14 +144,14 @@ function emptyDraft(member?: any, user?: any): Draft {
     } catch {}
   }
   const name = saved.name || member?.name || user?.name || "";
-  const title = saved.title || member?.title || (user as any)?.user_metadata?.professional_title || "Hội viên chính thức CLB CEO 1983";
-  const company = saved.company || (member as any)?.companyName || member?.industry || (member as any)?.about || "CLB Doanh Nhân CEO 1983";
+  const title = saved.title || member?.title || (user as any)?.user_metadata?.professional_title || "Hội viên chính thức CLB ViOne Connect";
+  const company = saved.company || (member as any)?.companyName || member?.industry || (member as any)?.about || "ViOne Connect";
   const avatar = saved.avatar || member?.avatar || (member as any)?.avatarUrl || (user as any)?.avatar_url || "";
   const phone = saved.phone || member?.phone || (user as any)?.phone || "";
   const email = saved.email || member?.email || user?.email || "";
   const address = saved.address || member?.address || "Hà Nội, Việt Nam";
-  const website = saved.website || member?.website || "https://ceo1983.vn";
-  const bio = saved.bio || (member as any)?.about || "Hội viên tích cực CLB Doanh Nhân CEO 1983, sẵn sàng giao lưu kết nối và hợp tác giao thương.";
+  const website = saved.website || member?.website || "https://vione.vn";
+  const bio = saved.bio || (member as any)?.about || "Hội viên tích cực ViOne Connect, sẵn sàng giao lưu kết nối và hợp tác giao thương.";
   const baseSlug = (name || user?.username || "member")
     .toLowerCase()
     .normalize("NFD")
@@ -161,7 +161,7 @@ function emptyDraft(member?: any, user?: any): Draft {
 
   return {
     id: null,
-    slug: baseSlug ? `${baseSlug}-${Math.floor(100 + Math.random() * 900)}` : `ceo1983-${Date.now().toString().slice(-4)}`,
+    slug: baseSlug ? `${baseSlug}-${Math.floor(100 + Math.random() * 900)}` : `vione-${Date.now().toString().slice(-4)}`,
     cardKind: "primary",
     publicMode: "members_only",
     visibility: { ...DEFAULT_VISIBILITY },
@@ -169,7 +169,7 @@ function emptyDraft(member?: any, user?: any): Draft {
     professionalTitle: title,
     companyName: company,
     avatarUrl: avatar,
-    headline: title ? `${title} tại ${company || "CEO 1983"}` : "",
+    headline: title ? `${title} tại ${company || "ViOne Connect"}` : "",
     bio: bio,
     website: website,
     workEmail: email,
@@ -1830,7 +1830,7 @@ function CardEditor({
             <Input value={d.professionalTitle} onChange={(v) => set("professionalTitle", v)} placeholder="VD: Chủ tịch HĐQT, CEO..." />
           </Field>
           <Field label={t("bc.f.company")}>
-            <Input value={d.companyName} onChange={(v) => set("companyName", v)} placeholder="VD: Công ty Cổ phần Tập đoàn CEO 1983" />
+            <Input value={d.companyName} onChange={(v) => set("companyName", v)} placeholder="VD: Công ty Cổ phần Tập đoàn ViOne Connect" />
           </Field>
           <Field label={t("bc.f.avatar")}>
             <AvatarUploadField value={d.avatarUrl} onChange={(url) => set("avatarUrl", url)} />

@@ -522,12 +522,7 @@ export function AssociationLandingTemplate({
                 </li>
                 <li>
                   <Link to="/landing" className="hover:text-amber-400 transition-colors">
-                    Business Connect
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/landing/ceo1983" className="hover:text-amber-400 transition-colors">
-                    CLB CEO 1983
+                    Nền tảng Vione
                   </Link>
                 </li>
                 <li>

@@ -66,10 +66,10 @@ export const Route = createFileRoute("/events/$eventId")({
         { code: "M1983-004", name: "Demo User", email: "demo.user@vione.vn", phone: "0901000004", seat: "Bàn VIP 01 - Ghế 04", ticket: "VIP" },
         { code: "M1983-005", name: "Nguyen Hoang Nam", email: "peer1@vione.vn", phone: "0901000005", seat: "Bàn VIP 01 - Ghế 05", ticket: "VIP" },
         { code: "M1983-006", name: "Tran Thu Thao", email: "peer2@vione.vn", phone: "0901000006", seat: "Bàn Giao Thương 02 - Ghế 01", ticket: "Tiêu chuẩn" },
-        { code: "M1983-007", name: "Lê Hoàng Long", email: "ceo.tongthuky@ceo1983.com", phone: "0983000001", seat: "Bàn Giao Thương 02 - Ghế 02", ticket: "Tiêu chuẩn" },
-        { code: "M1983-008", name: "Nguyễn Văn Cường", email: "ceo.thanhvien@ceo1983.com", phone: "0983000002", seat: "Bàn Giao Thương 02 - Ghế 03", ticket: "Tiêu chuẩn" },
-        { code: "M1983-009", name: "Vũ Thu Trang", email: "ceo.taichinh@ceo1983.com", phone: "0983000003", seat: "Bàn Giao Thương 02 - Ghế 04", ticket: "Tiêu chuẩn" },
-        { code: "M1983-010", name: "Phạm Quang Huy", email: "ceo.truyenthong@ceo1983.com", phone: "0983000004", seat: "Bàn Giao Thương 02 - Ghế 05", ticket: "Tiêu chuẩn" },
+        { code: "M1983-007", name: "Lê Hoàng Long", email: "vione.tongthuky@vione.vn", phone: "0983000001", seat: "Bàn Giao Thương 02 - Ghế 02", ticket: "Tiêu chuẩn" },
+        { code: "M1983-008", name: "Nguyễn Văn Cường", email: "vione.thanhvien@vione.vn", phone: "0983000002", seat: "Bàn Giao Thương 02 - Ghế 03", ticket: "Tiêu chuẩn" },
+        { code: "M1983-009", name: "Vũ Thu Trang", email: "vione.taichinh@vione.vn", phone: "0983000003", seat: "Bàn Giao Thương 02 - Ghế 04", ticket: "Tiêu chuẩn" },
+        { code: "M1983-010", name: "Phạm Quang Huy", email: "vione.truyenthong@vione.vn", phone: "0983000004", seat: "Bàn Giao Thương 02 - Ghế 05", ticket: "Tiêu chuẩn" },
       ];
       finalRegistrations = defaultMembers.map((m, idx) => ({
         id: `REG-1983-${String(idx + 1).padStart(3, "0")}`,

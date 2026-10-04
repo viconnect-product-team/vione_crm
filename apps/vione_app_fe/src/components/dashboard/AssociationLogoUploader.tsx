@@ -171,6 +171,9 @@ export function AssociationLogoUploader() {
       setPreviewUrl(null);
       await reload();
       await loadHistory();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("association-changed", { detail: { logoUrl: uploadedUrl } }));
+      }
       toast.success(t("set.org.logoSaved"));
     } catch (err) {
       setPreviewUrl(null);
@@ -203,6 +206,9 @@ export function AssociationLogoUploader() {
       setLogoUrl(null);
       await reload();
       await loadHistory();
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("association-changed", { detail: { logoUrl: null } }));
+      }
       toast.success(t("set.org.logoSaved"));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("set.org.logoError"));

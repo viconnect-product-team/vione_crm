@@ -778,8 +778,8 @@ function VoteModal({ vote, onClose }: { vote?: Vote; onClose: () => void }) {
               onChange={(e) => setTargetAudience(e.target.value)}
               className={inputCls}
             >
-              <option value="all">🌐 Toàn thể cộng đồng & Hội viên (ViOne App & Hiệp hội App)</option>
-              <option value="members">⭐ Chỉ hội viên chính thức hiệp hội</option>
+              <option value="all">🌐 Toàn thể cộng đồng & Tài khoản doanh nghiệp (ViOne App & Nền tảng)</option>
+              <option value="members">⭐ Chỉ tài khoản doanh nghiệp chính thức</option>
               <option value="non_members">🎯 Người ngoài hiệp hội (Khách mời sự kiện)</option>
             </select>
             <p className="mt-1 text-[11px] text-muted-foreground">

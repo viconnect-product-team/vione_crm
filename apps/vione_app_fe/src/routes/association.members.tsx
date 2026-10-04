@@ -227,7 +227,7 @@ function MembersScreen() {
         body: JSON.stringify({
           targetUserId: target,
           memberCode: m.code,
-          message: `Xin chào, tôi là ${myMember?.name || "Hội viên"} thuộc Hiệp hội Doanh nhân CEO 1983. Rất mong được kết nối cùng bạn!`,
+          message: `Xin chào, tôi là ${myMember?.name || "Hội viên"} thuộc Hiệp hội Doanh nhân ViOne Connect. Rất mong được kết nối cùng bạn!`,
         }),
       });
       setLocalPending((prev) => new Set(prev).add(target.toLowerCase()));
@@ -237,7 +237,7 @@ function MembersScreen() {
         if (m.userId) {
           await sendRequest.mutateAsync({
             targetPersonNodeId: m.userId,
-            message: `Xin chào, tôi là ${myMember?.name || "Hội viên"} thuộc Hiệp hội Doanh nhân CEO 1983. Rất mong được kết nối cùng bạn!`,
+            message: `Xin chào, tôi là ${myMember?.name || "Hội viên"} thuộc Hiệp hội Doanh nhân ViOne Connect. Rất mong được kết nối cùng bạn!`,
           });
           setLocalPending((prev) => new Set(prev).add(target.toLowerCase()));
           toast.success(`Đã gửi lời mời kết nối tới ${displayName}`);
@@ -351,14 +351,14 @@ function MembersScreen() {
           )}
         </div>
 
-        {/* Nút Mời vào CLB CEO 1983 */}
+        {/* Nút Mời vào CLB ViOne Connect */}
         <button
           type="button"
           onClick={() => setInviteModalOpen(true)}
           className="shrink-0 flex items-center gap-1.5 rounded-2xl bg-[#003B95] hover:bg-[#002B70] px-3.5 py-2.5 text-[12px] font-bold text-white shadow-md transition active:scale-95 cursor-pointer"
         >
           <UserPlus className="h-4 w-4 text-amber-300" />
-          <span className="hidden sm:inline">Mời vào CLB CEO 1983</span>
+          <span className="hidden sm:inline">Mời vào CLB ViOne Connect</span>
           <span className="sm:hidden">Mời vào CLB</span>
         </button>
       </div>
@@ -466,7 +466,7 @@ function MembersScreen() {
                       alt={personDisplayName}
                       className="h-13 w-13 rounded-full object-cover ring-2 ring-amber-500/40 group-hover:ring-amber-500 transition-all"
                       onError={(e) => {
-                        e.currentTarget.src = "/ceo1983-logo.png";
+                        e.currentTarget.src = "/landing_web_vione/vione-logo.png";
                       }}
                     />
                   ) : (

@@ -274,7 +274,7 @@ function ProductCard({
         <div className="mb-3 border-t border-border pt-3 text-[11px] text-muted-foreground flex items-center justify-between">
           <div className="truncate">
             <span className="font-semibold text-primary">Người đăng: </span>
-            <span className="font-medium text-foreground">{product.sellerName || product.company || seller?.name || "Hội viên CLB"}</span>
+            <span className="font-medium text-foreground">{product.sellerName || product.company || seller?.name || "Tài khoản đối tác"}</span>
             {product.company && product.sellerName && <span className="opacity-70"> ({product.company})</span>}
           </div>
           <span className="shrink-0 text-[10.5px] opacity-75">{fmt.date(product.createdAt)}</span>
@@ -404,7 +404,7 @@ function ProductRow({
           {product.title}
         </Link>
         <div className="mt-0.5 text-[11px] text-muted-foreground">
-          <span className="font-medium text-foreground">{product.sellerName || product.company || seller?.name || "Hội viên"}</span>
+          <span className="font-medium text-foreground">{product.sellerName || product.company || seller?.name || "Tài khoản đối tác"}</span>
           <span className="opacity-50"> • </span>
           {fmt.date(product.createdAt)}
         </div>

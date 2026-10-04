@@ -152,7 +152,7 @@ function Home() {
           <div className="flex items-start justify-between gap-3 px-4 pb-20 pt-5">
             <div className="flex-1">
               <div className="inline-flex items-center gap-1 rounded-full border border-[var(--vba-gold)]/30 bg-[var(--vba-gold-soft)] px-2.5 py-0.5 text-[10px] font-bold text-[var(--vba-gold)]">
-                <Sparkles className="h-3 w-3" /> NỀN TẢNG HỘI VIÊN SỐ
+                <Sparkles className="h-3 w-3" /> NỀN TẢNG TÀI KHOẢN SỐ
               </div>
               <h2 className="mt-2 text-[22px] font-black leading-tight tracking-tight vba-gold-text sm:text-[24px]">
                 {t("m.index.heroTitle")}
@@ -163,7 +163,7 @@ function Home() {
               </p>
             </div>
 
-            {/* Gold metallic QR — quét để mở thẻ hội viên */}
+            {/* Gold metallic QR — quét để mở thẻ tài khoản */}
             <Link
               to="/m/card"
               aria-label={t("m.index.qrAria")}
@@ -215,7 +215,7 @@ function Home() {
             )}
           </div>
           <div className="mt-0.5 truncate text-[11px] text-[var(--vba-text-muted)]">
-            {member?.title || member?.industry || "Hội viên chính thức"}
+            {member?.title || member?.industry || "Tài khoản chính thức"}
           </div>
           <div className="mt-2 flex items-center gap-2">
             <span className="inline-flex items-center rounded-md bg-[var(--vba-gold-soft)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--vba-gold)]">

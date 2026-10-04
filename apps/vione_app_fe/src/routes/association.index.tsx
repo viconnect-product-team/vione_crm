@@ -157,7 +157,7 @@ const quickActionDefs = [
   },
 ] as const;
 
-// Fallback high-res business event photos with CEO 1983 blue lighting tone
+// Fallback high-res business event photos with ViOne Connect blue lighting tone
 const defaultEventImages = [
   "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80",
   "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80",
@@ -341,15 +341,15 @@ function Home() {
 
   // Priority-driven name resolution: Real Member Name > Auth User Name > Scoped Custom Profile > Fallback
   const realUserName = (user as any)?.name || (user as any)?.user_metadata?.full_name;
-  const isGenericMemberName = !member?.name || member.name === "Thành viên mới" || member.name === "Hội viên VIONE" || member.name === "Hội viên CLB CEO 1983";
+  const isGenericMemberName = !member?.name || member.name === "Thành viên mới" || member.name === "Hội viên VIONE" || member.name === "Hội viên CLB ViOne Connect";
   const displayName = (!isGenericMemberName && member?.name)
     ? member.name
-    : (realUserName || customProfile?.name || member?.name || (user as any)?.username || "Hội viên CLB CEO 1983");
+    : (realUserName || customProfile?.name || member?.name || (user as any)?.username || "Hội viên CLB ViOne Connect");
 
   const displayTitle = member?.title || customProfile?.title || member?.industry || (isEn ? "Official Member" : "Hội viên chính thức");
   const rawCompany = (member as any)?.companyName || (member as any)?.company || customProfile?.company;
   const isOldSeedCompany = rawCompany && (rawCompany.includes("ViOne Platform") || (rawCompany.includes("Phạm Văn Vũ") && !displayName.includes("Phạm Văn Vũ")));
-  const displayCompany = (!rawCompany || isOldSeedCompany) ? "CLB Doanh Nhân CEO 1983" : rawCompany;
+  const displayCompany = (!rawCompany || isOldSeedCompany) ? "ViOne Connect" : rawCompany;
   const rawAvatar =
     member?.avatar ||
     (user as any)?.avatar_url ||
@@ -374,7 +374,7 @@ function Home() {
 
   return (
     <div className="vba-animate min-h-full">
-      {/* ── CỐ ĐỊNH HEADER LOGO VÀ NOTIFICATIONS (BỎ ICON CHỤP ẢNH, GIỮ LOGO CHUẨN CEO1983) ── */}
+      {/* ── CỐ ĐỊNH HEADER LOGO VÀ NOTIFICATIONS (BỎ ICON CHỤP ẢNH, GIỮ LOGO CHUẨN VIONE) ── */}
       <header
         className="sticky top-0 z-40 flex items-center justify-between border-b border-slate-200 dark:border-[var(--vba-border)] bg-white/95 dark:bg-[#070D1A]/95 px-4 backdrop-blur-md shadow-xs"
         style={{
@@ -382,13 +382,13 @@ function Home() {
           minHeight: "calc(var(--bc-mobile-safe-top-compact, calc(max(env(safe-area-inset-top, 0px), 12px) + 4px)) + 52px)",
         }}
       >
-        {/* Logo CEO 1983 Official - Chuẩn biểu tượng số 8 kèm chữ CEO 1983 */}
+        {/* Logo ViOne Connect Official - Chuẩn biểu tượng số 8 kèm chữ ViOne Connect */}
         <div className="flex items-center gap-2">
           <img
             src="/brand-header-logo.png"
-            alt="CLB Doanh Nhân CEO 1983"
+            alt="ViOne Connect"
             onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = "/ceo1983-official-logo.png";
+              (e.currentTarget as HTMLImageElement).src = "/landing_web_vione/vione-logo.png";
             }}
             className="h-8 sm:h-9 w-auto object-contain drop-shadow-xs"
           />
@@ -635,7 +635,7 @@ function Home() {
         }}
       />
 
-      {/* ── 1. SỰ KIỆN SẮP TỚI: BANNER POSTER THEO CHUẨN CEO 1983 ── */}
+      {/* ── 1. SỰ KIỆN SẮP TỚI: BANNER POSTER THEO CHUẨN ViOne Connect ── */}
       <div className="mx-4 mt-5">
         <div className="mb-3 flex items-center justify-between">
           <Link to="/association/events" className="flex items-center gap-1.5 group cursor-pointer">
@@ -730,8 +730,8 @@ function Home() {
           </div>
           <p className="text-[11px] leading-relaxed text-[var(--vba-text-muted)]">
             {isEn
-              ? "Discover price support policies, affiliated gifts and trade benefits exclusive to CEO 1983."
-              : "Khám phá các chính sách trợ giá, quà tặng liên kết và quyền lợi giao thương dành riêng cho Hội viên CLB Doanh Nhân CEO 1983."}
+              ? "Discover price support policies, affiliated gifts and trade benefits exclusive to ViOne Connect."
+              : "Khám phá các chính sách trợ giá, quà tặng liên kết và quyền lợi giao thương dành riêng cho Hội viên ViOne Connect."}
           </p>
           <Link
             to="/association/perks"

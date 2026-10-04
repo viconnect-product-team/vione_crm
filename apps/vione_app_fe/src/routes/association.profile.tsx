@@ -354,10 +354,10 @@ function ProfileScreen() {
     return [
       {
         id: "post1",
-        authorName: member?.name || user?.name || "Hội viên CLB CEO 1983",
+        authorName: member?.name || user?.name || "Hội viên CLB ViOne Connect",
         authorAvatar: null,
         time: "Hôm qua lúc 15:30",
-        content: "Rất vinh dự được đón tiếp các anh chị lãnh đạo CLB Doanh Nhân CEO 1983 tới thăm và làm việc tại trụ sở ViOne. Chúc các thỏa thuận hợp tác thương mại sớm đơm hoa kết trái! 🤝✨",
+        content: "Rất vinh dự được đón tiếp các anh chị lãnh đạo ViOne Connect tới thăm và làm việc tại trụ sở ViOne. Chúc các thỏa thuận hợp tác thương mại sớm đơm hoa kết trái! 🤝✨",
         imageUrl: eventImg,
         privacy: "public",
         taggedFriends: ["Đặng Văn Lâm", "Trần Thu Trang"],
@@ -376,9 +376,9 @@ function ProfileScreen() {
   const [postImagePreview, setPostImagePreview] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   // Dynamic resolved display info based on real registered user / member
-  const resolvedDisplayName = member?.name || user?.name || (user as any)?.user_metadata?.full_name || user?.username || "Hội viên CLB CEO 1983";
-  const resolvedDisplayTitle = member?.title || "Hội viên chính thức CLB CEO 1983";
-  const resolvedDisplayCompany = (member as any)?.companyName || member?.industry || "CLB Doanh Nhân CEO 1983";
+  const resolvedDisplayName = member?.name || user?.name || (user as any)?.user_metadata?.full_name || user?.username || "Hội viên CLB ViOne Connect";
+  const resolvedDisplayTitle = member?.title || "Hội viên chính thức CLB ViOne Connect";
+  const resolvedDisplayCompany = (member as any)?.companyName || member?.industry || "ViOne Connect";
   const resolvedDisplayPhone = member?.phone || (user as any)?.phone || "";
   const resolvedDisplayEmail = member?.email || user?.email || "";
 
@@ -446,7 +446,7 @@ function ProfileScreen() {
         if (saved.website) return saved.website;
       } catch {}
     }
-    return "https://ceo1983.vn";
+    return "https://vione.vn";
   });
   const [profileBio, setProfileBio] = useState(() => {
     if (typeof window !== "undefined") {
@@ -455,7 +455,7 @@ function ProfileScreen() {
         if (saved.bio) return saved.bio;
       } catch {}
     }
-    return "Hội viên tích cực CLB Doanh Nhân CEO 1983, sẵn sàng giao lưu kết nối và hợp tác giao thương.";
+    return "Hội viên tích cực ViOne Connect, sẵn sàng giao lưu kết nối và hợp tác giao thương.";
   });
 
   // Tự động đồng bộ hóa thông tin khi dữ liệu hội viên / user từ backend load xong
@@ -478,13 +478,13 @@ function ProfileScreen() {
       : (member?.name || user?.name || (user as any)?.user_metadata?.full_name || user?.username || "");
     const resolvedTitle = (saved.title && !isStaleTitle)
       ? saved.title
-      : (member?.title || (user as any)?.user_metadata?.professional_title || "Hội viên chính thức CLB CEO 1983");
-    const resolvedCompany = saved.company || (member as any)?.companyName || member?.industry || (member as any)?.about || "CLB Doanh Nhân CEO 1983";
+      : (member?.title || (user as any)?.user_metadata?.professional_title || "Hội viên chính thức CLB ViOne Connect");
+    const resolvedCompany = saved.company || (member as any)?.companyName || member?.industry || (member as any)?.about || "ViOne Connect";
     const resolvedPhone = saved.phone || member?.phone || (user as any)?.phone || "";
     const resolvedEmail = saved.email || member?.email || user?.email || "";
     const resolvedAddress = saved.address || member?.address || "Hà Nội, Việt Nam";
-    const resolvedWebsite = saved.website || member?.website || "https://ceo1983.vn";
-    const resolvedBio = saved.bio || (member as any)?.about || "Hội viên tích cực CLB Doanh Nhân CEO 1983, sẵn sàng giao lưu kết nối và hợp tác giao thương.";
+    const resolvedWebsite = saved.website || member?.website || "https://vione.vn";
+    const resolvedBio = saved.bio || (member as any)?.about || "Hội viên tích cực ViOne Connect, sẵn sàng giao lưu kết nối và hợp tác giao thương.";
     
     let candidateAv = saved.avatar || customAvatar || member?.avatar || (member as any)?.avatarUrl || (user as any)?.avatar_url || null;
     if (isDeadAvatar(candidateAv)) {
@@ -565,8 +565,8 @@ function ProfileScreen() {
     if (typeof navigator !== "undefined" && navigator.share) {
       navigator
         .share({
-          title: profileName || member?.name || "Hội viên CLB CEO 1983",
-          text: `Danh thiếp số và hồ sơ hội viên ${profileName || member?.name} - CLB Doanh Nhân CEO 1983`,
+          title: profileName || member?.name || "Hội viên CLB ViOne Connect",
+          text: `Danh thiếp số và hồ sơ hội viên ${profileName || member?.name} - ViOne Connect`,
           url: window.location.href,
         })
         .catch(() => {});
@@ -596,7 +596,7 @@ function ProfileScreen() {
 
     const newPost: UserPost = {
       id: `post-${Date.now()}`,
-      authorName: profileName || member?.name || user?.name || "Hội viên CLB CEO 1983",
+      authorName: profileName || member?.name || user?.name || "Hội viên CLB ViOne Connect",
       authorAvatar: resolvedAvatar,
       time: isEn ? "Just now" : "Vừa xong",
       content: postContent.trim(),
@@ -639,10 +639,10 @@ function ProfileScreen() {
       desc: isEn ? "Design & share electronic business card" : "Thiết kế & chia sẻ danh thiếp số cá nhân",
     },
     {
-      label: isEn ? "CEO 1983 Member Directory" : "Danh bạ hội viên CLB",
+      label: isEn ? "ViOne Connect Member Directory" : "Danh bạ hội viên CLB",
       icon: Users,
       to: "/association/members" as const,
-      desc: isEn ? "Search & connect with CEO 1983 members" : "Tìm kiếm & kết nối hội viên CEO 1983",
+      desc: isEn ? "Search & connect with ViOne Connect members" : "Tìm kiếm & kết nối hội viên ViOne Connect",
     },
     {
       label: isEn ? "B2B Trade Opportunities" : "Cơ hội giao thương B2B",
@@ -675,7 +675,7 @@ function ProfileScreen() {
       desc: isEn ? "Feature manual, demo workflows & document downloads" : "Cẩm nang tính năng, ảnh demo & tải tài liệu PDF/Word",
     },
     {
-      label: isEn ? "Secretariat & Support Contact" : "Liên hệ Ban Thư Ký CLB CEO 1983",
+      label: isEn ? "Secretariat & Support Contact" : "Liên hệ Ban Thư Ký CLB ViOne Connect",
       icon: Headphones,
       onClick: () => setContactSupportOpen(true),
       desc: isEn ? "Hotline, Zalo OA & support inquiry" : "Hotline, Tổng đài, Zalo OA & gửi yêu cầu hỗ trợ",
@@ -749,7 +749,7 @@ function ProfileScreen() {
     avatar: string | null;
   };
 
-  // Real CEO 1983 active members who are CONNECTED with the current user
+  // Real ViOne Connect active members who are CONNECTED with the current user
   const friendsList: FriendItem[] = useMemo(() => {
     const connectedKeys = new Set<string>();
     for (const c of conversations) {
@@ -785,8 +785,8 @@ function ProfileScreen() {
       .map((m: DirectoryMember) => ({
         code: m.code,
         name: m.personName || m.name,
-        title: m.personTitle || m.industry || "Hội viên CEO 1983",
-        company: m.name !== m.personName ? m.name : "CLB Doanh Nhân CEO 1983",
+        title: m.personTitle || m.industry || "Hội viên ViOne Connect",
+        company: m.name !== m.personName ? m.name : "ViOne Connect",
         avatar: m.avatar && !isDeadAvatar(m.avatar) ? resolveMediaUrl(m.avatar) || m.avatar : null,
       }));
   }, [realMembers, conversations, member?.code, user?.id]);
@@ -842,7 +842,7 @@ function ProfileScreen() {
               </div>
               <div className="flex items-center gap-2 mt-0.5">
                 <span className="text-[11.5px] text-slate-500 dark:text-slate-400 truncate font-medium">
-                  {member?.title || profileTitle || "Hội viên chính thức CLB CEO 1983"}
+                  {member?.title || profileTitle || "Hội viên chính thức CLB ViOne Connect"}
                 </span>
                 <span className="rounded bg-amber-100 dark:bg-amber-950/80 px-1.5 py-0.2 text-[9.5px] font-bold text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                   {member?.code || "M1983-007"}
@@ -906,7 +906,7 @@ function ProfileScreen() {
                   <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#F59E0B_1px,transparent_1px)] [background-size:16px_16px]" />
                   <div className="relative flex flex-col items-center gap-1 text-center px-4">
                     <span className="text-amber-400/90 text-[11px] font-extrabold tracking-widest uppercase">
-                      CLB DOANH NHÂN CEO 1983
+                      CLB DOANH NHÂN ViOne Connect
                     </span>
                     <span className="text-white/70 text-[10.5px]">
                       Văn Phòng Số Cá Nhân &amp; Không Gian Kết Nối Giao Thương
@@ -972,7 +972,7 @@ function ProfileScreen() {
                   <BadgeCheck className="h-5 w-5 text-amber-500 shrink-0" />
                 </div>
                 <p className="text-[13px] font-bold text-[#2E3192] dark:text-amber-400 mt-0.5">
-                  {member?.title || profileTitle || "Hội viên chính thức CLB Doanh Nhân CEO 1983"}
+                  {member?.title || profileTitle || "Hội viên chính thức ViOne Connect"}
                 </p>
 
                 <p className="text-[12px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
@@ -1067,7 +1067,7 @@ function ProfileScreen() {
                 <div className="mt-3.5 space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
                   {/* Facebook Link */}
                   <a
-                    href="https://facebook.com/ceo1983.official"
+                    href="https://facebook.com/vione.official"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-amber-50/50 dark:hover:bg-slate-700/60 transition group"
@@ -1077,7 +1077,7 @@ function ProfileScreen() {
                         f
                       </span>
                       <span className="font-semibold text-slate-900 dark:text-white group-hover:text-[#2E3192] dark:group-hover:text-amber-400">
-                        Facebook: facebook.com/ceo1983.official
+                        Facebook: facebook.com/vione.official
                       </span>
                     </div>
                     <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-[#2E3192] dark:group-hover:text-amber-400" />
@@ -1085,7 +1085,7 @@ function ProfileScreen() {
 
                   {/* Website Link */}
                   <a
-                    href="https://ceo1983.com"
+                    href="https://vione.vn"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 hover:bg-amber-50/50 dark:hover:bg-slate-700/60 transition group"
@@ -1093,7 +1093,7 @@ function ProfileScreen() {
                     <div className="flex items-center gap-2.5">
                       <Globe className="h-5 w-5 text-[#2E3192] dark:text-amber-400 shrink-0" />
                       <span className="font-semibold text-slate-900 dark:text-white group-hover:text-[#2E3192] dark:group-hover:text-amber-400">
-                        Website: https://ceo1983.vn
+                        Website: https://vione.vn
                       </span>
                     </div>
                     <ArrowUpRight className="h-4 w-4 text-slate-400 group-hover:text-[#2E3192] dark:group-hover:text-amber-400" />
@@ -1573,7 +1573,7 @@ function ProfileScreen() {
               <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                 {eventThemeEnabled
                   ? (isEn ? "Displaying star lanterns, golden moon & festive decorations" : "Đang hiển thị đèn lồng ông sao, trăng rằm & hiệu ứng lễ hội")
-                  : (isEn ? "Standard CEO 1983 Classic Navy & Gold executive styling" : "Giao diện Doanh nhân Chuẩn CEO 1983 (Classic Navy & Gold)")}
+                  : (isEn ? "Standard ViOne Connect Classic Navy & Gold executive styling" : "Giao diện Doanh nhân Chuẩn ViOne Connect (Classic Navy & Gold)")}
               </p>
             </div>
           </div>
@@ -1590,7 +1590,7 @@ function ProfileScreen() {
               toast.success(
                 next
                   ? (isEn ? "Festival Theme Activated! 🏮🥮" : "Đã kích hoạt Chủ đề Lễ hội Trung Thu! 🏮🥮")
-                  : (isEn ? "Switched to Standard CEO 1983 Theme" : "Đã chuyển về Giao diện Chuẩn CEO 1983")
+                  : (isEn ? "Switched to Standard ViOne Connect Theme" : "Đã chuyển về Giao diện Chuẩn ViOne Connect")
               );
             }}
             className={`relative inline-flex h-6.5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
@@ -1895,7 +1895,7 @@ function ProfileScreen() {
                     type="text"
                     value={profileCompany}
                     onChange={(e) => setProfileCompany(e.target.value)}
-                    placeholder="VD: Công ty Cổ phần Tập đoàn CEO 1983"
+                    placeholder="VD: Công ty Cổ phần Tập đoàn ViOne Connect"
                     className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/90 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 outline-none transition-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/20 shadow-none"
                     style={{ outline: "none" }}
                   />
@@ -1990,7 +1990,7 @@ function ProfileScreen() {
                       {isEn ? "Allow direct messages from other members" : "Cho phép hội viên khác nhắn tin trực tiếp"}
                     </p>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                      {isEn ? "Receive business messages from CEO 1983 entrepreneurs" : "Nhận tin nhắn giao thương từ các hội viên trong CLB"}
+                      {isEn ? "Receive business messages from ViOne Connect entrepreneurs" : "Nhận tin nhắn giao thương từ các hội viên trong CLB"}
                     </p>
                   </div>
                   <input
@@ -2024,7 +2024,7 @@ function ProfileScreen() {
                       {isEn ? "Show enterprise on public directory" : "Hiển thị doanh nghiệp trên danh bạ CLB"}
                     </p>
                     <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                      {isEn ? "Appear in CEO 1983 member search results" : "Xuất hiện trong kết quả tìm kiếm đối tác & kết nối"}
+                      {isEn ? "Appear in ViOne Connect member search results" : "Xuất hiện trong kết quả tìm kiếm đối tác & kết nối"}
                     </p>
                   </div>
                   <input
@@ -2107,8 +2107,8 @@ function ProfileScreen() {
               onChange={(e) => setPostContent(e.target.value)}
               placeholder={
                 isEn
-                  ? "What would you like to share with CEO 1983 entrepreneurs? Announce trade deals, services, or events..."
-                  : "Bạn muốn chia sẻ điều gì với các doanh nhân CEO 1983? Đăng cơ hội hợp tác, giới thiệu năng lực..."
+                  ? "What would you like to share with ViOne Connect entrepreneurs? Announce trade deals, services, or events..."
+                  : "Bạn muốn chia sẻ điều gì với các doanh nhân ViOne Connect? Đăng cơ hội hợp tác, giới thiệu năng lực..."
               }
               className="w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-3.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none focus:border-amber-500 resize-none leading-relaxed"
             />

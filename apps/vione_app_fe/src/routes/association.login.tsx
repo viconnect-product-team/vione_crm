@@ -31,10 +31,10 @@ export const Route = createFileRoute("/association/login")({
     ...(typeof search.reset === "string" ? { reset: search.reset } : {}),
   }),
   head: () => ({
-    meta: [{ title: "Đăng nhập — Hiệp hội Doanh nhân CEO 1983" }],
+    meta: [{ title: "Đăng nhập — Hiệp hội Doanh nhân ViOne Connect" }],
     links: [
-      { rel: "icon", type: "image/png", sizes: "64x64", href: "/ceo1983-favicon.png" },
-      { rel: "apple-touch-icon", href: "/ceo1983-favicon.png" },
+      { rel: "icon", type: "image/png", sizes: "64x64", href: "/vione-gold-192.png?v=vione_gold_crown" },
+      { rel: "apple-touch-icon", href: "/vione-gold-192.png?v=vione_gold_crown" },
     ],
   }),
   component: AssociationLoginPage,

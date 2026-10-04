@@ -14,6 +14,7 @@ import {
 import { PlatformShell } from "@/components/platform/PlatformShell";
 import { Card, PageHeader } from "@/components/dashboard/PageKit";
 import { useT } from "@/lib/i18n";
+import { useRole } from "@/hooks/use-role";
 import type {
   OpsAdapterRow,
   OpsAlert as OpsAlertT,
@@ -83,6 +84,7 @@ function fmtTime(iso: string | null) {
 
 function IntroductionOperationsPage() {
   const t = useT();
+  const { isPlatformAdmin, isAdmin } = useRole();
   const invalidateAll = useInvalidateIntroOps();
 
   const [scope, setScope] = useState<Scope>("platform");
@@ -94,16 +96,17 @@ function IntroductionOperationsPage() {
 
   const accessQ = useIntroOpsAccess();
   const access = accessQ.data;
+  const isPlatformScopeReady = Boolean(access?.isPlatformAdmin || isPlatformAdmin || isAdmin);
   const scopeReady =
     scope === "platform"
-      ? Boolean(access?.isPlatformAdmin)
+      ? isPlatformScopeReady
       : scope === "association" && Boolean(associationId);
 
   // Auto-pick a sensible default scope once access loads.
   const autoScopeApplied = useMemo(() => {
     if (!access) return true;
-    if (access.isPlatformAdmin) return true;
-    if (!access.isPlatformAdmin && access.associationAdminOf.length > 0) {
+    if (access.isPlatformAdmin || isPlatformAdmin || isAdmin) return true;
+    if (access.associationAdminOf.length > 0) {
       if (scope !== "association" || !associationId) {
         setScope("association");
         setAssociationId(access.associationAdminOf[0].associationId);
@@ -111,11 +114,14 @@ function IntroductionOperationsPage() {
       return true;
     }
     return true;
-  }, [access, scope, associationId]);
+  }, [access, scope, associationId, isPlatformAdmin, isAdmin]);
   void autoScopeApplied;
 
   const canView =
-    (access?.isPlatformAdmin ?? false) || (access?.associationAdminOf.length ?? 0) > 0;
+    (access?.isPlatformAdmin ?? false) ||
+    (access?.associationAdminOf.length ?? 0) > 0 ||
+    isPlatformAdmin ||
+    isAdmin;
 
   const args = useMemo(
     () => ({ scope, associationId: scope === "association" ? associationId : null }),

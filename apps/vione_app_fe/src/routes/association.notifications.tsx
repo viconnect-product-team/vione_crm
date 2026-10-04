@@ -122,7 +122,7 @@ function formatNotifBody(n: any): string {
   const name =
     n.safeDisplayData?.counterpartDisplayName ||
     n.safeDisplayData?.senderName ||
-    "Hội viên CLB CEO 1983";
+    "Hội viên CLB ViOne Connect";
   if (b.includes("connection_request_received") || n.notificationKind === "connection_request_received") {
     return `${name} muốn kết nối danh thiếp số với bạn.`;
   }
@@ -892,7 +892,7 @@ function NotificationsScreen() {
               ? "declined"
               : "pending");
 
-          // Color coded per type - High contrast, sharp & vibrant brand CEO 1983
+          // Color coded per type - High contrast, sharp & vibrant brand ViOne Connect
           const typeTheme: Record<string, { iconBg: string; badge: string; label: string }> = {
             opportunity: {
               iconBg: "bg-emerald-600 text-white border-emerald-700 shadow-xs",
@@ -1504,7 +1504,7 @@ function NotificationsScreen() {
               </DialogTitle>
               <div className="text-xs text-slate-500 dark:text-slate-400 text-left flex items-center gap-1">
                 <span>Người gửi:</span>
-                <span className="font-semibold text-[#2E3192] dark:text-amber-400">Ban Thư Ký CLB Doanh Nhân CEO 1983</span>
+                <span className="font-semibold text-[#2E3192] dark:text-amber-400">Ban Thư Ký ViOne Connect</span>
               </div>
             </DialogHeader>
 
@@ -1526,7 +1526,7 @@ function NotificationsScreen() {
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-500">Giải thưởng:</span>
-                    <span className="font-bold text-amber-600 dark:text-amber-300">Giải Đặc Biệt Gala CEO 1983</span>
+                    <span className="font-bold text-amber-600 dark:text-amber-300">Giải Đặc Biệt Gala ViOne Connect</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-slate-500">Trạng thái nhận giải:</span>

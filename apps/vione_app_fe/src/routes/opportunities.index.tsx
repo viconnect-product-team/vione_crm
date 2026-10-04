@@ -197,7 +197,7 @@ function OpportunityCard({
             search={REVIEW_SEARCH_RESET}
             className="truncate font-medium text-primary hover:underline"
           >
-            {opp.posterName || opp.contactName || poster?.name || opp.company || "Hội viên CLB"}
+            {opp.posterName || opp.contactName || poster?.name || opp.company || "Tài khoản đối tác"}
           </Link>
           <div className="flex items-center gap-2.5">
             <span className="flex items-center gap-1">
@@ -969,13 +969,13 @@ function OpportunitiesPage() {
                           className="font-semibold text-primary hover:underline text-xs block"
                         >
                           <TruncatedText
-                            text={opp.posterName || poster?.name || `Hội viên #${opp.posterId.slice(0, 6)}`}
+                            text={opp.posterName || poster?.name || `Tài khoản #${opp.posterId.slice(0, 6)}`}
                             maxWidth="max-w-[300px]"
                           />
                         </Link>
                         <div className="text-[11px] text-muted-foreground">
                           <TruncatedText
-                            text={poster?.email || poster?.contact || "Hội viên"}
+                            text={poster?.email || poster?.contact || "Tài khoản đối tác"}
                             maxWidth="max-w-[300px]"
                           />
                         </div>

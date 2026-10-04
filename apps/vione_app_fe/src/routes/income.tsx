@@ -41,7 +41,7 @@ const DEFAULT_INCOME_TRANSACTIONS: Transaction[] = [
     date: "2026-03-10",
     type: "income",
     category: "membership_fee",
-    description: "Thu hội phí hội viên VIP 2026",
+    description: "Thu phí tài khoản VIP 2026",
     amount: 50000000,
     method: "bank",
     status: "completed",
@@ -85,7 +85,7 @@ const DEFAULT_INCOME_TRANSACTIONS: Transaction[] = [
     date: "2026-03-02",
     type: "income",
     category: "membership_fee",
-    description: "Thu phí gia nhập hội viên mới",
+    description: "Thu phí kích hoạt tài khoản mới",
     amount: 15000000,
     method: "bank",
     status: "completed",
@@ -96,7 +96,7 @@ const DEFAULT_INCOME_TRANSACTIONS: Transaction[] = [
     date: "2026-02-28",
     type: "income",
     category: "event_walkin",
-    description: "Thu đột xuất tiền mặt ủng hộ quỹ hội viên",
+    description: "Thu đột xuất tiền mặt quỹ phát triển",
     amount: 2000000,
     method: "cash",
     status: "completed",
@@ -310,7 +310,7 @@ function IncomePage() {
   const getCategoryLabel = (cat: string) => {
     switch (cat) {
       case "membership_fee":
-        return "Phí hội viên";
+        return "Phí tài khoản";
       case "event_ticket":
         return "Vé sự kiện";
       case "event_walkin":

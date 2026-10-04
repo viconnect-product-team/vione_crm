@@ -176,13 +176,12 @@ function Index() {
         search?.get("portal") === "crm" ||
         isCrmPort ||
         (typeof window !== "undefined" && sessionStorage.getItem("crm_portal") === "1");
-      const isCeo1983 =
+      const isAssociationApp =
         typeof window !== "undefined" &&
         (import.meta.env.VITE_APP_SCOPE === "association_app" ||
-          window.location.port === "5002" ||
-          window.location.hostname.includes("ceo1983"));
+          window.location.port === "5002");
 
-      if (isCeo1983 && window.location.pathname === "/") {
+      if (isAssociationApp && window.location.pathname === "/") {
         navigate({ to: "/association", replace: true });
         return;
       }

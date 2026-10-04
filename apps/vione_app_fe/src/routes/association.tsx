@@ -12,13 +12,13 @@ export const Route = createFileRoute("/association")({
   head: () => ({
     meta: [
       { name: "theme-color", content: "#0B0F19" },
-      { name: "apple-mobile-web-app-title", content: "CEO 1983" },
-      { title: "Hiệp hội Doanh nhân CEO 1983" },
+      { name: "apple-mobile-web-app-title", content: "ViOne Connect" },
+      { title: "Hiệp hội Doanh nhân ViOne Connect" },
     ],
     links: [
       { rel: "manifest", href: MEMBER_MANIFEST_HREF },
-      { rel: "icon", type: "image/png", sizes: "64x64", href: "/ceo1983-favicon.png" },
-      { rel: "apple-touch-icon", href: "/ceo1983-favicon.png" },
+      { rel: "icon", type: "image/png", sizes: "64x64", href: "/vione-gold-192.png?v=vione_gold_crown" },
+      { rel: "apple-touch-icon", href: "/vione-gold-192.png?v=vione_gold_crown" },
     ],
   }),
   beforeLoad: async ({ location }) => {

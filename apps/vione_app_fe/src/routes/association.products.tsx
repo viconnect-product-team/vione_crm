@@ -323,8 +323,8 @@ function ProductsScreen() {
         status: "active",
         imageUrl: item.imageUrl || null,
         imageUrls: item.imageUrl ? [item.imageUrl] : [],
-        company: item.company || member?.title || "CLB Doanh Nhân CEO 1983",
-        sellerId: user?.id || (member as any)?.userId || (member as any)?.id || "ceo1983",
+        company: item.company || member?.title || "ViOne Connect",
+        sellerId: user?.id || (member as any)?.userId || (member as any)?.id || "vione",
       };
       try {
         await fetchNestApi("/products", { method: "POST", body: JSON.stringify(payload) });
@@ -478,11 +478,11 @@ function ProductsScreen() {
   const featuredCompanies = useMemo(() => {
     const map = new Map<string, { company: string; repName: string; category: string; count: number; totalViews: number; avatar: string; sampleProduct: MyProduct }>();
     for (const p of allProducts) {
-      const key = (p.company || "CLB Doanh Nhân CEO 1983").trim();
+      const key = (p.company || "ViOne Connect").trim();
       if (!map.has(key)) {
         map.set(key, {
           company: key,
-          repName: (p as any).contactName || (p as any).sellerName || "Hội viên CLB CEO 1983",
+          repName: (p as any).contactName || (p as any).sellerName || "Hội viên CLB ViOne Connect",
           category: p.category || "Doanh nghiệp thành viên",
           count: 1,
           totalViews: p.views || 1,
@@ -606,10 +606,10 @@ function ProductsScreen() {
       status: "active",
       imageUrl: formPhoto || null,
       imageUrls: formPhoto ? [formPhoto] : [],
-      company: formCompany.trim() || member?.title || "CLB Doanh Nhân CEO 1983",
+      company: formCompany.trim() || member?.title || "ViOne Connect",
       companyIntro: formCompanyIntro.trim(),
       companySize: formCompanySize,
-      sellerId: user?.id || (member as any)?.userId || (member as any)?.id || "ceo1983",
+      sellerId: user?.id || (member as any)?.userId || (member as any)?.id || "vione",
     };
 
     try {
@@ -752,7 +752,7 @@ function ProductsScreen() {
             <div className="flex items-center justify-between gap-1 text-[10.5px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 truncate mb-1">
               <span className="flex items-center gap-1 truncate max-w-[60%]">
                 <Building2 className="h-3 w-3 shrink-0 text-[#003B95] dark:text-amber-400" />
-                <span className="truncate">{p.company || "CLB Doanh Nhân CEO 1983"}</span>
+                <span className="truncate">{p.company || "ViOne Connect"}</span>
               </span>
               <span className="shrink-0 text-amber-600 dark:text-amber-400 font-semibold normal-case truncate max-w-[40%]">
                 Đăng bởi: {p.sellerName || "Hội viên"}
@@ -777,7 +777,7 @@ function ProductsScreen() {
                 )}
               </div>
               <span className="inline-block text-[9.5px] font-semibold text-emerald-600 dark:text-emerald-400">
-                Ưu đãi độc quyền CEO 1983
+                Ưu đãi độc quyền ViOne Connect
               </span>
             </div>
 
@@ -866,11 +866,11 @@ function ProductsScreen() {
 
   return (
     <div className="vba-animate pb-24 text-slate-900 dark:text-white">
-      {/* 20px Header Bar: CEO1983 Trắng Xanh Đơn Giản */}
+      {/* 20px Header Bar: VIONE Trắng Xanh Đơn Giản */}
       <div className="h-[20px] w-full bg-gradient-to-r from-blue-50 via-white to-sky-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 border-b border-blue-100/80 dark:border-blue-950/40 flex items-center justify-between px-3 text-[10px] font-semibold text-blue-900 dark:text-blue-200 select-none">
         <span className="flex items-center gap-1 font-bold tracking-wider text-[#003B95] dark:text-blue-400">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#003B95] animate-pulse"></span>
-          CEO 1983
+          ViOne Connect
         </span>
         <span className="text-[9px] text-blue-600/80 dark:text-blue-300/70 font-medium">
           Marketplace & Tiếp Thị Liên Kết 5.0
@@ -1175,7 +1175,7 @@ function ProductsScreen() {
                 </span>
                 <span className="text-[11px] text-blue-200 font-semibold flex items-center gap-1">
                   <BadgeCheck className="h-3.5 w-3.5 text-amber-400" />
-                  Bảo trợ CLB CEO 1983
+                  Bảo trợ CLB ViOne Connect
                 </span>
               </div>
               <h3 className="text-sm sm:text-base font-black text-white leading-snug">
@@ -1197,8 +1197,8 @@ function ProductsScreen() {
                   onClick={() => {
                     if (navigator.share) {
                       navigator.share({
-                        title: "CEO 1983 Marketplace",
-                        text: "Khám phá Sàn Thương Mại & Affiliate CLB CEO 1983",
+                        title: "ViOne Connect Marketplace",
+                        text: "Khám phá Sàn Thương Mại & Affiliate CLB ViOne Connect",
                         url: window.location.href,
                       }).catch(() => {});
                     } else {
@@ -1309,7 +1309,7 @@ function ProductsScreen() {
                       Sản phẩm mới đăng
                     </h3>
                     <p className="text-[10.5px] text-slate-500 dark:text-slate-400">
-                      Cập nhật liên tục từ các doanh nhân CLB CEO 1983
+                      Cập nhật liên tục từ các doanh nhân CLB ViOne Connect
                     </p>
                   </div>
                 </div>
@@ -1539,7 +1539,7 @@ function ProductsScreen() {
             </div>
             <div>
               <div className="text-xs font-black text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-1.5">
-                <span>CEO 1983 Marketplace</span>
+                <span>ViOne Connect Marketplace</span>
                 <span className="px-1.5 py-0.2 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[9px] font-bold">5.0</span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -1808,7 +1808,7 @@ function ProductsScreen() {
                       rows={2}
                       value={formDesc}
                       onChange={(e) => setFormDesc(e.target.value)}
-                      placeholder={isEn ? "Describe specs, warranty, exclusive member discounts..." : "Mô tả thông số, chính sách bảo hành, ưu đãi riêng cho hội viên CEO 1983..."}
+                      placeholder={isEn ? "Describe specs, warranty, exclusive member discounts..." : "Mô tả thông số, chính sách bảo hành, ưu đãi riêng cho hội viên ViOne Connect..."}
                       className="w-full rounded-xl border-0 bg-white dark:bg-slate-800 p-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 outline-none ring-1 ring-slate-200 dark:ring-slate-700 resize-none"
                     />
                   </div>
@@ -1978,7 +1978,7 @@ function ProductsScreen() {
                         </div>
                         <div className="min-w-0">
                           <h4 className="font-bold text-xs text-slate-900 dark:text-white truncate">{q.buyerName || "Hội viên CLB"}</h4>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{q.buyerCompany || "Hội viên CEO 1983"}</p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{q.buyerCompany || "Hội viên ViOne Connect"}</p>
                         </div>
                       </div>
                       <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold px-2 py-0.5 rounded-md bg-amber-500/10 shrink-0">
@@ -2255,7 +2255,7 @@ function ProductsScreen() {
               <div className="flex items-center gap-3 mt-1">
                 <div className="relative h-14 w-14 rounded-2xl overflow-hidden bg-white/10 border-2 border-white/30 shrink-0 shadow-md">
                   <img
-                    src={viewingCompany.avatarUrl || "/ceo1983-official-logo.png"}
+                    src={viewingCompany.avatarUrl || "/landing_web_vione/vione-logo.png"}
                     alt={viewingCompany.name}
                     className="h-full w-full object-cover"
                   />
@@ -2266,20 +2266,20 @@ function ProductsScreen() {
                       {viewingCompany.name}
                     </h2>
                     <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-400/25 border border-amber-300/40 px-2 py-0.5 text-[9px] font-bold text-amber-300">
-                      <BadgeCheck className="h-3 w-3 text-amber-400" /> Xác thực CEO 1983
+                      <BadgeCheck className="h-3 w-3 text-amber-400" /> Xác thực ViOne Connect
                     </span>
                   </div>
                   <p className="text-[11px] text-blue-100/80 mt-0.5 flex items-center gap-2 flex-wrap">
                     <span>{viewingCompany.industry || "Doanh nghiệp thành viên"}</span>
                     <span>•</span>
-                    <span>Hội viên chính thức CLB CEO 1983</span>
+                    <span>Hội viên chính thức CLB ViOne Connect</span>
                   </p>
                 </div>
               </div>
 
               {/* Bio / Intro */}
               <div className="mt-3.5 rounded-xl bg-white/10 backdrop-blur-xs p-2.5 text-[11px] text-white/90 leading-relaxed border border-white/10">
-                {viewingCompany.bio || `Doanh nghiệp thành viên chính thức CLB Doanh Nhân CEO 1983. Cam kết cung ứng giải pháp và sản phẩm chất lượng cao với chính sách ưu đãi đặc quyền cho các hội viên.`}
+                {viewingCompany.bio || `Doanh nghiệp thành viên chính thức ViOne Connect. Cam kết cung ứng giải pháp và sản phẩm chất lượng cao với chính sách ưu đãi đặc quyền cho các hội viên.`}
               </div>
             </div>
 

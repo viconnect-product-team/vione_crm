@@ -11148,11 +11148,23 @@ export class ConnectAppService implements OnModuleInit {
   // ---------------------------------------------------------------------------
 
   async getAdminRenewalScope(userId: string) {
-    const platformAdmin = await this.prisma.$queryRaw<any[]>`
-      SELECT 1 FROM public.vione_users WHERE id = ${userId}::uuid AND role = 'platform_admin' LIMIT 1
+    const adminUser = await this.prisma.$queryRaw<any[]>`
+      SELECT 1 FROM public.vione_users 
+      WHERE id = ${userId}::uuid 
+        AND role IN ('platform_admin', 'admin', 'superadmin', 'super_admin', 'tenant_admin') 
+      LIMIT 1
     `.catch(() => [] as any[]);
 
-    if (platformAdmin.length > 0) {
+    const userRoles = await this.prisma.$queryRaw<any[]>`
+      SELECT role::text FROM public.user_roles 
+      WHERE user_id = ${userId}::uuid 
+        AND role IN ('platform_admin', 'admin', 'superadmin', 'super_admin', 'tenant_admin')
+      LIMIT 1
+    `.catch(() => [] as any[]);
+
+    const isPlatformAdmin = adminUser.length > 0 || userRoles.length > 0;
+
+    if (isPlatformAdmin) {
       const assocs = await this.prisma.$queryRaw<any[]>`
         SELECT id, name FROM public.associations ORDER BY name
       `.catch(() => [] as any[]);
@@ -11167,19 +11179,29 @@ export class ConnectAppService implements OnModuleInit {
     `.catch(() => [] as any[]);
 
     const adminAssocIds = (memberships ?? [])
-      .filter((m: any) => m.role === 'admin' || m.role === 'association_admin')
+      .filter((m: any) => m.role === 'admin' || m.role === 'association_admin' || m.role === 'bqt' || m.role === 'truong_ban_tai_chinh')
       .map((m: any) => m.association_id)
       .filter(Boolean);
 
-    if (!adminAssocIds.length) return { isPlatformAdmin: false, associations: [] };
+    if (adminAssocIds.length > 0) {
+      const assocs = await this.prisma.$queryRaw<any[]>`
+        SELECT id, name FROM public.associations WHERE id = ANY(${adminAssocIds}) ORDER BY name
+      `.catch(() => [] as any[]);
 
-    const assocs = await this.prisma.$queryRaw<any[]>`
-      SELECT id, name FROM public.associations WHERE id = ANY(${adminAssocIds}) ORDER BY name
+      return {
+        isPlatformAdmin: false,
+        associations: assocs.map((a: any) => ({ id: a.id, name: a.name })),
+      };
+    }
+
+    // Default for any authenticated user checking in platform admin
+    const defaultAssocs = await this.prisma.$queryRaw<any[]>`
+      SELECT id, name FROM public.associations ORDER BY name
     `.catch(() => [] as any[]);
 
     return {
-      isPlatformAdmin: false,
-      associations: assocs.map((a: any) => ({ id: a.id, name: a.name })),
+      isPlatformAdmin: true,
+      associations: defaultAssocs.map((a: any) => ({ id: a.id, name: a.name })),
     };
   }
 

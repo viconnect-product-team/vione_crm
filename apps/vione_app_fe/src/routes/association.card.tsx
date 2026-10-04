@@ -74,7 +74,7 @@ import { buildMembershipPass } from "@/lib/membership-pass";
 import { walletCapabilities, walletAddUrl } from "@/lib/wallet-provider";
 import { getMyIdentityPassFn, type MyIdentityPass } from "@/lib/member-identity.functions";
 import { resolveMediaUrl } from "@/lib/api-client";
-const appIcon = "/ceo1983-logo.png";
+const appIcon = "/landing_web_vione/vione-logo.png";
 const THEME_KEY = "vba-card-theme";
 
 export const Route = createFileRoute("/association/card")({
@@ -97,14 +97,14 @@ function resolveDisplay(
   customAvatar?: string | null,
   currentUser?: any,
 ): Display {
-  const isGeneric = !member?.name || member.name === "Thành viên mới" || member.name === "Hội viên VIONE" || member.name === "Hội viên CLB CEO 1983";
+  const isGeneric = !member?.name || member.name === "Thành viên mới" || member.name === "Hội viên VIONE" || member.name === "Hội viên CLB ViOne Connect";
   const authUserName = currentUser?.name || currentUser?.user_metadata?.full_name;
   const isCustomForUser = customProfile?.userId && currentUser?.id && customProfile.userId === currentUser.id;
 
   const rawName = (!isGeneric && member?.name)
     ? member.name
     : ((isCustomForUser ? customProfile?.name?.trim() : null) || authUserName || s?.displayName?.trim() || member?.name || "");
-  const cleanName = rawName || "Hội viên CLB CEO 1983";
+  const cleanName = rawName || "Hội viên CLB ViOne Connect";
 
   const rawCompany =
     (member as any)?.companyName ||
@@ -112,10 +112,10 @@ function resolveDisplay(
     (isCustomForUser ? customProfile?.company?.trim() : null) ||
     s?.displayCompany?.trim();
   const isOldSeed = rawCompany && rawCompany.includes("ViOne Platform");
-  const cleanCompany = !rawCompany || isOldSeed ? "CLB Doanh Nhân CEO 1983" : rawCompany;
+  const cleanCompany = !rawCompany || isOldSeed ? "ViOne Connect" : rawCompany;
 
   return {
-    name: cleanName.trim() || "Hội viên CLB CEO 1983",
+    name: cleanName.trim() || "Hội viên CLB ViOne Connect",
     company: cleanCompany.trim(),
     photo: (() => {
       const raw =
@@ -530,7 +530,7 @@ function CardScreen() {
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
-          title: `Hồ sơ Hội viên CEO 1983 - ${d.name || member.name}`,
+          title: `Hồ sơ Hội viên ViOne Connect - ${d.name || member.name}`,
           text: `Danh thiếp & Hồ sơ Doanh nhân ${d.name || member.name} - ${d.company || member.title}`,
           url,
         });
@@ -587,7 +587,7 @@ function CardScreen() {
           )}
         </div>
 
-        {/* ── HỒ SƠ HỘI VIÊN CEO 1983 EXECUTIVE (ĐẶT NGAY DƯỚI THẺ HỘI VIÊN, QR TRÊN ẢNH BÌA) ── */}
+        {/* ── HỒ SƠ HỘI VIÊN ViOne Connect EXECUTIVE (ĐẶT NGAY DƯỚI THẺ HỘI VIÊN, QR TRÊN ẢNH BÌA) ── */}
         {member && (
           <div className="mt-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-md overflow-hidden transition hover:border-amber-500/50">
             {/* Ảnh bìa to rộng (Cover Banner) kèm Mã QR hiện trực tiếp trên ảnh bìa */}
@@ -963,9 +963,9 @@ function CardScreen() {
         open={memberQrModalOpen}
         onClose={() => setMemberQrModalOpen(false)}
         memberCode={currentMemberCode}
-        memberName={d.name || "Hội viên CEO 1983"}
+        memberName={d.name || "Hội viên ViOne Connect"}
         memberTitle={customProfile?.title || member?.title || "Ban Quản Trị"}
-        memberCompany={d.company || "CLB Doanh Nhân CEO 1983"}
+        memberCompany={d.company || "ViOne Connect"}
         memberAvatar={d.photo || null}
       />
 

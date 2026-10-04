@@ -61,10 +61,10 @@ const LUCKY_DRAW_PRIZES = [
     title: "Giải Đặc Biệt Gala 2026: 01 Chuyến Du Lịch Dubai 5N4Đ + Thẻ Hội Viên Vàng",
     category: "Trúng thưởng",
     discount: "Trúng Thưởng 100%",
-    summary: "Dành riêng cho hội viên may mắn tham dự Gala Doanh Nhân CEO 1983. Mã vé: CEO1983-DUBAI-VIP",
-    partner: "Ban Chấp Hành Hiệp Hội CEO 1983",
+    summary: "Dành riêng cho hội viên may mắn tham dự Gala Doanh Nhân ViOne Connect. Mã vé: VIONE-DUBAI-VIP",
+    partner: "Ban Chấp Hành Hiệp Hội ViOne Connect",
     icon: "trophy",
-    code: "CEO1983-DUBAI-VIP",
+    code: "VIONE-DUBAI-VIP",
     claimed: true,
   },
   {
@@ -73,9 +73,9 @@ const LUCKY_DRAW_PRIZES = [
     category: "Trúng thưởng",
     discount: "Đã Trúng",
     summary: "Vật phẩm phong thủy giới hạn mạ vàng 24K vinh danh kết nối giao thương nội khối xuất sắc.",
-    partner: "CLB Doanh Nhân CEO 1983",
+    partner: "ViOne Connect",
     icon: "gift",
-    code: "CEO1983-GOLD-GIFT",
+    code: "VIONE-GOLD-GIFT",
     claimed: true,
   },
   {
@@ -86,7 +86,7 @@ const LUCKY_DRAW_PRIZES = [
     summary: "Áp dụng nghỉ dưỡng tại toàn bộ hệ thống resort và villa Vinpearl trên toàn quốc.",
     partner: "Vinpearl Resort & Spa",
     icon: "hotel",
-    code: "CEO1983-VINPEARL-VOUCHER",
+    code: "VIONE-VINPEARL-VOUCHER",
     claimed: false,
   },
   {
@@ -130,7 +130,7 @@ function PerksScreen() {
     <div className="vba-animate pb-24">
       <MemberHeader title="Ưu đãi & Trúng thưởng" back />
 
-      {/* Luxury Animated Gift Box Banner - CEO 1983 Navy & Amber Gold */}
+      {/* Luxury Animated Gift Box Banner - ViOne Connect Navy & Amber Gold */}
       <div className="px-4 pt-3">
         <div
           onClick={() => setGiftModalOpen(true)}
@@ -263,7 +263,7 @@ function PerksScreen() {
 
             <h3 className="text-xl font-black text-[#003B95] dark:text-amber-400">Chúc Mừng Bạn!</h3>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Đã mở thành công Gói Quà Tặng Đặc Quyền Hội Viên CEO 1983
+              Đã mở thành công Gói Quà Tặng Đặc Quyền Hội Viên ViOne Connect
             </p>
 
             <div className="mt-4 space-y-2 text-left text-xs">

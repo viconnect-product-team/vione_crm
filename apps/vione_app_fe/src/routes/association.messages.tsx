@@ -469,7 +469,7 @@ function EventTicketCard({ data, isFromMe }: { data: ActionTicketData; isFromMe:
       <div className="p-4 space-y-3.5">
         <div>
           <p className="text-[10px] font-semibold text-amber-400 tracking-wider uppercase">
-            CLB DOANH NHÂN CEO 1983
+            CLB DOANH NHÂN ViOne Connect
           </p>
           <h4 className="text-[14px] font-bold text-white leading-snug mt-0.5 line-clamp-2">
             {data.eventTitle}
@@ -1002,7 +1002,7 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
         code: c.peerCode,
         name: c.name,
         personName: c.name,
-        personTitle: "Hội viên CEO 1983",
+        personTitle: "Hội viên ViOne Connect",
         industry: "Kinh doanh & Quản lý",
         region: "Hà Nội",
         type: "individual",
@@ -1263,7 +1263,7 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
       {
         peerCode: "channel_media",
         name: "📢 Kênh Truyền Thông Hiệp Hội",
-        last: "Bản tin hoạt động CLB CEO 1983, thông cáo báo chí & sự kiện mới",
+        last: "Bản tin hoạt động CLB ViOne Connect, thông cáo báo chí & sự kiện mới",
         time: "Hôm nay",
         rawTime: new Date().toISOString(),
         unread: 0,
@@ -2239,8 +2239,8 @@ function ConversationList({ onOpen, members: propMembers }: { onOpen: (c: MyConv
                       </div>
                     ) : isSystem ? (
                       <img
-                        src="/ceo1983-logo.png"
-                        alt="CEO 1983"
+                        src="/landing_web_vione/vione-logo.png"
+                        alt="ViOne Connect"
                         className="h-12 w-12 rounded-full object-contain p-1 bg-white ring-2 ring-amber-500/40 shadow-xs"
                       />
                     ) : resolvedAvatar ? (
@@ -2653,7 +2653,7 @@ function ChatThread({
         name: displayName,
         personName: displayName,
         contact: displayName,
-        personTitle: "Hội viên CEO 1983",
+        personTitle: "Hội viên ViOne Connect",
         industry: "Kinh doanh & Quản lý",
         region: "Hà Nội",
         type: "individual",
@@ -2715,28 +2715,28 @@ function ChatThread({
     if (all.length === 0 && peer.peerCode.startsWith("channel_")) {
       const channelDefaults: Record<string, string[]> = {
         channel_secretariat: [
-          "Chào mừng Quý Anh/Chị Hội viên đến với Kênh Ban Thư Ký & Ban Điều Hành CLB Doanh Nhân CEO 1983.",
-          "[action:meeting|title:H%E1%BB%8Dp%20Ban%20Ch%E1%BA%A5p%20H%C3%A0nh%20CEO%201983%20Th%C3%A1ng%203|time:14:00%20-%2028/03/2026|location:Trung%20t%C3%A2m%20H%E1%BB%99i%20Ngh%E1%BB%8B%20Qu%E1%BB%91c%20Gia%20H%C3%A0%20N%E1%BB%99i|link:https://meet.vione.vn/ceo1983-bch|desc:Phi%C3%AAn%20h%E1%BB%8Dp%20chi%E1%BA%BFn%20l%C6%B0%E1%BB%A3c%20tri%E1%BB%83n%20khai%20giao%20th%C6%B0%C6%A1ng%20to%C3%A0n%20di%E1%BB%87n]",
+          "Chào mừng Quý Anh/Chị Hội viên đến với Kênh Ban Thư Ký & Ban Điều Hành ViOne Connect.",
+          "[action:meeting|title:H%E1%BB%8Dp%20Ban%20Ch%E1%BA%A5p%20H%C3%A0nh%20CEO%201983%20Th%C3%A1ng%203|time:14:00%20-%2028/03/2026|location:Trung%20t%C3%A2m%20H%E1%BB%99i%20Ngh%E1%BB%8B%20Qu%E1%BB%91c%20Gia%20H%C3%A0%20N%E1%BB%99i|link:https://meet.vione.vn/vione-bch|desc:Phi%C3%AAn%20h%E1%BB%8Dp%20chi%E1%BA%BFn%20l%C6%B0%E1%BB%A3c%20tri%E1%BB%83n%20khai%20giao%20th%C6%B0%C6%A1ng%20to%C3%A0n%20di%E1%BB%87n]",
           "Văn bản chỉ đạo & kế hoạch hoạt động năm 2026 đã được Ban Thư Ký cập nhật. Kính mời Quý Hội viên theo dõi và đồng hành.",
         ],
         channel_media: [
-          "Chào mừng Quý Hội viên đến với Kênh Ban Truyền Thông Hiệp Hội CEO 1983.",
+          "Chào mừng Quý Hội viên đến với Kênh Ban Truyền Thông Hiệp Hội ViOne Connect.",
           "Bản tin hoạt động CLB: Đẩy mạnh các chiến dịch truyền thông nhận diện thương hiệu cho các doanh nghiệp hội viên trên đa nền tảng.",
           "Thông cáo báo chí: Chuỗi sự kiện Gala Doanh Nhân & Lễ tôn vinh Doanh nghiệp tiêu biểu 2026 chuẩn bị khởi động.",
         ],
         channel_promotion: [
-          "Chào mừng Quý Hội viên đến với Kênh Ban Xúc Tiến Giao Thương CLB CEO 1983.",
+          "Chào mừng Quý Hội viên đến với Kênh Ban Xúc Tiến Giao Thương CLB ViOne Connect.",
           "Chương trình Matching B2B: Ban Xúc tiến mở cổng tiếp nhận nhu cầu liên kết chuỗi cung ứng giữa các doanh nghiệp hội viên.",
           "Cơ hội kết nối tuần này: Nhu cầu tìm đối tác tổng thầu thi công nội thất, cung cấp nguyên vật liệu và giải pháp công nghệ số.",
         ],
         channel_deals: [
-          "Chào mừng Quý Hội viên đến với Kênh Cơ Hội & Deal B2B CLB CEO 1983.",
+          "Chào mừng Quý Hội viên đến với Kênh Cơ Hội & Deal B2B CLB ViOne Connect.",
           "Tổng hợp các gói hợp tác kinh doanh độc quyền và chính sách chiết khấu ưu đãi nội bộ giữa các doanh nghiệp trong CLB.",
           "Deal hot tháng 3: Gói tài trợ truyền thông và gian hàng triển lãm B2B dành riêng cho hội viên chính thức.",
         ],
         channel_events: [
-          "Chào mừng Quý Hội viên đến với Kênh Ban Sự Kiện & Hội Nghị CLB CEO 1983.",
-          "Lịch sự kiện sắp tới: Đại hội thường niên CLB CEO 1983 và Diễn đàn Kinh tế Tư nhân 2026.",
+          "Chào mừng Quý Hội viên đến với Kênh Ban Sự Kiện & Hội Nghị CLB ViOne Connect.",
+          "Lịch sự kiện sắp tới: Đại hội thường niên CLB ViOne Connect và Diễn đàn Kinh tế Tư nhân 2026.",
           "Vé tham dự sự kiện và mã QR Check-in đã sẵn sàng trong mục Sự kiện & Vé của bạn.",
         ],
       };
@@ -2858,7 +2858,7 @@ function ChatThread({
     }
     setIsConnecting(true);
     try {
-      await requestConnFn({ data: { targetUserId: peer.userId, message: "Muốn kết nối giao thương cùng bạn trên CLB CEO 1983" } });
+      await requestConnFn({ data: { targetUserId: peer.userId, message: "Muốn kết nối giao thương cùng bạn trên CLB ViOne Connect" } });
       setConnState((prev) => ({ ...prev, isConnected: false, isPending: true, isOutgoingPending: true, isIncomingPending: false }));
       toast.success(`Đã gửi lời mời kết nối tới ${displayName}`);
       window.dispatchEvent(new CustomEvent("vba:conversation_updated"));
@@ -3285,8 +3285,8 @@ function ChatThread({
                 </div>
               ) : peer.isSystem || peer.peerCode === "admin" ? (
                 <img
-                  src="/ceo1983-logo.png"
-                  alt="CEO 1983"
+                  src="/landing_web_vione/vione-logo.png"
+                  alt="ViOne Connect"
                   className="h-9 w-9 rounded-full object-contain p-0.5 bg-white ring-1 ring-amber-500/40 shadow-xs"
                 />
               ) : resolvedAvatar ? (
@@ -3512,8 +3512,8 @@ function ChatThread({
                     >
                       {peer.isSystem ? (
                         <img
-                          src="/ceo1983-logo.png"
-                          alt="CEO 1983"
+                          src="/landing_web_vione/vione-logo.png"
+                          alt="ViOne Connect"
                           className="h-7 w-7 rounded-full object-contain p-0.5 bg-white ring-1 ring-amber-500/40"
                         />
                       ) : resolvedAvatar ? (
@@ -3672,7 +3672,7 @@ function ChatThread({
                                     Thư mời tham dự cuộc họp
                                   </p>
                                   <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                                    CLB Doanh Nhân CEO 1983
+                                    ViOne Connect
                                   </p>
                                 </div>
                               </div>

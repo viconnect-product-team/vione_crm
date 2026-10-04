@@ -83,7 +83,7 @@ const EVENT_AGENDA: Record<string, EventAgendaInfo> = {
   "ev-1": {
     category: "ĐẠI HỘI TOÀN THỂ",
     subtitle: "KẾ THỪA GIÁ TRỊ · KIẾN TẠO TƯƠNG LAI · PHÁT TRIỂN BỀN VỮNG",
-    headline: "Đại hội Hội viên CLB CEO 1983 & Tuyên dương Doanh nghiệp Tiêu biểu 2026",
+    headline: "Đại hội Hội viên CLB ViOne Connect & Tuyên dương Doanh nghiệp Tiêu biểu 2026",
     desc: "Đại hội toàn thể các thành viên CLB Doanh Nhân 1983 nhằm đánh giá chặng đường phát triển, vinh danh doanh nghiệp tiêu biểu và công bố chiến lược chuyển đổi số trong kỷ nguyên mới.\n\nSự kiện quy tụ đại diện các cơ quan quản lý, hiệp hội doanh nghiệp và hàng trăm doanh nhân tiêu biểu trong cả nước cùng tham dự.",
     schedule: [
       { time: "07:00 - 08:00", activity: "Đón tiếp đại biểu, Check-in QR & Trưng bày giao thương B2B" },
@@ -92,28 +92,28 @@ const EVENT_AGENDA: Record<string, EventAgendaInfo> = {
       { time: "10:45 - 11:30", activity: "Ký kết giao thương & Trao chứng nhận hội viên danh dự" },
       { time: "11:30 - 13:00", activity: "Tiệc trưa kết nối Networking & Giao lưu mở rộng" },
     ],
-    speakers: ["Chủ tịch CLB Doanh Nhân CEO 1983", "Chuyên gia Kinh tế trưởng Viện Quản lý", "Lãnh đạo Hiệp hội Doanh nghiệp TP. Hà Nội"],
-    audience: "Chủ tịch, CEO & Hội viên CLB Doanh Nhân CEO 1983",
+    speakers: ["Chủ tịch ViOne Connect", "Chuyên gia Kinh tế trưởng Viện Quản lý", "Lãnh đạo Hiệp hội Doanh nghiệp TP. Hà Nội"],
+    audience: "Chủ tịch, CEO & Hội viên ViOne Connect",
     zaloLink: "https://zalo.me/g/avricx427",
     offer: "Miễn phí vé tham dự cho 100 hội viên chính thức đăng ký đầu tiên",
-    regLink: "https://ceo1983.vn/dai-hoi-2026",
+    regLink: "https://vione.vn/dai-hoi-2026",
   },
   "ev-2": {
     category: "GALA DINNER",
     subtitle: "GẮN KẾT THỊNH VƯỢNG · ĐỈNH CAO KẾT NỐI DOANH NHÂN 1983",
     headline: "Đêm tiệc kết nối thượng đỉnh: Xúc tiến đầu tư & Hợp tác chiến lược 2026",
-    desc: "Đêm tiệc kết nối thượng đỉnh quy tụ hơn 300 CEO, nhà sáng lập và nhà đầu tư trong hệ sinh thái CEO 1983. Cơ hội xúc tiến đầu tư, hợp tác liên minh chiến lược năm 2026.\n\nChương trình dạ tiệc thượng lưu kết hợp vinh danh những cá nhân, tập thể có đóng góp nổi bật.",
+    desc: "Đêm tiệc kết nối thượng đỉnh quy tụ hơn 300 CEO, nhà sáng lập và nhà đầu tư trong hệ sinh thái ViOne Connect. Cơ hội xúc tiến đầu tư, hợp tác liên minh chiến lược năm 2026.\n\nChương trình dạ tiệc thượng lưu kết hợp vinh danh những cá nhân, tập thể có đóng góp nổi bật.",
     schedule: [
       { time: "18:00 - 18:45", activity: "Thảm đỏ, Tiệc cocktail & Kết nối tự do" },
       { time: "18:45 - 19:30", activity: "Khai mạc Gala Dinner & Vinh danh nhà tài trợ kim cương" },
       { time: "19:30 - 21:00", activity: "Tiệc tối sang trọng & Chương trình nghệ thuật đặc sắc" },
       { time: "21:00 - 21:30", activity: "Bốc thăm may mắn & Trao giải thưởng kết nối vàng" },
     ],
-    speakers: ["Ban Thường Trực CLB CEO 1983", "Khách mời Diễn giả Quốc tế", "Các Shark & Quỹ đầu tư mạo hiểm"],
+    speakers: ["Ban Thường Trực CLB ViOne Connect", "Khách mời Diễn giả Quốc tế", "Các Shark & Quỹ đầu tư mạo hiểm"],
     audience: "Nhà sáng lập, CEO & Quỹ đầu tư đồng hành",
     zaloLink: "https://zalo.me/g/avricx427",
     offer: "Tặng kèm gói truyền thông thương hiệu doanh nghiệp tại sự kiện",
-    regLink: "https://ceo1983.vn/gala-dinner",
+    regLink: "https://vione.vn/gala-dinner",
   },
   "ev-3": {
     category: "WORKSHOP CHUYÊN ĐỀ",
@@ -123,9 +123,9 @@ const EVENT_AGENDA: Record<string, EventAgendaInfo> = {
     schedule: [
       { time: "08:00 - 08:30", activity: "Đón tiếp đại biểu & Tea break giao lưu" },
       { time: "08:30 - 10:00", activity: "Tọa đàm: Tháo gỡ nút thắt trong chuyển giao thế hệ" },
-      { time: "10:00 - 11:30", activity: "Hỏi đáp mở & Tư vấn trực tiếp từ ban cố vấn CEO 1983" },
+      { time: "10:00 - 11:30", activity: "Hỏi đáp mở & Tư vấn trực tiếp từ ban cố vấn ViOne Connect" },
     ],
-    speakers: ["Ban Cố vấn CLB Doanh Nhân CEO 1983", "Chuyên gia Tư vấn Quản trị Doanh nghiệp Gia đình"],
+    speakers: ["Ban Cố vấn ViOne Connect", "Chuyên gia Tư vấn Quản trị Doanh nghiệp Gia đình"],
     audience: "Doanh nhân, thế hệ kế thừa và người quan tâm doanh nghiệp gia đình",
     zaloLink: "https://zalo.me/g/avricx427",
     offer: "Ưu đãi 199K cho 60 khách đăng ký đầu tiên có tham gia group zalo",
@@ -147,7 +147,7 @@ function getEventAgenda(e: MyEvent, index: number): EventAgendaInfo {
     category: categories[index % categories.length],
     subtitle: subtitles[index % subtitles.length],
     headline: e.title,
-    desc: `Sự kiện "${e.title}" do ${e.communityName || "CLB Doanh Nhân CEO 1983"} tổ chức tại ${e.place}. Diễn ra vào lúc ${e.time} ngày ${e.day} tháng ${e.month}, 2026 với sự tham gia của đông đảo hội viên và khách mời danh dự.\n\nCơ hội giao lưu kết nối hợp tác trực tiếp giữa các nhà lãnh đạo và doanh nhân tiêu biểu.`,
+    desc: `Sự kiện "${e.title}" do ${e.communityName || "ViOne Connect"} tổ chức tại ${e.place}. Diễn ra vào lúc ${e.time} ngày ${e.day} tháng ${e.month}, 2026 với sự tham gia của đông đảo hội viên và khách mời danh dự.\n\nCơ hội giao lưu kết nối hợp tác trực tiếp giữa các nhà lãnh đạo và doanh nhân tiêu biểu.`,
     schedule: [
       { time: "07:30 - 08:30", activity: "Đón tiếp đại biểu & Check-in QR điện tử" },
       { time: "08:30 - 10:30", activity: `Khai mạc: ${e.title}` },
@@ -155,11 +155,11 @@ function getEventAgenda(e: MyEvent, index: number): EventAgendaInfo {
       { time: "11:30 - 13:00", activity: "Tiệc trưa kết nối Networking mở rộng" },
     ],
     speakers: [
-      "Ban Thường Trực CLB Doanh Nhân CEO 1983",
+      "Ban Thường Trực ViOne Connect",
       "Các chuyên gia đầu ngành trong lĩnh vực kinh tế & công nghệ",
       "Đại diện lãnh đạo doanh nghiệp tiêu biểu",
     ],
-    audience: "Doanh nhân, thế hệ kế thừa và hội viên CLB CEO 1983",
+    audience: "Doanh nhân, thế hệ kế thừa và hội viên CLB ViOne Connect",
     zaloLink: "https://zalo.me/g/avricx427",
     offer: "Ưu đãi 199K cho 60 khách đăng ký đầu tiên có tham gia group zalo",
     regLink: "https://www.cto.vn/familybusiness",
@@ -448,7 +448,7 @@ function UpcomingEventsCoverflow({
       const fallbackList: MyEvent[] = [
         {
           id: "ev-1",
-          title: "Đại hội Hội viên CLB CEO 1983 & Tuyên dương Doanh nghiệp 2026",
+          title: "Đại hội Hội viên CLB ViOne Connect & Tuyên dương Doanh nghiệp 2026",
           date: "2026-09-27",
           time: "07:30 - 13:00",
           place: "Trung tâm Hội nghị Quốc gia, Hà Nội",
@@ -763,8 +763,8 @@ function EventsScreen() {
     setFormName(member?.name || user?.name || user?.user_metadata?.full_name || "");
     setFormEmail(member?.email || user?.email || "");
     setFormPhone(member?.phone || (user?.username && /^\d+$/.test(user.username) ? user.username : ""));
-    setFormCompany((member as any)?.company || (member as any)?.companyName || (user?.user_metadata as any)?.company || "CLB Doanh Nhân CEO 1983");
-    setFormPosition(member?.title || (member as any)?.position || "Hội viên CLB Doanh Nhân CEO 1983");
+    setFormCompany((member as any)?.company || (member as any)?.companyName || (user?.user_metadata as any)?.company || "ViOne Connect");
+    setFormPosition(member?.title || (member as any)?.position || "Hội viên ViOne Connect");
     setFormTicketCount(1);
     setFormTicketType("Standard");
     setFormNote("");
@@ -900,9 +900,9 @@ function EventsScreen() {
 
   return (
     <div className="vba-animate min-h-full pb-24">
-      {/* 1. Header CEO1983 - background trắng xanh đơn giản chiều cao 20px */}
+      {/* 1. Header VIONE - background trắng xanh đơn giản chiều cao 20px */}
       <div className="h-[20px] bg-gradient-to-r from-blue-50/90 via-sky-100/80 to-blue-50/90 dark:from-slate-950 dark:via-blue-950/40 dark:to-slate-950 border-b border-blue-200/50 dark:border-blue-900/40 flex items-center justify-center text-[10px] font-black tracking-widest text-[#003B95] dark:text-sky-300 uppercase select-none">
-        CEO 1983
+        ViOne Connect
       </div>
 
       <MemberHeader
@@ -954,9 +954,9 @@ function EventsScreen() {
                 date: regEvt.date || "",
                 time: regEvt.time || "",
                 location: regEvt.place || "Hà Nội",
-                attendeeName: member?.name || user?.name || "Hội viên CEO 1983",
+                attendeeName: member?.name || user?.name || "Hội viên ViOne Connect",
                 attendeePhone: member?.phone || "",
-                attendeeCompany: (member as any)?.companyName || "CLB Doanh Nhân CEO 1983",
+                attendeeCompany: (member as any)?.companyName || "ViOne Connect",
                 attendeePosition: member?.title || "Hội viên chính thức",
                 qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(invoiceCode)}`,
               });
@@ -1220,7 +1220,7 @@ function EventsScreen() {
             </div>
             <div>
               <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                CLB Doanh Nhân CEO 1983 · Kết Nối Thịnh Vượng
+                ViOne Connect · Kết Nối Thịnh Vượng
               </h4>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Kế thừa giá trị, kiến tạo tương lai và đồng hành phát triển bền vững.
@@ -1447,9 +1447,9 @@ function EventsScreen() {
                                 date: e.date ? formatDisplayDate(e.date) : `${e.day} ${e.month}, 2026`,
                                 time: e.time || "08:00",
                                 location: e.place || "Hà Nội",
-                                attendeeName: member?.name || user?.name || "Hội viên CEO 1983",
+                                attendeeName: member?.name || user?.name || "Hội viên ViOne Connect",
                                 attendeePhone: member?.phone || "",
-                                attendeeCompany: (member as any)?.companyName || "CLB Doanh Nhân CEO 1983",
+                                attendeeCompany: (member as any)?.companyName || "ViOne Connect",
                                 attendeePosition: member?.title || "Hội viên chính thức",
                                 qrUrl,
                               });
@@ -1660,9 +1660,9 @@ function EventsScreen() {
                             date: e.date ? formatDisplayDate(e.date) : "Sắp diễn ra",
                             time: e.time || "Theo lịch trình sự kiện",
                             location: e.place || "Địa điểm tổ chức sự kiện",
-                            attendeeName: member?.name || user?.name || "Hội viên CEO 1983",
+                            attendeeName: member?.name || user?.name || "Hội viên ViOne Connect",
                             attendeePhone: member?.phone || "",
-                            attendeeCompany: (member as any)?.companyName || "CLB Doanh Nhân CEO 1983",
+                            attendeeCompany: (member as any)?.companyName || "ViOne Connect",
                             attendeePosition: member?.title || "Hội viên chính thức",
                             qrUrl: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(invNo)}`,
                           });
@@ -1968,7 +1968,7 @@ function EventsScreen() {
                 : "Đăng ký sự kiện thành công!"}
             </h3>
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Ban Thư Ký CLB Doanh Nhân CEO 1983 đã tiếp nhận đăng ký tham gia sự kiện <b>"{registeredSuccessInfo.eventTitle}"</b>.
+              Ban Thư Ký ViOne Connect đã tiếp nhận đăng ký tham gia sự kiện <b>"{registeredSuccessInfo.eventTitle}"</b>.
             </p>
 
             <div className="rounded-xl bg-slate-50 dark:bg-slate-900 p-3 border border-slate-200 dark:border-slate-800 text-xs text-left space-y-1">
@@ -2045,9 +2045,9 @@ function EventsScreen() {
                     date: info.event?.date ? formatDisplayDate(info.event.date) : "Sắp diễn ra",
                     time: info.event?.time || "Theo lịch trình sự kiện",
                     location: info.event?.place || "Địa điểm tổ chức sự kiện",
-                    attendeeName: member?.name || user?.name || "Hội viên CEO 1983",
+                    attendeeName: member?.name || user?.name || "Hội viên ViOne Connect",
                     attendeePhone: member?.phone || "",
-                    attendeeCompany: (member as any)?.companyName || "CLB Doanh Nhân CEO 1983",
+                    attendeeCompany: (member as any)?.companyName || "ViOne Connect",
                     attendeePosition: member?.title || "Hội viên chính thức",
                     qrUrl: info.qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(info.invoiceNo)}`,
                   });

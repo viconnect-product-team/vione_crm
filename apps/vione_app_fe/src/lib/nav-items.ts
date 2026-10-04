@@ -95,7 +95,6 @@ export const navGroups: NavGroup[] = [
     label: "CẤU HÌNH & HỆ THỐNG",
     items: [
       { key: "nav.vioneSettings" as TKey, icon: Settings, to: "/settings", label: "Cài Đặt Hệ Thống" },
-      { key: "nav.vioneLandingTpl" as TKey, icon: FolderOpen, to: "/admin/landing-templates", label: "Landing Page Doanh Nghiệp" },
       { key: "nav.vioneAudit" as TKey, icon: History, to: "/activity", label: "Nhật Ký Kiểm Toán" },
       { key: "nav.account" as TKey, icon: UserCog, to: "/account-settings", label: "Tài khoản cá nhân" },
       { key: "nav.platform" as TKey, icon: ShieldCheck, to: "/platform", label: "Quản trị Nền Tảng & Phân Quyền", platformOnly: true },

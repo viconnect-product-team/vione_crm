@@ -197,7 +197,7 @@ function MeetingsPage() {
   const [newEndTime, setNewEndTime] = useState("16:30");
   const [newAttendeesCount, setNewAttendeesCount] = useState(15);
   const [newEquipment, setNewEquipment] = useState<string[]>(["TV tương tác 85 inch", "Camera Polycom 4K AI Tracking"]);
-  const [newPurpose, setNewPurpose] = useState("Bàn kế hoạch triển khai kết nối giao thương các hội viên quý tới.");
+  const [newPurpose, setNewPurpose] = useState("Bàn kế hoạch triển khai kết nối giao thương các tài khoản đối tác quý tới.");
 
   // Dispatched Email Preview Modal
   const [emailPreviewModalOpen, setEmailPreviewModalOpen] = useState(false);
@@ -487,7 +487,7 @@ function MeetingsPage() {
         await createNotif({
           data: {
             title: `[Huỷ đặt phòng họp] ${booking.title} — ${booking.roomName}`,
-            body: `Yêu cầu đặt phòng "${booking.roomName}" (${booking.startTime} - ${booking.endTime}, ngày ${booking.date}) của ${booking.organizerName} (${booking.organizerEmail}) đã bị từ chối/huỷ. Lý do: "${rejectionReason}". Quý hội viên vui lòng chọn khung giờ khác hoặc liên hệ Ban Thư Ký để được hỗ trợ sắp xếp lại.`,
+            body: `Yêu cầu đặt phòng "${booking.roomName}" (${booking.startTime} - ${booking.endTime}, ngày ${booking.date}) của ${booking.organizerName} (${booking.organizerEmail}) đã bị từ chối/huỷ. Lý do: "${rejectionReason}". Quý tài khoản đối tác vui lòng chọn khung giờ khác hoặc liên hệ Ban Quản Trị để được hỗ trợ sắp xếp lại.`,
             audience: "all",
             channel: "inapp",
             appScope: "all",
@@ -1163,7 +1163,7 @@ function MeetingsPage() {
                   <Smartphone className="h-4 w-4" /> 1. VIONE Mobile Apps (2 App)
                 </div>
                 <p className="text-muted-foreground leading-relaxed">
-                  Ứng dụng dành cho hội viên hiệp hội. Đăng ký phòng họp, gửi phiếu đăng ký sự kiện (Google Form), thanh toán VietQR và nhận vé mời có mã QR.
+                  Ứng dụng dành cho tài khoản đối tác & doanh nghiệp. Đăng ký phòng họp, gửi phiếu đăng ký sự kiện, thanh toán VietQR và nhận vé mời có mã QR.
                 </p>
                 <div className="font-mono text-[10px] bg-background p-2 rounded border border-border">
                   Emitter: REST API / WebSocket client
@@ -1740,7 +1740,7 @@ function MeetingsPage() {
               <div>
                 <label className="font-bold text-foreground block mb-1 flex items-center gap-1.5">
                   <Video className="h-3.5 w-3.5 text-blue-600" />
-                  Link họp Zoom trực tuyến (tự động phát tới email/app hội viên)
+                  Link họp Zoom trực tuyến (tự động phát tới email/app tài khoản)
                 </label>
                 <input
                   type="url"

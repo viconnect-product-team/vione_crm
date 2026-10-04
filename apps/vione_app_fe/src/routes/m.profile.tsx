@@ -62,7 +62,7 @@ function ProfileScreen() {
     if (!member?.code) return;
     navigator.clipboard.writeText(member.code);
     setCopied(true);
-    toast.success("Đã sao chép mã hội viên!");
+    toast.success("Đã sao chép mã tài khoản!");
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -70,7 +70,7 @@ function ProfileScreen() {
     { label: "Cập nhật hồ sơ & Quyền riêng tư", icon: User, to: "/connect-app/me/edit" as const, desc: "Chỉnh sửa tên, chức danh, liên hệ & quyền riêng tư" },
     { label: t("m.profile.menu_personal_info"), icon: QrCode, to: "/m/card" as const, desc: "Danh thiếp & Thẻ số" },
     { label: t("m.profile.menu_business_info"), icon: Building2, to: "/m/business-cards" as const, desc: "Hồ sơ công ty" },
-    { label: t("m.profile.menu_members"), icon: Users, to: "/m/members" as const, desc: "Danh bạ hội viên" },
+    { label: t("m.profile.menu_members"), icon: Users, to: "/m/members" as const, desc: "Danh bạ tài khoản" },
     { label: t("m.profile.menu_opportunities"), icon: Sparkles, to: "/m/opportunities" as const, desc: "Cơ hội giao thương B2B" },
     { label: t("m.profile.menu_products"), icon: Package, to: "/m/products" as const, desc: "Gian hàng sản phẩm" },
     { label: t("m.profile.menu_history"), icon: History, to: "/m/history" as const, desc: "Lịch sử kết nối" },
@@ -127,7 +127,7 @@ function ProfileScreen() {
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded-md bg-[var(--vba-gold-soft)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[var(--vba-gold)]">
-                <ShieldCheck className="h-3 w-3" /> HỘI VIÊN CHÍNH THỨC
+                <ShieldCheck className="h-3 w-3" /> TÀI KHOẢN CHÍNH THỨC
               </span>
               {member?.code && (
                 <button

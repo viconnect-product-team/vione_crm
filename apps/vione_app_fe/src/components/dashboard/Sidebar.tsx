@@ -5,6 +5,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useServerData } from "@/hooks/use-server-data";
 import { listMyAssociationsFn, type MyAssociation } from "@/lib/associations.functions";
+import { resolveMediaUrl } from "@/lib/api-client";
 import { useUnreadNotifications } from "@/hooks/use-unread-notifications";
 import {
   LayoutDashboard,
@@ -250,12 +251,6 @@ const vioneSystem: Item[] = [
     icon: Settings,
     to: "/settings",
     label: "Cài Đặt Hệ Thống",
-  },
-  {
-    key: "nav.vioneLandingTpl" as TKey,
-    icon: LayoutTemplate,
-    to: "/admin/landing-templates",
-    label: "Landing Page Doanh Nghiệp",
   },
   {
     key: "nav.vioneAudit" as TKey,
@@ -514,13 +509,23 @@ export function Sidebar({
             isCollapsed ? "justify-center px-2" : "px-6"
           }`}
         >
-          <div className="w-8 h-8 bg-gradient-to-l from-blue-900 via-blue-600 to-blue-900 rounded-lg inline-flex flex-col justify-center items-center shrink-0 shadow-md">
-            <span className="text-white text-lg font-extrabold font-['Inter'] leading-none">V</span>
-          </div>
+          {activeAssoc?.logoUrl ? (
+            <img
+              src={resolveMediaUrl(activeAssoc.logoUrl) || activeAssoc.logoUrl}
+              alt={brandName}
+              className="w-9 h-9 rounded-xl object-contain bg-white p-1 border border-slate-700/60 shadow-md shrink-0"
+            />
+          ) : (
+            <div className="w-8 h-8 bg-gradient-to-l from-amber-600 via-amber-500 to-amber-600 rounded-lg inline-flex flex-col justify-center items-center shrink-0 shadow-md">
+              <span className="text-zinc-950 text-lg font-extrabold font-['Inter'] leading-none">V</span>
+            </div>
+          )}
           {!isCollapsed && (
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-white text-xl font-extrabold font-['Inter'] tracking-tight">Vione</span>
-              <span className="rounded bg-blue-600/20 text-blue-400 text-[10px] font-bold px-1.5 py-0.5 border border-blue-500/30">
+              <span className="text-white text-xl font-extrabold font-['Inter'] tracking-tight truncate">
+                {brandName === "Hiệp hội Doanh nghiệp Việt Nam" ? "Vione" : brandName}
+              </span>
+              <span className="rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 border border-amber-500/30 shrink-0 font-mono">
                 CRM
               </span>
             </div>

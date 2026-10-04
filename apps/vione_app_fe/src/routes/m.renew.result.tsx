@@ -39,8 +39,8 @@ export const Route = createFileRoute("/m/renew/result")({
 
 const ERROR_MESSAGES: Record<string, string> = {
   "gateway-declined": "Cổng thanh toán từ chối giao dịch. Chưa có khoản tiền nào bị trừ.",
-  "no-member": "Không tìm thấy hồ sơ hội viên tương ứng với tài khoản của bạn.",
-  timeout: "Giao dịch quá thời gian chờ. Hạn hội viên chưa được gia hạn.",
+  "no-member": "Không tìm thấy hồ sơ tài khoản tương ứng với thông tin của bạn.",
+  timeout: "Giao dịch quá thời gian chờ. Hạn tài khoản chưa được gia hạn.",
   network: "Không kết nối được máy chủ thanh toán. Vui lòng thử lại.",
 };
 

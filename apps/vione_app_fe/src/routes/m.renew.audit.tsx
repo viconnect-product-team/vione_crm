@@ -26,7 +26,7 @@ export const Route = createFileRoute("/m/renew/audit")({
       {
         name: "description",
         content:
-          "Xem toàn bộ lần thanh toán gia hạn hội viên, phân biệt lần thực sự thanh toán với lần bấm lặp (idempotent) và lần thất bại.",
+          "Xem toàn bộ lần thanh toán gia hạn tài khoản, phân biệt lần thực sự thanh toán với lần bấm lặp (idempotent) và lần thất bại.",
       },
       { property: "og:title", content: "Nhật ký gia hạn" },
       {

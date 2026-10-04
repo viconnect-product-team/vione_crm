@@ -191,9 +191,9 @@ function CheckinScreen() {
             stopScan();
             setScannedMember({
               code: cardData.memberCode || memberCode,
-              name: cardData.companyName || cardData.company || "Công ty thành viên CEO 1983",
+              name: cardData.companyName || cardData.company || "Công ty thành viên ViOne Connect",
               personName: cardData.fullName || cardData.displayName || cardData.name || "Hội viên Doanh Nhân",
-              personTitle: cardData.executiveRole || cardData.jobTitle || cardData.headline || "Ban Thường Trực • Hội viên CEO 1983",
+              personTitle: cardData.executiveRole || cardData.jobTitle || cardData.headline || "Ban Thường Trực • Hội viên ViOne Connect",
               avatar: cardData.avatarUrl || cardData.avatar || null,
               coverUrl: cardData.coverUrl || cardData.cover || null,
               userId: cardData.userId || null,
@@ -533,7 +533,7 @@ function CheckinScreen() {
                 <X className="h-4 w-4" />
               </button>
               <div className="absolute bottom-2 left-4 text-[10.5px] font-bold text-white/90 drop-shadow-sm flex items-center gap-1">
-                <span>CLB DOANH NHÂN CEO 1983</span>
+                <span>CLB DOANH NHÂN ViOne Connect</span>
               </div>
             </div>
 
@@ -561,11 +561,11 @@ function CheckinScreen() {
               {/* Name & Association Role */}
               <div>
                 <h3 className="text-base font-black text-slate-900 dark:text-white">
-                  {scannedMember.personName || "Hội viên CLB CEO 1983"}
+                  {scannedMember.personName || "Hội viên CLB ViOne Connect"}
                 </h3>
                 <div className="mt-1 flex flex-wrap items-center justify-center gap-1.5">
                   <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[10.5px] font-bold text-amber-600 dark:text-amber-400">
-                    {scannedMember.personTitle || "Ban Thường Trực • Hội viên CEO 1983"}
+                    {scannedMember.personTitle || "Ban Thường Trực • Hội viên ViOne Connect"}
                   </span>
                   <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400">
                     {scannedMember.code}

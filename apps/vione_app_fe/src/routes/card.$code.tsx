@@ -23,16 +23,16 @@ import { QrCanvas } from "@/components/member/QrCanvas";
 import { getPublicCard, type PublicCard } from "@/lib/card.functions";
 import { toast } from "sonner";
 
-const appIcon = "/ceo1983-logo.png";
+const appIcon = "/landing_web_vione/vione-logo.png";
 
 export const Route = createFileRoute("/card/$code")({
   loader: ({ params }) => getPublicCard({ data: { code: params.code } }),
   head: () => ({
     meta: [
-      { title: "Danh thiếp & Thẻ hội viên — CLB Doanh nhân CEO 1983" },
+      { title: "Danh thiếp & Thẻ tài khoản — ViOne Connect" },
       {
         name: "description",
-        content: "Xác thực và xem danh thiếp số / thẻ hội viên CLB Doanh nhân CEO 1983.",
+        content: "Xác thực và xem danh thiếp số / thẻ tài khoản ViOne Connect.",
       },
     ],
   }),
@@ -48,7 +48,7 @@ export const Route = createFileRoute("/card/$code")({
         to="/association"
         className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/25 transition"
       >
-        <ArrowLeft className="h-4 w-4" /> Về ứng dụng Hiệp hội
+        <ArrowLeft className="h-4 w-4" /> Về ứng dụng ViOne Connect
       </Link>
     </div>
   ),
@@ -57,13 +57,13 @@ export const Route = createFileRoute("/card/$code")({
       <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-4">
         <User className="h-8 w-8 text-rose-400" />
       </div>
-      <h2 className="text-lg font-bold text-white mb-2">Không tìm thấy hội viên</h2>
-      <p className="text-sm text-slate-400 max-w-sm">Mã thẻ không tồn tại trên hệ thống CLB Doanh Nhân CEO 1983 hoặc đã hết hạn.</p>
+      <h2 className="text-lg font-bold text-white mb-2">Không tìm thấy tài khoản</h2>
+      <p className="text-sm text-slate-400 max-w-sm">Mã thẻ không tồn tại trên hệ thống ViOne Connect hoặc đã hết hạn.</p>
       <Link
         to="/association"
         className="mt-6 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/25 transition"
       >
-        <ArrowLeft className="h-4 w-4" /> Về ứng dụng Hiệp hội
+        <ArrowLeft className="h-4 w-4" /> Về ứng dụng ViOne Connect
       </Link>
     </div>
   ),
@@ -225,9 +225,9 @@ function PublicCardView() {
         `TITLE:${primaryTitle}`,
         hasPhone ? `TEL;TYPE=CELL:${member.phone}` : "",
         hasEmail ? `EMAIL;TYPE=WORK:${member.email}` : "",
-        member.website ? `URL:${member.website}` : "URL:https://ceo1983club.com",
+        member.website ? `URL:${member.website}` : "URL:https://vione.vn",
         member.address ? `ADR;TYPE=WORK:;;${member.address};;;;` : "",
-        `NOTE:Hội viên chính thức CLB Doanh Nhân CEO 1983 - Mã: ${code}`,
+        `NOTE:Tài khoản chính thức ViOne Connect - Mã: ${code}`,
         "END:VCARD",
       ]
         .filter(Boolean)
@@ -249,12 +249,12 @@ function PublicCardView() {
   };
 
   const handleShare = async () => {
-    const shareUrl = typeof window !== "undefined" ? window.location.href : `https://ceo1983club.com/card/${code}`;
+    const shareUrl = typeof window !== "undefined" ? window.location.href : `https://vione.vn/card/${code}`;
     if (navigator.share) {
       try {
         await navigator.share({
           title: `Danh thiếp số: ${primaryName}`,
-          text: `${primaryName} — ${primaryTitle} tại ${secondaryCompany} (CLB Doanh Nhân CEO 1983)`,
+          text: `${primaryName} — ${primaryTitle} tại ${secondaryCompany} (ViOne Connect)`,
           url: shareUrl,
         });
       } catch {
@@ -277,11 +277,11 @@ function PublicCardView() {
     { icon: CalendarClock, label: t("joined"), value: formattedJoinedAt },
     { icon: Building2, label: t("industry"), value: resolvedIndustry },
     { icon: MapPin, label: t("region"), value: resolvedRegion },
-    { icon: MapPin, label: t("address"), value: member.address || "Trụ sở CLB Doanh Nhân CEO 1983" },
+    { icon: MapPin, label: t("address"), value: member.address || "Trụ sở ViOne Connect" },
     {
       icon: Globe,
       label: t("website"),
-      value: member.website || "https://ceo1983club.com",
+      value: member.website || "https://vione.vn",
       isLink: Boolean(member.website),
       href: member.website || undefined,
     },
@@ -458,14 +458,14 @@ function PublicCardView() {
                   KẾT NỐI BỀN VỮNG • KIẾN TẠO TƯƠNG LAI
                 </div>
                 <p className="text-[10px] text-slate-300 mt-1 max-w-[280px] mx-auto leading-relaxed">
-                  Cộng đồng Doanh nhân 1983 tiên phong chuyển đổi số, chia sẻ giá trị và phát triển thịnh vượng.
+                  Hệ sinh thái Doanh nhân ViOne tiên phong chuyển đổi số, chia sẻ giá trị và phát triển thịnh vượng.
                 </p>
               </div>
 
               {/* Back Footer */}
               <div className="relative z-10 flex items-center justify-between border-t border-amber-400/20 pt-2.5 text-[10px] text-slate-300">
-                <span>Hotline: 0983 83 1983</span>
-                <span className="text-amber-300 font-semibold">ceo1983club.com</span>
+                <span>Hotline: 1900 633 833</span>
+                <span className="text-amber-300 font-semibold">vione.vn</span>
               </div>
             </div>
           </div>

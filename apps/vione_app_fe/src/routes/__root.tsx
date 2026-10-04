@@ -126,7 +126,7 @@ export const Route = createRootRoute({
           "Hệ sinh thái quản trị doanh nghiệp toàn diện, danh thiếp số thông minh và tự động hóa quy trình cùng ViOne AI Copilot.",
       },
       { name: "author", content: "ViOne Platform" },
-      { name: "theme-color", content: "#EAB308" },
+      { name: "theme-color", content: "#DFB76C" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
@@ -385,13 +385,8 @@ function RootComponent() {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    const isAssociation =
-      currentPath.startsWith("/association") ||
-      currentPath === "/verify" ||
-      currentPath.startsWith("/landing/ceo1983");
-
-    const targetFavicon = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=vione_gold_crown";
-    const targetApple = isAssociation ? "/ceo1983-favicon.png" : "/vione-gold-192.png?v=vione_gold_crown";
+    const targetFavicon = "/vione-gold-192.png?v=vione_gold_crown";
+    const targetApple = "/vione-gold-192.png?v=vione_gold_crown";
 
     const iconLinks = document.querySelectorAll<HTMLLinkElement>("link[rel~='icon']");
     if (iconLinks.length > 0) {

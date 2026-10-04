@@ -163,7 +163,7 @@ function NewsScreen() {
                   {selectedNews.excerpt}
                 </p>
                 <p className="text-slate-600 dark:text-slate-300">
-                  Hiệp hội doanh nhân CEO 1983 không ngừng đẩy mạnh các hoạt động xúc tiến kết nối
+                  Hiệp hội doanh nhân ViOne Connect không ngừng đẩy mạnh các hoạt động xúc tiến kết nối
                   giao thương nội khối, xây dựng chuỗi cung ứng bền vững và lan tỏa giá trị kinh tế
                   thiết thực đến từng hội viên trong kỷ nguyên chuyển đổi số toàn diện.
                 </p>

@@ -215,7 +215,7 @@ function OpportunitiesScreen() {
       if (!newContactName) setNewContactName(member?.name || (user as any)?.name || (user as any)?.username || "Ban Quản Trị");
       if (!newContactPhone) setNewContactPhone(member?.phone || (user as any)?.phone || "0900000000");
       if (!newContactTitle) setNewContactTitle(member?.title || "Ban Quản Trị");
-      if (!newCompany) setNewCompany((member as any)?.company || (member as any)?.companyName || member?.title || "CLB Doanh Nhân CEO 1983");
+      if (!newCompany) setNewCompany((member as any)?.company || (member as any)?.companyName || member?.title || "ViOne Connect");
     }
   }, [member, user]);
 
@@ -303,7 +303,7 @@ function OpportunitiesScreen() {
         time: new Date().toISOString(),
         image: defaultOppImages[1],
         views: 284,
-        contactName: "Ban Đầu Tư CEO 1983",
+        contactName: "Ban Đầu Tư ViOne Connect",
       },
       {
         id: "feat-default-3",
@@ -511,7 +511,7 @@ function OpportunitiesScreen() {
     }
     const finalContactName = newContactName.trim() || member?.name || (user as any)?.name || "Ban Quản Trị";
     const finalContactPhone = newContactPhone.trim() || member?.phone || (user as any)?.phone || "0900000000";
-    const finalCompany = newCompany.trim() || (member as any)?.company || (member as any)?.companyName || member?.title || "CLB Doanh Nhân CEO 1983";
+    const finalCompany = newCompany.trim() || (member as any)?.company || (member as any)?.companyName || member?.title || "ViOne Connect";
 
     setCreating(true);
     const cleanBudgetMin = Number(newBudgetMin.replace(/\D/g, "")) || 0;
@@ -554,9 +554,9 @@ function OpportunitiesScreen() {
 
   return (
     <div className="vba-animate pb-24">
-      {/* 20px CEO1983 Header - White-Blue Background */}
+      {/* 20px VIONE Header - White-Blue Background */}
       <div className="h-[20px] bg-gradient-to-r from-blue-50/90 via-sky-100/80 to-blue-50/90 dark:from-slate-950 dark:via-blue-950/40 dark:to-slate-950 border-b border-blue-200/50 dark:border-blue-900/40 flex items-center justify-center text-[10px] font-black tracking-widest text-[#003B95] dark:text-sky-300 uppercase select-none">
-        CEO 1983
+        ViOne Connect
       </div>
 
       <MemberHeader
@@ -1280,7 +1280,7 @@ function OpportunitiesScreen() {
               </div>
               <div className="px-1">
                 <span className="text-[9.5px] uppercase font-bold text-slate-400 block">Đối tượng</span>
-                <span className="text-[10.5px] font-medium text-slate-600 dark:text-slate-300 line-clamp-1">Hội viên CEO 1983</span>
+                <span className="text-[10.5px] font-medium text-slate-600 dark:text-slate-300 line-clamp-1">Hội viên ViOne Connect</span>
               </div>
             </div>
 
@@ -1293,7 +1293,7 @@ function OpportunitiesScreen() {
                 </h4>
                 <div className="text-slate-600 dark:text-slate-300 text-[12.5px] leading-relaxed whitespace-pre-line">
                   {selectedOpp.description ||
-                    "Cơ hội hợp tác kinh doanh, chuyển giao công nghệ và mở rộng mạng lưới đối tác chiến lược dành riêng cho cộng đồng doanh nhân và hội viên CLB CEO 1983."}
+                    "Cơ hội hợp tác kinh doanh, chuyển giao công nghệ và mở rộng mạng lưới đối tác chiến lược dành riêng cho cộng đồng doanh nhân và hội viên CLB ViOne Connect."}
                 </div>
               </div>
 
@@ -1345,7 +1345,7 @@ function OpportunitiesScreen() {
                             </div>
                             <div className="min-w-0">
                               <div className="font-bold text-xs text-slate-900 dark:text-white truncate">{m.name}</div>
-                              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{m.company || "Hội viên CLB CEO 1983"}</div>
+                              <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{m.company || "Hội viên CLB ViOne Connect"}</div>
                               {m.expressedAt && (
                                 <div className="text-[10px] text-amber-600 dark:text-amber-400">{fmt.rel(m.expressedAt)}</div>
                               )}
@@ -1403,13 +1403,13 @@ function OpportunitiesScreen() {
 
                 <div className="flex items-start gap-2 text-slate-800 dark:text-slate-200">
                   <Briefcase className="h-4 w-4 text-[#003B95] dark:text-amber-400 shrink-0 mt-0.5" />
-                  <span><strong>Hình thức:</strong> {normalizeTag(selectedOpp.tag)} · Ưu đãi độc quyền hội viên CEO 1983</span>
+                  <span><strong>Hình thức:</strong> {normalizeTag(selectedOpp.tag)} · Ưu đãi độc quyền hội viên ViOne Connect</span>
                 </div>
 
                 <div className="flex items-start gap-2 text-slate-800 dark:text-slate-200 pt-1 border-t border-amber-500/10">
                   <User className="h-4 w-4 text-[#003B95] dark:text-amber-400 shrink-0 mt-0.5" />
                   <div>
-                    <span><strong>Người đăng / Đầu mối:</strong> {selectedOpp.posterName || selectedOpp.contactName || "Hội viên CLB CEO 1983"} {selectedOpp.contactTitle ? `(${selectedOpp.contactTitle})` : ""}</span>
+                    <span><strong>Người đăng / Đầu mối:</strong> {selectedOpp.posterName || selectedOpp.contactName || "Hội viên CLB ViOne Connect"} {selectedOpp.contactTitle ? `(${selectedOpp.contactTitle})` : ""}</span>
                     {selectedOpp.company && <span className="block text-slate-500 dark:text-slate-400 text-[11.5px]">{selectedOpp.company}</span>}
                     {(selectedOpp.posterPhone || selectedOpp.contactPhone) && (
                       <span className="block mt-0.5">

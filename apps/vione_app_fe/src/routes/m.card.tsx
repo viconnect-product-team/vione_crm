@@ -81,7 +81,7 @@ function buildVCard(member: MyMember | null, d: Display): string {
   if (member.email) lines.push(`EMAIL:${member.email}`);
   if (member.phone) lines.push(`TEL:${member.phone}`);
   if (url) lines.push(`URL:${url}`);
-  lines.push(`NOTE:Mã hội viên ${member.code}`);
+  lines.push(`NOTE:Mã tài khoản ${member.code}`);
   lines.push("END:VCARD");
   return lines.join("\n");
 }

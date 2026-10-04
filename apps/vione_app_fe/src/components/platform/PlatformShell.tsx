@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import {
   LayoutGrid,
   ShieldCheck,
@@ -16,6 +17,9 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useT } from "@/lib/i18n";
+import { useServerData } from "@/hooks/use-server-data";
+import { getActiveAssociationFn, type ActiveAssociation } from "@/lib/associations.functions";
+import { resolveMediaUrl } from "@/lib/api-client";
 import type { LucideIcon } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: LucideIcon };
@@ -79,24 +83,49 @@ function ShellSidebar({
   onNavigate?: () => void;
 }) {
   const t = useT();
+  const fetchActive = useServerFn(getActiveAssociationFn);
+  const { data: assoc, reload } = useServerData<ActiveAssociation | null>(() => fetchActive(), null);
+  const [dynLogo, setDynLogo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const onAssocChange = (e: any) => {
+      if (e?.detail?.logoUrl !== undefined) {
+        setDynLogo(e.detail.logoUrl);
+      }
+      reload();
+    };
+    window.addEventListener("association-changed", onAssocChange);
+    return () => window.removeEventListener("association-changed", onAssocChange);
+  }, [reload]);
+
+  const currentLogo = dynLogo !== null ? dynLogo : (assoc?.logoUrl ?? null);
+  const orgName = assoc?.name || "ViOne";
+
   return (
     <aside
       className={`${mobile ? "flex h-screen w-[280px] max-w-[85vw]" : "sticky top-0 hidden h-screen w-[260px] lg:flex"} shrink-0 flex-col border-r border-sidebar-border`}
       style={{ background: "var(--gradient-sidebar)" }}
     >
       <div className="flex h-[72px] items-center gap-3 border-b border-sidebar-border px-5">
-        <div
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[11px] font-bold text-primary-foreground"
-          style={{ background: "var(--gradient-card)" }}
-        >
-          VBA
-        </div>
+        {currentLogo ? (
+          <img
+            src={resolveMediaUrl(currentLogo) || currentLogo}
+            alt={orgName}
+            className="h-10 w-10 shrink-0 rounded-xl object-contain bg-white p-1 border border-border shadow-sm"
+          />
+        ) : (
+          <div
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-base font-extrabold text-zinc-950 bg-amber-500 shadow-lg shadow-amber-500/20"
+          >
+            V
+          </div>
+        )}
         <div className="min-w-0 flex-1 leading-tight">
           <div className="truncate text-[13px] font-semibold text-sidebar-primary-foreground">
             {t("platform.title")}
           </div>
           <div className="truncate text-[11px] text-sidebar-foreground/60">
-            {t("platform.subtitle")}
+            {orgName !== "ViOne" && orgName !== "Hiệp hội Doanh nghiệp Việt Nam" ? orgName : t("platform.subtitle")}
           </div>
         </div>
       </div>

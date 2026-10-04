@@ -14,7 +14,7 @@ export function extractScanCode(raw: string): string {
       const nested = extractScanCode(urlMatch[1]);
       if (nested) return nested;
     }
-    const noteMatch = /NOTE:(?:Member|Mã hội viên)?\s*([^\r\n]+)/i.exec(value);
+    const noteMatch = /NOTE:(?:Member|Mã hội viên|Mã tài khoản)?\s*([^\r\n]+)/i.exec(value);
     if (noteMatch && noteMatch[1]) {
       return noteMatch[1].trim();
     }

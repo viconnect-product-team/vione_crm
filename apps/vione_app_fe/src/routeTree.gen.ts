@@ -107,10 +107,6 @@ import { Route as MEventsRouteImport } from './routes/m.events'
 import { Route as MCheckinRouteImport } from './routes/m.checkin'
 import { Route as MCardRouteImport } from './routes/m.card'
 import { Route as MBusinessCardsRouteImport } from './routes/m.business-cards'
-import { Route as LandingVioneRouteImport } from './routes/landing.vione'
-import { Route as LandingCeo1983RouteImport } from './routes/landing.ceo1983'
-import { Route as LandingBussinessConnectRouteImport } from './routes/landing.bussiness-connect'
-import { Route as LandingBusinessConnectRouteImport } from './routes/landing.business-connect'
 import { Route as HSlugRouteImport } from './routes/h.$slug'
 import { Route as FeesInvoiceIdRouteImport } from './routes/fees.$invoiceId'
 import { Route as EventsEventIdRouteImport } from './routes/events.$eventId'
@@ -169,7 +165,6 @@ import { Route as AssociationCheckinRouteImport } from './routes/association.che
 import { Route as AssociationCardRouteImport } from './routes/association.card'
 import { Route as AssociationBusinessCardsRouteImport } from './routes/association.business-cards'
 import { Route as AssociationBenefitsRouteImport } from './routes/association.benefits'
-import { Route as AdminLandingTemplatesRouteImport } from './routes/admin.landing-templates'
 import { Route as AdminDemoLeadsRouteImport } from './routes/admin.demo-leads'
 import { Route as AdminCtaAnalyticsRouteImport } from './routes/admin.cta-analytics'
 import { Route as AdminBusinessCardsRouteImport } from './routes/admin.business-cards'
@@ -195,8 +190,6 @@ import { Route as MRenewPayRouteImport } from './routes/m.renew.pay'
 import { Route as MRenewHistoryRouteImport } from './routes/m.renew.history'
 import { Route as MRenewAuditRouteImport } from './routes/m.renew.audit'
 import { Route as MPerksIdRouteImport } from './routes/m.perks.$id'
-import { Route as LandingCeo1983CinematicRouteImport } from './routes/landing.ceo1983.cinematic'
-import { Route as LandingCeoV1RouteImport } from './routes/landing.ceo.v1'
 import { Route as ConnectNetworkNotificationsRouteImport } from './routes/connect.network.notifications'
 import { Route as ConnectNetworkConnectionsRouteImport } from './routes/connect.network.connections'
 import { Route as ConnectMeetingsSectionRouteImport } from './routes/connect.meetings.$section'
@@ -742,26 +735,6 @@ const MBusinessCardsRoute = MBusinessCardsRouteImport.update({
   path: '/business-cards',
   getParentRoute: () => MRoute,
 } as any)
-const LandingVioneRoute = LandingVioneRouteImport.update({
-  id: '/vione',
-  path: '/vione',
-  getParentRoute: () => LandingRoute,
-} as any)
-const LandingCeo1983Route = LandingCeo1983RouteImport.update({
-  id: '/ceo1983',
-  path: '/ceo1983',
-  getParentRoute: () => LandingRoute,
-} as any)
-const LandingBussinessConnectRoute = LandingBussinessConnectRouteImport.update({
-  id: '/bussiness-connect',
-  path: '/bussiness-connect',
-  getParentRoute: () => LandingRoute,
-} as any)
-const LandingBusinessConnectRoute = LandingBusinessConnectRouteImport.update({
-  id: '/business-connect',
-  path: '/business-connect',
-  getParentRoute: () => LandingRoute,
-} as any)
 const HSlugRoute = HSlugRouteImport.update({
   id: '/h/$slug',
   path: '/h/$slug',
@@ -1059,11 +1032,6 @@ const AssociationBenefitsRoute = AssociationBenefitsRouteImport.update({
   path: '/benefits',
   getParentRoute: () => AssociationRoute,
 } as any)
-const AdminLandingTemplatesRoute = AdminLandingTemplatesRouteImport.update({
-  id: '/admin/landing-templates',
-  path: '/admin/landing-templates',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminDemoLeadsRoute = AdminDemoLeadsRouteImport.update({
   id: '/admin/demo-leads',
   path: '/admin/demo-leads',
@@ -1192,16 +1160,6 @@ const MPerksIdRoute = MPerksIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => MPerksRoute,
-} as any)
-const LandingCeo1983CinematicRoute = LandingCeo1983CinematicRouteImport.update({
-  id: '/cinematic',
-  path: '/cinematic',
-  getParentRoute: () => LandingCeo1983Route,
-} as any)
-const LandingCeoV1Route = LandingCeoV1RouteImport.update({
-  id: '/ceo/v1',
-  path: '/ceo/v1',
-  getParentRoute: () => LandingRoute,
 } as any)
 const ConnectNetworkNotificationsRoute =
   ConnectNetworkNotificationsRouteImport.update({
@@ -1568,7 +1526,6 @@ export interface FileRoutesByFullPath {
   '/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren
   '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
   '/admin/demo-leads': typeof AdminDemoLeadsRoute
-  '/admin/landing-templates': typeof AdminLandingTemplatesRoute
   '/association/benefits': typeof AssociationBenefitsRoute
   '/association/business-cards': typeof AssociationBusinessCardsRoute
   '/association/card': typeof AssociationCardRoute
@@ -1627,10 +1584,6 @@ export interface FileRoutesByFullPath {
   '/events/$eventId': typeof EventsEventIdRoute
   '/fees/$invoiceId': typeof FeesInvoiceIdRoute
   '/h/$slug': typeof HSlugRoute
-  '/landing/business-connect': typeof LandingBusinessConnectRoute
-  '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
-  '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
-  '/landing/vione': typeof LandingVioneRoute
   '/m/business-cards': typeof MBusinessCardsRoute
   '/m/card': typeof MCardRoute
   '/m/checkin': typeof MCheckinRoute
@@ -1703,8 +1656,6 @@ export interface FileRoutesByFullPath {
   '/connect/meetings/$section': typeof ConnectMeetingsSectionRoute
   '/connect/network/connections': typeof ConnectNetworkConnectionsRoute
   '/connect/network/notifications': typeof ConnectNetworkNotificationsRoute
-  '/landing/ceo/v1': typeof LandingCeoV1Route
-  '/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute
   '/m/perks/$id': typeof MPerksIdRoute
   '/m/renew/audit': typeof MRenewAuditRoute
   '/m/renew/history': typeof MRenewHistoryRoute
@@ -1798,7 +1749,6 @@ export interface FileRoutesByTo {
   '/account-settings/notifications': typeof AccountSettingsNotificationsRoute
   '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
   '/admin/demo-leads': typeof AdminDemoLeadsRoute
-  '/admin/landing-templates': typeof AdminLandingTemplatesRoute
   '/association/benefits': typeof AssociationBenefitsRoute
   '/association/business-cards': typeof AssociationBusinessCardsRoute
   '/association/card': typeof AssociationCardRoute
@@ -1846,10 +1796,6 @@ export interface FileRoutesByTo {
   '/events/$eventId': typeof EventsEventIdRoute
   '/fees/$invoiceId': typeof FeesInvoiceIdRoute
   '/h/$slug': typeof HSlugRoute
-  '/landing/business-connect': typeof LandingBusinessConnectRoute
-  '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
-  '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
-  '/landing/vione': typeof LandingVioneRoute
   '/m/business-cards': typeof MBusinessCardsRoute
   '/m/card': typeof MCardRoute
   '/m/checkin': typeof MCheckinRoute
@@ -1919,8 +1865,6 @@ export interface FileRoutesByTo {
   '/connect/meetings/$section': typeof ConnectMeetingsSectionRoute
   '/connect/network/connections': typeof ConnectNetworkConnectionsRoute
   '/connect/network/notifications': typeof ConnectNetworkNotificationsRoute
-  '/landing/ceo/v1': typeof LandingCeoV1Route
-  '/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute
   '/m/perks/$id': typeof MPerksIdRoute
   '/m/renew/audit': typeof MRenewAuditRoute
   '/m/renew/history': typeof MRenewHistoryRoute
@@ -2024,7 +1968,6 @@ export interface FileRoutesById {
   '/admin/business-cards': typeof AdminBusinessCardsRouteWithChildren
   '/admin/cta-analytics': typeof AdminCtaAnalyticsRoute
   '/admin/demo-leads': typeof AdminDemoLeadsRoute
-  '/admin/landing-templates': typeof AdminLandingTemplatesRoute
   '/association/benefits': typeof AssociationBenefitsRoute
   '/association/business-cards': typeof AssociationBusinessCardsRoute
   '/association/card': typeof AssociationCardRoute
@@ -2083,10 +2026,6 @@ export interface FileRoutesById {
   '/events/$eventId': typeof EventsEventIdRoute
   '/fees/$invoiceId': typeof FeesInvoiceIdRoute
   '/h/$slug': typeof HSlugRoute
-  '/landing/business-connect': typeof LandingBusinessConnectRoute
-  '/landing/bussiness-connect': typeof LandingBussinessConnectRoute
-  '/landing/ceo1983': typeof LandingCeo1983RouteWithChildren
-  '/landing/vione': typeof LandingVioneRoute
   '/m/business-cards': typeof MBusinessCardsRoute
   '/m/card': typeof MCardRoute
   '/m/checkin': typeof MCheckinRoute
@@ -2159,8 +2098,6 @@ export interface FileRoutesById {
   '/connect/meetings/$section': typeof ConnectMeetingsSectionRoute
   '/connect/network/connections': typeof ConnectNetworkConnectionsRoute
   '/connect/network/notifications': typeof ConnectNetworkNotificationsRoute
-  '/landing/ceo/v1': typeof LandingCeoV1Route
-  '/landing/ceo1983/cinematic': typeof LandingCeo1983CinematicRoute
   '/m/perks/$id': typeof MPerksIdRoute
   '/m/renew/audit': typeof MRenewAuditRoute
   '/m/renew/history': typeof MRenewHistoryRoute
@@ -2269,7 +2206,6 @@ export interface FileRouteTypes {
     | '/admin/business-cards'
     | '/admin/cta-analytics'
     | '/admin/demo-leads'
-    | '/admin/landing-templates'
     | '/association/benefits'
     | '/association/business-cards'
     | '/association/card'
@@ -2328,10 +2264,6 @@ export interface FileRouteTypes {
     | '/events/$eventId'
     | '/fees/$invoiceId'
     | '/h/$slug'
-    | '/landing/business-connect'
-    | '/landing/bussiness-connect'
-    | '/landing/ceo1983'
-    | '/landing/vione'
     | '/m/business-cards'
     | '/m/card'
     | '/m/checkin'
@@ -2404,8 +2336,6 @@ export interface FileRouteTypes {
     | '/connect/meetings/$section'
     | '/connect/network/connections'
     | '/connect/network/notifications'
-    | '/landing/ceo/v1'
-    | '/landing/ceo1983/cinematic'
     | '/m/perks/$id'
     | '/m/renew/audit'
     | '/m/renew/history'
@@ -2499,7 +2429,6 @@ export interface FileRouteTypes {
     | '/account-settings/notifications'
     | '/admin/cta-analytics'
     | '/admin/demo-leads'
-    | '/admin/landing-templates'
     | '/association/benefits'
     | '/association/business-cards'
     | '/association/card'
@@ -2547,10 +2476,6 @@ export interface FileRouteTypes {
     | '/events/$eventId'
     | '/fees/$invoiceId'
     | '/h/$slug'
-    | '/landing/business-connect'
-    | '/landing/bussiness-connect'
-    | '/landing/ceo1983'
-    | '/landing/vione'
     | '/m/business-cards'
     | '/m/card'
     | '/m/checkin'
@@ -2620,8 +2545,6 @@ export interface FileRouteTypes {
     | '/connect/meetings/$section'
     | '/connect/network/connections'
     | '/connect/network/notifications'
-    | '/landing/ceo/v1'
-    | '/landing/ceo1983/cinematic'
     | '/m/perks/$id'
     | '/m/renew/audit'
     | '/m/renew/history'
@@ -2724,7 +2647,6 @@ export interface FileRouteTypes {
     | '/admin/business-cards'
     | '/admin/cta-analytics'
     | '/admin/demo-leads'
-    | '/admin/landing-templates'
     | '/association/benefits'
     | '/association/business-cards'
     | '/association/card'
@@ -2783,10 +2705,6 @@ export interface FileRouteTypes {
     | '/events/$eventId'
     | '/fees/$invoiceId'
     | '/h/$slug'
-    | '/landing/business-connect'
-    | '/landing/bussiness-connect'
-    | '/landing/ceo1983'
-    | '/landing/vione'
     | '/m/business-cards'
     | '/m/card'
     | '/m/checkin'
@@ -2859,8 +2777,6 @@ export interface FileRouteTypes {
     | '/connect/meetings/$section'
     | '/connect/network/connections'
     | '/connect/network/notifications'
-    | '/landing/ceo/v1'
-    | '/landing/ceo1983/cinematic'
     | '/m/perks/$id'
     | '/m/renew/audit'
     | '/m/renew/history'
@@ -2967,7 +2883,6 @@ export interface RootRouteChildren {
   AdminBusinessCardsRoute: typeof AdminBusinessCardsRouteWithChildren
   AdminCtaAnalyticsRoute: typeof AdminCtaAnalyticsRoute
   AdminDemoLeadsRoute: typeof AdminDemoLeadsRoute
-  AdminLandingTemplatesRoute: typeof AdminLandingTemplatesRoute
   BSlugRoute: typeof BSlugRoute
   CTokenRoute: typeof CTokenRoute
   CardCodeRoute: typeof CardCodeRoute
@@ -3681,34 +3596,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MBusinessCardsRouteImport
       parentRoute: typeof MRoute
     }
-    '/landing/vione': {
-      id: '/landing/vione'
-      path: '/vione'
-      fullPath: '/landing/vione'
-      preLoaderRoute: typeof LandingVioneRouteImport
-      parentRoute: typeof LandingRoute
-    }
-    '/landing/ceo1983': {
-      id: '/landing/ceo1983'
-      path: '/ceo1983'
-      fullPath: '/landing/ceo1983'
-      preLoaderRoute: typeof LandingCeo1983RouteImport
-      parentRoute: typeof LandingRoute
-    }
-    '/landing/bussiness-connect': {
-      id: '/landing/bussiness-connect'
-      path: '/bussiness-connect'
-      fullPath: '/landing/bussiness-connect'
-      preLoaderRoute: typeof LandingBussinessConnectRouteImport
-      parentRoute: typeof LandingRoute
-    }
-    '/landing/business-connect': {
-      id: '/landing/business-connect'
-      path: '/business-connect'
-      fullPath: '/landing/business-connect'
-      preLoaderRoute: typeof LandingBusinessConnectRouteImport
-      parentRoute: typeof LandingRoute
-    }
     '/h/$slug': {
       id: '/h/$slug'
       path: '/h/$slug'
@@ -4115,13 +4002,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssociationBenefitsRouteImport
       parentRoute: typeof AssociationRoute
     }
-    '/admin/landing-templates': {
-      id: '/admin/landing-templates'
-      path: '/admin/landing-templates'
-      fullPath: '/admin/landing-templates'
-      preLoaderRoute: typeof AdminLandingTemplatesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/demo-leads': {
       id: '/admin/demo-leads'
       path: '/admin/demo-leads'
@@ -4296,20 +4176,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/m/perks/$id'
       preLoaderRoute: typeof MPerksIdRouteImport
       parentRoute: typeof MPerksRoute
-    }
-    '/landing/ceo1983/cinematic': {
-      id: '/landing/ceo1983/cinematic'
-      path: '/cinematic'
-      fullPath: '/landing/ceo1983/cinematic'
-      preLoaderRoute: typeof LandingCeo1983CinematicRouteImport
-      parentRoute: typeof LandingCeo1983Route
-    }
-    '/landing/ceo/v1': {
-      id: '/landing/ceo/v1'
-      path: '/ceo/v1'
-      fullPath: '/landing/ceo/v1'
-      preLoaderRoute: typeof LandingCeoV1RouteImport
-      parentRoute: typeof LandingRoute
     }
     '/connect/network/notifications': {
       id: '/connect/network/notifications'
@@ -5201,34 +5067,12 @@ const FeesRouteChildren: FeesRouteChildren = {
 
 const FeesRouteWithChildren = FeesRoute._addFileChildren(FeesRouteChildren)
 
-interface LandingCeo1983RouteChildren {
-  LandingCeo1983CinematicRoute: typeof LandingCeo1983CinematicRoute
-}
-
-const LandingCeo1983RouteChildren: LandingCeo1983RouteChildren = {
-  LandingCeo1983CinematicRoute: LandingCeo1983CinematicRoute,
-}
-
-const LandingCeo1983RouteWithChildren = LandingCeo1983Route._addFileChildren(
-  LandingCeo1983RouteChildren,
-)
-
 interface LandingRouteChildren {
-  LandingBusinessConnectRoute: typeof LandingBusinessConnectRoute
-  LandingBussinessConnectRoute: typeof LandingBussinessConnectRoute
-  LandingCeo1983Route: typeof LandingCeo1983RouteWithChildren
-  LandingVioneRoute: typeof LandingVioneRoute
   LandingIndexRoute: typeof LandingIndexRoute
-  LandingCeoV1Route: typeof LandingCeoV1Route
 }
 
 const LandingRouteChildren: LandingRouteChildren = {
-  LandingBusinessConnectRoute: LandingBusinessConnectRoute,
-  LandingBussinessConnectRoute: LandingBussinessConnectRoute,
-  LandingCeo1983Route: LandingCeo1983RouteWithChildren,
-  LandingVioneRoute: LandingVioneRoute,
   LandingIndexRoute: LandingIndexRoute,
-  LandingCeoV1Route: LandingCeoV1Route,
 }
 
 const LandingRouteWithChildren =
@@ -5423,7 +5267,6 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBusinessCardsRoute: AdminBusinessCardsRouteWithChildren,
   AdminCtaAnalyticsRoute: AdminCtaAnalyticsRoute,
   AdminDemoLeadsRoute: AdminDemoLeadsRoute,
-  AdminLandingTemplatesRoute: AdminLandingTemplatesRoute,
   BSlugRoute: BSlugRoute,
   CTokenRoute: CTokenRoute,
   CardCodeRoute: CardCodeRoute,
