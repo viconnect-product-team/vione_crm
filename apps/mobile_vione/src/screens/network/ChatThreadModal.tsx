@@ -333,14 +333,14 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(216, 178, 130, 0.2)",
   },
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   },
   chatArea: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   centerLoading: {
     flex: 1,
@@ -479,7 +479,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     borderTopWidth: 1,
     borderTopColor: "rgba(216, 178, 130, 0.2)",
   },

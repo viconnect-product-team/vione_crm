@@ -3,220 +3,999 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SLIDE THUYẾT TRÌNH HỆ SINH THÁI DOANH NGHIỆP VIONE & CEO 1983</title>
+  <title>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
+    
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #0A0A0B; color: #F8FAFC; font-family: 'Be Vietnam Pro', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    .slide-deck { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 30px; }
-    .slide {
-      background: radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.95), rgba(10, 10, 11, 1));
-      border: 1px solid rgba(216, 178, 130, 0.3);
+    body {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+    
+    .nav-bar {
+      width: 100%;
+      max-width: 1240px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: #FFFFFF;
+      padding: 16px 24px;
       border-radius: 16px;
-      padding: 40px 50px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: #94632B;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-badge {
+      background: #FAF5EB;
+      color: #94632B;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(216,178,130,0.4);
+      font-weight: 700;
+    }
+    .slide-deck {
+      width: 100%;
+      max-width: 1240px;
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+    }
+    
+    /* SLIDE BASE */
+    .slide {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 20px;
+      padding: 40px 48px;
       aspect-ratio: 16 / 9;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      page-break-after: always;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
       position: relative;
       overflow: hidden;
+      page-break-after: always;
     }
     .slide::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; height: 6px;
-      background: linear-gradient(90deg, #003B95, #D8B282, #F59E0B);
+      top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, #B48250 0%, #DFB76C 50%, #94632B 100%);
     }
+    
+    /* HEADER */
     .eyebrow {
       display: inline-block;
       font-size: 11px;
       font-weight: 800;
-      letter-spacing: 2px;
-      color: #D8B282;
+      letter-spacing: 1.5px;
+      color: #94632B;
       text-transform: uppercase;
-      background: rgba(216, 178, 130, 0.12);
-      border: 1px solid rgba(216, 178, 130, 0.3);
+      background: #FDF8F0;
+      border: 1px solid rgba(216, 178, 130, 0.4);
       padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
     }
     .title {
       font-family: 'Outfit', sans-serif;
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
-      color: #FFFFFF;
-      line-height: 1.3;
-      margin-bottom: 6px;
+      color: #0F172A;
+      line-height: 1.25;
+      margin-bottom: 4px;
     }
     .subtitle {
       font-size: 14px;
-      color: #94A3B8;
-      font-weight: 400;
+      color: #64748B;
+      font-weight: 500;
     }
-    .slide-content {
+    
+    /* COVER */
+    .cover-container {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .cover-tag {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #94632B;
+      background: #FDF8F0;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 18px;
+    }
+    .cover-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .cover-subtitle {
+      font-size: 20px;
+      font-weight: 600;
+      color: #94632B;
+      margin-bottom: 20px;
+    }
+    .gold-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #DFB76C, #94632B);
+      border-radius: 2px;
+      margin-bottom: 22px;
+    }
+    .cover-desc {
+      font-size: 15px;
+      color: #475569;
+      max-width: 780px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    .cover-meta {
+      font-size: 13px;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+    
+    /* AGENDA */
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
       margin: 20px 0;
     }
-    .bullet-list {
-      list-style: none;
+    .agenda-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      transition: all 0.2s ease;
+    }
+    .agenda-card:hover {
+      border-color: #D8B282;
+      background: #FDFBF7;
+    }
+    .agenda-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #94632B;
+      background: #FAF5EB;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .agenda-info h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+    .agenda-info p {
+      font-size: 13px;
+      color: #64748B;
+      line-height: 1.45;
+    }
+    
+    /* CONTENT SPLIT */
+    .content-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: center;
+      margin: 15px 0;
+      flex: 1;
+    }
+    .cards-column {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
-    .bullet-list li {
+    .feature-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid #B48250;
+      border-radius: 12px;
+      padding: 15px 18px;
+    }
+    .card-icon {
+      font-size: 22px;
+      line-height: 1;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+    .card-title {
       font-size: 15px;
-      line-height: 1.6;
-      color: #E2E8F0;
-      position: relative;
-      padding-left: 28px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
     }
-    .bullet-list li::before {
-      content: '◆';
-      position: absolute;
-      left: 0;
-      color: #D8B282;
+    .card-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    
+    .image-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .desktop-mockup-frame {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #CBD5E1;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      background: #FFFFFF;
+    }
+    .desktop-mockup-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .phone-mockup-frame {
+      width: 220px;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 6px solid #1E293B;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+      background: #000000;
+    }
+    .phone-mockup-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-caption {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #94A3B8;
+      font-style: italic;
+    }
+    
+    /* CLOSING */
+    .closing-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+    }
+    .closing-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 900;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+    .closing-subtitle {
+      font-size: 16px;
+      color: #94632B;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .takeaways-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .takeaway-card {
+      background: #FDFBF7;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      border-radius: 14px;
+      padding: 16px 18px;
+      text-align: left;
+    }
+    .takeaway-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #94632B;
+      margin-bottom: 4px;
+    }
+    .takeaway-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+    .takeaway-card p {
+      font-size: 12.5px;
+      color: #475569;
+      line-height: 1.45;
+    }
+    .contact-box {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 13px;
+      color: #334155;
+      margin-bottom: 16px;
+    }
+    .closing-qa {
+      font-family: 'Outfit', sans-serif;
       font-size: 14px;
-      top: 1px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #94632B;
+      background: #FAF5EB;
+      padding: 6px 18px;
+      border-radius: 20px;
     }
+    
+    /* FOOTER */
     .slide-footer {
       display: flex;
       justify-content: space-between;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid #E2E8F0;
       padding-top: 14px;
       font-size: 11px;
-      color: #64748B;
+      color: #94A3B8;
+      font-weight: 500;
     }
+    
     @media print {
       body { background: transparent; padding: 0; }
+      .nav-bar { display: none; }
       .slide-deck { gap: 0; }
       .slide { border-radius: 0; box-shadow: none; aspect-ratio: auto; height: 100vh; }
     }
   </style>
 </head>
 <body>
+  <div class="nav-bar">
+    <div class="brand">
+      <span>VIONE CORPORATION</span>
+      <span class="brand-badge">HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP</span>
+    </div>
+    <div style="font-size: 13px; color: #64748B; font-weight: 600;">Phiên bản: 10/2026 · Chuẩn Widescreen 16:9</div>
+  </div>
   <div class="slide-deck">
     
       <section class="slide" id="slide-1">
-        <div class="slide-header">
-          <div class="eyebrow">TỔNG QUAN CHIẾN LƯỢC</div>
-          <h2 class="title">HỆ SINH THÁI DOANH NGHIỆP VIONE & NỀN TẢNG HIỆP HỘI CEO 1983</h2>
-          <div class="subtitle">Hệ Điều Hành Doanh Nghiệp Toàn Diện & Mạng Lưới Kết Nối Doanh Nhân Hợp Nhất 6.0</div>
+        
+        <div class="cover-container">
+          <div class="cover-tag">HỆ SINH THÁI DOANH NGHIỆP VIONE</div>
+          <h1 class="cover-title">VIONE CRM PLATFORM</h1>
+          <p class="cover-subtitle">Hệ Thống Quản Trị & Điều Hành Doanh Nghiệp Toàn Diện 360°</p>
+          <div class="gold-divider"></div>
+          <p class="cover-desc">Nền tảng số hóa quản trị tập trung, tự động hóa quy trình nghiệp vụ và tối ưu hóa phễu tăng trưởng B2B dành cho Ban Lãnh Đạo.</p>
+          <div class="cover-meta">Phiên Bản Doanh Nghiệp 6.0 · Tháng 10/2026 · Bản quyền © ViOne Corporation</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Hợp nhất 3 trụ cột: Web CRM Doanh Nghiệp, App Di Động Doanh Nhân ViOne Connect và App Hiệp Hội CEO 1983.</li><li>Thiết kế chuẩn đẳng cấp: Dark Obsidian & Champagne Gold thượng lưu cho Doanh nhân; Classic Navy & Amber Gold cho Hiệp hội.</li><li>Tự động hóa 100% quy trình: Chấm công GPS & FaceID, phê duyệt chi tiền 3 cấp, đối soát VietQR và kiểm phiếu đại hội tức thời.</li><li>Sức mạnh 6 năng lực AI: AI Copilot đàm thoại điều hành, OCR danh thiếp, đối soát Excel, soạn hợp đồng, gợi ý đối tác và cảnh báo tải.</li>
-          </ul>
-        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 1 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 1 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     
       <section class="slide" id="slide-2">
+        
         <div class="slide-header">
-          <div class="eyebrow">HIỆU QUẢ ĐẦU TƯ</div>
-          <h2 class="title">MỤC TIÊU CHIẾN LƯỢC SMART & KHUNG ROI 3 NĂM</h2>
-          <div class="subtitle">Đo lường hiệu quả kinh tế và tối ưu hóa chi phí vận hành doanh nghiệp</div>
+          <div class="eyebrow">TỔNG QUAN CHIẾN LƯỢC</div>
+          <h2 class="title">HAI TRỤ CỘT CHUYỂN ĐỔI SỐ LIỀN MẠCH DOANH NGHIỆP</h2>
+          <div class="subtitle">Cấu trúc bài thuyết trình hệ sinh thái ViOne</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Tiết kiệm 45% chi phí hành chính thông qua số hóa quy trình giao việc, duyệt chi và bảng công.</li><li>Rút ngắn 60% chu kỳ bán hàng: Phản hồi khách hàng tiềm năng < 15 phút, xuất báo giá PDF trong 2 phút.</li><li>Tăng 40% hiệu suất giao thương: Cấp Danh thiếp số Titanium NFC độc bản cho 100% lãnh đạo.</li><li>Tỷ lệ lợi tức đầu tư ROI: Năm 1 đạt 166.7%, Năm 2 đạt 300%, Năm 3 đạt 450%.</li>
-          </ul>
+        <div class="agenda-grid">
+          
+        <div class="agenda-card">
+          <div class="agenda-num">PHẦN I</div>
+          <div class="agenda-info">
+            <h4>ViOne CRM Platform (Web)</h4>
+            <p>Bảng điều hành 360°, Quản trị kinh doanh, Vận hành BPMN, Dòng tiền & AI Copilot</p>
+          </div>
         </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">PHẦN II</div>
+          <div class="agenda-info">
+            <h4>ViOne Connect App (Mobile)</h4>
+            <p>Danh thiếp số Titanium, Chạm NFC, Quét card AI OCR, Sàn B2B & Vé QR</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">PHẦN III</div>
+          <div class="agenda-info">
+            <h4>Đột Phá Cài Đặt iOS WebClip</h4>
+            <p>Cài đặt trực tiếp 1-chạm không thông qua App Store, chuẩn Standalone Native</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">PHẦN IV</div>
+          <div class="agenda-info">
+            <h4>Giá Trị Doanh Nghiệp & Liên Hệ</h4>
+            <p>Cam kết tối ưu chi phí, tăng tốc doanh số và thông tin hỗ trợ triển khai</p>
+          </div>
+        </div>
+      
+        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 2 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 2 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     
       <section class="slide" id="slide-3">
+        
         <div class="slide-header">
-          <div class="eyebrow">WEB CRM VIONE</div>
-          <h2 class="title">WEB CRM QUẢN TRỊ DOANH NGHIỆP TẬP TRUNG</h2>
-          <div class="subtitle">Điều hành chiến lược C-Level, đa công ty Multi-Tenant và tài chính dòng tiền</div>
+          <div class="eyebrow">PHÂN HỆ 01</div>
+          <h2 class="title">BẢNG ĐIỀU HÀNH 360° & SỨC KHỎE DOANH NGHIỆP</h2>
+          <div class="subtitle">Bức tranh toàn cảnh hoạt động kinh doanh trên một màn hình duy nhất</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Executive Dashboard: Theo dõi sức khỏe dòng tiền, công nợ và panel Danh mục sản phẩm 6 ngành hàng.</li><li>Quy trình việc Kanban: Kéo thả trực quan, kiểm soát checklist chất lượng, cảnh báo trễ hạn tự động.</li><li>Giám sát tải Workload Heatmap: Phát hiện quá tải (> 45h/tuần) để cân bằng nguồn lực công bằng.</li><li>Phê duyệt chi tiền 3 cấp: Người lập -> Kế toán kiểm tra -> Lãnh đạo duyệt; quét chống chi trùng số hóa đơn.</li><li>Chuyển khoản QR ngân hàng Napas 24/7 tự động gạch nợ tức thời trong 1 giây.</li>
-          </ul>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">📊</div>
+          <div class="card-body">
+            <h4 class="card-title">Radar Dòng Tiền Thực</h4>
+            <p class="card-desc">Theo dõi doanh thu, chi phí và số dư tài khoản thời gian thực không độ trễ.</p>
+          </div>
         </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🎯</div>
+          <div class="card-body">
+            <h4 class="card-title">Giám Sát Mục Tiêu OKR</h4>
+            <p class="card-desc">Đo lường tiến độ các mục tiêu kinh doanh và dự án trọng điểm toàn công ty.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <div class="card-body">
+            <h4 class="card-title">Cảnh Báo Vận Hành Sớm</h4>
+            <p class="card-desc">Hệ thống tự động phát hiện các chỉ số bất thường để ban giám đốc xử lý kịp thời.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_02_dashboard_overview.png" alt="BẢNG ĐIỀU HÀNH 360° & SỨC KHỎE DOANH NGHIỆP" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 3 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 3 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     
       <section class="slide" id="slide-4">
+        
         <div class="slide-header">
-          <div class="eyebrow">APP VIONE CONNECT</div>
-          <h2 class="title">APP DI ĐỘNG DOANH NHÂN VIONE CONNECT NATIVE</h2>
-          <div class="subtitle">Nền tảng kết nối giao thương B2B, danh thiếp số 3D Titanium và trợ lý AI</div>
+          <div class="eyebrow">PHÂN HỆ 02</div>
+          <h2 class="title">PHỄU KINH DOANH PIPELINE & SMART CRM HUB</h2>
+          <div class="subtitle">Chuyển đổi tối đa khách hàng tiềm năng thành hợp đồng doanh số</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Mã nguồn thuần Native React Native Expo 52: Tốc độ mượt mà 60fps, lưu phiên offline an toàn.</li><li>Danh thiếp số 3D Titanium mạ vàng Champagne: Tích hợp chip NFC vật lý 1-chạm lưu danh bạ vCard (.vcf).</li><li>Dải khoảnh khắc 24h (Stories) & B2B Moments: Chia sẻ bài học quản trị và cơ hội đầu tư C-Level.</li><li>Nurture List: Tự động cảnh báo đối tác 30 ngày chưa tương tác kèm 3 nút Hẹn 1-1, Nhắn tin, Gọi điện.</li><li>Máy quét OCR AI: Chụp danh thiếp giấy tại hội thảo, trích xuất 7 trường thông tin lưu vào máy tức thì.</li>
-          </ul>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🔄</div>
+          <div class="card-body">
+            <h4 class="card-title">Kanban Deals 5 Giai Đoạn</h4>
+            <p class="card-desc">Kéo thả cơ hội trực quan: Tiếp cận → Khảo sát → Báo giá → Đàm phán → Chốt deal.</p>
+          </div>
         </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📇</div>
+          <div class="card-body">
+            <h4 class="card-title">Hồ Sơ Khách Hàng 360°</h4>
+            <p class="card-desc">Tập trung toàn bộ lịch sử tương tác, hợp đồng, báo giá và công nợ chi tiết.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">⭐</div>
+          <div class="card-body">
+            <h4 class="card-title">Chấm Điểm Tiềm Năng AI</h4>
+            <p class="card-desc">Tự động phân hạng Hot Lead, VIP C-Level và nhắc nhở thương vụ bị bỏ quên.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_07_opportunities_deals.png" alt="PHỄU KINH DOANH PIPELINE & SMART CRM HUB" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 4 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 4 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     
       <section class="slide" id="slide-5">
+        
         <div class="slide-header">
-          <div class="eyebrow">HIỆP HỘI CEO 1983</div>
-          <h2 class="title">PHÂN HỆ HIỆP HỘI CLB DOANH NHÂN CEO 1983</h2>
-          <div class="subtitle">Số hóa toàn diện công tác tổ chức đại hội, biểu quyết và gia hạn hội phí niên liễm</div>
+          <div class="eyebrow">PHÂN HỆ 03</div>
+          <h2 class="title">QUY TRÌNH BPMN TỰ ĐỘNG & CHẤM CÔNG THÔNG MINH</h2>
+          <div class="subtitle">Số hóa bộ máy nhân sự, kiểm soát tiến độ và chống gian lận</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Nhận diện Classic Navy & Amber Gold: Thẻ hội viên VIP dập nổi logo 1983 và mã hội viên duy nhất.</li><li>Cổng soát vé an ninh QR Check-In: Quét thẻ đại biểu tại cửa dưới 0.2 giây/người, chống ùn tắc đại hội.</li><li>Đại hội biểu quyết trực tuyến: Bỏ phiếu tín nhiệm trên app di động, nhảy số thời gian thực lên màn hình LED.</li><li>Quay số may mắn Lucky Draw: Thuật toán mật mã ngẫu nhiên minh bạch có hiệu ứng pháo hoa sân khấu.</li><li>Gia hạn hội phí niên liễm qua VietQR: Tự động gia hạn thẻ hội viên 365 ngày và xuất biên lai điện tử.</li>
-          </ul>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">📑</div>
+          <div class="card-body">
+            <h4 class="card-title">Quy Trình Công Việc BPMN</h4>
+            <p class="card-desc">Phân công nhiệm vụ, thiết lập hạn chót (Deadline) và hạn chế quá tải WIP ≤ 5.</p>
+          </div>
         </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📍</div>
+          <div class="card-body">
+            <h4 class="card-title">Chấm Công GPS & AI FaceID</h4>
+            <p class="card-desc">Điểm danh di động chính xác qua tọa độ văn phòng và nhận diện khuôn mặt.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">👥</div>
+          <div class="card-body">
+            <h4 class="card-title">Giám Sát Nhân Sự Trong Ngày</h4>
+            <p class="card-desc">Cấp lãnh đạo nắm bắt tức thì lịch trình gặp khách hàng ngoài văn phòng.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_12_tasks_bpmn_workflow.png" alt="QUY TRÌNH BPMN TỰ ĐỘNG & CHẤM CÔNG THÔNG MINH" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 5 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 5 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     
       <section class="slide" id="slide-6">
+        
         <div class="slide-header">
-          <div class="eyebrow">BẢO MẬT & KIẾN TRÚC</div>
-          <h2 class="title">MA TRẬN PHÂN QUYỀN RBAC NỀN TẢNG & AN TOÀN DỮ LIỆU</h2>
-          <div class="subtitle">Kiến trúc bảo mật cấp doanh nghiệp và kiểm soát truy cập nghiêm ngặt</div>
+          <div class="eyebrow">PHÂN HỆ 04</div>
+          <h2 class="title">QUẢN TRỊ DÒNG TIỀN & PHÊ DUYỆT CHI 3 CẤP</h2>
+          <div class="subtitle">Minh bạch hóa ngân sách và đối soát thanh toán tự động</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Ma trận RBAC Chức năng Nền tảng: 7 Nhóm quyền x 6 Thao tác (Xem, Tạo, Sửa, Xóa, Duyệt, Xuất).</li><li>Phân định độc lập: Trong chức năng nền tảng của CRM ViOne tuyệt đối không có cấu phần hiệp hội.</li><li>Mã hóa dữ liệu chuẩn quân đội AES-256 ở trạng thái nghỉ, truyền tải an toàn qua TLS 1.3.</li><li>Nhật ký kiểm toán Audit Trail bất biến và giới hạn tần suất truy cập Rate-limit 100 req/phút chống DDoS.</li><li>Cam kết độ sẵn sàng SLA ≥ 99.98%, RPO < 2 giờ, RTO < 30 phút.</li>
-          </ul>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🛡️</div>
+          <div class="card-body">
+            <h4 class="card-title">Quy Trình Duyệt Chi 3 Cấp</h4>
+            <p class="card-desc">Người lập đề xuất → Kế toán kiểm tra chứng từ → Lãnh đạo phê duyệt chi.</p>
+          </div>
         </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">💳</div>
+          <div class="card-body">
+            <h4 class="card-title">Chi Tiền VietQR Napas 24/7</h4>
+            <p class="card-desc">Quét mã QR chuyển khoản ngay lập tức, tự động gạch nợ hóa đơn trong 1 giây.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📈</div>
+          <div class="card-body">
+            <h4 class="card-title">Báo Cáo Thu Chi Đa Chiều</h4>
+            <p class="card-desc">Phân tích chi phí theo phòng ban, dự án và tự động lập báo cáo tài chính.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_14_payment_requests_approval.png" alt="QUẢN TRỊ DÒNG TIỀN & PHÊ DUYỆT CHI 3 CẤP" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 6 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 6 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     
       <section class="slide" id="slide-7">
+        
         <div class="slide-header">
-          <div class="eyebrow">LỘ TRÌNH & NGHIỆM THU</div>
-          <h2 class="title">LỘ TRÌNH TRIỂN KHAI & CAM KẾT BÀN GIAO TOÀN DIỆN</h2>
-          <div class="subtitle">Kế hoạch chuyển giao công nghệ và nghiệm thu 100% tính năng</div>
+          <div class="eyebrow">PHÂN HỆ 05 & 06</div>
+          <h2 class="title">TRỢ LÝ AI COPILOT & MA TRẬN PHÂN QUYỀN RBAC</h2>
+          <div class="subtitle">Trí tuệ nhân tạo điều hành và bảo mật dữ liệu doanh nghiệp đa tầng</div>
         </div>
-        <div class="slide-content">
-          <ul class="bullet-list">
-            <li>Giai đoạn 1 (Tuần 1-2): Khảo sát cấu trúc tổ chức, phân quyền RBAC và cấu hình hạ tầng đám mây.</li><li>Giai đoạn 2 (Tuần 3-4): Nhập khẩu dữ liệu tài khoản, danh mục 6 ngành hàng, thiết lập định vị GPS văn phòng.</li><li>Giai đoạn 3 (Tuần 5-6): Bàn giao thẻ danh thiếp Titanium NFC, đào tạo người dùng và chạy thử nghiệm song song.</li><li>Giai đoạn 4 (Tuần 7-8): Go-Live chính thức 100%, kích hoạt 6 năng lực AI và ký biên bản nghiệm thu.</li>
-          </ul>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🤖</div>
+          <div class="card-body">
+            <h4 class="card-title">AI Copilot Đàm Thoại 24/7</h4>
+            <p class="card-desc">Vấn đáp phân tích số liệu kinh doanh, soạn thảo hợp đồng và văn bản tự động.</p>
+          </div>
         </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🔐</div>
+          <div class="card-body">
+            <h4 class="card-title">Ma Trận Quyền 7 Nhóm x 6 Cấp</h4>
+            <p class="card-desc">Kiểm soát chặt chẽ quyền Xem, Tạo, Sửa, Xóa, Duyệt, Xuất dữ liệu theo chức vụ.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📋</div>
+          <div class="card-body">
+            <h4 class="card-title">Nhật Ký AI Audit Log</h4>
+            <p class="card-desc">Lưu vết minh bạch 100% các hành động trí tuệ nhân tạo và kiểm tra an ninh.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_16_ai_copilot_assistant.png" alt="TRỢ LÝ AI COPILOT & MA TRẬN PHÂN QUYỀN RBAC" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
         <div class="slide-footer">
-          <span>Hệ Sinh Thái ViOne & CEO 1983 · Slide 7 / 7</span>
-          <span>Bản quyền © 2026 VioConnect Group</span>
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 7 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-8">
+        
+        <div class="slide-header">
+          <div class="eyebrow">TÍNH NĂNG 01</div>
+          <h2 class="title">DANH TÍNH SỐ TITANIUM & CHẠM NFC 1-CHẠM</h2>
+          <div class="subtitle">Nâng tầm đẳng cấp thương hiệu cá nhân của nhà lãnh đạo</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">💎</div>
+          <div class="card-body">
+            <h4 class="card-title">Thẻ Doanh Nhân 3D Titanium</h4>
+            <p class="card-desc">Tích hợp mã số doanh nhân độc quyền, chíp NFC thông minh và mã QR động.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📲</div>
+          <div class="card-body">
+            <h4 class="card-title">Chạm NFC 1 Giây Kết Nối</h4>
+            <p class="card-desc">Chạm nhẹ lưng điện thoại để truyền tải toàn bộ thông tin cá nhân và doanh nghiệp.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🗄️</div>
+          <div class="card-body">
+            <h4 class="card-title">Ví Danh Thiếp Số (Card Vault)</h4>
+            <p class="card-desc">Lưu trữ danh bạ đối tác không giới hạn, đồng bộ danh bạ điện thoại vCard 1 chạm.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="phone-mockup-frame">
+              <img src="images/evidence_live_2026/app_09_profile_titanium_nfc.png" alt="DANH TÍNH SỐ TITANIUM & CHẠM NFC 1-CHẠM" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 8 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-9">
+        
+        <div class="slide-header">
+          <div class="eyebrow">TÍNH NĂNG 02</div>
+          <h2 class="title">QUÉT DANH THIẾP AI OCR & LƯU CRM PIPELINE</h2>
+          <div class="subtitle">Biến namecard giấy thành khách hàng tiềm năng tức thì</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">📷</div>
+          <div class="card-body">
+            <h4 class="card-title">Bóc Tách Dữ Liệu Tự Động</h4>
+            <p class="card-desc">AI nhận diện chính xác Họ tên, Chức vụ, Công ty, Số điện thoại và Email.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">⭐</div>
+          <div class="card-body">
+            <h4 class="card-title">Phân Hạng Khách Hàng Ngay</h4>
+            <p class="card-desc">Gắn nhãn Hot Lead, VIP C-Level, Nổi bật, hoặc Cần chăm sóc trong 24h.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">💼</div>
+          <div class="card-body">
+            <h4 class="card-title">Đẩy Thẳng Vào Phễu CRM</h4>
+            <p class="card-desc">Nhập giá trị thương vụ dự kiến, giao nhân sự phụ trách và đồng bộ về Web CRM.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="phone-mockup-frame">
+              <img src="images/evidence_live_2026/app_05_card_scan_ocr_leads.png" alt="QUÉT DANH THIẾP AI OCR & LƯU CRM PIPELINE" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 9 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-10">
+        
+        <div class="slide-header">
+          <div class="eyebrow">TÍNH NĂNG 03</div>
+          <h2 class="title">TRUNG TÂM V-ACTION SHEET & CHĂM SÓC ĐỐI TÁC</h2>
+          <div class="subtitle">Thao tác 1-chạm tiện lợi và nuôi dưỡng mạng lưới quan hệ</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">👑</div>
+          <div class="card-body">
+            <h4 class="card-title">Nút V Mạ Vàng Trung Tâm</h4>
+            <p class="card-desc">Chạm mở nhanh V-Action Sheet: Quét QR, Chạm NFC, Hẹn gặp 1-1, Đăng cơ hội.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🤝</div>
+          <div class="card-body">
+            <h4 class="card-title">Nurture List Nuôi Dưỡng Đối Tác</h4>
+            <p class="card-desc">Nhắc nhở chu kỳ tương tác định kỳ, lên lịch hẹn cà phê trao đổi kinh doanh.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📱</div>
+          <div class="card-body">
+            <h4 class="card-title">Popup Vuốt Tay Cong Tròn</h4>
+            <p class="card-desc">Bottom Sheet bo viền cong 28px mềm mại, thao tác vuốt tay xuống đóng mượt mà.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="phone-mockup-frame">
+              <img src="images/evidence_live_2026/app_06_v_action_sheet.png" alt="TRUNG TÂM V-ACTION SHEET & CHĂM SÓC ĐỐI TÁC" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 10 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-11">
+        
+        <div class="slide-header">
+          <div class="eyebrow">TÍNH NĂNG 04 & 05</div>
+          <h2 class="title">SÀN GIAO THƯƠNG B2B, SỰ KIỆN & VÉ QR VIP</h2>
+          <div class="subtitle">Khơi thông dòng chảy cơ hội kinh doanh và kết nối cộng đồng</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🛒</div>
+          <div class="card-body">
+            <h4 class="card-title">Chợ Nhu Cầu Mua - Bán B2B</h4>
+            <p class="card-desc">Đăng tin tìm nhà cung ứng, mời thầu; thuật toán AI tự động ghép nối đối tác phù hợp.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🎟️</div>
+          <div class="card-body">
+            <h4 class="card-title">Vé Điện Tử E-Ticket QR VIP</h4>
+            <p class="card-desc">Đăng ký sự kiện, nhận mã QR điểm danh check-in tự động tại cửa hội trường.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">💬</div>
+          <div class="card-body">
+            <h4 class="card-title">Hộp Thư Messenger 4 Tabs</h4>
+            <p class="card-desc">Trao đổi đàm phán riêng tư, chat nhóm dự án thời gian thực bảo mật cao.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="phone-mockup-frame">
+              <img src="images/evidence_live_2026/app_08_event_ticket_qr_vip.png" alt="SÀN GIAO THƯƠNG B2B, SỰ KIỆN & VÉ QR VIP" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 11 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-12">
+        
+        <div class="slide-header">
+          <div class="eyebrow">CÔNG NGHỆ ĐỘT PHÁ</div>
+          <h2 class="title">CÀI ĐẶT 1-CHẠM IOS (.MOBILECONFIG) & NATIVE APK</h2>
+          <div class="subtitle">Đơn giản hóa tuyệt đối trải nghiệm phân phối ứng dụng di động</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🍎</div>
+          <div class="card-body">
+            <h4 class="card-title">Apple WebClip Profile 1-Chạm</h4>
+            <p class="card-desc">Cài đặt thẳng ra Màn hình chính iPhone từ Safari, không chờ duyệt App Store.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🚀</div>
+          <div class="card-body">
+            <h4 class="card-title">Trải Nghiệm Toàn Màn Hình</h4>
+            <p class="card-desc">Chạy độc lập Standalone, hỗ trợ sinh trắc học Face ID, tốc độ tải 60fps mượt mà.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📦</div>
+          <div class="card-body">
+            <h4 class="card-title">Hệ Sinh Thái Đa Nền Tảng</h4>
+            <p class="card-desc">Bản iOS IPA TestFlight + Android APK Release độc lập (81.39MB) + PWA Web.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="phone-mockup-frame">
+              <img src="images/evidence_live_2026/app_01_mobile_login.png" alt="CÀI ĐẶT 1-CHẠM IOS (.MOBILECONFIG) & NATIVE APK" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 12 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-13">
+        
+        <div class="closing-container">
+          <div class="eyebrow">KẾT LUẬN & LIÊN HỆ</div>
+          <h2 class="closing-title">XIN CHÂN THÀNH CẢM ƠN QUÝ DOANH NGHIỆP!</h2>
+          <p class="closing-subtitle">ViOne CRM · Nền tảng kiến tạo lợi thế cạnh tranh vượt trội trong kỷ nguyên số</p>
+          <div class="takeaways-grid">
+            
+        <div class="takeaway-card">
+          <div class="takeaway-num">01</div>
+          <h4>Tối Ưu 40% Chi Phí</h4>
+          <p>Cắt giảm lãng phí thời gian và nhân lực nhờ tự động hóa quy trình nghiệp vụ.</p>
+        </div>
+      
+        <div class="takeaway-card">
+          <div class="takeaway-num">02</div>
+          <h4>Tăng 35% Doanh Số</h4>
+          <p>Chăm sóc khách hàng bài bản, kiểm soát chặt chẽ phễu bán hàng B2B.</p>
+        </div>
+      
+        <div class="takeaway-card">
+          <div class="takeaway-num">03</div>
+          <h4>Ra Quyết Định Tức Thì</h4>
+          <p>Ban lãnh đạo nắm bắt dữ liệu điều hành chuẩn xác theo thời gian thực.</p>
+        </div>
+      
+          </div>
+          <div class="contact-box">
+            <div class="contact-item"><strong>🌐 Website:</strong> vione.vn</div>
+            <div class="contact-item"><strong>📞 Hotline:</strong> 1900 8888</div>
+            <div class="contact-item"><strong>✉️ Email:</strong> contact@vione.vn</div>
+            <div class="contact-item"><strong>🏢 Trụ sở:</strong> Hà Nội & TP. Hồ Chí Minh</div>
+          </div>
+          <div class="closing-qa">SẴN SÀNG GIẢI ĐÁP CÂU HỎI (Q&A SESSION)</div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>HỆ SINH THÁI DOANH NGHIỆP TOÀN DIỆN VIONE & VIONE CONNECT APP · Trang 13 / 13</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
         </div>
       </section>
     

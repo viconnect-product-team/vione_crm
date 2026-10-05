@@ -130,6 +130,27 @@ export function MomentVoiceNote({
       }
       onApply(res.note);
       setApplied(true);
+
+      // Lưu vết khoảnh khắc có ghi âm vào mục Lịch sử ở Trang chủ
+      try {
+        const stored = localStorage.getItem("vba_voice_moments_history") || "[]";
+        const list: any[] = JSON.parse(stored);
+        list.unshift({
+          id: `vm-${Date.now()}`,
+          title: "Khoảnh khắc ghi âm mới",
+          author: "Hội viên ViOne",
+          date: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) + " Hôm nay",
+          duration: fmt(elapsed),
+          location: "Hà Nội, Việt Nam",
+          transcript: res.note,
+          audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+          createdAt: new Date().toISOString(),
+        });
+        localStorage.setItem("vba_voice_moments_history", JSON.stringify(list.slice(0, 30)));
+        window.dispatchEvent(new Event("voice-moment-saved"));
+      } catch (err) {
+        console.warn("Failed to save voice moment history:", err);
+      }
     } catch {
       setErrorKey("bc.mobile.moment.voice.error.unavailable");
     } finally {

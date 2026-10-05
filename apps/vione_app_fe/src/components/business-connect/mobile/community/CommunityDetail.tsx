@@ -19,6 +19,7 @@ import {
   Tag,
   Briefcase,
   CheckCircle2,
+  Settings,
 } from "lucide-react";
 import { useFmt, useT } from "@/lib/i18n";
 import { useCommunityDetail, useCommunityMembers } from "@/hooks/use-community";
@@ -31,6 +32,8 @@ import { BusinessConnectTopBar } from "../BusinessConnectTopBar";
 import { CommunityInviteButton } from "./CommunityInviteSheet";
 import { CreateOpportunityModal } from "./CreateOpportunityModal";
 import { CreateNewsModal } from "./CreateNewsModal";
+import { EditCommunityModal } from "./EditCommunityModal";
+import { ShareEventModal } from "./ShareEventModal";
 import {
   CommunityAvatar,
   CommunityError,
@@ -39,8 +42,10 @@ import {
 } from "./CommunityHome";
 import { monthLabel } from "./CommunityEvents";
 import { daysLeftLabel, opportunityCategoryLabel } from "./CommunityOpportunities";
+import { CompanyTaskManagement } from "./CompanyTaskManagement";
+import { CompanySupervisionView } from "./CompanySupervisionView";
 
-type CommunityTab = "all" | "opportunities" | "news" | "events" | "members";
+type CommunityTab = "tasks" | "supervision" | "all" | "opportunities" | "news" | "events" | "members";
 
 export function CommunityDetail({ communityId }: { communityId: string }) {
   const t = useT();
@@ -59,6 +64,13 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
   const [activeTab, setActiveTab] = useState<CommunityTab>("all");
   const [createOppModalOpen, setCreateOppModalOpen] = useState(false);
   const [createNewsModalOpen, setCreateNewsModalOpen] = useState(false);
+  const [editCommunityOpen, setEditCommunityOpen] = useState(false);
+  const [shareEventOpen, setShareEventOpen] = useState(false);
+
+  const isCompany =
+    detail?.community?.communityType === "company_internal" ||
+    detail?.community?.name?.toLowerCase().includes("công ty") ||
+    detail?.community?.name?.toLowerCase().includes("tập đoàn");
 
   const isMember = detail?.community?.isMember ?? true;
 
@@ -114,11 +126,17 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
 
               {/* Category Pill Tag on Banner */}
               <div className="absolute bottom-3 right-4 z-10">
-                <span
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider backdrop-blur-md bg-black/65 shadow-md border border-amber-400/40 text-amber-300"
-                >
-                  <span>{visuals.category}</span>
-                </span>
+                {detail.community.communityType === "company_internal" || 
+                 detail.community.name?.toLowerCase().includes("công ty") || 
+                 detail.community.name?.toLowerCase().includes("tập đoàn") ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider backdrop-blur-md bg-black/80 shadow-md border border-[#DFB76C] text-[#DFB76C]">
+                    <span>🏢 DOANH NGHIỆP NỘI BỘ</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider backdrop-blur-md bg-black/65 shadow-md border border-amber-400/40 text-amber-300">
+                    <span>🤝 MẠNG LƯỚI DOANH NHÂN B2B</span>
+                  </span>
+                )}
               </div>
             </div>
 
@@ -141,42 +159,93 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
               </div>
             </section>
 
-            {/* Quick Badges */}
-            <section className="mt-4 flex flex-wrap gap-2">
-              <span className="rounded-full border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3 py-1 text-[12px] font-medium text-[var(--bc-mobile-muted)]">
-                {t("bc.mobile.community.yourRole")}:{" "}
-                {isMember
-                  ? detail.community.viewerRole === "admin"
-                    ? t("bc.mobile.community.role.admin")
-                    : t("bc.mobile.community.role.member")
-                  : "Chưa tham gia"}
-              </span>
-              {detail.community.memberCount !== null ? (
+            {/* Quick Badges & Admin Actions */}
+            <section className="mt-4 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3 py-1 text-[12px] font-medium text-[var(--bc-mobile-muted)]">
-                  {t("bc.mobile.community.memberCount", { count: detail.community.memberCount })}
+                  {t("bc.mobile.community.yourRole")}:{" "}
+                  {isMember
+                    ? detail.community.viewerRole === "admin"
+                      ? t("bc.mobile.community.role.admin")
+                      : t("bc.mobile.community.role.member")
+                    : "Chưa tham gia"}
                 </span>
+                {detail.community.memberCount !== null ? (
+                  <span className="rounded-full border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-3 py-1 text-[12px] font-medium text-[var(--bc-mobile-muted)]">
+                    {t("bc.mobile.community.memberCount", { count: detail.community.memberCount })}
+                  </span>
+                ) : null}
+              </div>
+
+              {/* Nút Quản Trị Viên: Chỉnh sửa tên, ảnh, thông tin cộng đồng */}
+              {(detail.community.viewerRole === "admin" || (detail.community as any).canEdit) ? (
+                <button
+                  type="button"
+                  onClick={() => setEditCommunityOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#DFB76C] bg-[#DFB76C]/15 text-[#DFB76C] text-[12px] font-bold hover:bg-[#DFB76C]/25 active:scale-95 transition-all shadow-xs cursor-pointer"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  <span>⚙️ Chỉnh sửa cộng đồng</span>
+                </button>
               ) : null}
             </section>
 
-            {/* Hai Nút Đăng Cơ Hội & Đăng Bài Viết Nổi Bật Chuẩn Màu Nút ViOne */}
-            <div className="mt-4 grid grid-cols-2 gap-2.5">
-              <button
-                type="button"
-                onClick={() => setCreateOppModalOpen(true)}
-                className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl font-bold text-[13px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
-              >
-                <PlusCircle className="w-4 h-4 text-black" />
-                <span>+ Đăng cơ hội</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setCreateNewsModalOpen(true)}
-                className="flex items-center justify-center gap-1.5 py-3 px-3 rounded-2xl font-bold text-[13px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
-              >
-                <Newspaper className="w-4 h-4 text-black" />
-                <span>+ Đăng bài viết</span>
-              </button>
-            </div>
+            {/* Các Nút Hành Động Theo Chuẩn 2 Kiểu Cộng Đồng */}
+            {isCompany ? (
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("tasks")}
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl font-bold text-[12px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                >
+                  <Briefcase className="w-3.5 h-3.5 text-black" />
+                  <span>+ Giao việc</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCreateNewsModalOpen(true)}
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl font-bold text-[12px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                >
+                  <Newspaper className="w-3.5 h-3.5 text-black" />
+                  <span>+ Đăng bài</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShareEventOpen(true)}
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl font-bold text-[12px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                >
+                  <Calendar className="w-3.5 h-3.5 text-black" />
+                  <span>+ Chia sẻ SK</span>
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setCreateOppModalOpen(true)}
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl font-bold text-[12px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 text-black" />
+                  <span>+ Đăng cơ hội</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCreateNewsModalOpen(true)}
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl font-bold text-[12px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                >
+                  <Newspaper className="w-3.5 h-3.5 text-black" />
+                  <span>+ Đăng bài</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShareEventOpen(true)}
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl font-bold text-[12px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                >
+                  <Calendar className="w-3.5 h-3.5 text-black" />
+                  <span>+ Chia sẻ SK</span>
+                </button>
+              </div>
+            )}
 
             {!isMember ? (
               <section className="mt-4 rounded-2xl border border-amber-400/30 bg-gradient-to-r from-amber-500/15 via-amber-400/10 to-transparent p-4 flex items-center justify-between gap-3 shadow-md">
@@ -222,8 +291,8 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
                 label={t("bc.mobile.community.stat.events")}
               />
               <StatTile
-                value={detail.openOpportunityCount}
-                label={t("bc.mobile.community.stat.opportunities")}
+                value={isCompany ? (activity.preview?.openOpportunities?.length || 0) : detail.openOpportunityCount}
+                label={isCompany ? "Hoạt động" : t("bc.mobile.community.stat.opportunities")}
               />
             </section>
 
@@ -234,53 +303,57 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
               />
             </section>
 
-            {/* Modern Streamlined Navigation Tabs: Tinh gọn UI theo yêu cầu */}
-            <div className="mt-6 flex items-center gap-1 overflow-x-auto pb-1 border-b border-[var(--bc-mobile-border)]">
-              {[
-                { id: "all", label: "Tất cả" },
-                {
-                  id: "opportunities",
-                  label: `Cơ hội (${detail.openOpportunityCount || activity.preview?.openOpportunities?.length || 0})`,
-                },
-                { id: "news", label: "Bài viết & Tin tức" },
-                { id: "events", label: `Sự kiện (${detail.upcomingEvents.length || 0})` },
-                { id: "members", label: "Hội viên" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`whitespace-nowrap px-3.5 py-2 text-[12.5px] font-bold rounded-t-xl transition-all border-b-2 cursor-pointer ${
-                    activeTab === tab.id
-                      ? "border-[#D8B282] text-[#D8B282] bg-[#D8B282]/10"
-                      : "border-transparent text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)]"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            {/* Modern Streamlined Navigation Tabs: Phân định rạch ròi 2 kiểu cộng đồng */}
+            <div className="mt-6 flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-[var(--bc-mobile-border)] [scrollbar-width:none]">
+              {(isCompany
+                ? [
+                    { id: "tasks", label: "⚡ Giao việc & Nhận việc" },
+                    { id: "supervision", label: "👁️ Giám sát CRM & Nhân sự" },
+                    { id: "news", label: "Bài viết nội bộ" },
+                    { id: "events", label: `Lịch họp & Sự kiện (${detail.upcomingEvents.length || 0})` },
+                    { id: "members", label: "Hội viên" },
+                  ]
+                : [
+                    {
+                      id: "opportunities",
+                      label: `⭐ Cơ hội B2B (${detail.openOpportunityCount || activity.preview?.openOpportunities?.length || 0})`,
+                    },
+                    { id: "news", label: "Bài viết & Tin tức" },
+                    { id: "events", label: `Sự kiện B2B (${detail.upcomingEvents.length || 0})` },
+                    { id: "members", label: "Danh bạ đối tác" },
+                  ]
+              ).map((tab) => {
+                const isSelected = activeTab === tab.id || (activeTab === "all" && tab.id === (isCompany ? "tasks" : "opportunities"));
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`whitespace-nowrap px-3.5 py-2 text-[12.5px] font-bold rounded-t-xl transition-all border-b-2 cursor-pointer ${
+                      isSelected
+                        ? "border-[#DFB76C] text-[#DFB76C] bg-[#DFB76C]/10"
+                        : "border-transparent text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)]"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Tab Contents: Tinh gọn & Đầy đủ thông tin */}
-            {activeTab === "all" ? (
-              <>
-                <StreamlinedOpportunitiesSection
+            {activeTab === "tasks" || (isCompany && activeTab === "all") ? (
+              <div className="mt-4">
+                <CompanyTaskManagement
                   communityId={communityId}
-                  opportunities={activity.preview?.openOpportunities ?? []}
-                  initialLoading={activity.initialLoading}
-                  onOpenCreate={() => setCreateOppModalOpen(true)}
+                  isDirector={detail.community.viewerRole === "admin"}
                 />
-
-                <StreamlinedNewsSection
-                  communityId={communityId}
-                  items={news.items}
-                  initialLoading={news.initialLoading}
-                  onOpenCreate={() => setCreateNewsModalOpen(true)}
-                />
-
-                <MembersPreview communityId={communityId} />
-              </>
-            ) : activeTab === "opportunities" ? (
+              </div>
+            ) : activeTab === "supervision" ? (
+              <div className="mt-4">
+                <CompanySupervisionView communityId={communityId} />
+              </div>
+            ) : activeTab === "opportunities" || (!isCompany && activeTab === "all") ? (
               <StreamlinedOpportunitiesSection
                 communityId={communityId}
                 opportunities={activity.preview?.openOpportunities ?? []}
@@ -308,7 +381,7 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
               <MembersPreview communityId={communityId} />
             )}
 
-            {/* Modals for Create Opportunity & News */}
+            {/* Modals for Create Opportunity, News, Edit Community & Share Event */}
             <CreateOpportunityModal
               communityId={communityId}
               communityName={detail.community.name}
@@ -327,6 +400,32 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
               onClose={() => setCreateNewsModalOpen(false)}
               onSuccess={() => {
                 news.retry();
+                retry();
+              }}
+            />
+
+            <EditCommunityModal
+              communityId={communityId}
+              currentName={detail.community.name}
+              currentLogoUrl={detail.community.logoUrl}
+              currentBannerUrl={detail.community.bannerUrl}
+              currentShortDescription={detail.community.shortDescription}
+              currentDescription={detail.community.description}
+              currentType={detail.community.communityType || (isCompany ? "company_internal" : "b2b_networking")}
+              isOpen={editCommunityOpen}
+              onClose={() => setEditCommunityOpen(false)}
+              onSuccess={() => {
+                retry();
+              }}
+            />
+
+            <ShareEventModal
+              communityId={communityId}
+              communityName={detail.community.name}
+              isOpen={shareEventOpen}
+              onClose={() => setShareEventOpen(false)}
+              onSuccess={() => {
+                activity.retry();
                 retry();
               }}
             />

@@ -393,7 +393,7 @@ export const CommunityScreen: React.FC = () => {
     <SafeAreaView
       style={[
         styles.safeArea,
-        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+        { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
       ]}
       edges={["top"]}
     >
@@ -401,7 +401,7 @@ export const CommunityScreen: React.FC = () => {
       <View
         style={[
           styles.header,
-          { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
         ]}
       >
         <View style={styles.headerBrand}>
@@ -1034,7 +1034,7 @@ export const CommunityScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   header: {
     flexDirection: "row",
@@ -1043,7 +1043,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 6,
     paddingBottom: 10,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   headerBrand: {
     justifyContent: "center",

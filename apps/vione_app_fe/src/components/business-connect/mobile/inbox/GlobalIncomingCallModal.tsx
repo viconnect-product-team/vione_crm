@@ -136,13 +136,13 @@ export function GlobalIncomingCallModal() {
   return (
     <>
       {incomingCall && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 p-4 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-300">
-          <div className="relative w-full max-w-sm rounded-3xl border border-[#D8B282]/60 bg-gradient-to-b from-[#161D2B]/98 via-[#0F1420]/98 to-[#090C14]/99 p-6 text-white shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_40px_rgba(216,178,130,0.2)] flex flex-col items-center text-center overflow-hidden">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-950/60 dark:bg-black/85 p-4 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-300">
+          <div className="relative w-full max-w-sm rounded-3xl border border-[#DFB76C]/60 bg-gradient-to-b from-white via-[#FAF8F5] to-[#F5F0E8] dark:from-[#161D2B]/98 dark:via-[#0F1420]/98 dark:to-[#090C14]/99 p-6 text-slate-900 dark:text-white shadow-[0_20px_60px_rgba(216,178,130,0.25),0_0_40px_rgba(216,178,130,0.15)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_40px_rgba(216,178,130,0.2)] flex flex-col items-center text-center overflow-hidden">
             {/* Ambient Pulse Glow */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-[#D8B282]/20 blur-[60px] pointer-events-none animate-pulse" />
 
             {/* Badge */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#D8B282]/50 bg-[#D8B282]/15 text-[11px] font-bold uppercase tracking-wider text-[#F0D59D] mb-6">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#D8B282]/50 bg-[#D8B282]/20 dark:bg-[#D8B282]/15 text-[11px] font-bold uppercase tracking-wider text-[#8C653B] dark:text-[#F0D59D] mb-6">
               {incomingCall.callType === "video" ? <Video className="w-3.5 h-3.5" /> : <Phone className="w-3.5 h-3.5" />}
               <span>{incomingCall.callType === "video" ? "Cuộc gọi Video đến" : "Cuộc gọi thoại đến"}</span>
             </div>
@@ -155,20 +155,20 @@ export function GlobalIncomingCallModal() {
                 <img
                   src={incomingCall.callerAvatar}
                   alt={incomingCall.callerName}
-                  className="relative w-24 h-24 rounded-full object-cover ring-3 ring-[#F0D59D] shadow-2xl"
+                  className="relative w-24 h-24 rounded-full object-cover ring-3 ring-[#D8B282] shadow-2xl"
                 />
               ) : (
-                <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-[#2F271D] via-[#1F1912] to-[#120F0B] border-2 border-[#D8B282] flex items-center justify-center text-[#F0D59D] text-3xl font-extrabold shadow-2xl">
+                <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-[#F6E1C3] via-[#D8B282] to-[#8C653B] dark:from-[#2F271D] dark:via-[#1F1912] dark:to-[#120F0B] border-2 border-[#D8B282] flex items-center justify-center text-slate-950 dark:text-[#F0D59D] text-3xl font-extrabold shadow-2xl">
                   {incomingCall.callerName.charAt(0).toUpperCase()}
                 </div>
               )}
             </div>
 
-            <h3 className="text-xl font-bold text-white tracking-tight">{incomingCall.callerName}</h3>
+            <h3 className="text-2xl font-black !text-slate-950 dark:!text-white tracking-tight">{incomingCall.callerName}</h3>
             {incomingCall.callerTitle && (
-              <p className="text-xs text-[#9DA3AE] mt-1 max-w-[240px] truncate">{incomingCall.callerTitle}</p>
+              <p className="text-xs font-semibold text-slate-600 dark:text-[#9DA3AE] mt-1 max-w-[240px] truncate">{incomingCall.callerTitle}</p>
             )}
-            <p className="text-xs text-[#D8B282] mt-2 flex items-center gap-1 animate-pulse">
+            <p className="text-xs font-bold text-[#8C653B] dark:text-[#D8B282] mt-2 flex items-center gap-1 animate-pulse">
               <Sparkles className="w-3.5 h-3.5" /> Đang đổ chuông mời bạn kết nối...
             </p>
 
@@ -184,7 +184,7 @@ export function GlobalIncomingCallModal() {
                 >
                   <PhoneOff className="w-6 h-6" />
                 </button>
-                <span className="text-[11px] text-red-300 font-medium">Từ chối</span>
+                <span className="text-[11px] text-red-600 dark:text-red-300 font-bold">Từ chối</span>
               </div>
 
               {/* Accept Button */}
@@ -198,7 +198,7 @@ export function GlobalIncomingCallModal() {
                 >
                   <Phone className="w-6 h-6" />
                 </button>
-                <span className="text-[11px] text-green-300 font-medium">Trả lời</span>
+                <span className="text-[11px] text-emerald-700 dark:text-green-300 font-bold">Trả lời</span>
               </div>
             </div>
           </div>

@@ -12,6 +12,7 @@ export class CreateCommunityDto {
   slug?: string;
   tagline?: string;
   about?: string;
+  communityType?: 'b2b_networking' | 'company_internal';
 }
 
 function cleanCommunityId(communityId: string): string {
@@ -480,5 +481,85 @@ export class CommunityController {
   @UseGuards(JwtAuthGuard)
   async removeCommunityOpportunityAttachment(@Request() req, @Param('attachmentId') attachmentId: string) {
     return this.connectAppService.removeCommunityOpportunityAttachment(req.user.id, attachmentId);
+  }
+
+  // =========================================================================
+  // --- PHÂN HỆ DOANH NGHIỆP NỘI BỘ: NHÂN VIÊN, GIAO VIỆC & GIÁM SÁT CRM ---
+  // =========================================================================
+
+  @Get(':communityId/employees')
+  async listCompanyEmployees(
+    @Request() req,
+    @Param('communityId') communityId: string,
+  ) {
+    return this.connectAppService.listCompanyEmployees(req.user?.id, cleanCommunityId(communityId));
+  }
+
+  @Post(':communityId/employees')
+  @UseGuards(JwtAuthGuard)
+  async addCompanyEmployee(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Body() body: any,
+  ) {
+    return this.connectAppService.addCompanyEmployee(req.user.id, cleanCommunityId(communityId), body);
+  }
+
+  @Get(':communityId/tasks')
+  async listCompanyTasks(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Query('status') status?: string,
+  ) {
+    return this.connectAppService.listCompanyTasks(req.user?.id, cleanCommunityId(communityId), status);
+  }
+
+  @Post(':communityId/tasks')
+  @UseGuards(JwtAuthGuard)
+  async createCompanyTask(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Body() body: any,
+  ) {
+    return this.connectAppService.createCompanyTask(req.user.id, cleanCommunityId(communityId), body);
+  }
+
+  @Post(':communityId/tasks/:taskId/accept')
+  @UseGuards(JwtAuthGuard)
+  async acceptCompanyTask(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Param('taskId') taskId: string,
+  ) {
+    return this.connectAppService.acceptCompanyTask(req.user.id, cleanCommunityId(communityId), taskId);
+  }
+
+  @Patch(':communityId/tasks/:taskId/status')
+  @UseGuards(JwtAuthGuard)
+  async updateCompanyTaskStatus(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Param('taskId') taskId: string,
+    @Body('status') status: 'assigned' | 'in_progress' | 'completed' | 'cancelled',
+  ) {
+    return this.connectAppService.updateCompanyTaskStatus(req.user.id, cleanCommunityId(communityId), taskId, status);
+  }
+
+  @Get(':communityId/supervision')
+  async getCompanySupervision(
+    @Request() req,
+    @Param('communityId') communityId: string,
+  ) {
+    return this.connectAppService.getCompanySupervision(req.user?.id, cleanCommunityId(communityId));
+  }
+
+  @Post(':communityId/customer-care-logs')
+  @UseGuards(JwtAuthGuard)
+  async addCustomerCareLog(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Body() body: any,
+  ) {
+    return this.connectAppService.addCustomerCareLog(req.user.id, cleanCommunityId(communityId), body);
   }
 }

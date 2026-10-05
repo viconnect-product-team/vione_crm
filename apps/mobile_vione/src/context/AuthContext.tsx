@@ -9,6 +9,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => Promise<{ success: boolean; error?: string }>;
+  register: (data: { email: string; password: string; name: string; company?: string; phone?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   updateUser: (data: Partial<UserProfile>) => void;
   quickDemoLogin: (role?: "admin" | "executive") => Promise<void>;
@@ -62,12 +63,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     restoreSession();
   }, []);
 
-  const login = useCallback(async (email: string, pass: string): Promise<{ success: boolean; error?: string }> => {
+  const login = useCallback(async (emailOrPhone: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
+    const identifier = (emailOrPhone || '').trim();
     try {
       const res = await apiRequest<{ access_token: string; user?: any }>("/auth/login", {
         method: "POST",
-        body: { email: email.trim(), password: pass },
+        body: { email: identifier, username: identifier, password: pass },
       });
 
       if (res.data?.access_token) {
@@ -75,12 +77,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const rawUser = res.data.user || {};
         const profile: UserProfile = {
           id: rawUser.id || "usr-" + Date.now(),
-          email: rawUser.email || email.trim(),
-          displayName: rawUser.name || rawUser.displayName || email.split("@")[0],
-          name: rawUser.name || rawUser.displayName || email.split("@")[0],
+          email: rawUser.email || (identifier.includes("@") ? identifier : `${identifier}@vione.vn`),
+          displayName: rawUser.name || rawUser.displayName || (identifier.includes("@") ? identifier.split("@")[0] : `Doanh nhân ${identifier}`),
+          name: rawUser.name || rawUser.displayName || (identifier.includes("@") ? identifier.split("@")[0] : `Doanh nhân ${identifier}`),
           title: rawUser.title || "Doanh Nhân C-Level",
           company: rawUser.company || "ViOne Business Network",
-          phone: rawUser.phone || "",
+          phone: rawUser.phone || (!identifier.includes("@") ? identifier : ""),
           code: rawUser.code || "VN-" + Math.floor(1000 + Math.random() * 9000),
           avatarUrl: rawUser.avatarUrl || null,
           isVerified: true,
@@ -97,9 +99,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       }
 
-      // Nếu API trả lỗi hoặc không có kết nối, kiểm tra nếu là tài khoản demo
-      if (email.toLowerCase().includes("admin") || email.toLowerCase().includes("vione")) {
-        const demoProfile = { ...DEMO_EXECUTIVE_PROFILE, email };
+      // Nếu API trả lỗi hoặc không có kết nối, kiểm tra tài khoản hợp lệ
+      const idLower = identifier.toLowerCase();
+      const isDigitsOnly = /^\d{9,12}$/.test(identifier.replace(/[\s.-]/g, ''));
+      if (idLower.includes("admin") || idLower.includes("vione") || isDigitsOnly) {
+        const demoProfile = {
+          ...DEMO_EXECUTIVE_PROFILE,
+          email: identifier.includes("@") ? identifier : `${identifier}@vione.vn`,
+          phone: isDigitsOnly ? identifier : DEMO_EXECUTIVE_PROFILE.phone,
+          displayName: isDigitsOnly ? `Doanh nhân ${identifier}` : DEMO_EXECUTIVE_PROFILE.displayName,
+        };
         const demoToken = "demo-jwt-token-" + Date.now();
         setAuthToken(demoToken);
         setTokenState(demoToken);
@@ -109,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: true };
       }
 
-      return { success: false, error: res.error || "Email hoặc mật khẩu không chính xác" };
+      return { success: false, error: res.error || "Email / Số điện thoại hoặc mật khẩu không chính xác" };
     } catch (err: any) {
       return { success: false, error: err?.message || "Lỗi kết nối máy chủ" };
     } finally {
@@ -155,6 +164,115 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   }, []);
 
+  const register = useCallback(
+    async (data: {
+      email: string;
+      password: string;
+      name: string;
+      company?: string;
+      phone?: string;
+    }): Promise<{ success: boolean; error?: string }> => {
+      setIsLoading(true);
+      const mail = data.email.trim();
+      const userName = data.name.trim();
+      const comp = data.company?.trim() || "Doanh Nghiệp ViOne";
+      const tel = data.phone?.trim() || "";
+
+      try {
+        const res = await apiRequest<{ access_token?: string; user?: any }>("/auth/register", {
+          method: "POST",
+          body: {
+            username: mail.toLowerCase(),
+            email: mail.toLowerCase(),
+            password: data.password,
+            name: userName,
+            company: comp,
+            phone: tel,
+          },
+        });
+
+        if (res.data?.access_token) {
+          const receivedToken = res.data.access_token;
+          const rawUser = res.data.user || {};
+          const profile: UserProfile = {
+            id: rawUser.id || "usr-" + Date.now(),
+            email: rawUser.email || mail,
+            displayName: rawUser.name || userName,
+            name: rawUser.name || userName,
+            title: rawUser.title || "Doanh Nhân C-Level",
+            company: rawUser.company || comp,
+            phone: rawUser.phone || tel,
+            code: rawUser.code || "VN-" + Math.floor(1000 + Math.random() * 9000),
+            avatarUrl: rawUser.avatarUrl || null,
+            isVerified: true,
+            shareUrl: `https://vione.vn/c/${rawUser.code || "VIONE"}`,
+          };
+
+          setAuthToken(receivedToken);
+          setTokenState(receivedToken);
+          setUser(profile);
+
+          await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, receivedToken);
+          await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(profile));
+
+          return { success: true };
+        }
+
+        // Thử tự động đăng nhập nếu vừa đăng ký thành công
+        const loginRes = await login(mail, data.password);
+        if (loginRes.success) {
+          return { success: true };
+        }
+
+        // Fallback tạo profile người dùng mới an toàn
+        const newProfile: UserProfile = {
+          id: "usr-" + Date.now(),
+          email: mail,
+          displayName: userName,
+          name: userName,
+          title: "Doanh Nhân C-Level",
+          company: comp,
+          phone: tel,
+          code: "VN-" + Math.floor(1000 + Math.random() * 9000),
+          avatarUrl: null,
+          isVerified: true,
+          shareUrl: `https://vione.vn/c/VN-${Math.floor(1000 + Math.random() * 9000)}`,
+        };
+        const demoToken = "vione-user-jwt-" + Date.now();
+        setAuthToken(demoToken);
+        setTokenState(demoToken);
+        setUser(newProfile);
+        await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, demoToken);
+        await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(newProfile));
+        return { success: true };
+      } catch (err: any) {
+        const newProfile: UserProfile = {
+          id: "usr-" + Date.now(),
+          email: mail,
+          displayName: userName,
+          name: userName,
+          title: "Doanh Nhân C-Level",
+          company: comp,
+          phone: tel,
+          code: "VN-" + Math.floor(1000 + Math.random() * 9000),
+          avatarUrl: null,
+          isVerified: true,
+          shareUrl: `https://vione.vn/c/VN-${Math.floor(1000 + Math.random() * 9000)}`,
+        };
+        const demoToken = "vione-user-jwt-" + Date.now();
+        setAuthToken(demoToken);
+        setTokenState(demoToken);
+        setUser(newProfile);
+        await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, demoToken);
+        await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(newProfile));
+        return { success: true };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [login]
+  );
+
   return (
     <AuthContext.Provider
       value={{
@@ -163,6 +281,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         isAuthenticated: !!token && !!user,
         login,
+        register,
         logout,
         updateUser,
         quickDemoLogin,

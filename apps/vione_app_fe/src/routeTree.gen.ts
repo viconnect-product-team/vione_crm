@@ -23,6 +23,7 @@ import { Route as SegmentsRouteImport } from './routes/segments'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RenewalRouteImport } from './routes/renewal'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as PwaRouteImport } from './routes/pwa'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as PerksRouteImport } from './routes/perks'
@@ -38,6 +39,7 @@ import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as MRouteImport } from './routes/m'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LandingRouteImport } from './routes/landing'
+import { Route as IosRouteImport } from './routes/ios'
 import { Route as InstallRouteImport } from './routes/install'
 import { Route as IncomeRouteImport } from './routes/income'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -61,6 +63,7 @@ import { Route as BenefitsRouteImport } from './routes/benefits'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as AssociationRouteImport } from './routes/association'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as AiRouteImport } from './routes/ai'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as AccountSettingsRouteImport } from './routes/account-settings'
@@ -314,6 +317,11 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PwaRoute = PwaRouteImport.update({
+  id: '/pwa',
+  path: '/pwa',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -387,6 +395,11 @@ const LoginRoute = LoginRouteImport.update({
 const LandingRoute = LandingRouteImport.update({
   id: '/landing',
   path: '/landing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IosRoute = IosRouteImport.update({
+  id: '/ios',
+  path: '/ios',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InstallRoute = InstallRouteImport.update({
@@ -502,6 +515,11 @@ const AttendanceRoute = AttendanceRouteImport.update({
 const AssociationRoute = AssociationRouteImport.update({
   id: '/association',
   path: '/association',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AiRoute = AiRouteImport.update({
@@ -1470,6 +1488,7 @@ export interface FileRoutesByFullPath {
   '/account-settings': typeof AccountSettingsRouteWithChildren
   '/activity': typeof ActivityRoute
   '/ai': typeof AiRoute
+  '/app': typeof AppRoute
   '/association': typeof AssociationRouteWithChildren
   '/attendance': typeof AttendanceRoute
   '/auth': typeof AuthRoute
@@ -1493,6 +1512,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
+  '/ios': typeof IosRoute
   '/landing': typeof LandingRouteWithChildren
   '/login': typeof LoginRoute
   '/m': typeof MRouteWithChildren
@@ -1508,6 +1528,7 @@ export interface FileRoutesByFullPath {
   '/perks': typeof PerksRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
+  '/pwa': typeof PwaRoute
   '/register': typeof RegisterRoute
   '/renewal': typeof RenewalRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -1705,6 +1726,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRoute
   '/ai': typeof AiRoute
+  '/app': typeof AppRoute
   '/attendance': typeof AttendanceRoute
   '/auth': typeof AuthRoute
   '/benefits': typeof BenefitsRoute
@@ -1721,6 +1743,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
+  '/ios': typeof IosRoute
   '/login': typeof LoginRoute
   '/meetings': typeof MeetingsRoute
   '/messages': typeof MessagesRoute
@@ -1732,6 +1755,7 @@ export interface FileRoutesByTo {
   '/perks': typeof PerksRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
+  '/pwa': typeof PwaRoute
   '/register': typeof RegisterRoute
   '/renewal': typeof RenewalRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -1912,6 +1936,7 @@ export interface FileRoutesById {
   '/account-settings': typeof AccountSettingsRouteWithChildren
   '/activity': typeof ActivityRoute
   '/ai': typeof AiRoute
+  '/app': typeof AppRoute
   '/association': typeof AssociationRouteWithChildren
   '/attendance': typeof AttendanceRoute
   '/auth': typeof AuthRoute
@@ -1935,6 +1960,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/income': typeof IncomeRoute
   '/install': typeof InstallRoute
+  '/ios': typeof IosRoute
   '/landing': typeof LandingRouteWithChildren
   '/login': typeof LoginRoute
   '/m': typeof MRouteWithChildren
@@ -1950,6 +1976,7 @@ export interface FileRoutesById {
   '/perks': typeof PerksRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
+  '/pwa': typeof PwaRoute
   '/register': typeof RegisterRoute
   '/renewal': typeof RenewalRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -2150,6 +2177,7 @@ export interface FileRouteTypes {
     | '/account-settings'
     | '/activity'
     | '/ai'
+    | '/app'
     | '/association'
     | '/attendance'
     | '/auth'
@@ -2173,6 +2201,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/income'
     | '/install'
+    | '/ios'
     | '/landing'
     | '/login'
     | '/m'
@@ -2188,6 +2217,7 @@ export interface FileRouteTypes {
     | '/perks'
     | '/products'
     | '/profile'
+    | '/pwa'
     | '/register'
     | '/renewal'
     | '/reset-password'
@@ -2385,6 +2415,7 @@ export interface FileRouteTypes {
     | '/'
     | '/activity'
     | '/ai'
+    | '/app'
     | '/attendance'
     | '/auth'
     | '/benefits'
@@ -2401,6 +2432,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/income'
     | '/install'
+    | '/ios'
     | '/login'
     | '/meetings'
     | '/messages'
@@ -2412,6 +2444,7 @@ export interface FileRouteTypes {
     | '/perks'
     | '/products'
     | '/profile'
+    | '/pwa'
     | '/register'
     | '/renewal'
     | '/reset-password'
@@ -2591,6 +2624,7 @@ export interface FileRouteTypes {
     | '/account-settings'
     | '/activity'
     | '/ai'
+    | '/app'
     | '/association'
     | '/attendance'
     | '/auth'
@@ -2614,6 +2648,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/income'
     | '/install'
+    | '/ios'
     | '/landing'
     | '/login'
     | '/m'
@@ -2629,6 +2664,7 @@ export interface FileRouteTypes {
     | '/perks'
     | '/products'
     | '/profile'
+    | '/pwa'
     | '/register'
     | '/renewal'
     | '/reset-password'
@@ -2828,6 +2864,7 @@ export interface RootRouteChildren {
   AccountSettingsRoute: typeof AccountSettingsRouteWithChildren
   ActivityRoute: typeof ActivityRoute
   AiRoute: typeof AiRoute
+  AppRoute: typeof AppRoute
   AssociationRoute: typeof AssociationRouteWithChildren
   AttendanceRoute: typeof AttendanceRoute
   AuthRoute: typeof AuthRoute
@@ -2851,6 +2888,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   IncomeRoute: typeof IncomeRoute
   InstallRoute: typeof InstallRoute
+  IosRoute: typeof IosRoute
   LandingRoute: typeof LandingRouteWithChildren
   LoginRoute: typeof LoginRoute
   MRoute: typeof MRouteWithChildren
@@ -2866,6 +2904,7 @@ export interface RootRouteChildren {
   PerksRoute: typeof PerksRoute
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
+  PwaRoute: typeof PwaRoute
   RegisterRoute: typeof RegisterRoute
   RenewalRoute: typeof RenewalRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -3008,6 +3047,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pwa': {
+      id: '/pwa'
+      path: '/pwa'
+      fullPath: '/pwa'
+      preLoaderRoute: typeof PwaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -3111,6 +3157,13 @@ declare module '@tanstack/react-router' {
       path: '/landing'
       fullPath: '/landing'
       preLoaderRoute: typeof LandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ios': {
+      id: '/ios'
+      path: '/ios'
+      fullPath: '/ios'
+      preLoaderRoute: typeof IosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/install': {
@@ -3272,6 +3325,13 @@ declare module '@tanstack/react-router' {
       path: '/association'
       fullPath: '/association'
       preLoaderRoute: typeof AssociationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ai': {
@@ -5212,6 +5272,7 @@ const rootRouteChildren: RootRouteChildren = {
   AccountSettingsRoute: AccountSettingsRouteWithChildren,
   ActivityRoute: ActivityRoute,
   AiRoute: AiRoute,
+  AppRoute: AppRoute,
   AssociationRoute: AssociationRouteWithChildren,
   AttendanceRoute: AttendanceRoute,
   AuthRoute: AuthRoute,
@@ -5235,6 +5296,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   IncomeRoute: IncomeRoute,
   InstallRoute: InstallRoute,
+  IosRoute: IosRoute,
   LandingRoute: LandingRouteWithChildren,
   LoginRoute: LoginRoute,
   MRoute: MRouteWithChildren,
@@ -5250,6 +5312,7 @@ const rootRouteChildren: RootRouteChildren = {
   PerksRoute: PerksRoute,
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
+  PwaRoute: PwaRoute,
   RegisterRoute: RegisterRoute,
   RenewalRoute: RenewalRoute,
   ResetPasswordRoute: ResetPasswordRoute,

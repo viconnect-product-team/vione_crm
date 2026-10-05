@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #F1F5F9;
+      color: #0F172A;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 20px;
+    }
+    
+    .nav-bar {
+      width: 100%;
+      max-width: 1240px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: #FFFFFF;
+      padding: 16px 24px;
+      border-radius: 16px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .brand {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: #94632B;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-badge {
+      background: #FAF5EB;
+      color: #94632B;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(216,178,130,0.4);
+      font-weight: 700;
+    }
+    .slide-deck {
+      width: 100%;
+      max-width: 1240px;
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+    }
+    
+    /* SLIDE BASE */
+    .slide {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 20px;
+      padding: 40px 48px;
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, #B48250 0%, #DFB76C 50%, #94632B 100%);
+    }
+    
+    /* HEADER */
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #94632B;
+      text-transform: uppercase;
+      background: #FDF8F0;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+    }
+    .title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #64748B;
+      font-weight: 500;
+    }
+    
+    /* COVER */
+    .cover-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    .cover-tag {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #94632B;
+      background: #FDF8F0;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      padding: 6px 18px;
+      border-radius: 30px;
+      margin-bottom: 18px;
+    }
+    .cover-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      font-weight: 900;
+      color: #0F172A;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .cover-subtitle {
+      font-size: 20px;
+      font-weight: 600;
+      color: #94632B;
+      margin-bottom: 20px;
+    }
+    .gold-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, #DFB76C, #94632B);
+      border-radius: 2px;
+      margin-bottom: 22px;
+    }
+    .cover-desc {
+      font-size: 15px;
+      color: #475569;
+      max-width: 780px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    .cover-meta {
+      font-size: 13px;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+    
+    /* AGENDA */
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .agenda-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      transition: all 0.2s ease;
+    }
+    .agenda-card:hover {
+      border-color: #D8B282;
+      background: #FDFBF7;
+    }
+    .agenda-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #94632B;
+      background: #FAF5EB;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .agenda-info h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+    .agenda-info p {
+      font-size: 13px;
+      color: #64748B;
+      line-height: 1.45;
+    }
+    
+    /* CONTENT SPLIT */
+    .content-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 28px;
+      align-items: center;
+      margin: 15px 0;
+      flex: 1;
+    }
+    .cards-column {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .feature-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid #B48250;
+      border-radius: 12px;
+      padding: 15px 18px;
+    }
+    .card-icon {
+      font-size: 22px;
+      line-height: 1;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    
+    .image-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .desktop-mockup-frame {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #CBD5E1;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      background: #FFFFFF;
+    }
+    .desktop-mockup-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .phone-mockup-frame {
+      width: 220px;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 6px solid #1E293B;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+      background: #000000;
+    }
+    .phone-mockup-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .image-caption {
+      margin-top: 8px;
+      font-size: 11px;
+      color: #94A3B8;
+      font-style: italic;
+    }
+    
+    /* CLOSING */
+    .closing-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+    }
+    .closing-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 900;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+    .closing-subtitle {
+      font-size: 16px;
+      color: #94632B;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .takeaways-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .takeaway-card {
+      background: #FDFBF7;
+      border: 1px solid rgba(216, 178, 130, 0.4);
+      border-radius: 14px;
+      padding: 16px 18px;
+      text-align: left;
+    }
+    .takeaway-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #94632B;
+      margin-bottom: 4px;
+    }
+    .takeaway-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 6px;
+    }
+    .takeaway-card p {
+      font-size: 12.5px;
+      color: #475569;
+      line-height: 1.45;
+    }
+    .contact-box {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 13px;
+      color: #334155;
+      margin-bottom: 16px;
+    }
+    .closing-qa {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #94632B;
+      background: #FAF5EB;
+      padding: 6px 18px;
+      border-radius: 20px;
+    }
+    
+    /* FOOTER */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid #E2E8F0;
+      padding-top: 14px;
+      font-size: 11px;
+      color: #94A3B8;
+      font-weight: 500;
+    }
+    
+    @media print {
+      body { background: transparent; padding: 0; }
+      .nav-bar { display: none; }
+      .slide-deck { gap: 0; }
+      .slide { border-radius: 0; box-shadow: none; aspect-ratio: auto; height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-bar">
+    <div class="brand">
+      <span>VIONE CORPORATION</span>
+      <span class="brand-badge">VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP</span>
+    </div>
+    <div style="font-size: 13px; color: #64748B; font-weight: 600;">Phiên bản: 10/2026 · Chuẩn Widescreen 16:9</div>
+  </div>
+  <div class="slide-deck">
+    
+      <section class="slide" id="slide-1">
+        
+        <div class="cover-container">
+          <div class="cover-tag">HỆ SINH THÁI DOANH NGHIỆP VIONE</div>
+          <h1 class="cover-title">VIONE CRM PLATFORM</h1>
+          <p class="cover-subtitle">Hệ Thống Quản Trị & Điều Hành Doanh Nghiệp Toàn Diện 360°</p>
+          <div class="gold-divider"></div>
+          <p class="cover-desc">Nền tảng số hóa quản trị tập trung, tự động hóa quy trình nghiệp vụ và tối ưu hóa phễu tăng trưởng B2B dành cho Ban Lãnh Đạo.</p>
+          <div class="cover-meta">Phiên Bản Doanh Nghiệp 6.0 · Tháng 10/2026 · Bản quyền © ViOne Corporation</div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 1 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-2">
+        
+        <div class="slide-header">
+          <div class="eyebrow">TỔNG QUAN NỘI DUNG</div>
+          <h2 class="title">CẤU TRÚC BÀI THUYẾT TRÌNH CRM</h2>
+          <div class="subtitle">6 Trọng tâm số hóa điều hành liền mạch trong doanh nghiệp</div>
+        </div>
+        <div class="agenda-grid">
+          
+        <div class="agenda-card">
+          <div class="agenda-num">01</div>
+          <div class="agenda-info">
+            <h4>Bảng Điều Hành C-Level 360°</h4>
+            <p>Giám sát chỉ số tài chính, doanh thu và tiến độ thời gian thực</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">02</div>
+          <div class="agenda-info">
+            <h4>Phễu Kinh Doanh & Smart CRM Hub</h4>
+            <p>Quản trị khách hàng B2B, Deals Kanban và chấm điểm AI</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">03</div>
+          <div class="agenda-info">
+            <h4>Quy Trình Vận Hành & Chấm Công</h4>
+            <p>BPMN chuẩn hóa công việc, điểm danh FaceID và định vị GPS</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">04</div>
+          <div class="agenda-info">
+            <h4>Kiểm Soát Dòng Tiền & Chi 3 Cấp</h4>
+            <p>Phê duyệt tài chính minh bạch, thanh toán VietQR 24/7</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">05</div>
+          <div class="agenda-info">
+            <h4>Trí Tuệ Nhân Tạo AI Copilot</h4>
+            <p>Trợ lý điều hành đàm thoại, tự động hóa soạn thảo và báo cáo</p>
+          </div>
+        </div>
+      
+        <div class="agenda-card">
+          <div class="agenda-num">06</div>
+          <div class="agenda-info">
+            <h4>Phân Quyền RBAC & Nền Tảng</h4>
+            <p>Ma trận quyền 7x6, bảo mật dữ liệu kiến trúc Multi-Tenant</p>
+          </div>
+        </div>
+      
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 2 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-3">
+        
+        <div class="slide-header">
+          <div class="eyebrow">PHÂN HỆ 01</div>
+          <h2 class="title">BẢNG ĐIỀU HÀNH 360° & SỨC KHỎE DOANH NGHIỆP</h2>
+          <div class="subtitle">Bức tranh toàn cảnh hoạt động kinh doanh trên một màn hình duy nhất</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">📊</div>
+          <div class="card-body">
+            <h4 class="card-title">Radar Dòng Tiền Thực</h4>
+            <p class="card-desc">Theo dõi doanh thu, chi phí và số dư tài khoản thời gian thực không độ trễ.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🎯</div>
+          <div class="card-body">
+            <h4 class="card-title">Giám Sát Mục Tiêu OKR</h4>
+            <p class="card-desc">Đo lường tiến độ các mục tiêu kinh doanh và dự án trọng điểm toàn công ty.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">⚡</div>
+          <div class="card-body">
+            <h4 class="card-title">Cảnh Báo Vận Hành Sớm</h4>
+            <p class="card-desc">Hệ thống tự động phát hiện các chỉ số bất thường để ban giám đốc xử lý kịp thời.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_02_dashboard_overview.png" alt="BẢNG ĐIỀU HÀNH 360° & SỨC KHỎE DOANH NGHIỆP" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 3 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-4">
+        
+        <div class="slide-header">
+          <div class="eyebrow">PHÂN HỆ 02</div>
+          <h2 class="title">PHỄU KINH DOANH PIPELINE & SMART CRM HUB</h2>
+          <div class="subtitle">Chuyển đổi tối đa khách hàng tiềm năng thành hợp đồng doanh số</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🔄</div>
+          <div class="card-body">
+            <h4 class="card-title">Kanban Deals 5 Giai Đoạn</h4>
+            <p class="card-desc">Kéo thả cơ hội trực quan: Tiếp cận → Khảo sát → Báo giá → Đàm phán → Chốt deal.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📇</div>
+          <div class="card-body">
+            <h4 class="card-title">Hồ Sơ Khách Hàng 360°</h4>
+            <p class="card-desc">Tập trung toàn bộ lịch sử tương tác, hợp đồng, báo giá và công nợ chi tiết.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">⭐</div>
+          <div class="card-body">
+            <h4 class="card-title">Chấm Điểm Tiềm Năng AI</h4>
+            <p class="card-desc">Tự động phân hạng Hot Lead, VIP C-Level và nhắc nhở thương vụ bị bỏ quên.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_07_opportunities_deals.png" alt="PHỄU KINH DOANH PIPELINE & SMART CRM HUB" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 4 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-5">
+        
+        <div class="slide-header">
+          <div class="eyebrow">PHÂN HỆ 03</div>
+          <h2 class="title">QUY TRÌNH BPMN TỰ ĐỘNG & CHẤM CÔNG THÔNG MINH</h2>
+          <div class="subtitle">Số hóa bộ máy nhân sự, kiểm soát tiến độ và chống gian lận</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">📑</div>
+          <div class="card-body">
+            <h4 class="card-title">Quy Trình Công Việc BPMN</h4>
+            <p class="card-desc">Phân công nhiệm vụ, thiết lập hạn chót (Deadline) và hạn chế quá tải WIP ≤ 5.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📍</div>
+          <div class="card-body">
+            <h4 class="card-title">Chấm Công GPS & AI FaceID</h4>
+            <p class="card-desc">Điểm danh di động chính xác qua tọa độ văn phòng và nhận diện khuôn mặt.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">👥</div>
+          <div class="card-body">
+            <h4 class="card-title">Giám Sát Nhân Sự Trong Ngày</h4>
+            <p class="card-desc">Cấp lãnh đạo nắm bắt tức thì lịch trình gặp khách hàng ngoài văn phòng.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_12_tasks_bpmn_workflow.png" alt="QUY TRÌNH BPMN TỰ ĐỘNG & CHẤM CÔNG THÔNG MINH" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 5 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-6">
+        
+        <div class="slide-header">
+          <div class="eyebrow">PHÂN HỆ 04</div>
+          <h2 class="title">QUẢN TRỊ DÒNG TIỀN & PHÊ DUYỆT CHI 3 CẤP</h2>
+          <div class="subtitle">Minh bạch hóa ngân sách và đối soát thanh toán tự động</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🛡️</div>
+          <div class="card-body">
+            <h4 class="card-title">Quy Trình Duyệt Chi 3 Cấp</h4>
+            <p class="card-desc">Người lập đề xuất → Kế toán kiểm tra chứng từ → Lãnh đạo phê duyệt chi.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">💳</div>
+          <div class="card-body">
+            <h4 class="card-title">Chi Tiền VietQR Napas 24/7</h4>
+            <p class="card-desc">Quét mã QR chuyển khoản ngay lập tức, tự động gạch nợ hóa đơn trong 1 giây.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📈</div>
+          <div class="card-body">
+            <h4 class="card-title">Báo Cáo Thu Chi Đa Chiều</h4>
+            <p class="card-desc">Phân tích chi phí theo phòng ban, dự án và tự động lập báo cáo tài chính.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_14_payment_requests_approval.png" alt="QUẢN TRỊ DÒNG TIỀN & PHÊ DUYỆT CHI 3 CẤP" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 6 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-7">
+        
+        <div class="slide-header">
+          <div class="eyebrow">PHÂN HỆ 05 & 06</div>
+          <h2 class="title">TRỢ LÝ AI COPILOT & MA TRẬN PHÂN QUYỀN RBAC</h2>
+          <div class="subtitle">Trí tuệ nhân tạo điều hành và bảo mật dữ liệu doanh nghiệp đa tầng</div>
+        </div>
+        <div class="content-split">
+          <div class="cards-column">
+            
+        <div class="feature-card">
+          <div class="card-icon">🤖</div>
+          <div class="card-body">
+            <h4 class="card-title">AI Copilot Đàm Thoại 24/7</h4>
+            <p class="card-desc">Vấn đáp phân tích số liệu kinh doanh, soạn thảo hợp đồng và văn bản tự động.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">🔐</div>
+          <div class="card-body">
+            <h4 class="card-title">Ma Trận Quyền 7 Nhóm x 6 Cấp</h4>
+            <p class="card-desc">Kiểm soát chặt chẽ quyền Xem, Tạo, Sửa, Xóa, Duyệt, Xuất dữ liệu theo chức vụ.</p>
+          </div>
+        </div>
+      
+        <div class="feature-card">
+          <div class="card-icon">📋</div>
+          <div class="card-body">
+            <h4 class="card-title">Nhật Ký AI Audit Log</h4>
+            <p class="card-desc">Lưu vết minh bạch 100% các hành động trí tuệ nhân tạo và kiểm tra an ninh.</p>
+          </div>
+        </div>
+      
+          </div>
+          <div class="image-column">
+            <div class="desktop-mockup-frame">
+              <img src="images/evidence_live_2026/crm_16_ai_copilot_assistant.png" alt="TRỢ LÝ AI COPILOT & MA TRẬN PHÂN QUYỀN RBAC" />
+            </div>
+            <div class="image-caption">Dữ liệu thời gian thực từ máy chủ ViOne Live</div>
+          </div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 7 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+      <section class="slide" id="slide-8">
+        
+        <div class="closing-container">
+          <div class="eyebrow">KẾT LUẬN & LIÊN HỆ</div>
+          <h2 class="closing-title">XIN CHÂN THÀNH CẢM ƠN QUÝ DOANH NGHIỆP!</h2>
+          <p class="closing-subtitle">ViOne CRM · Nền tảng kiến tạo lợi thế cạnh tranh vượt trội trong kỷ nguyên số</p>
+          <div class="takeaways-grid">
+            
+        <div class="takeaway-card">
+          <div class="takeaway-num">01</div>
+          <h4>Tối Ưu 40% Chi Phí</h4>
+          <p>Cắt giảm lãng phí thời gian và nhân lực nhờ tự động hóa quy trình nghiệp vụ.</p>
+        </div>
+      
+        <div class="takeaway-card">
+          <div class="takeaway-num">02</div>
+          <h4>Tăng 35% Doanh Số</h4>
+          <p>Chăm sóc khách hàng bài bản, kiểm soát chặt chẽ phễu bán hàng B2B.</p>
+        </div>
+      
+        <div class="takeaway-card">
+          <div class="takeaway-num">03</div>
+          <h4>Ra Quyết Định Tức Thì</h4>
+          <p>Ban lãnh đạo nắm bắt dữ liệu điều hành chuẩn xác theo thời gian thực.</p>
+        </div>
+      
+          </div>
+          <div class="contact-box">
+            <div class="contact-item"><strong>🌐 Website:</strong> vione.vn</div>
+            <div class="contact-item"><strong>📞 Hotline:</strong> 1900 8888</div>
+            <div class="contact-item"><strong>✉️ Email:</strong> contact@vione.vn</div>
+            <div class="contact-item"><strong>🏢 Trụ sở:</strong> Hà Nội & TP. Hồ Chí Minh</div>
+          </div>
+          <div class="closing-qa">SẴN SÀNG GIẢI ĐÁP CÂU HỎI (Q&A SESSION)</div>
+        </div>
+      
+        <div class="slide-footer">
+          <span>VIONE CRM PLATFORM · HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP · Trang 8 / 8</span>
+          <span>Bản quyền © 2026 ViOne Corporation</span>
+        </div>
+      </section>
+    
+  </div>
+</body>
+</html>

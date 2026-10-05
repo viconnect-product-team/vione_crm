@@ -29,7 +29,7 @@ export function ApprovalsMobileSheet({ open, onClose }: ApprovalsMobileSheetProp
       amount: 45000000,
       creator: "Nguyễn Văn Tuấn (Kỹ thuật)",
       status: "pending_approver",
-      tier: "CEO Duyệt (>20 triệu - BR-FIN-02)",
+      tier: "Lãnh đạo phê duyệt (>20 triệu)",
       beneficiary: "Xưởng Chế Tác Kim Hoàn Cao Cấp ViOne",
       bankAccount: "9988776655 - Techcombank",
       date: "02/10/2026",
@@ -41,7 +41,7 @@ export function ApprovalsMobileSheet({ open, onClose }: ApprovalsMobileSheetProp
       amount: 18500000,
       creator: "Trần Quốc Đạt (Sự kiện)",
       status: "approved",
-      tier: "Kế toán trưởng duyệt (≤20 triệu)",
+      tier: "Kế toán kiểm tra (≤20 triệu)",
       beneficiary: "Trung Tâm Hội Nghị Quốc Gia",
       bankAccount: "1122334455 - Vietcombank",
       date: "01/10/2026",
@@ -53,7 +53,7 @@ export function ApprovalsMobileSheet({ open, onClose }: ApprovalsMobileSheetProp
       amount: 62000000,
       creator: "Phạm Minh Hoàng (DevOps)",
       status: "pending_checker",
-      tier: "Checker (Kế toán kiểm soát)",
+      tier: "Kế toán kiểm soát đối soát",
       beneficiary: "Công Ty TNHH F-Solutions Đám Mây",
       bankAccount: "0315678901 - MBBank",
       date: "02/10/2026",
@@ -94,52 +94,71 @@ export function ApprovalsMobileSheet({ open, onClose }: ApprovalsMobileSheetProp
     }
   };
 
+  const totalPendingAmount = approvals
+    .filter((a) => a.status !== "approved")
+    .reduce((sum, a) => sum + (Number(a.amount) || 0), 0);
+
   return (
-    <div className="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4 transition-all">
-      <div className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-[var(--bc-mobile-surface,#FFFFFF)] dark:bg-[#12141E] border border-purple-500/20 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-in slide-in-from-bottom duration-300">
-        
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-200 dark:border-zinc-800">
-          <div className="flex items-center gap-2.5">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 font-bold">
+    <div className="fixed inset-0 z-[10000] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-md p-0 sm:p-4 transition-all">
+      <div 
+        className="w-full max-w-lg rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#0B0F17] border border-slate-200 dark:border-[#D8B282]/25 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col animate-in slide-in-from-bottom duration-300"
+        style={{ fontFamily: "'Be Vietnam Pro', system-ui, sans-serif" }}
+      >
+        {/* Header chuẩn ViOne Gold */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#D8B282]/15 bg-slate-50/50 dark:bg-[#0E1522]/80">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[linear-gradient(135deg,#D8B282_0%,#8C653B_100%)] text-slate-950 font-bold shadow-md">
               <FileCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-zinc-900 dark:text-white leading-tight">
-                Phê Duyệt Chi 3 Cấp & Napas VietQR
+              <h3 className="text-base font-bold text-slate-950 dark:text-white leading-tight">
+                Phê Duyệt Chi & Quản Trị Ngân Sách
               </h3>
-              <p className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
-                Maker ➔ Checker ➔ Approver (BR-FIN-01/02)
+              <p className="text-[11px] font-semibold text-[#8C653B] dark:text-[#D8B282]">
+                Quy trình 3 cấp: Người lập ➔ Kế toán kiểm tra ➔ Lãnh đạo phê duyệt
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition"
+            className="grid h-8 w-8 place-items-center rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-950 dark:hover:text-white transition cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
+        {/* Thanh tóm tắt số tiền chờ duyệt */}
+        <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/30 dark:bg-[#070B12]">
+          <div>
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">TỔNG NGÂN SÁCH CHỜ KÝ DUYỆT</span>
+            <p className="text-sm font-extrabold text-[#8C653B] dark:text-[#F6E1C3]">
+              {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(totalPendingAmount)}
+            </p>
+          </div>
+          <span className="rounded-full bg-[#D8B282]/15 px-3 py-1 text-[11px] font-bold text-[#8C653B] dark:text-[#D8B282]">
+            {approvals.filter((a) => a.status !== "approved").length} tờ trình đang chờ
+          </span>
+        </div>
+
         {/* QR Modal view if clicked */}
         {selectedQr && (
-          <div className="p-4 bg-purple-500/5 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div className="p-4 bg-slate-50 dark:bg-[#0E1522] border-b border-slate-200 dark:border-[#D8B282]/20 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white rounded-xl shadow-xs">
-                <QrCode className="h-10 w-10 text-zinc-900" />
+                <QrCode className="h-10 w-10 text-slate-900" />
               </div>
               <div>
-                <p className="text-xs font-bold text-zinc-900 dark:text-white">Mã Napas VietQR thanh toán 24/7</p>
-                <p className="text-[11px] text-zinc-500">{selectedQr.beneficiary} · {selectedQr.bankAccount}</p>
-                <p className="text-xs font-extrabold text-amber-600 dark:text-amber-400">
+                <p className="text-xs font-bold text-slate-900 dark:text-white">Mã Napas VietQR thanh toán 24/7</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">{selectedQr.beneficiary} · {selectedQr.bankAccount}</p>
+                <p className="text-xs font-extrabold text-[#8C653B] dark:text-[#F6E1C3]">
                   {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(selectedQr.amount)}
                 </p>
               </div>
             </div>
             <button
               onClick={() => setSelectedQr(null)}
-              className="text-xs font-bold text-zinc-500 hover:text-zinc-900"
+              className="text-xs font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
             >
               Đóng QR
             </button>
@@ -151,41 +170,41 @@ export function ApprovalsMobileSheet({ open, onClose }: ApprovalsMobileSheetProp
           {approvals.map((a) => (
             <div
               key={a.id}
-              className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/40 hover:border-purple-500/40 transition space-y-2.5"
+              className="p-4 rounded-2xl border border-slate-200/90 dark:border-[#D8B282]/20 bg-slate-50/50 dark:bg-[#0E1522]/90 hover:border-[#D8B282]/60 transition space-y-2.5"
             >
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-mono font-bold text-purple-700 dark:text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-md">
+                <span className="text-[11px] font-mono font-bold text-[#8C653B] dark:text-[#D8B282] bg-[#D8B282]/15 px-2 py-0.5 rounded-md">
                   {a.code}
                 </span>
                 {a.status === "approved" ? (
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 flex items-center gap-1">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                     <CheckCircle2 className="h-3 w-3" /> ĐÃ PHÊ DUYỆT
                   </span>
                 ) : (
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-600 flex items-center gap-1">
-                    <Clock className="h-3 w-3" /> CHỜ CEO KÝ DUYỆT
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#D8B282]/20 text-[#8C653B] dark:text-[#F6E1C3] flex items-center gap-1">
+                    <Clock className="h-3 w-3" /> CHỜ LÃNH ĐẠO KÝ
                   </span>
                 )}
               </div>
 
-              <h4 className="text-xs font-bold text-zinc-900 dark:text-white leading-snug">
+              <h4 className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
                 {a.title}
               </h4>
 
               <div className="flex items-center justify-between text-xs">
-                <span className="text-zinc-500 font-medium">Số tiền đề xuất:</span>
-                <span className="text-sm font-extrabold text-amber-600 dark:text-amber-400">
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Số tiền đề xuất:</span>
+                <span className="text-sm font-extrabold text-[#8C653B] dark:text-[#F6E1C3]">
                   {new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(a.amount)}
                 </span>
               </div>
 
-              <div className="pt-2 border-t border-zinc-200/60 dark:border-zinc-800 flex items-center justify-between gap-2">
+              <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => setSelectedQr(a)}
-                  className="px-3 py-1.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-[11px] font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-1 transition"
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-1 transition cursor-pointer"
                 >
-                  <QrCode className="h-3.5 w-3.5 text-purple-500" /> Xem VietQR
+                  <QrCode className="h-3.5 w-3.5 text-[#D8B282]" /> Xem VietQR
                 </button>
 
                 {a.status !== "approved" && (
@@ -193,7 +212,7 @@ export function ApprovalsMobileSheet({ open, onClose }: ApprovalsMobileSheetProp
                     type="button"
                     onClick={() => handleApprove(a.id)}
                     disabled={approvingId === a.id}
-                    className="px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-[11px] flex items-center gap-1.5 shadow-md shadow-purple-500/20 transition active:scale-95 disabled:opacity-50"
+                    className="px-4 py-1.5 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-[11px] flex items-center gap-1.5 shadow-md hover:opacity-95 active:scale-95 transition cursor-pointer disabled:opacity-50"
                   >
                     {approvingId === a.id ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />

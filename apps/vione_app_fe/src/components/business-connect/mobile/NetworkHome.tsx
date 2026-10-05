@@ -56,6 +56,7 @@ import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { DynamicAiMatcherPanel } from "./ai/DynamicAiMatcherPanel";
 import { NetworkStoriesStrip } from "./NetworkStoriesStrip";
 import { NetworkPartnerSuggestionsStrip } from "./NetworkPartnerSuggestionsStrip";
+import { PersonalProfileBottomSheet } from "@/components/common/PersonalProfileBottomSheet";
 
 type NetworkSort = "recent" | "name" | "company";
 type NetworkFilter = "all" | "connected" | "saved_card" | "card_scanned" | "contact_shared";
@@ -89,6 +90,63 @@ export function NetworkHome({
   const { openV } = useVSheet();
   const viewerUserId = useViewerUserId();
   const incomingRequests = useIncomingConnectionRequests();
+  const [profileSheetOpen, setProfileSheetOpen] = useState(false);
+
+  // Lấy thông tin tài khoản thật của người dùng để hiển thị avatar ở Header
+  const currentProfile = useMemo(() => {
+    try {
+      const rawCustom = localStorage.getItem("vba_custom_profile");
+      if (rawCustom) {
+        const p = JSON.parse(rawCustom);
+        if (p.name || p.avatar) {
+          return {
+            name: p.name || p.displayName || "Doanh nhân ViOne",
+            avatar: p.avatar || p.avatarUrl || null,
+            jobTitle: p.jobTitle || p.headline || "Lãnh đạo Doanh nghiệp",
+            company: p.company || p.companyName || "Thành viên ViOne",
+            phone: p.phone || null,
+            email: p.email || null,
+            bio: p.bio || null,
+            facebook: p.facebook || null,
+            zalo: p.zalo || null,
+            website: p.website || null,
+          };
+        }
+      }
+      const rawUser = localStorage.getItem("vibe_user") || localStorage.getItem("user");
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        return {
+          name: u.name || u.displayName || u.fullName || u.email?.split("@")[0] || "Doanh nhân ViOne",
+          avatar: u.avatar || u.avatarUrl || null,
+          jobTitle: u.jobTitle || u.role || "Lãnh đạo Doanh nghiệp",
+          company: u.company || "Thành viên ViOne",
+          phone: u.phone || null,
+          email: u.email || null,
+          bio: u.bio || null,
+          facebook: u.facebook || null,
+          zalo: u.zalo || null,
+          website: u.website || null,
+        };
+      }
+    } catch {}
+    return {
+      name: "Doanh nhân ViOne",
+      avatar: null,
+      jobTitle: "Lãnh đạo Doanh nghiệp",
+      company: "Thành viên ViOne",
+      phone: null,
+      email: null,
+      bio: null,
+      facebook: null,
+      zalo: null,
+      website: null,
+    };
+  }, []);
+
+  const myAvatarUrl = currentProfile.avatar
+    ? (resolveMediaUrl(currentProfile.avatar) || currentProfile.avatar)
+    : avatarOrDemo(currentProfile.avatar, currentProfile.name);
 
   const tabs = useMemo(() => {
     const list: Array<{ id: NetworkTabType; label: string }> = [
@@ -230,13 +288,32 @@ export function NetworkHome({
             >
               Network
             </h1>
-            <Link
-              to="/connect-app/card-scan"
-              aria-label={t("bc.mobile.network.addPerson")}
-              className="grid h-9 w-9 place-items-center rounded-full text-[var(--bc-mobile-accent)] hover:bg-[var(--bc-mobile-surface-2)] transition-colors border border-solid border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] hover:border-[var(--bc-mobile-accent)]"
-            >
-              <UserPlus className="h-4.5 w-4.5" strokeWidth={1.8} />
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                to="/connect-app/card-scan"
+                aria-label={t("bc.mobile.network.addPerson")}
+                title="Quét danh thiếp"
+                className="grid h-9 w-9 place-items-center rounded-full text-[var(--bc-mobile-accent)] hover:bg-[var(--bc-mobile-surface-2)] transition-colors border border-solid border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] hover:border-[var(--bc-mobile-accent)]"
+              >
+                <UserPlus className="h-4.5 w-4.5" strokeWidth={1.8} />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setProfileSheetOpen(true)}
+                aria-label="Hồ sơ cá nhân"
+                title={currentProfile.name}
+                className="relative h-9 w-9 rounded-full p-0.5 bg-gradient-to-tr from-[#C29B69] via-[#D8B282] to-[#F6E1C3] shadow-xs active:scale-95 transition-transform cursor-pointer"
+              >
+                <img
+                  src={myAvatarUrl}
+                  alt={currentProfile.name}
+                  className="w-full h-full rounded-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = avatarOrDemo(null, currentProfile.name);
+                  }}
+                />
+              </button>
+            </div>
           </div>
           <p className="flex items-center gap-2 relative self-stretch w-full flex-[0_0_auto] mt-[-0.5px]">
             <span className="relative flex items-center w-fit mt-[-1.00px] [font-family:'Inter-Light',Helvetica] font-medium text-[var(--bc-mobile-muted,#64748B)] text-xs tracking-[0] leading-4 whitespace-nowrap">
@@ -391,7 +468,7 @@ export function NetworkHome({
               <>
                 {/* ViOne Dynamic AI Copilot Banner */}
                 {!narrowed && (
-                  <div className="mb-4 p-4 rounded-2xl border border-amber-300/40 dark:border-amber-500/20 bg-gradient-to-r from-amber-50/80 via-yellow-50/40 to-amber-50/80 dark:from-stone-900 dark:via-neutral-900 dark:to-stone-900 shadow-xs dark:shadow-xl relative overflow-hidden transition-colors">
+                  <div className="mt-5 mb-5 p-4 rounded-2xl border border-amber-300/40 dark:border-amber-500/20 bg-gradient-to-r from-amber-50/80 via-yellow-50/40 to-amber-50/80 dark:from-stone-900 dark:via-neutral-900 dark:to-stone-900 shadow-xs dark:shadow-xl relative overflow-hidden transition-colors">
                     <div className="absolute top-0 right-0 w-36 h-36 bg-[#D8B282]/15 rounded-full blur-2xl pointer-events-none" />
                     <div className="flex items-start justify-between gap-3 relative z-10">
                       <div className="flex items-start gap-3">
@@ -410,7 +487,7 @@ export function NetworkHome({
                       <button
                         type="button"
                         onClick={() => handleTabChange("suggestions")}
-                        className="shrink-0 px-3.5 py-2 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] hover:opacity-90 text-slate-950 text-xs font-bold uppercase tracking-wider shadow-xs active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
+                        className="shrink-0 px-3.5 py-2 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] hover:opacity-90 text-slate-950 text-xs font-bold uppercase tracking-wider shadow-sm active:scale-95 transition-all flex items-center gap-1 cursor-pointer"
                       >
                         <span>Khám phá AI</span>
                         <ChevronRight className="w-3.5 h-3.5" />
@@ -552,7 +629,23 @@ export function NetworkHome({
         )}
       </main>
 
-
+      <PersonalProfileBottomSheet
+        open={profileSheetOpen}
+        onClose={() => setProfileSheetOpen(false)}
+        profile={{
+          displayName: currentProfile.name,
+          jobTitle: currentProfile.jobTitle,
+          companyName: currentProfile.company,
+          avatarUrl: myAvatarUrl,
+          phone: currentProfile.phone,
+          email: currentProfile.email,
+          bio: currentProfile.bio,
+          facebookUrl: currentProfile.facebook,
+          zaloPhone: currentProfile.zalo,
+          website: currentProfile.website,
+          isOwner: true,
+        }}
+      />
     </>
   );
 }

@@ -18,8 +18,9 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "ViOneBusinessConnect",
-      "buildNumber": "4",
+      "buildNumber": "5",
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "ViOne cần quyền truy cập camera để quét mã QR check-in sự kiện và trao đổi danh thiếp số.",
         "NSPhotoLibraryUsageDescription": "ViOne cần quyền truy cập thư viện ảnh để tải lên avatar và tài liệu doanh nghiệp.",
         "NSFaceIDUsageDescription": "Xác thực sinh trắc học Face ID / Touch ID để bảo mật đăng nhập tài khoản C-Level.",

@@ -1,0 +1,4 @@
+Người dùng nhấp vào link tải file cấu hình từ Safari.
+iOS tự động bật thông báo: "Trang web đang cố tải về hồ sơ cấu hình. Cho phép?" $\rightarrow$ Chọn Cho phép.
+Người dùng vào Cài đặt (Settings) $\rightarrow$ Đã tải về hồ sơ (Profile Downloaded) $\rightarrow$ Bấm Cài đặt (Install).
+Biểu tượng ViOne Connect mạ vàng sang trọng sẽ lập tức xuất hiện trên Màn hình chính của iPhone/iPad và chạy ở chế độ FullScreen Native, không thanh địa chỉ, tương tự như cài file APK trên Android.

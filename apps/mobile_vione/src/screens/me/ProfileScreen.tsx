@@ -102,7 +102,7 @@ export const ProfileScreen: React.FC = () => {
     <SafeAreaView
       style={[
         styles.safeArea,
-        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+        { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
       ]}
       edges={["top"]}
     >
@@ -110,7 +110,7 @@ export const ProfileScreen: React.FC = () => {
       <View
         style={[
           styles.header,
-          { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
         ]}
       >
         <View style={styles.headerLeft}>

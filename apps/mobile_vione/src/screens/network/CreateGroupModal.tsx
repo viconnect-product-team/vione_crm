@@ -188,7 +188,7 @@ export const CreateGroupModal: React.FC<CreateGroupModalProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   header: {
     flexDirection: "row",
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 14,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(216, 178, 130, 0.2)",
   },

@@ -85,7 +85,7 @@ function VioneMobileLoginPage() {
 
   async function submit() {
     if (!email.trim()) {
-      setAuthError("Vui lòng nhập email hoặc tên đăng nhập");
+      setAuthError("Vui lòng nhập Email hoặc Số điện thoại đăng nhập");
       return;
     }
     if (!password) {

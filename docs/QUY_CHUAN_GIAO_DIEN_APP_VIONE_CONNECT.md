@@ -10,17 +10,19 @@
 
 ## 1. NGUYÊN TẮC THIẾT KẾ CHUNG (CORE CONSTRAINTS)
 
-1. **BẢN SẮC MÀU VÀNG NÂU / BRONZE GOLD & DARK LUXURY OBSIDIAN (LUXURY GOLD BUTTON & DARK PWA PARITY):**
-   - Nền tảng chủ đạo của ViOne Mobile là Dark Luxury Obsidian (`#0A0A0B`) kết hợp ánh Vàng Đồng Hoàng Gia (Warm Bronze Gold):
-     - Background chính: `#0A0A0B`, bề mặt card surface: `#12151F` & `#181D2A`.
-     - Gradient nút V & CTA chính: `linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%)`.
-     - Màu vàng nhấn: `#D8B282`, vàng sáng: `#F6E1C3`, viền vàng: `rgba(216, 178, 130, 0.45)`.
+1. **BẢN SẮC MÀU VÀNG NÂU / BRONZE GOLD & DARK LUXURY OBSIDIAN NAVY (EXECUTIVE OBSIDIAN NAVY & LUXURY GOLD PARITY):**
+   - Nền tảng chủ đạo của ViOne Mobile & Web PWA là Executive Obsidian Navy (`#0B0F17`) kết hợp ánh Vàng Đồng Hoàng Gia (Warm Bronze Gold):
+     - Background chính: `#0B0F17` (Dark) / `#FFFFFF` (Light), bề mặt card surface: `#0E1522` (Surface) & `#151D2C` (Surface 2), viền vàng tinh tế: `rgba(216, 178, 130, 0.18)` đến `rgba(216, 178, 130, 0.45)`.
+     - Nút trung tâm ViOne: Kích thước chuẩn 58×58px tròn, gradient vàng hoàng gia `["#C29B69", "#F6E1C3", "#D8B282"]`, viền 2px (`#524128` Dark / `#FFF2DC` Light), lớp sheen ánh sáng và hiệu ứng phát sáng đa tầng (dual gold glow shadows).
+     - Biểu tượng ViOne: Emblem 3D đa diện (`VIconMark.tsx`) với 6 dải chuyển sắc độc lập (`vi_p0` đến `vi_p5`) mô phỏng kim loại vát khối nổi chân thực, thay thế hoàn toàn chữ V dạng văn bản đơn giản.
+     - Bộ icon điều hướng: Sử dụng vector SVG hình học chuẩn (`NavHomeIcon`, `NavNetworkIcon`, `NavCommunityIcon`, `NavMeIcon` trong `NavIcons.tsx`) đồng bộ 100% với PWA Web.
+     - Màu vàng nhấn: `#D8B282`, vàng sáng: `#F6E1C3`, vàng sậm: `#C29B69`, nâu ấm: `#8C653B`.
      - Chữ chính: Trắng sáng `#FFFFFF` / `#F5F7FA`, chữ phụ `#F6E1C3`, chữ ghi chú `#94A3B8` / `#D4C3A3`.
-   - Tuyệt đối cấm sử dụng nền trắng sáng `#FFFFFF` hay chữ đen `#0F172A` làm tone giao diện chính (tránh làm sai lệch hoàn toàn nhận diện Dark Luxury của ViOne Connect).
+   - Tuyệt đối loại bỏ nền đen kịt nguyên bản (`#0A0A0B`) và sắc xám xanh lệch tone (`#F8FAFC`) để đảm bảo chiều sâu chuẩn Obsidian Navy sang trọng.
 
 2. **CHUẨN 2 TONE MÀU NÚT THỐNG NHẤT:**
    - **Primary Action (Nút V & CTA chính):** Gradient Vàng Nâu ViOne (`#F6E1C3` -> `#D8B282` -> `#C29B69` -> `#8C653B`), Chữ đen than `#050C15`, bóng đổ kim loại `0 4px 20px rgba(216, 178, 130, 0.45)`.
-   - **Secondary Action (Nút phụ / Thao tác thường):** Nền bề mặt tối `#181D2A` hoặc `rgba(255, 255, 255, 0.04)`, Viền `rgba(216, 178, 130, 0.30)`, Chữ `#F5F7FA`.
+   - **Secondary Action (Nút phụ / Thao tác thường):** Nền bề mặt tối `#151D2C` hoặc `rgba(255, 255, 255, 0.04)`, Viền `rgba(216, 178, 130, 0.30)`, Chữ `#F5F7FA`.
    - **Hover / Selected State:** Nền vàng dịu (`rgba(216, 178, 130, 0.15)`), Chữ vàng đồng (`#D8B282`), Viền vàng `#D8B282`.
 
 3. **BỐ CỤC IDENTITY GREETING & AVATAR ĐỘC LẬP:**
@@ -39,44 +41,59 @@
    - **Màn hình Trang chủ (HomeScreen vs ExecutiveHome):**
      * Header thương hiệu: Logo ViOne wordmark + Lời chào theo thời gian thực + Chuông thông báo đính badge.
      * Thẻ Doanh nhân ViOne: Ảnh bìa + Avatar viền vàng + Tên + Số điện thoại.
-     * Bộ 3 Tabs lịch trình: Hôm nay / Sắp tới / Nhắc lịch với tab active nền gradient vàng chữ đen.
-     * Thẻ Insight: "SỐ CƠ HỘI KẾT NỐI TIỀM NĂNG" (15 cơ hội kết nối tiềm năng cao).
-     * Bộ 3 Phím tắt Quick Actions: "Cuộc gặp 1-1", "Quét thẻ", "Thẻ của tôi".
-     * Khối Điều hành & Giám sát vận hành doanh nghiệp BRD: Chấm công GPS & AI FaceID, Tiến độ nhân sự Kanban/WIP, Phê duyệt chi 3 cấp.
-   - **Màn hình Network (NetworkScreen vs NetworkHome):**
-      * Header thương hiệu: Wordmark ViOne + Lời chào thời gian thực + Nút Hộp thư tin nhắn (kèm badge đếm số tin chưa đọc thời gian thực, 1-chạm chuyển ngay sang tab Tin nhắn) + Chuông thông báo.
-      * Tiêu đề phân hệ 'Network' kèm nút thêm kết nối UserPlus và subtitle số kết nối thực tế kèm số đối tác cần chăm sóc (`X kết nối • 3 cần chăm sóc`).
-      * **Khoảnh Khắc Doanh Nhân 24h (Stories Strip):** Dải story ngang trên đầu màn hình với nút `+ Đăng story` / `Đăng khoảnh khắc` mở `CreateStoryModal.tsx` (soạn nội dung, chọn ảnh, gắn hashtag B2B `#Cơ hội hợp tác`, `#Xúc tiến đầu tư`); danh sách thẻ story với avatar viền vàng, tag chủ đề và thời gian; chạm vào story mở `StoryViewerModal.tsx` toàn màn hình chạy tiến độ tự động (0-100%), nút thả tim và chia sẻ.
-      * **Khách Hàng & Đối Tác Cần Chăm Sóc (Nurture List):** Khối "CẦN GIỮ KẾT NỐI & CHĂM SÓC" cảnh báo đối tác 14 ngày chưa tương tác, chờ duyệt hợp đồng hoặc hồ sơ đấu thầu; tích hợp 3 phím tắt nhanh 1-chạm: `Hẹn 1-1`, `Nhắn tin`, `Gọi`.
-      * Bộ 5 Category Tabs đồng bộ PWA: [Mạng lưới] [Khách hàng] [Gợi ý] [Tin nhắn] [Lời mời].
-      * Quản lý khách hàng B2B: Pipeline phân loại giá trị hợp đồng, người liên hệ, mức ưu tiên.
-      * Hộp thư doanh nghiệp tích hợp in-app: 4 danh mục (Tất cả, Chưa đọc, Nhóm, Tin nhắn chờ) & ChatThreadModal, CreateGroupModal.
+     * Bộ 3 Tabs lịch trình: Hôm nay / Sắp tới / Nhắc l�       * Tiêu đề phân hệ 'Network' kèm nút thêm kết nối UserPlus và subtitle số kết nối thực tế kèm số đối tác cần chăm sóc (`X kết nối • 3 cần chăm sóc`).
+       * **Khoảnh Khắc Doanh Nhân 24h (Stories Strip):** Dải story ngang trên đầu màn hình với nút `+ Đăng story` / `Đăng khoảnh khắc` mở `CreateStoryModal.tsx` (soạn nội dung, chọn ảnh, gắn hashtag B2B `#Cơ hội hợp tác`, `#Xúc tiến đầu tư`); danh sách thẻ story với avatar viền vàng, tag chủ đề và thời gian; chạm vào story mở `StoryViewerModal.tsx` toàn màn hình chạy tiến độ tự động (0-100%), nút thả tim và chia sẻ.
+       * **Khách Hàng & Đối Tác Cần Chăm Sóc (Nurture List):** Khối "CẦN GIỮ KẾT NỐI & CHĂM SÓC" cảnh báo đối tác 14 ngày chưa tương tác, chờ duyệt hợp đồng hoặc hồ sơ đấu thầu; tích hợp 3 phím tắt nhanh 1-chạm: `Hẹn 1-1`, `Nhắn tin`, `Gọi`.
+       * Bộ 5 Category Tabs đồng bộ PWA: [Mạng lưới] [Khách hàng] [Gợi ý] [Tin nhắn] [Lời mời].
+       * Quản lý khách hàng B2B: Pipeline phân loại giá trị hợp đồng, người liên hệ, mức ưu tiên.
+       * Hộp thư doanh nghiệp tích hợp in-app: 4 danh mục (Tất cả, Chưa đọc, Nhóm, Tin nhắn chờ) & ChatThreadModal, CreateGroupModal.
     - **Nút V Phát Sáng Ở Giữa & Action Sheet 1-Chạm (CustomBottomTabBar & VActionSheet):**
-      * Nút V nhô cao ở giữa (`-18px`) với vòng hào quang phát sáng đa tầng `vBtnGlowRing` (`shadowRadius: 16`, `shadowOpacity: 0.85`, `elevation: 12`, viền `rgba(246, 225, 195, 0.6)`), mặt nút mạ gradient vàng hoàng gia dập nổi chữ V sắc nét.
-      * Action Sheet nền Obsidian Dark với watermark chữ V chìm 3D sang trọng.
-      * Thẻ danh tính C-Level: Avatar, Họ tên, Chức vụ, Doanh nghiệp, Huy hiệu 'DOANH NHÂN VIONE XÁC THỰC', Địa điểm, Website.
-      * **Hero Gold CTA: 'Đưa mã QR của bạn'** với nền gradient vàng hoàng kim ViOne, mở `MyQrModal` sinh mã QR danh thiếp cá nhân tức thì.
-      * **Quét mã QR ('ScanQrModal'):** Mở camera native quét mã QR đối tác với khung ngắm viewfinder, tia laser quét chuyển động, nút bật/tắt đèn flash và hỗ trợ nhập mã thủ công.
-      * Các thao tác kết nối khác: 'Chạm thẻ NFC', 'Quét danh thiếp AI', 'Ghi chú cuộc gặp'.
-      * Bộ 3 Quick Tiles: 'Danh thiếp số', 'Ví thẻ', 'Bảo mật'.
-      * Phân hệ Vận hành & Giám sát doanh nghiệp: Chấm công GPS, Quy trình BPMN Kanban, Phê duyệt chi 3 cấp.
+       * Nút V nhô cao ở giữa (`-18px`), chuẩn kích thước tròn 58×58px với gradient hoàng kim ViOne `["#C29B69", "#F6E1C3", "#D8B282"]`, viền 2px (`#524128` Dark / `#FFF2DC` Light), vầng sáng kép `boxShadow` / `elevation: 12`, lớp sheen ánh sáng và biểu tượng 3D sculpted `VIconMark.tsx` (6 gradients kim loại đa chiều `vi_p0` -> `vi_p5`).
+       * Action Sheet nền Obsidian Dark Navy với watermark biểu tượng ViOne 3D chìm (`<VIconMark size={140} opacity={0.06} />`) sang trọng.
+       * Thẻ danh tính C-Level: Avatar, Họ tên, Chức vụ, Doanh nghiệp, Huy hiệu 'DOANH NHÂN VIONE XÁC THỰC', Địa điểm, Website.
+       * **Hero Gold CTA: 'Đưa mã QR của bạn'** với nền gradient vàng hoàng kim ViOne, mở `MyQrModal` sinh mã QR danh thiếp cá nhân tức thì.
+       * **Quét mã QR ('ScanQrModal'):** Mở camera native quét mã QR đối tác với khung ngắm viewfinder, tia laser quét chuyển động, nút bật/tắt đèn flash và hỗ trợ nhập mã thủ công.
+       * Các thao tác kết nối khác: 'Chạm thẻ NFC', 'Quét danh thiếp AI', 'Ghi chú cuộc gặp'.
+       * Bộ 3 Quick Tiles: 'Danh thiếp số', 'Ví thẻ', 'Bảo mật'.
+       * Phân hệ Vận hành & Giám sát doanh nghiệp: Chấm công GPS, Quy trình BPMN Kanban, Phê duyệt chi 3 cấp.
     - **Màn hình Cộng đồng (CommunityScreen vs CommunityHome):**
-      * Header thương hiệu ViOne + Tiêu đề 'Cộng đồng' kèm subtitle 'Thành viên · Sự kiện · Cơ hội'.
-      * **Nút '+ Tạo nhóm' mạ vàng** trên Header mở `CreateCommunityGroupModal.tsx` khởi tạo liên minh/cộng đồng doanh nghiệp mới với tên nhóm, phân loại ngành nghề, tôn chỉ và tự động cấp quyền Ban Điều Hành.
-      * Ô tìm kiếm cộng đồng, liên minh doanh nghiệp, sự kiện B2B.
-      * Bộ 4 Tabs phân loại: [Tất cả] [Đã tham gia] [Ban Điều Hành] [Sự kiện B2B].
-      * Thẻ liên minh doanh nhân xác thực & Thẻ sự kiện B2B cấp mã vé QR điện tử tức thì.
-      * **Phân hệ 'Cơ Hội Kinh Doanh Trong Cộng Đồng' (`CommunityOpportunitiesSection` parity):** Banner chỉ số cơ hội B2B đang mở, danh sách thẻ cơ hội (quy mô 15 tỷ, 850 triệu, 5.2 tỷ), thời hạn, và nút hành động "Quan tâm" gửi hồ sơ năng lực 1-chạm.
+       * Header thương hiệu ViOne + Tiêu đề 'Cộng đồng' kèm subtitle 'Thành viên · Sự kiện · Cơ hội'.
+       * **Nút '+ Tạo nhóm' mạ vàng** trên Header mở `CreateCommunityGroupModal.tsx` khởi tạo liên minh/cộng đồng doanh nghiệp mới với tên nhóm, phân loại ngành nghề, tôn chỉ và tự động cấp quyền Ban Điều Hành.
+       * Ô tìm kiếm cộng đồng, liên minh doanh nghiệp, sự kiện B2B.
+       * Bộ 4 Tabs phân loại: [Tất cả] [Đã tham gia] [Ban Điều Hành] [Sự kiện B2B].
+       * Thẻ liên minh doanh nhân xác thực & Thẻ sự kiện B2B cấp mã vé QR điện tử tức thì.
+       * **Phân hệ 'Cơ Hội Kinh Doanh Trong Cộng Đồng' (`CommunityOpportunitiesSection` parity):** Banner chỉ số cơ hội B2B đang mở, danh sách thẻ cơ hội (quy mô 15 tỷ, 850 triệu, 5.2 tỷ), thời hạn, và nút hành động "Quan tâm" gửi hồ sơ năng lực 1-chạm.
     - **Màn hình Tôi / Profile (ProfileScreen vs MeScreen):**
-      * Thẻ Hero Doanh Nhân ViOne: Avatar viền vàng, Chức vụ, Công ty, Email, Điện thoại.
-      * Bộ 4 Nút thao tác nhanh: [Chia sẻ link] [Mã QR của tôi] [Thẻ NFC] [Xem trước].
-      * Thẻ danh thiếp điện tử Titanium 3D: Chip thông minh, chỉ báo NFC, mã số doanh nhân VIONE-XXXX, nút mở QR.
-      * Khối 'Về tôi & Năng lực doanh nghiệp': Kinh nghiệm 15+ năm, 500+ đối tác, 20+ dự án B2B, Lĩnh vực quan tâm.
-      * Thông tin liên hệ & Cài đặt bảo mật (Xác thực 2 lớp, AI Personalization, Đăng xuất).
+       * Thẻ Hero Doanh Nhân ViOne: Avatar viền vàng, Chức vụ, Công ty, Email, Điện thoại.
+       * Bộ 4 Nút thao tác nhanh: [Chia sẻ link] [Mã QR của tôi] [Thẻ NFC] [Xem trước].
+       * Thẻ danh thiếp điện tử Titanium 3D: Chip thông minh, chỉ báo NFC, mã số doanh nhân VIONE-XXXX, nút mở QR.
+       * Khối 'Về tôi & Năng lực doanh nghiệp': Kinh nghiệm 15+ năm, 500+ đối tác, 20+ dự án B2B, Lĩnh vực quan tâm.
+       * Thông tin liên hệ & Cài đặt bảo mật (Xác thực 2 lớp, AI Personalization, Đăng xuất).
     - **Thanh điều hướng dưới đáy (CustomBottomTabBar vs BusinessConnectBottomNav):**
-     * Nền tối `#0A0A0B`, viền trên mạ vàng `rgba(216, 178, 130, 0.18)`.
-     * Vạch chỉ báo tab đang chọn màu vàng `#D8B282`.
-     * Nút V mạ vàng nổi bật ở chính giữa với hiệu ứng vầng sáng hoàng kim phát sáng rực rỡ.
+       * Nền Obsidian Navy `#0B0F17` (Dark) / `#FFFFFF` (Light), viền trên mạ vàng tinh tế `rgba(216, 178, 130, 0.18)`.
+       * Vạch chỉ báo tab đang chọn: Dải gradient ngang 24×3px `["#F6E1C3", "#E6C59E", "#D8B282", "#C29B69"]` đặt ở mép trên cùng tab.
+       * Bộ 4 icon điều hướng: Vector SVG chuẩn hình học `NavHomeIcon`, `NavNetworkIcon`, `NavCommunityIcon`, `NavMeIcon` (`NavIcons.tsx`).
+       * Tab đang active có pill highlight màu `rgba(216, 178, 130, 0.22)`, chữ đậm 10.5px màu `#D8B282` (Dark) / `#A3703C` (Light).
+       * Nút V mạ vàng nổi bật ở chính giữa với hiệu ứng vầng sáng hoàng kim phát sáng rực rỡ và biểu tượng 3D `VIconMark`.
+
+---
+
+## 2. BẢNG MÀU HỆ THỐNG VIONE (PALETTE SPECIFICATIONS)
+
+| Nhãn Màu | Mã HEX | Tailwind / React Native Token | Ứng Dụng Thực Tế |
+| :--- | :--- | :--- | :--- |
+| **Dark Obsidian Navy (Nền chính)** | `#0B0F17` | `Colors.background`, `var(--bc-mobile-bg)` | Nền toàn bộ ứng dụng, Bottom Nav bar |
+| **Surface Dark (Thẻ & Khối)** | `#0E1522` | `Colors.surface`, `var(--bc-mobile-surface)` | Thẻ doanh nhân, Thẻ Insight, Ops Cards |
+| **Surface Dark 2 (Sub-card)** | `#151D2C` | `Colors.surface2`, `var(--bc-mobile-surface-2)` | Thẻ con nghiệp vụ, ô nhập liệu input |
+| **ViOne Bronze Gold** | `#D8B282` | `Colors.gold`, `var(--bc-mobile-accent)` | Nút V trung tâm, huy hiệu VIP, viền active |
+| **Gold Light Champagne** | `#F6E1C3` | `Colors.goldLight`, `var(--bc-gold-300)` | Đỉnh gradient, tiêu đề sáng, text highlight |
+| **Gold Deep Amber** | `#C29B69` | `Colors.goldDark`, `var(--bc-gold-600)` | Thân gradient nút V, viền thẻ nổi bật |
+| **Rich Brown Accent** | `#8C653B` | `Colors.goldBrown`, `var(--bc-gold-700)` | Đáy gradient nút Vàng Nâu ViOne |
+| **V-Button Border Dark** | `#524128` | `Colors.vButtonBorder` | Viền 2px bao quanh nút V trung tâm (Dark) |
+| **Pure White Text** | `#FFFFFF` | `Colors.textPrimary` | Tiêu đề chính, tên doanh nhân |
+| **Muted Gold/Gray Text** | `#94A3B8` / `#D4C3A3` | `Colors.textMuted` | Nhãn phụ, mốc thời gian, địa điểm |
+| **Border Subtle** | `rgba(216, 178, 130, 0.18)` | `Colors.surfaceBorder` | Viền ngăn cách card hairline |
+| **Border Gold Accent** | `rgba(216, 178, 130, 0.45)` | `Colors.surfaceBorderGold` | Viền nhấn mạnh thẻ danh thiếp & nút V |
 
 ---
 

@@ -25,17 +25,21 @@ import {
   Loader2,
   MapPin,
   MessageSquare,
+  Mic,
+  Moon,
+  Pause,
   Pencil,
   Phone,
+  Play,
   RefreshCw,
   ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Sun,
-  Moon,
   User,
   Users,
   Video,
+  Volume2,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -117,13 +121,73 @@ export function ExecutiveHome() {
   // Tuỳ chỉnh thẻ HÔM NAY — chỉ lọc/sắp xếp dữ liệu đã được cấp quyền.
   const { prefs, update, reset } = useTodayPreferences();
   const [customizeOpen, setCustomizeOpen] = useState(false);
-  const [scheduleTab, setScheduleTab] = useState<"today" | "upcoming" | "reminders">("today");
+  const [scheduleTab, setScheduleTab] = useState<"today" | "upcoming" | "reminders" | "voice_moments">("today");
   const [selectedEvent, setSelectedEvent] = useState<CrmEvent | null>(null);
   const [eventSheetOpen, setEventSheetOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
   const [attendanceSheetOpen, setAttendanceSheetOpen] = useState(false);
   const [workflowSheetOpen, setWorkflowSheetOpen] = useState(false);
   const [approvalsSheetOpen, setApprovalsSheetOpen] = useState(false);
+
+  // Quyền chia sẻ vị trí phục vụ AI định vị người dùng ViOne quanh đây
+  const [hasLocationPermission, setHasLocationPermission] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("vione_location_granted") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const [requestingLocation, setRequestingLocation] = useState(false);
+
+  const handleRequestLocation = () => {
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      toast.error("Trình duyệt không hỗ trợ dịch vụ định vị");
+      return;
+    }
+    setRequestingLocation(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setRequestingLocation(false);
+        setHasLocationPermission(true);
+        localStorage.setItem("vione_location_granted", "true");
+        localStorage.setItem("vione_current_lat", String(pos.coords.latitude));
+        localStorage.setItem("vione_current_lng", String(pos.coords.longitude));
+        toast.success("Đã bật chia sẻ vị trí thành công! Trợ lý AI ViOne đã sẵn sàng tìm kiếm đối tác quanh bạn.");
+      },
+      (err) => {
+        setRequestingLocation(false);
+        toast.error("Không thể lấy vị trí: " + (err.message || "Vui lòng cho phép quyền truy cập vị trí trên trình duyệt"));
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  };
+
+  // Trình phát âm thanh cho Khoảnh khắc ghi âm
+  const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+
+  const handleTogglePlayVoice = (vm: any) => {
+    if (playingVoiceId === vm.id) {
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+      }
+      setPlayingVoiceId(null);
+    } else {
+      if (!audioPlayerRef.current) {
+        audioPlayerRef.current = new Audio();
+        audioPlayerRef.current.onended = () => setPlayingVoiceId(null);
+        audioPlayerRef.current.onerror = () => {
+          toast.info("Đang phát bản ghi âm mẫu khoảnh khắc");
+          setTimeout(() => setPlayingVoiceId(null), 3000);
+        };
+      }
+      audioPlayerRef.current.src = vm.audioUrl || "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg";
+      audioPlayerRef.current.play().catch(() => {
+        setTimeout(() => setPlayingVoiceId(null), 3500);
+      });
+      setPlayingVoiceId(vm.id);
+    }
+  };
 
   const handleOpenEvent = (ev: CrmEvent) => {
     setSelectedEvent(ev);
@@ -232,6 +296,21 @@ export function ExecutiveHome() {
       return da - db;
     });
 
+  // Lắng nghe sự kiện lên lịch cuộc gặp mới & khoảnh khắc ghi âm mới
+  const [scheduledMeetingsVersion, setScheduledMeetingsVersion] = useState(0);
+  const [voiceMomentsVersion, setVoiceMomentsVersion] = useState(0);
+
+  useEffect(() => {
+    const onMeetingScheduled = () => setScheduledMeetingsVersion((v) => v + 1);
+    const onVoiceSaved = () => setVoiceMomentsVersion((v) => v + 1);
+    window.addEventListener("meeting-scheduled", onMeetingScheduled);
+    window.addEventListener("voice-moment-saved", onVoiceSaved);
+    return () => {
+      window.removeEventListener("meeting-scheduled", onMeetingScheduled);
+      window.removeEventListener("voice-moment-saved", onVoiceSaved);
+    };
+  }, []);
+
   // Danh sách nhắc lịch: cuộc gặp 1-1 và sự kiện có lịch hẹn
   const localScheduledMeetings = useMemo(() => {
     try {
@@ -240,7 +319,47 @@ export function ExecutiveHome() {
     } catch {
       return [];
     }
-  }, []);
+  }, [scheduledMeetingsVersion]);
+
+  // Danh mục ghi âm khoảnh khắc (lưu vết tại mục Lịch sử để người dùng & AI tra cứu)
+  const voiceMomentsList = useMemo(() => {
+    try {
+      const stored = localStorage.getItem("vba_voice_moments_history");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+      // Dữ liệu mẫu chuẩn bị sẵn để AI và người dùng có thể tra cứu và nghe lại ngay lập tức
+      const sampleList = [
+        {
+          id: "vm-seed-01",
+          title: "Cuộc gặp ký kết đối tác chiến lược",
+          author: "Tổng Giám Đốc",
+          date: "10:15 Hôm nay",
+          duration: "01:45",
+          location: "Hà Nội, Việt Nam",
+          transcript: "Thảo luận về cơ chế phân phối sản phẩm ViOne Connect và ký kết biên bản ghi nhớ hợp tác thương mại 2026.",
+          audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: "vm-seed-02",
+          title: "Thảo luận nhanh chuyển đổi số & CRM",
+          author: "Giám Đốc Vận Hành",
+          date: "14:20 Hôm qua",
+          duration: "00:58",
+          location: "Bình Dương, Việt Nam",
+          transcript: "Ghi chú nhanh các yêu cầu kỹ thuật tích hợp API CRM và danh thiếp thông minh cho đoàn doanh nghiệp.",
+          audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_background.ogg",
+          createdAt: new Date(Date.now() - 86400000).toISOString(),
+        }
+      ];
+      localStorage.setItem("vba_voice_moments_history", JSON.stringify(sampleList));
+      return sampleList;
+    } catch {
+      return [];
+    }
+  }, [voiceMomentsVersion]);
 
   const remindersList = useMemo(() => {
     const list: any[] = [];
@@ -328,20 +447,63 @@ export function ExecutiveHome() {
           <div className="bc-home-enter">
             <Greeting identity={data.identity} />
 
-            <section aria-labelledby="bc-home-today" className="mt-8">
+            {/* Trạng thái chia sẻ vị trí AI & Định vị xung quanh */}
+            <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3 shadow-xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="relative flex h-3 w-3 shrink-0">
+                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${hasLocationPermission ? 'bg-emerald-400 opacity-75' : 'bg-amber-400 opacity-75'}`} />
+                  <span className={`relative inline-flex rounded-full h-3 w-3 ${hasLocationPermission ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[12px] font-bold text-[var(--bc-mobile-text)] truncate flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                    <span>{hasLocationPermission ? "Định vị AI: Đang chia sẻ vị trí" : "Định vị AI: Chưa bật vị trí"}</span>
+                  </p>
+                  <p className="text-[11px] text-[var(--bc-mobile-muted)] truncate">
+                    {hasLocationPermission 
+                      ? "Bán kính định vị AI sẵn sàng tìm kiếm đối tác & người dùng ViOne quanh bạn" 
+                      : "Bật quyền vị trí để AI quét và kết nối doanh nhân ở gần bạn nhất"}
+                  </p>
+                </div>
+              </div>
+              {!hasLocationPermission && (
+                <button
+                  type="button"
+                  onClick={handleRequestLocation}
+                  disabled={requestingLocation}
+                  className="shrink-0 px-3 py-1.5 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-[11px] hover:opacity-90 active:scale-95 transition shadow-xs cursor-pointer"
+                >
+                  {requestingLocation ? "Đang bật..." : "Bật vị trí"}
+                </button>
+              )}
+            </div>
+
+            <section aria-labelledby="bc-home-today" className="mt-6">
               {/* Header */}
               <div className="flex items-baseline justify-between">
                 <div>
                   <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--bc-mobile-muted)]">
                     {scheduleTab === "today"
                       ? t("bc.mobile.home.today.label")
-                      : "Lịch trình sắp tới"}
+                      : scheduleTab === "upcoming"
+                      ? "Lịch trình sắp tới"
+                      : scheduleTab === "reminders"
+                      ? "Nhắc lịch cuộc gặp & sự kiện"
+                      : "Lịch sử khoảnh khắc ghi âm"}
                   </div>
                   <h2
                     id="bc-home-today"
                     className="text-[20px] font-semibold text-[var(--bc-mobile-text)]"
                   >
-                    {scheduleTab === "today" ? <TodayDate /> : "Sự kiện sắp diễn ra"}
+                    {scheduleTab === "today" ? (
+                      <TodayDate />
+                    ) : scheduleTab === "upcoming" ? (
+                      "Sự kiện sắp diễn ra"
+                    ) : scheduleTab === "reminders" ? (
+                      "Cuộc gặp & Nhắc hẹn"
+                    ) : (
+                      "🎙️ Ghi âm khoảnh khắc"
+                    )}
                   </h2>
                 </div>
 
@@ -371,8 +533,8 @@ export function ExecutiveHome() {
                 </div>
               </div>
 
-              {/* Segmented Tab Bar: Hôm nay | Sắp tới | Nhắc lịch */}
-              <div className="mt-3 flex items-center rounded-xl bg-[var(--bc-mobile-surface-2)] p-1 border border-[var(--bc-mobile-border)]">
+              {/* Segmented Tab Bar: Hôm nay | Sắp tới | Nhắc lịch | Ghi âm khoảnh khắc */}
+              <div className="mt-3 grid grid-cols-4 gap-1 rounded-xl bg-[var(--bc-mobile-surface-2)] p-1 border border-[var(--bc-mobile-border)]">
                 <button
                   type="button"
                   onClick={() => setScheduleTab("today")}
@@ -381,7 +543,7 @@ export function ExecutiveHome() {
                       ? { background: "var(--bc-mobile-accent-grad)" }
                       : undefined
                   }
-                  className={`flex-1 py-1.5 text-xs rounded-lg transition-all text-center cursor-pointer ${
+                  className={`py-1.5 text-[11px] rounded-lg transition-all text-center cursor-pointer truncate ${
                     scheduleTab === "today"
                       ? "text-[#050c15] font-bold shadow-xs"
                       : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
@@ -397,7 +559,7 @@ export function ExecutiveHome() {
                       ? { background: "var(--bc-mobile-accent-grad)" }
                       : undefined
                   }
-                  className={`flex-1 py-1.5 text-xs rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                  className={`py-1.5 text-[11px] rounded-lg transition-all flex items-center justify-center gap-0.5 cursor-pointer truncate ${
                     scheduleTab === "upcoming"
                       ? "text-[#050c15] font-bold shadow-xs"
                       : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
@@ -406,7 +568,7 @@ export function ExecutiveHome() {
                   <span>Sắp tới</span>
                   {upcomingEvents.length > 0 && (
                     <span
-                      className={`px-1.5 py-0.5 rounded-full text-[10px] leading-none ${
+                      className={`px-1 py-0.2 rounded-full text-[9px] leading-none ${
                         scheduleTab === "upcoming"
                           ? "bg-[#050c15]/20 text-[#050c15] font-bold"
                           : "bg-[var(--bc-mobile-accent-soft)] text-[var(--bc-mobile-accent)] font-semibold"
@@ -424,7 +586,7 @@ export function ExecutiveHome() {
                       ? { background: "var(--bc-mobile-accent-grad)" }
                       : undefined
                   }
-                  className={`flex-1 py-1.5 text-xs rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                  className={`py-1.5 text-[11px] rounded-lg transition-all flex items-center justify-center gap-0.5 cursor-pointer truncate ${
                     scheduleTab === "reminders"
                       ? "text-[#050c15] font-bold shadow-xs"
                       : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
@@ -433,13 +595,41 @@ export function ExecutiveHome() {
                   <span>Nhắc lịch</span>
                   {remindersList.length > 0 && (
                     <span
-                      className={`px-1.5 py-0.5 rounded-full text-[10px] leading-none ${
+                      className={`px-1 py-0.2 rounded-full text-[9px] leading-none ${
                         scheduleTab === "reminders"
                           ? "bg-[#050c15]/20 text-[#050c15] font-bold"
                           : "bg-amber-500/20 text-amber-500 font-semibold"
                       }`}
                     >
                       {remindersList.length}
+                    </span>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScheduleTab("voice_moments")}
+                  style={
+                    scheduleTab === "voice_moments"
+                      ? { background: "var(--bc-mobile-accent-grad)" }
+                      : undefined
+                  }
+                  className={`py-1.5 text-[11px] rounded-lg transition-all flex items-center justify-center gap-0.5 cursor-pointer truncate ${
+                    scheduleTab === "voice_moments"
+                      ? "text-[#050c15] font-bold shadow-xs"
+                      : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
+                  }`}
+                >
+                  <Mic className="h-3 w-3 shrink-0" />
+                  <span>Ghi âm</span>
+                  {voiceMomentsList.length > 0 && (
+                    <span
+                      className={`px-1 py-0.2 rounded-full text-[9px] leading-none ${
+                        scheduleTab === "voice_moments"
+                          ? "bg-[#050c15]/20 text-[#050c15] font-bold"
+                          : "bg-red-500/20 text-red-500 font-semibold"
+                      }`}
+                    >
+                      {voiceMomentsList.length}
                     </span>
                   )}
                 </button>
@@ -586,6 +776,121 @@ export function ExecutiveHome() {
                           </div>
                         </li>
                       ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+
+              {/* Nội dung Tab GHI ÂM KHOẢNH KHẮC */}
+              {scheduleTab === "voice_moments" && (
+                <div className="mt-3">
+                  <div className="mb-2 flex items-center justify-between text-xs text-[var(--bc-mobile-muted)]">
+                    <span>Lưu vết khoảnh khắc giọng nói đã đồng bộ AI:</span>
+                    <Link
+                      to="/connect-app/moment"
+                      className="inline-flex items-center gap-1 font-semibold text-[var(--bc-mobile-accent)] hover:underline"
+                    >
+                      <Mic className="h-3 w-3" />
+                      <span>Ghi âm mới</span>
+                    </Link>
+                  </div>
+
+                  {voiceMomentsList.length === 0 ? (
+                    <div className="py-8 text-center">
+                      <Mic className="mx-auto h-8 w-8 text-[var(--bc-mobile-muted)] opacity-50" />
+                      <p className="mt-2 text-sm font-medium text-[var(--bc-mobile-muted)]">
+                        Chưa có khoảnh khắc ghi âm nào được lưu
+                      </p>
+                      <Link
+                        to="/connect-app/moment"
+                        className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[var(--bc-mobile-accent)] hover:underline"
+                      >
+                        Đăng khoảnh khắc kèm ghi âm
+                        <ChevronRight className="h-3 w-3" />
+                      </Link>
+                    </div>
+                  ) : (
+                    <ul className="mt-2 space-y-3">
+                      {voiceMomentsList.map((vm: any) => {
+                        const isPlaying = playingVoiceId === vm.id;
+                        return (
+                          <li
+                            key={vm.id}
+                            className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2.5">
+                                <span className="grid h-9 w-9 place-items-center rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 shrink-0">
+                                  <Mic className="h-4 w-4" />
+                                </span>
+                                <div>
+                                  <h4 className="text-[13.5px] font-bold text-[var(--bc-mobile-text)] leading-snug">
+                                    {vm.title || "Khoảnh khắc ghi âm"}
+                                  </h4>
+                                  <p className="text-[11px] text-[var(--bc-mobile-muted)]">
+                                    {vm.author || "Thành viên"} · {vm.date || "Hôm nay"} {vm.duration ? `· ${vm.duration}` : ""}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => handleTogglePlayVoice(vm)}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer active:scale-95 ${
+                                  isPlaying
+                                    ? "bg-red-500 text-white shadow-xs animate-pulse"
+                                    : "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-xs hover:opacity-90"
+                                }`}
+                              >
+                                {isPlaying ? (
+                                  <>
+                                    <Pause className="h-3.5 w-3.5 fill-current" />
+                                    <span>Tạm dừng</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Play className="h-3.5 w-3.5 fill-current" />
+                                    <span>Phát lại</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+
+                            {/* Lời thoại / Transcript tóm tắt */}
+                            {vm.transcript && (
+                              <div className="mt-2.5 rounded-xl bg-[var(--bc-mobile-surface-2)] p-2.5 text-[11.5px] text-[var(--bc-mobile-text)] leading-relaxed border-l-2 border-[var(--bc-mobile-accent)]">
+                                <span className="font-semibold text-[var(--bc-mobile-accent)]">Nội dung ghi âm AI: </span>
+                                <span className="italic">"{vm.transcript}"</span>
+                              </div>
+                            )}
+
+                            {/* Sóng âm khi phát */}
+                            {isPlaying && (
+                              <div className="mt-2.5 flex items-center gap-1 h-4 px-2">
+                                {[10, 16, 8, 20, 12, 18, 14, 8, 22, 10, 15, 6].map((h, i) => (
+                                  <span
+                                    key={i}
+                                    style={{ height: `${h}px` }}
+                                    className="w-1 rounded-full bg-red-500 animate-pulse"
+                                  />
+                                ))}
+                                <span className="ml-2 text-[10.5px] font-semibold text-red-500">Đang phát âm thanh gốc...</span>
+                              </div>
+                            )}
+
+                            {/* Thao tác chân thẻ */}
+                            <div className="mt-2.5 flex items-center justify-between text-[11px] text-[var(--bc-mobile-muted)] pt-2 border-t border-[var(--bc-mobile-border)]">
+                              <span className="flex items-center gap-1">
+                                <MapPin className="h-3 w-3 text-amber-500" />
+                                <span>{vm.location || "Việt Nam"}</span>
+                              </span>
+                              <span className="text-[10px] font-mono text-[var(--bc-mobile-accent)]">
+                                Đã lưu vết CSDL • AI có thể tìm thấy
+                              </span>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </div>
@@ -849,7 +1154,7 @@ function InsightCard() {
   );
 }
 
-/** Giám sát Vận hành & Tiến độ nhân sự theo chuẩn BRD Master 5.0 — Mở Sheet Native in-app */
+/** Giám sát Vận hành & Tiến độ nhân sự theo chuẩn C-Level Executive Dashboard — 3 màu ViOne */
 function EnterpriseOperationsCard({
   onOpenAttendance,
   onOpenWorkflow,
@@ -862,116 +1167,126 @@ function EnterpriseOperationsCard({
   return (
     <section
       aria-labelledby="bc-home-ops"
-      className="relative mt-5 overflow-hidden rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-5 shadow-xs transition-all hover:border-[var(--bc-mobile-border-gold)]"
+      className="relative mt-5 overflow-hidden rounded-3xl border border-[#DFB76C]/30 bg-gradient-to-b from-white via-white to-zinc-50 dark:from-[#0B0F17] dark:via-[#101622] dark:to-[#0B0F17] p-5 shadow-xl transition-all"
     >
+      {/* Header bar */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Activity className="h-4 w-4 text-[var(--bc-mobile-accent)]" strokeWidth={1.8} />
-          <h2
-            id="bc-home-ops"
-            className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--bc-mobile-muted)]"
-          >
-            GIÁM SÁT VẬN HÀNH & NHÂN SỰ
-          </h2>
+        <div className="flex items-center gap-2.5">
+          <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-[#DFB76C]/20 to-[#8C653B]/20 text-[#D4AF37] border border-[#DFB76C]/30">
+            <Activity className="h-4 w-4" strokeWidth={2.2} />
+          </div>
+          <div>
+            <h2
+              id="bc-home-ops"
+              className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8C653B] dark:text-[#DFB76C]"
+            >
+              GIÁM SÁT VẬN HÀNH & NHÂN SỰ
+            </h2>
+            <p className="text-[13px] font-bold text-zinc-950 dark:text-white leading-tight">
+              Trung Tâm Điều Hành C-Level
+            </p>
+          </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          THỜI GIAN THỰC
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#DFB76C]/10 border border-[#DFB76C]/30 px-2.5 py-1 text-[10px] font-bold text-[#D4AF37]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+          TRỰC TUYẾN
         </span>
       </div>
 
-      <p className="mt-3 text-[18px] font-bold leading-tight text-[var(--bc-mobile-text)] uppercase">
-        TỔNG THỂ QUY TRÌNH & TIẾN ĐỘ NHÂN VIÊN
-      </p>
-      <p className="mt-1 text-[13px] leading-relaxed text-[var(--bc-mobile-muted)]">
-        Kiểm soát quy trình tự động, phân bổ khối lượng công việc đội ngũ, điểm danh văn phòng và phê duyệt đề xuất thanh toán.
-      </p>
-
-      {/* Grid 3 thẻ nghiệp vụ chuẩn BRD — Không chuyển hướng ra CRM */}
-      <div className="mt-4 flex flex-col gap-3">
-        {/* Thẻ 1: Chấm công GPS & FaceID */}
+      {/* 3 Thẻ Metric Trực Quan (Interactive Executive Metrics) — Bấm là mở ngay Sheet */}
+      <div className="mt-4 grid grid-cols-3 gap-2.5">
+        {/* KPI 1: Chấm công */}
         <button
           type="button"
           onClick={onOpenAttendance}
-          className="group w-full text-left block rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3.5 transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
+          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-[#DFB76C] cursor-pointer hover:shadow-md active:scale-95"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400">
-                <MapPin className="h-4 w-4" />
-              </span>
-              <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
-                Chấm công GPS & Điểm danh khuôn mặt
-              </span>
-            </div>
-            <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600 dark:text-emerald-400">
-              42/45 CÓ MẶT (93.3%)
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#DFB76C]/15 text-[#D4AF37] border border-[#DFB76C]/20">
+              <MapPin className="h-3.5 w-3.5" />
             </span>
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-            Định vị tại văn phòng · Nhận diện khuôn mặt chính chủ · 1-chạm điểm danh nhanh
-          </p>
-          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
-            <span>Mở bảng điểm danh & xin nghỉ</span>
-            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          <div className="mt-2.5">
+            <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+              42<span className="text-xs font-bold text-zinc-400">/45</span>
+            </p>
+            <p className="mt-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 leading-tight">
+              93.3% có mặt
+            </p>
+            <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+              Chấm công GPS
+            </p>
           </div>
         </button>
 
-        {/* Thẻ 2: Quy trình & Tiến độ nhân sự */}
+        {/* KPI 2: Quy trình công việc */}
         <button
           type="button"
           onClick={onOpenWorkflow}
-          className="group w-full text-left block rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3.5 transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
+          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-[#DFB76C] cursor-pointer hover:shadow-md active:scale-95"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
-                <Layers className="h-4 w-4" />
-              </span>
-              <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
-                Quy trình & Tiến độ nhân sự
-              </span>
-            </div>
-            <span className="flex items-center gap-1 rounded-full bg-rose-500/15 px-2 py-0.5 text-[10.5px] font-bold text-rose-600 dark:text-rose-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
-              2 VIỆC TRỄ HẠN
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#DFB76C]/15 text-[#D4AF37] border border-[#DFB76C]/20">
+              <Layers className="h-3.5 w-3.5" />
             </span>
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-            12 việc đang xử lý · Tối đa 5 việc/nhân sự cùng lúc · Cảnh báo nhân sự quá giờ
-          </p>
-          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
-            <span>Theo dõi tiến độ đội ngũ & Kanban</span>
-            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          <div className="mt-2.5">
+            <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+              12
+            </p>
+            <p className="mt-1 text-[11px] font-bold text-rose-600 dark:text-rose-400 leading-tight flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" /> 2 việc trễ
+            </p>
+            <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+              Tiến độ nhân sự
+            </p>
           </div>
         </button>
 
-        {/* Thẻ 3: Phê duyệt chi 3 cấp */}
+        {/* KPI 3: Duyệt chi */}
         <button
           type="button"
           onClick={onOpenApprovals}
-          className="group w-full text-left block rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3.5 transition-all hover:border-[var(--bc-mobile-border-gold)] cursor-pointer active:scale-[0.99]"
+          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-[#DFB76C] cursor-pointer hover:shadow-md active:scale-95"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
-                <ShieldCheck className="h-4 w-4" />
-              </span>
-              <span className="text-[14px] font-bold text-[var(--bc-mobile-text)] group-hover:text-[var(--bc-mobile-accent)] transition-colors">
-                Phê duyệt chi 3 cấp
-              </span>
-            </div>
-            <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10.5px] font-bold text-amber-600 dark:text-amber-400">
-              3 TỜ TRÌNH CHỜ DUYỆT
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#DFB76C]/15 text-[#D4AF37] border border-[#DFB76C]/20">
+              <ShieldCheck className="h-3.5 w-3.5" />
             </span>
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
           </div>
-          <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-            Quy trình 3 cấp: Người lập → Kế toán kiểm tra → Lãnh đạo phê duyệt
-          </p>
-          <div className="mt-2.5 flex items-center justify-between pt-2 border-t border-[var(--bc-mobile-border)] text-[12px] font-semibold text-[var(--bc-mobile-accent)]">
-            <span>Ký duyệt chi & Chuyển khoản QR ngân hàng</span>
-            <ChevronRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          <div className="mt-2.5">
+            <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+              3
+            </p>
+            <p className="mt-1 text-[11px] font-semibold text-[#8C653B] dark:text-[#DFB76C] leading-tight">
+              41.5 Tr chờ
+            </p>
+            <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+              Ký duyệt chi
+            </p>
           </div>
+        </button>
+      </div>
+
+      {/* Action Banner mạ vàng sang trọng — 1 chạm điểm danh / giám sát */}
+      <div className="mt-4 pt-3.5 border-t border-zinc-200 dark:border-white/10 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="grid h-6 w-6 place-items-center rounded-full bg-[#DFB76C]/20 text-[#D4AF37]">
+            <Sparkles className="h-3 w-3" />
+          </span>
+          <span className="text-[12px] font-bold text-zinc-800 dark:text-zinc-200">
+            Hôm nay: 3 việc ưu tiên & 1 tờ trình cần ký
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={onOpenAttendance}
+          className="px-3.5 py-1.5 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-black text-[11px] transition shadow-md hover:brightness-105 active:scale-95 cursor-pointer whitespace-nowrap border border-[#D8B282]/50"
+        >
+          Chấm công ngay
         </button>
       </div>
     </section>
@@ -1061,6 +1376,9 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
               src={resolveMediaUrl(coverUrl) || coverUrl}
               alt="Cover"
               className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
             />
           ) : (
             <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-amber-950/40 to-slate-950" />

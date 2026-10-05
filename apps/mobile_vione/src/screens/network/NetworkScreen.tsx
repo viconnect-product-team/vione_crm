@@ -475,7 +475,7 @@ export const NetworkScreen: React.FC = () => {
     <SafeAreaView
       style={[
         styles.safeArea,
-        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+        { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
       ]}
       edges={["top"]}
     >
@@ -483,7 +483,7 @@ export const NetworkScreen: React.FC = () => {
       <View
         style={[
           styles.header,
-          { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
         ]}
       >
         <View style={styles.headerBrand}>
@@ -1335,7 +1335,7 @@ export const NetworkScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   header: {
     flexDirection: "row",
@@ -1344,7 +1344,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 6,
     paddingBottom: 10,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   headerBrand: {
     justifyContent: "center",
@@ -1577,7 +1577,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1.5,
-    borderColor: "#0A0A0B",
+    borderColor: "#0B0F17",
   },
   myStoryLabel: {
     color: "#FFFFFF",
@@ -2125,7 +2125,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: "#10B981",
     borderWidth: 2,
-    borderColor: "#0A0A0B",
+    borderColor: "#0B0F17",
   },
   threadBody: {
     flex: 1,

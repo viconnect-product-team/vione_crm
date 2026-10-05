@@ -23,6 +23,9 @@ export const authApi = {
   login: async (credentials: { email?: string; username?: string; password: string }) => {
     return api.post<{ access_token: string; user?: UserProfile }>(API_ENDPOINTS.AUTH.LOGIN, credentials);
   },
+  register: async (data: { email: string; username?: string; password: string; name: string; company?: string; phone?: string }) => {
+    return api.post<{ access_token?: string; user?: UserProfile; message?: string }>(API_ENDPOINTS.AUTH.REGISTER, data);
+  },
   getMe: async () => {
     return api.get<{ user: UserProfile }>(API_ENDPOINTS.AUTH.ME);
   },

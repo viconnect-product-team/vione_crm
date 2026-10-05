@@ -28,6 +28,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
+import { VIconMark } from "./VIconMark";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -88,13 +89,15 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                 {/* Identity Card with Gold V Watermark */}
                 <View style={styles.identityCardWrapper}>
                   <LinearGradient
-                    colors={["#181D2A", "#12151F", "#0A0A0B"]}
+                    colors={["#151D2C", "#0E1522", "#070B12"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.identityCardGradient}
                   >
-                    {/* Giant Watermark V */}
-                    <Text style={styles.watermarkV}>V</Text>
+                    {/* ViOne Sculpted Watermark Emblem */}
+                    <View style={styles.watermarkWrap}>
+                      <VIconMark size={140} />
+                    </View>
 
                     <View style={styles.identityCardBody}>
                       <View style={styles.identityTopRow}>
@@ -385,7 +388,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheetContainer: {
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     borderTopWidth: 1,
@@ -425,14 +428,11 @@ const styles = StyleSheet.create({
     padding: 16,
     position: "relative",
   },
-  watermarkV: {
+  watermarkWrap: {
     position: "absolute",
-    right: -10,
-    bottom: -30,
-    fontSize: 130,
-    fontWeight: "900",
-    color: "rgba(216, 178, 130, 0.12)",
-    fontFamily: "serif",
+    right: -20,
+    bottom: -25,
+    opacity: 0.16,
   },
   identityCardBody: {
     position: "relative",

@@ -45,6 +45,11 @@ if (Test-Path $authKey) {
     Write-Host "  -> Key ID     : 4Q734PS4PG" -ForegroundColor DarkGray
     Write-Host "  -> Issuer ID  : 6c7d5137-21b1-4bae-96d2-3cc761483dbc" -ForegroundColor DarkGray
     Write-Host "  -> Apple ID   : 6810608093 (tuanna@unicomhub.com)" -ForegroundColor DarkGray
+    Write-Host "  -> Apple Team : QYN6C6RJ47" -ForegroundColor Green
+    $env:EXPO_APPLE_TEAM_ID = "QYN6C6RJ47"
+    $env:EXPO_ASC_API_KEY_PATH = $authKey
+    $env:EXPO_ASC_KEY_ID = "4Q734PS4PG"
+    $env:EXPO_ASC_ISSUER_ID = "6c7d5137-21b1-4bae-96d2-3cc761483dbc"
 } else {
     Write-Warning "Khong tim thay AuthKey_4Q734PS4PG.p8 trong $CRED_DIR. Ban co the can nhap Apple Developer credentials thu cong."
 }
@@ -73,6 +78,7 @@ if ($Submit) {
     $easArgs += "--auto-submit"
 }
 
+$env:EAS_BUILD_SKIP_LOCKFILE_CHECK = "1"
 Push-Location $MOBILE_DIR
 try {
     Write-Host "  -> Thuc thi: npx $($easArgs -join ' ')" -ForegroundColor Cyan

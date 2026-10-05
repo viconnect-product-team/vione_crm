@@ -22,12 +22,16 @@ import {
   EyeOff,
   ArrowRight,
   ChevronRight,
+  ChevronLeft,
   Shield,
   Globe,
   QrCode,
   Sparkles,
   Check,
   UserCheck,
+  User,
+  Briefcase,
+  Phone,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { useAuth } from "../../context/AuthContext";
@@ -66,16 +70,29 @@ function AppleIcon() {
 }
 
 export const LoginScreen: React.FC = () => {
-  const { login, quickDemoLogin, isLoading } = useAuth();
+  const { login, register, quickDemoLogin, isLoading } = useAuth();
+  const [isRegister, setIsRegister] = useState(false);
+
+  // Login form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [lang, setLang] = useState<"vi" | "en">("vi");
 
+  // Register form state
+  const [regName, setRegName] = useState("");
+  const [regPhone, setRegPhone] = useState("");
+  const [regEmail, setRegEmail] = useState("");
+  const [regCompany, setRegCompany] = useState("");
+  const [regPassword, setRegPassword] = useState("");
+  const [regConfirmPassword, setRegConfirmPassword] = useState("");
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
+
   const handleLogin = async () => {
     if (!email.trim()) {
-      Alert.alert("Thông báo", "Vui lòng nhập email hoặc tài khoản đăng nhập");
+      Alert.alert("Thông báo", "Vui lòng nhập Email hoặc Số điện thoại đăng nhập");
       return;
     }
     if (!password) {
@@ -86,6 +103,37 @@ export const LoginScreen: React.FC = () => {
     const res = await login(email, password);
     if (!res.success) {
       Alert.alert("Đăng nhập thất bại", res.error || "Vui lòng kiểm tra lại thông tin");
+    }
+  };
+
+  const handleRegister = async () => {
+    if (!regName.trim()) {
+      Alert.alert("Thông báo", "Vui lòng nhập họ và tên của bạn");
+      return;
+    }
+    if (!regPhone.trim() && !regEmail.trim()) {
+      Alert.alert("Thông báo", "Vui lòng nhập số điện thoại hoặc email liên hệ");
+      return;
+    }
+    if (regPassword.length < 6) {
+      Alert.alert("Thông báo", "Mật khẩu phải chứa ít nhất 6 ký tự");
+      return;
+    }
+    if (regPassword !== regConfirmPassword) {
+      Alert.alert("Thông báo", "Mật khẩu xác nhận không khớp");
+      return;
+    }
+
+    const res = await register({
+      email: regEmail.trim() || `${regPhone.trim().replace(/\D/g, '')}@vione.vn`,
+      phone: regPhone.trim(),
+      password: regPassword,
+      name: regName.trim(),
+      company: regCompany.trim() || undefined,
+    });
+
+    if (!res.success) {
+      Alert.alert("Đăng ký không thành công", res.error || "Vui lòng kiểm tra lại thông tin");
     }
   };
 
@@ -121,10 +169,10 @@ export const LoginScreen: React.FC = () => {
       />
       <LinearGradient
         colors={[
-          "rgba(10, 10, 11, 0.45)",
-          "rgba(10, 10, 11, 0.85)",
-          "#0A0A0B",
-          "#0A0A0B",
+          "rgba(11, 15, 23, 0.45)",
+          "rgba(11, 15, 23, 0.85)",
+          "#0B0F17",
+          "#0B0F17",
         ]}
         locations={[0, 0.35, 0.7, 1]}
         style={styles.bgGradientOverlay}
@@ -140,8 +188,21 @@ export const LoginScreen: React.FC = () => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            {/* Top Bar: Language Switcher */}
+            {/* Top Bar: Back button (when in register) & Language Switcher */}
             <View style={styles.topBar}>
+              {isRegister ? (
+                <TouchableOpacity
+                  style={styles.backBtnPill}
+                  onPress={() => setIsRegister(false)}
+                  activeOpacity={0.75}
+                >
+                  <ChevronLeft size={16} color="#D8B282" />
+                  <Text style={styles.backBtnText}>Đăng nhập</Text>
+                </TouchableOpacity>
+              ) : (
+                <View />
+              )}
+
               <TouchableOpacity
                 style={styles.langPill}
                 onPress={() => setLang(lang === "vi" ? "en" : "vi")}
@@ -162,204 +223,361 @@ export const LoginScreen: React.FC = () => {
                 resizeMode="contain"
               />
               <Text style={styles.brandSubtitle}>BUSINESS CONNECT</Text>
-              <Text style={styles.loginHeading}>Đăng nhập ViOne</Text>
+              <Text style={styles.loginHeading}>
+                {isRegister ? "Đăng ký tài khoản mới" : "Đăng nhập ViOne"}
+              </Text>
               <Text style={styles.loginSubheading}>
-                Cộng đồng doanh nhân tinh hoa & Kết nối giao thương
+                {isRegister
+                  ? "Khởi tạo tài khoản doanh nhân & gia nhập hệ sinh thái ViOne"
+                  : "Cộng đồng doanh nhân tinh hoa & Kết nối giao thương"}
               </Text>
             </View>
 
-            {/* Social Logins - Elongated buttons matching PWA */}
-            <View style={styles.socialSection}>
-              <TouchableOpacity
-                style={styles.socialBtn}
-                onPress={() => handleSocialLogin("google")}
-                activeOpacity={0.8}
-              >
-                <GoogleIcon />
-                <Text style={styles.socialBtnText}>Đăng nhập với Google</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.socialBtn}
-                onPress={() => handleSocialLogin("apple")}
-                activeOpacity={0.8}
-              >
-                <AppleIcon />
-                <Text style={styles.socialBtnText}>Đăng nhập với Apple</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Divider */}
-            <View style={styles.dividerRow}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>HOẶC</Text>
-              <View style={styles.dividerLine} />
-            </View>
-
-            {/* Credential Form */}
-            <View style={styles.formContainer}>
-              {/* Email */}
-              <View style={styles.fieldGroup}>
-                <Text style={styles.fieldLabel}>Email hoặc Số điện thoại</Text>
-                <View style={styles.inputBox}>
-                  <Mail size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="admin@connect.vn"
-                    placeholderTextColor="rgba(212, 195, 163, 0.4)"
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                  />
+            {isRegister ? (
+              /* REGISTRATION FORM - Đăng ký trực tiếp vào App ViOne */
+              <View style={styles.formContainer}>
+                {/* Full Name */}
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.fieldLabel}>Họ và tên doanh nhân *</Text>
+                  <View style={styles.inputBox}>
+                    <User size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="VD: Nguyễn Văn Hùng"
+                      placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                      value={regName}
+                      onChangeText={setRegName}
+                      autoCapitalize="words"
+                    />
+                  </View>
                 </View>
-              </View>
 
-              {/* Password */}
-              <View style={styles.fieldGroup}>
-                <Text style={styles.fieldLabel}>Mật khẩu</Text>
-                <View style={styles.inputBox}>
-                  <Lock size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Nhập mật khẩu"
-                    placeholderTextColor="rgba(212, 195, 163, 0.4)"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowPassword((v) => !v)}
-                    style={styles.eyeBtn}
-                    activeOpacity={0.7}
-                  >
-                    {showPassword ? (
-                      <EyeOff size={16} color="#D4C3A3" />
-                    ) : (
-                      <Eye size={16} color="#D4C3A3" />
-                    )}
-                  </TouchableOpacity>
+                {/* Phone Number */}
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.fieldLabel}>Số điện thoại *</Text>
+                  <View style={styles.inputBox}>
+                    <Phone size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="VD: 0912 345 678"
+                      placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                      value={regPhone}
+                      onChangeText={setRegPhone}
+                      keyboardType="phone-pad"
+                    />
+                  </View>
                 </View>
-              </View>
 
-              {/* Remember & Forgot */}
-              <View style={styles.actionRow}>
+                {/* Email */}
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.fieldLabel}>Email doanh nghiệp</Text>
+                  <View style={styles.inputBox}>
+                    <Mail size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="VD: hung.nguyen@vione.vn"
+                      placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                      value={regEmail}
+                      onChangeText={setRegEmail}
+                      autoCapitalize="none"
+                      keyboardType="email-address"
+                    />
+                  </View>
+                </View>
+
+                {/* Company / Enterprise Name */}
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.fieldLabel}>Tên doanh nghiệp / Công ty</Text>
+                  <View style={styles.inputBox}>
+                    <Briefcase size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="VD: Tập đoàn Công nghệ ViOne"
+                      placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                      value={regCompany}
+                      onChangeText={setRegCompany}
+                    />
+                  </View>
+                </View>
+
+                {/* Password */}
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.fieldLabel}>Mật khẩu *</Text>
+                  <View style={styles.inputBox}>
+                    <Lock size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Tối thiểu 6 ký tự"
+                      placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                      value={regPassword}
+                      onChangeText={setRegPassword}
+                      secureTextEntry={!showRegPassword}
+                    />
+                    <TouchableOpacity
+                      onPress={() => setShowRegPassword((v) => !v)}
+                      style={styles.eyeBtn}
+                      activeOpacity={0.7}
+                    >
+                      {showRegPassword ? (
+                        <EyeOff size={16} color="#D4C3A3" />
+                      ) : (
+                        <Eye size={16} color="#D4C3A3" />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Confirm Password */}
+                <View style={styles.fieldGroup}>
+                  <Text style={styles.fieldLabel}>Xác nhận mật khẩu *</Text>
+                  <View style={styles.inputBox}>
+                    <Lock size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                    <TextInput
+                      style={styles.textInput}
+                      placeholder="Nhập lại mật khẩu"
+                      placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                      value={regConfirmPassword}
+                      onChangeText={setRegConfirmPassword}
+                      secureTextEntry={!showRegConfirmPassword}
+                    />
+                    <TouchableOpacity
+                      onPress={() => setShowRegConfirmPassword((v) => !v)}
+                      style={styles.eyeBtn}
+                      activeOpacity={0.7}
+                    >
+                      {showRegConfirmPassword ? (
+                        <EyeOff size={16} color="#D4C3A3" />
+                      ) : (
+                        <Eye size={16} color="#D4C3A3" />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Gold Gradient Register Button */}
                 <TouchableOpacity
-                  style={styles.rememberRow}
-                  onPress={() => setRemember((v) => !v)}
+                  onPress={handleRegister}
+                  disabled={isLoading}
+                  activeOpacity={0.88}
+                  style={styles.submitBtnTouch}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.submitBtnGradient}
+                  >
+                    <Text style={styles.submitBtnText}>
+                      {isLoading ? "Đang xử lý..." : "Đăng ký & Đăng nhập ngay"}
+                    </Text>
+                    {!isLoading && (
+                      <ArrowRight size={17} color="#050C15" strokeWidth={2.4} style={styles.submitArrow} />
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                {/* Switch back to Login */}
+                <TouchableOpacity
+                  style={styles.switchAuthRow}
+                  onPress={() => setIsRegister(false)}
                   activeOpacity={0.75}
                 >
-                  <View style={[styles.checkbox, remember && styles.checkboxActive]}>
-                    {remember && <Check size={12} color="#050C15" strokeWidth={3} />}
+                  <Text style={styles.switchAuthText}>Đã có tài khoản doanh nhân? </Text>
+                  <Text style={styles.switchAuthLink}>Đăng nhập ngay</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              /* LOGIN FORM */
+              <>
+                {/* Social Logins - Elongated buttons matching PWA */}
+                <View style={styles.socialSection}>
+                  <TouchableOpacity
+                    style={styles.socialBtn}
+                    onPress={() => handleSocialLogin("google")}
+                    activeOpacity={0.8}
+                  >
+                    <GoogleIcon />
+                    <Text style={styles.socialBtnText}>Đăng nhập với Google</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.socialBtn}
+                    onPress={() => handleSocialLogin("apple")}
+                    activeOpacity={0.8}
+                  >
+                    <AppleIcon />
+                    <Text style={styles.socialBtnText}>Đăng nhập với Apple</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Divider */}
+                <View style={styles.dividerRow}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>HOẶC</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                {/* Credential Form */}
+                <View style={styles.formContainer}>
+                  {/* Email / Phone */}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.fieldLabel}>Email hoặc Số điện thoại</Text>
+                    <View style={styles.inputBox}>
+                      <Mail size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder="VD: ceo@vione.vn hoặc 0912 345 678"
+                        placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                        value={email}
+                        onChangeText={setEmail}
+                        autoCapitalize="none"
+                        keyboardType="default"
+                      />
+                    </View>
                   </View>
-                  <Text style={styles.rememberLabel}>Ghi nhớ đăng nhập</Text>
+
+                  {/* Password */}
+                  <View style={styles.fieldGroup}>
+                    <Text style={styles.fieldLabel}>Mật khẩu</Text>
+                    <View style={styles.inputBox}>
+                      <Lock size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder="Nhập mật khẩu"
+                        placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                      />
+                      <TouchableOpacity
+                        onPress={() => setShowPassword((v) => !v)}
+                        style={styles.eyeBtn}
+                        activeOpacity={0.7}
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} color="#D4C3A3" />
+                        ) : (
+                          <Eye size={16} color="#D4C3A3" />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {/* Remember & Forgot */}
+                  <View style={styles.actionRow}>
+                    <TouchableOpacity
+                      style={styles.rememberRow}
+                      onPress={() => setRemember((v) => !v)}
+                      activeOpacity={0.75}
+                    >
+                      <View style={[styles.checkbox, remember && styles.checkboxActive]}>
+                        {remember && <Check size={12} color="#050C15" strokeWidth={3} />}
+                      </View>
+                      <Text style={styles.rememberLabel}>Ghi nhớ đăng nhập</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() =>
+                        Alert.alert(
+                          "Quên mật khẩu",
+                          "Vui lòng liên hệ ban quản trị ViOne hoặc sử dụng tính năng đặt lại mật khẩu qua email."
+                        )
+                      }
+                      activeOpacity={0.7}
+                    >
+                      <Text style={styles.forgotLabel}>Quên mật khẩu?</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* Gold Gradient Login Button */}
+                  <TouchableOpacity
+                    onPress={handleLogin}
+                    disabled={isLoading}
+                    activeOpacity={0.88}
+                    style={styles.submitBtnTouch}
+                  >
+                    <LinearGradient
+                      colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.submitBtnGradient}
+                    >
+                      <Text style={styles.submitBtnText}>
+                        {isLoading ? "Đang xử lý..." : "Đăng nhập"}
+                      </Text>
+                      {!isLoading && (
+                        <ArrowRight size={17} color="#050C15" strokeWidth={2.4} style={styles.submitArrow} />
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Quick Demo Bypass (C-Level / Admin) */}
+                <View style={styles.demoRow}>
+                  <TouchableOpacity
+                    style={styles.demoPill}
+                    onPress={() => quickDemoLogin("executive")}
+                    activeOpacity={0.8}
+                  >
+                    <Sparkles size={13} color="#D8B282" style={{ marginRight: 4 }} />
+                    <Text style={styles.demoPillText}>Vào C-Level</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.demoPill}
+                    onPress={() => quickDemoLogin("admin")}
+                    activeOpacity={0.8}
+                  >
+                    <UserCheck size={13} color="#38BDF8" style={{ marginRight: 4 }} />
+                    <Text style={styles.demoPillText}>Vào Admin</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Sign Up / Create Account Button */}
+                <TouchableOpacity
+                  style={styles.signUpBtn}
+                  onPress={() => setIsRegister(true)}
+                  activeOpacity={0.85}
+                >
+                  <Shield size={16} color="#E2D3B3" />
+                  <Text style={styles.signUpText}>Tạo tài khoản mới (Đăng ký vào App)</Text>
+                  <ChevronRight size={16} color="#E2D3B3" style={styles.rightChevron} />
                 </TouchableOpacity>
 
+                {/* Explore Web Landing ViOne Connect */}
                 <TouchableOpacity
+                  style={styles.landingBtn}
                   onPress={() =>
                     Alert.alert(
-                      "Quên mật khẩu",
-                      "Vui lòng liên hệ ban quản trị ViOne hoặc sử dụng tính năng đặt lại mật khẩu qua email."
+                      "Khám phá ViOne Connect",
+                      "Truy cập cổng thông tin doanh nhân: https://vione.vn"
                     )
                   }
-                  activeOpacity={0.7}
+                  activeOpacity={0.85}
                 >
-                  <Text style={styles.forgotLabel}>Quên mật khẩu?</Text>
+                  <Globe size={15} color="#D8B282" />
+                  <Text style={styles.landingBtnText}>Khám phá ViOne Connect (Web Landing)</Text>
+                  <ArrowRight size={15} color="#D8B282" style={styles.rightChevron} />
                 </TouchableOpacity>
-              </View>
 
-              {/* Gold Gradient Login Button */}
-              <TouchableOpacity
-                onPress={handleLogin}
-                disabled={isLoading}
-                activeOpacity={0.88}
-                style={styles.submitBtnTouch}
-              >
-                <LinearGradient
-                  colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.submitBtnGradient}
+                {/* Scan NFC / QR Action */}
+                <TouchableOpacity
+                  style={styles.nfcBtn}
+                  onPress={handleNfcScan}
+                  activeOpacity={0.8}
                 >
-                  <Text style={styles.submitBtnText}>
-                    {isLoading ? "Đang xử lý..." : "Đăng nhập"}
-                  </Text>
-                  {!isLoading && (
-                    <ArrowRight size={17} color="#050C15" strokeWidth={2.4} style={styles.submitArrow} />
-                  )}
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-
-            {/* Quick Demo Bypass (C-Level / Admin) */}
-            <View style={styles.demoRow}>
-              <TouchableOpacity
-                style={styles.demoPill}
-                onPress={() => quickDemoLogin("executive")}
-                activeOpacity={0.8}
-              >
-                <Sparkles size={13} color="#D8B282" style={{ marginRight: 4 }} />
-                <Text style={styles.demoPillText}>Vào C-Level</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.demoPill}
-                onPress={() => quickDemoLogin("admin")}
-                activeOpacity={0.8}
-              >
-                <UserCheck size={13} color="#38BDF8" style={{ marginRight: 4 }} />
-                <Text style={styles.demoPillText}>Vào Admin</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Sign Up / Create Account Button */}
-            <TouchableOpacity
-              style={styles.signUpBtn}
-              onPress={() =>
-                Alert.alert(
-                  "Đăng ký tài khoản",
-                  "Vui lòng liên hệ Ban Quản Trị ViOne Platform để được cấp tài khoản doanh nghiệp chính thức."
-                )
-              }
-              activeOpacity={0.85}
-            >
-              <Shield size={16} color="#E2D3B3" />
-              <Text style={styles.signUpText}>Đăng ký tài khoản doanh nghiệp</Text>
-              <ChevronRight size={16} color="#E2D3B3" style={styles.rightChevron} />
-            </TouchableOpacity>
-
-            {/* Explore Web Landing ViOne Connect */}
-            <TouchableOpacity
-              style={styles.landingBtn}
-              onPress={() =>
-                Alert.alert(
-                  "Khám phá ViOne Connect",
-                  "Truy cập cổng thông tin doanh nhân: https://vione.vn"
-                )
-              }
-              activeOpacity={0.85}
-            >
-              <Globe size={15} color="#D8B282" />
-              <Text style={styles.landingBtnText}>Khám phá ViOne Connect (Web Landing)</Text>
-              <ArrowRight size={15} color="#D8B282" style={styles.rightChevron} />
-            </TouchableOpacity>
-
-            {/* Scan NFC / QR Action */}
-            <TouchableOpacity
-              style={styles.nfcBtn}
-              onPress={handleNfcScan}
-              activeOpacity={0.8}
-            >
-              <View style={styles.nfcIconWrap}>
-                <QrCode size={20} color="#E2D3B3" />
-              </View>
-              <View style={styles.nfcTextCol}>
-                <Text style={styles.nfcTitle}>Chạm thẻ NFC / Quét mã QR</Text>
-                <Text style={styles.nfcSubtitle}>
-                  Mở danh thiếp cá nhân hoặc kết nối tức thì
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <View style={styles.nfcIconWrap}>
+                    <QrCode size={20} color="#E2D3B3" />
+                  </View>
+                  <View style={styles.nfcTextCol}>
+                    <Text style={styles.nfcTitle}>Chạm thẻ NFC / Quét mã QR</Text>
+                    <Text style={styles.nfcSubtitle}>
+                      Mở danh thiếp cá nhân hoặc kết nối tức thì
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </>
+            )}
 
             {/* Footer */}
             <View style={styles.footerWrap}>
@@ -375,7 +593,7 @@ export const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   bgImage: {
     position: "absolute",
@@ -633,7 +851,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "rgba(216, 178, 130, 0.28)",
-    backgroundColor: "rgba(10, 10, 11, 0.8)",
+    backgroundColor: "rgba(11, 15, 23, 0.8)",
     marginBottom: 12,
     position: "relative",
     gap: 8,
@@ -646,6 +864,39 @@ const styles = StyleSheet.create({
   rightChevron: {
     position: "absolute",
     right: 14,
+  },
+  backBtnPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+    gap: 4,
+  },
+  backBtnText: {
+    color: "#D8B282",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  switchAuthRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 14,
+    paddingVertical: 8,
+  },
+  switchAuthText: {
+    color: "#D4C3A3",
+    fontSize: 13,
+  },
+  switchAuthLink: {
+    color: "#F6E1C3",
+    fontSize: 13,
+    fontWeight: "700",
+    textDecorationLine: "underline",
   },
   nfcBtn: {
     flexDirection: "row",

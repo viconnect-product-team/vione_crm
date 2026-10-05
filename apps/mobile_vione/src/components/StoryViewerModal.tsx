@@ -152,7 +152,7 @@ export const StoryViewerModal: React.FC<StoryViewerModalProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     position: "relative",
   },
   bgImage: {

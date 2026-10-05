@@ -7,7 +7,7 @@ const STORAGE_KEY = "vba.theme";
 type ThemeCtx = {
   theme: Theme;
   setTheme: (t: Theme) => void;
-  /** Cycles light → dark → contrast → light */
+  /** Cycles light → dark → light */
   toggle: () => void;
 };
 
@@ -16,9 +16,8 @@ const ThemeContext = createContext<ThemeCtx | null>(null);
 function applyTheme(theme: Theme) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
-  // High-contrast builds on the dark surface set, then overrides tokens via .hc
-  root.classList.toggle("dark", theme === "dark" || theme === "contrast");
-  root.classList.toggle("hc", theme === "contrast");
+  root.classList.toggle("dark", theme === "dark");
+  root.classList.remove("hc");
   root.dataset.theme = theme;
   root.style.colorScheme = theme === "light" ? "light" : "dark";
 }
@@ -27,15 +26,15 @@ function readInitial(): Theme {
   if (typeof window === "undefined") return "light";
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === "dark" || saved === "contrast" || saved === "light") return saved;
+    if (saved === "dark" || saved === "light") return saved;
+    if (saved === "contrast") return "dark";
   } catch {
     /* ignore */
   }
-  if (window.matchMedia?.("(prefers-contrast: more)").matches) return "contrast";
   return "light";
 }
 
-const ORDER: Theme[] = ["light", "dark", "contrast"];
+const ORDER: Theme[] = ["light", "dark"];
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");

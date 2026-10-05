@@ -74,7 +74,7 @@ export function ConnectAppSignUp({
       />
       <div className="relative mx-auto w-full max-w-md px-6 pb-14 pt-6">
         <Link
-          to="/auth"
+          to="/vione/login"
           className="inline-flex items-center gap-1 text-[15px]"
           style={{ color: "#8fa0b1" }}
         >
@@ -104,7 +104,7 @@ export function ConnectAppSignUp({
               {email}
             </p>
             <Link
-              to="/auth"
+              to="/vione/login"
               className="mt-8 flex h-14 w-full items-center justify-center rounded-xl text-[17px] font-semibold text-[#1b1206]"
               style={{ background: "linear-gradient(135deg, #AB6D3C 0%, #FDE6B4 100%)" }}
             >
@@ -288,7 +288,7 @@ export function ConnectAppSignUp({
 
             <div className="mt-8 text-center text-[15px]" style={{ color: "#8fa0b1" }}>
               {t("bc.mobile.auth.signup.haveAccount")}{" "}
-              <Link to="/auth" className="font-semibold" style={{ color: GOLD }}>
+              <Link to="/vione/login" className="font-semibold" style={{ color: GOLD }}>
                 {t("bc.mobile.auth.signIn")}
               </Link>
             </div>

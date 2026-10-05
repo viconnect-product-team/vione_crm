@@ -55,6 +55,7 @@ import {
   ZaloTransactionCard,
   type ZaloTransactionData,
 } from "@/components/business-connect/mobile/ZaloTransactionCard";
+import { OpportunityMeetingProposalCard } from "@/components/business-connect/mobile/inbox/OpportunityMeetingProposalCard";
 
 export const Route = createFileRoute("/connect-app/inbox/$threadId")({
   head: () => ({
@@ -172,6 +173,16 @@ type ParsedContent =
   | { type: "file"; url: string; name: string; size?: number; caption?: string }
   | { type: "voice"; url: string; duration?: number; caption?: string }
   | { type: "call"; callType: "audio" | "video"; status: "ended" | "missed" | "declined"; duration: number }
+  | {
+      type: "opportunity_meeting_proposal";
+      data: {
+        opportunityTitle: string;
+        meetingTime: string;
+        location: string;
+        note?: string;
+        status: "pending" | "accepted" | "declined";
+      };
+    }
   | { type: "text"; text: string };
 
 function parseMessageContent(body: string): ParsedContent {
@@ -236,6 +247,25 @@ function parseMessageContent(body: string): ParsedContent {
   const isRawImageUrl = /^(https?:\/\/[^\s]+?\.(png|jpe?g|gif|webp|svg))(?:\?.*)?$/i.test(body.trim());
   if (isRawImageUrl) {
     return { type: "image", url: body.trim() };
+  }
+
+  // Pattern 4: Opportunity meeting proposal
+  if (body.includes("HẸN GẶP TRAO ĐỔI CƠ HỘI") || body.includes("ĐỀ XUẤT HẸN GẶP")) {
+    const oppMatch = body.match(/• Cơ hội kinh doanh:\s*["“]([^"”]+)["”]/i) || body.match(/Cơ hội:\s*["“]?([^"”\n]+)["”]?/i);
+    const timeMatch = body.match(/• Thời gian đề xuất:\s*([^\n]+)/i) || body.match(/Thời gian:\s*([^\n]+)/i);
+    const locMatch = body.match(/• Hình thức:\s*([^\n]+)/i) || body.match(/Địa điểm:\s*([^\n]+)/i);
+    const noteMatch = body.match(/• Lời nhắn:\s*["“]([^"”]+)["”]/i) || body.match(/Lời nhắn:\s*([^\n]+)/i);
+
+    return {
+      type: "opportunity_meeting_proposal",
+      data: {
+        opportunityTitle: oppMatch ? oppMatch[1] : "Cơ hội kinh doanh B2B",
+        meetingTime: timeMatch ? timeMatch[1] : "Ngày mai lúc 09:30",
+        location: locMatch ? locMatch[1] : "Gặp gỡ trực tiếp",
+        note: noteMatch ? noteMatch[1] : undefined,
+        status: body.includes("✅ ĐÃ ĐỒNG Ý") ? "accepted" : body.includes("❌ ĐÃ TỪ CHỐI") ? "declined" : "pending",
+      },
+    };
   }
 
   return { type: "text", text: body };
@@ -671,7 +701,11 @@ function ThreadPage() {
       <DmCallModal
         isOpen={callModal.isOpen}
         callType={callModal.type}
-        counterpartUserId={thread?.personId ? thread.personId.replace(/^u:/, "") : undefined}
+        counterpartUserId={
+          thread?.personId
+            ? thread.personId.replace(/^u:/, "")
+            : (thread as any)?.counterpartUserId || (threadId?.startsWith("u:") ? threadId.replace(/^u:/, "") : undefined)
+        }
         counterpartName={thread?.displayName ?? "Đối tác"}
         counterpartAvatar={thread?.avatarUrl}
         counterpartTitle={thread?.companyName || thread?.headline}
@@ -909,6 +943,12 @@ function ThreadPage() {
                                 >
                                   {content.type === "action_payment" ? (
                                     <ZaloTransactionCard data={content.data} isFromMe={m.fromMe} />
+                                  ) : content.type === "opportunity_meeting_proposal" ? (
+                                    <OpportunityMeetingProposalCard
+                                      data={content.data}
+                                      isFromMe={m.fromMe}
+                                      messageId={m.id}
+                                    />
                                   ) : content.type === "image" ? (
                                     <div className="space-y-1.5 p-1.5">
                                       <div

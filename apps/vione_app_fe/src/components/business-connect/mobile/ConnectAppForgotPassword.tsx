@@ -57,7 +57,7 @@ export function ConnectAppForgotPassword({
 
       <div className="relative mx-auto w-full max-w-md px-6 pb-12 pt-6">
         <Link
-          to="/auth"
+          to="/vione/login"
           className="inline-flex items-center gap-1 text-[15px]"
           style={{ color: "#8fa0b1" }}
         >
@@ -190,7 +190,7 @@ export function ConnectAppForgotPassword({
         )}
 
         <Link
-          to="/auth"
+          to="/vione/login"
           className="mt-8 block text-center text-[15px] font-medium"
           style={{ color: GOLD }}
         >

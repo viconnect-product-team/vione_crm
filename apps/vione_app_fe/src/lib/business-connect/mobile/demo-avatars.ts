@@ -13,12 +13,14 @@ export function demoAvatar(seed: string): string {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
     <defs>
       <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#D97706" />
-        <stop offset="100%" stop-color="#F59E0B" />
+        <stop offset="0%" stop-color="#F6E1C3" />
+        <stop offset="45%" stop-color="#D8B282" />
+        <stop offset="70%" stop-color="#C29B69" />
+        <stop offset="100%" stop-color="#8C653B" />
       </linearGradient>
     </defs>
     <rect width="200" height="200" rx="50" fill="url(#grad)"/>
-    <text x="50%" y="54%" font-family="system-ui, -apple-system, sans-serif" font-size="76" font-weight="800" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">${initials}</text>
+    <text x="50%" y="54%" font-family="system-ui, -apple-system, sans-serif" font-size="76" font-weight="800" fill="#0B0F17" text-anchor="middle" dominant-baseline="middle">${initials}</text>
   </svg>`;
   return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
 }

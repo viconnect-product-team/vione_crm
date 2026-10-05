@@ -190,7 +190,7 @@ export const CardVaultModal: React.FC<CardVaultModalProps> = ({
             {filteredCards.map((card) => (
               <View key={card.id} style={styles.cardItem}>
                 <LinearGradient
-                  colors={["#181D2A", "#12151F", "#0A0A0B"]}
+                  colors={["#151D2C", "#0E1522", "#070B12"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.cardGradient}
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheetContainer: {
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderWidth: 1,

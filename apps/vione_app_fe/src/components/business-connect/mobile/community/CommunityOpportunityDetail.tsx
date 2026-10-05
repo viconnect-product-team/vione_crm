@@ -20,9 +20,11 @@ import {
   Trash2,
   Upload,
   UserRound,
+  Users,
   Wallet,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { ProposeOpportunityMeetingModal } from "./ProposeOpportunityMeetingModal";
 import {
   Drawer,
   DrawerContent,
@@ -1003,11 +1005,26 @@ export function CommunityOpportunityDetail({
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimedInfo, setClaimedInfo] = useState<any>((detail as any)?.claimedBy || null);
 
+  const [proposeMeetingOpen, setProposeMeetingOpen] = useState(false);
+  const [selectedMeetingTarget, setSelectedMeetingTarget] = useState<{ partnerId?: string; partnerName?: string } | null>(null);
+  const [interestedMembers, setInterestedMembers] = useState<any[]>([]);
+
   useEffect(() => {
     if ((detail as any)?.claimedBy) {
       setClaimedInfo((detail as any).claimedBy);
     }
-  }, [detail]);
+    if ((detail as any)?.interestedMembers && Array.isArray((detail as any).interestedMembers)) {
+      setInterestedMembers((detail as any).interestedMembers);
+    } else if (opportunityRef) {
+      fetchNestApi<any>(`/connect-app/opportunities/${opportunityRef}/interests`)
+        .then((res) => {
+          if (res?.interests && Array.isArray(res.interests)) {
+            setInterestedMembers(res.interests);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [detail, opportunityRef]);
 
   const handleClaimOpportunity = async () => {
     try {
@@ -1257,6 +1274,21 @@ export function CommunityOpportunityDetail({
                       pending={interest.isPending}
                       onSelect={onInterest}
                     />
+                    {/* Nút Nhắn tin hẹn gặp trao đổi cơ hội */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedMeetingTarget({
+                          partnerId: (detail as any).poster?.userId || (detail as any).poster?.memberRef,
+                          partnerName: detail.poster?.displayName || "Người đăng cơ hội",
+                        });
+                        setProposeMeetingOpen(true);
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-3.5 px-4 mb-3 rounded-2xl font-bold text-[14px] bg-[var(--bc-mobile-accent-grad)] text-black shadow-md hover:brightness-105 active:scale-98 transition-all cursor-pointer"
+                    >
+                      <CalendarDays className="w-4.5 h-4.5 text-black" />
+                      <span>📅 Nhắn tin hẹn gặp trao đổi cơ hội</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => setConfirmWithdraw(true)}
@@ -1303,6 +1335,78 @@ export function CommunityOpportunityDetail({
                 </p>
               )}
             </section>
+
+            {/* Danh sách đối tác quan tâm — Người đăng cơ hội thấy được tất cả ai đang quan tâm */}
+            {interestedMembers.length > 0 && (
+              <section className="mt-7">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-[14px] font-bold text-[var(--bc-mobile-text)] flex items-center gap-2">
+                    <Users className="w-4 h-4 text-[#DFB76C]" />
+                    <span>Đối tác quan tâm cơ hội ({interestedMembers.length})</span>
+                  </h2>
+                  <span className="text-[11px] font-semibold text-[#DFB76C] bg-[#DFB76C]/15 px-2 py-0.5 rounded-full border border-[#DFB76C]/30">
+                    Tự động đồng bộ CRM
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {interestedMembers.map((m: any) => (
+                    <div
+                      key={m.id}
+                      className="p-3.5 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] flex items-center justify-between gap-3 shadow-xs"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[13.5px] font-bold text-[var(--bc-mobile-text)] truncate">
+                            {m.name || "Doanh nhân đối tác"}
+                          </span>
+                          <span
+                            className={`px-2 py-0.2 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                              m.interestLevel === "high"
+                                ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30"
+                                : "bg-slate-500/20 text-slate-700 dark:text-slate-300"
+                            }`}
+                          >
+                            {m.interestLevel === "high" ? "Quan tâm cao ⭐" : "Quan tâm"}
+                          </span>
+                        </div>
+                        {m.company && (
+                          <p className="text-[12px] text-[var(--bc-mobile-muted)] truncate mt-0.5">
+                            {m.company}
+                          </p>
+                        )}
+                        {m.phone && (
+                          <p className="text-[11px] text-[var(--bc-mobile-accent)] truncate mt-0.5 font-medium">
+                            📞 {m.phone}
+                          </p>
+                        )}
+                        {m.message && (
+                          <p className="text-[11.5px] text-[var(--bc-mobile-muted)] italic mt-1 bg-[var(--bc-mobile-surface)] p-2 rounded-xl border border-[var(--bc-mobile-border)]">
+                            "{m.message}"
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedMeetingTarget({
+                              partnerId: m.memberId || m.id,
+                              partnerName: m.name,
+                            });
+                            setProposeMeetingOpen(true);
+                          }}
+                          className="px-2.5 py-1.5 rounded-xl bg-[var(--bc-mobile-accent-grad)] text-black text-[11px] font-bold shadow-xs hover:brightness-105 active:scale-95 transition cursor-pointer"
+                        >
+                          Hẹn gặp
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {detail.followUp ? (
               <FollowUpCard
@@ -1449,6 +1553,22 @@ export function CommunityOpportunityDetail({
                 {t("bc.mobile.community.opportunities.contactNote")}
               </p>
             </section>
+
+            {/* Modal Nhắn Tin Hẹn Gặp Trao Đổi Cơ Hội */}
+            <ProposeOpportunityMeetingModal
+              isOpen={proposeMeetingOpen}
+              onClose={() => {
+                setProposeMeetingOpen(false);
+                setSelectedMeetingTarget(null);
+              }}
+              opportunityTitle={detail.opportunity.title}
+              opportunityRef={detail.opportunity.opportunityRef || opportunityRef}
+              partnerId={selectedMeetingTarget?.partnerId || (detail as any).poster?.userId || (detail as any).poster?.memberRef}
+              partnerName={selectedMeetingTarget?.partnerName || detail.poster?.displayName || "Người đăng cơ hội"}
+              onSuccess={() => {
+                toast.success("Đề xuất lịch hẹn đã được gửi thành công!");
+              }}
+            />
           </>
         )}
       </main>

@@ -17,7 +17,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const pwd = password || req.body?.password || '';
     const user = await this.authService.validateUser(identifier, pwd);
     if (!user) {
-      throw new UnauthorizedException('Email đăng nhập hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại!');
+      throw new UnauthorizedException('Email / Số điện thoại đăng nhập hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại!');
     }
     return user;
   }

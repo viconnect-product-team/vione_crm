@@ -7,10 +7,15 @@ import {
   Platform,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Home, Network, Users, User } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Colors } from "../theme/colors";
 import { useTheme } from "../context/ThemeContext";
+import { VIconMark } from "../components/VIconMark";
+import {
+  NavHomeIcon,
+  NavNetworkIcon,
+  NavCommunityIcon,
+  NavMeIcon,
+} from "../components/NavIcons";
 
 interface CustomBottomTabBarProps extends BottomTabBarProps {
   onVPress: () => void;
@@ -22,30 +27,29 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
   navigation,
   onVPress,
 }) => {
-  const { isDark } = useTheme();
+  const { isDark, colors } = useTheme();
 
-  const activeColor = "#D8B282";
-  const activeLabelColor = isDark ? "#D8B282" : "#926227";
+  const activeColor = isDark ? "#D8B282" : "#A3703C";
+  const activeLabelColor = isDark ? "#D8B282" : "#A3703C";
   const inactiveColor = isDark ? "#94A3B8" : "#64748B";
-  const barBg = isDark ? "#0A0A0B" : "#FFFFFF";
+  const barBg = isDark ? "#0B0F17" : "#FFFFFF";
   const borderTopColor = isDark ? "rgba(216, 178, 130, 0.18)" : "#E2E8F0";
 
   const getTabIcon = (routeName: string, isFocused: boolean) => {
     const color = isFocused ? activeColor : inactiveColor;
     const size = 20;
-    const strokeWidth = isFocused ? 2.3 : 1.7;
 
     switch (routeName) {
       case "Home":
-        return <Home size={size} color={color} strokeWidth={strokeWidth} />;
+        return <NavHomeIcon size={size} color={color} />;
       case "Network":
-        return <Network size={size} color={color} strokeWidth={strokeWidth} />;
+        return <NavNetworkIcon size={size} color={color} />;
       case "Community":
-        return <Users size={size} color={color} strokeWidth={strokeWidth} />;
+        return <NavCommunityIcon size={size} color={color} />;
       case "Me":
-        return <User size={size} color={color} strokeWidth={strokeWidth} />;
+        return <NavMeIcon size={size} color={color} />;
       default:
-        return <Home size={size} color={color} strokeWidth={strokeWidth} />;
+        return <NavHomeIcon size={size} color={color} />;
     }
   };
 
@@ -73,7 +77,7 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
             backgroundColor: barBg,
             borderTopColor: borderTopColor,
             shadowColor: isDark ? "#000000" : "#64748B",
-            shadowOpacity: isDark ? 0.6 : 0.08,
+            shadowOpacity: isDark ? 0.5 : 0.08,
           },
         ]}
       >
@@ -105,16 +109,27 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
                     onPress={onVPress}
                     activeOpacity={0.88}
                   >
-                    <View style={styles.vBtnGlowRing}>
+                    <LinearGradient
+                      colors={["#C29B69", "#F6E1C3", "#D8B282"]}
+                      start={{ x: 0, y: 1 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[
+                        styles.vBtnGradient,
+                        {
+                          borderColor: isDark ? "#524128" : "#FFF2DC",
+                        },
+                      ]}
+                    >
+                      {/* Lớp phản chiếu ánh kim champagne giống PWA */}
                       <LinearGradient
-                        colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.vBtnGradient}
-                      >
-                        <Text style={styles.vBtnText}>V</Text>
-                      </LinearGradient>
-                    </View>
+                        colors={["rgba(255, 255, 255, 0.42)", "transparent"]}
+                        start={{ x: 0.15, y: 0.15 }}
+                        end={{ x: 0.8, y: 0.8 }}
+                        style={StyleSheet.absoluteFillObject}
+                        pointerEvents="none"
+                      />
+                      <VIconMark size={32} />
+                    </LinearGradient>
                   </TouchableOpacity>
                 </View>
               )}
@@ -124,13 +139,24 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
                 style={styles.tabItem}
                 activeOpacity={0.7}
               >
-                {/* Active Indicator Top Line */}
-                {isFocused && <View style={styles.activeIndicator} />}
+                {/* Chỉ báo tab đang chọn (Chỉ báo dải mạ vàng trên đỉnh - khớp PWA) */}
+                {isFocused && (
+                  <LinearGradient
+                    colors={["#F6E1C3", "#E6C59E", "#D8B282", "#C29B69"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.activeIndicator}
+                  />
+                )}
 
                 <View
                   style={[
                     styles.iconWrap,
-                    isFocused && (isDark ? styles.iconWrapActive : { backgroundColor: "rgba(216, 178, 130, 0.2)" }),
+                    isFocused && {
+                      backgroundColor: isDark
+                        ? "rgba(216, 178, 130, 0.22)"
+                        : "rgba(163, 112, 60, 0.15)",
+                    },
                   ]}
                 >
                   {getTabIcon(route.name, isFocused)}
@@ -156,21 +182,21 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
 
 const styles = StyleSheet.create({
   tabBarContainer: {
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   tabBarInner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
     borderTopWidth: 1,
     borderTopColor: "rgba(216, 178, 130, 0.18)",
-    height: Platform.OS === "ios" ? 84 : 68,
-    paddingBottom: Platform.OS === "ios" ? 22 : 8,
-    paddingHorizontal: 10,
+    height: Platform.OS === "ios" ? 84 : 66,
+    paddingBottom: Platform.OS === "ios" ? 22 : 6,
+    paddingHorizontal: 8,
     position: "relative",
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.6,
+    shadowOpacity: 0.5,
     shadowRadius: 16,
     elevation: 10,
   },
@@ -178,30 +204,27 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 4,
+    paddingVertical: 3,
     position: "relative",
   },
   activeIndicator: {
     position: "absolute",
-    top: -2,
-    width: 26,
+    top: -1,
+    width: 24,
     height: 3,
     borderRadius: 2,
-    backgroundColor: "#D8B282",
     shadowColor: "#D8B282",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.6,
     shadowRadius: 4,
   },
   iconWrap: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 3.5,
+    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-  },
-  iconWrapActive: {
-    backgroundColor: "rgba(216, 178, 130, 0.12)",
+    minHeight: 28,
   },
   tabLabel: {
     color: "#94A3B8",
@@ -210,55 +233,35 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   tabLabelActive: {
-    color: "#D8B282",
     fontWeight: "700",
   },
   vBtnHolder: {
-    width: 68,
+    width: 64,
     alignItems: "center",
     justifyContent: "center",
     zIndex: 10,
   },
   vBtnTouch: {
     top: -18,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: "center",
     justifyContent: "center",
-  },
-  vBtnGlowRing: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    padding: 3,
-    backgroundColor: "rgba(216, 178, 130, 0.35)",
-    borderWidth: 1.5,
-    borderColor: "rgba(246, 225, 195, 0.6)",
     shadowColor: "#D8B282",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.85,
-    shadowRadius: 16,
-    elevation: 12,
+    shadowOpacity: 0.55,
+    shadowRadius: 10,
+    elevation: 10,
   },
   vBtnGradient: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 27,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1.8,
-    borderColor: "#FFF2DC",
-    shadowColor: "#F6E1C3",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 8,
-  },
-  vBtnText: {
-    color: "#050C15",
-    fontSize: 26,
-    fontWeight: "900",
-    letterSpacing: -0.5,
+    borderWidth: 2,
+    position: "relative",
+    overflow: "hidden",
   },
 });
-

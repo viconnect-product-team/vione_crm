@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Plus, X, ChevronLeft, ChevronRight, Heart, Sparkles, Send, Briefcase, MapPin, Building2, Eye, Camera, Image as ImageIcon, Loader2 } from "lucide-react";
 import { useViewerUserId } from "@/hooks/use-viewer-user-id";
 import { avatarOrDemo } from "@/lib/business-connect/mobile/demo-avatars";
+import { resolveMediaUrl } from "@/lib/api-client";
 import { toast } from "sonner";
 
 export interface EntrepreneurStory {
@@ -127,6 +128,44 @@ export function NetworkStoriesStrip({ onOpenCreateStory }: NetworkStoriesStripPr
 
   const activeStory = activeStoryIndex !== null ? stories[activeStoryIndex] : null;
 
+  // Lấy thông tin tài khoản thật của người dùng hiện tại
+  const currentUser = useMemo(() => {
+    try {
+      const rawCustom = localStorage.getItem("vba_custom_profile");
+      if (rawCustom) {
+        const p = JSON.parse(rawCustom);
+        if (p.name || p.avatar) {
+          return {
+            name: p.name || p.displayName || "Doanh nhân ViOne",
+            avatar: p.avatar || p.avatarUrl || null,
+            title: p.jobTitle || p.headline || "Thành viên ViOne",
+            company: p.company || p.companyName || "ViOne Connect",
+          };
+        }
+      }
+      const rawUser = localStorage.getItem("vibe_user") || localStorage.getItem("user");
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        return {
+          name: u.name || u.displayName || u.fullName || u.email?.split("@")[0] || "Doanh nhân ViOne",
+          avatar: u.avatar || u.avatarUrl || null,
+          title: u.jobTitle || u.role || "Thành viên ViOne",
+          company: u.company || "ViOne Connect",
+        };
+      }
+    } catch {}
+    return {
+      name: "Doanh nhân ViOne",
+      avatar: null,
+      title: "Thành viên ViOne",
+      company: "ViOne Connect",
+    };
+  }, []);
+
+  const myAvatarSrc = currentUser.avatar
+    ? (resolveMediaUrl(currentUser.avatar) || currentUser.avatar)
+    : avatarOrDemo(currentUser.avatar, currentUser.name);
+
   useEffect(() => {
     if (activeStoryIndex === null) return;
     const timer = setTimeout(() => {
@@ -227,10 +266,10 @@ export function NetworkStoriesStrip({ onOpenCreateStory }: NetworkStoriesStripPr
 
     const newStory: EntrepreneurStory = {
       id: `story-custom-${Date.now()}`,
-      authorName: "Tôi",
-      authorTitle: "Thành viên ViOne",
-      authorCompany: "ViOne Connect",
-      authorAvatar: avatarOrDemo(viewerUserId, "Tôi"),
+      authorName: currentUser.name,
+      authorTitle: currentUser.title,
+      authorCompany: currentUser.company,
+      authorAvatar: myAvatarSrc,
       storyImage: finalImageUrl,
       storyCaption: caption.trim() || "Chia sẻ khoảnh khắc cùng cộng đồng doanh nhân ViOne Connect.",
       tag: selectedTag,
@@ -290,8 +329,8 @@ export function NetworkStoriesStrip({ onOpenCreateStory }: NetworkStoriesStripPr
             <div className="relative mt-2">
               <div className="w-11 h-11 rounded-full p-0.5 bg-gradient-to-tr from-[#D8B282] to-[#F6E1C3]">
                 <img
-                  src={avatarOrDemo(viewerUserId, "Tôi")}
-                  alt="Avatar"
+                  src={myAvatarSrc}
+                  alt={currentUser.name}
                   className="w-full h-full rounded-full object-cover"
                 />
               </div>

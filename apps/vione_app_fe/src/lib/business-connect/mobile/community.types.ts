@@ -15,6 +15,7 @@ export type CommunitySummaryDTO = {
   memberCount: number | null;
   viewerRole: CommunityMembershipRole;
   isDefault: boolean;
+  communityType?: "b2b_networking" | "company_internal";
 };
 
 /** Minimal upcoming-event preview. Tap hands off to the existing /m/events surface. */

@@ -39,7 +39,7 @@ function getContentType(filename: string): string {
   return map[ext] || 'application/octet-stream';
 }
 
-@Controller('upload')
+@Controller(['upload', 'uploads'])
 export class UploadController {
   constructor(
     private readonly uploadService: UploadService,
@@ -168,6 +168,24 @@ export class UploadController {
       filePathStr = req.url.replace(/^.*\/file\//, '').split('?')[0];
     }
     return this.serveFile(filePathStr, res);
+  }
+
+  @Get(':folder/:file')
+  async getFileDirectFolder(
+    @Param('folder') folder: string,
+    @Param('file') file: string,
+    @Res() res: any,
+  ) {
+    if (folder === 'file') return this.serveFile(file, res);
+    return this.serveFile(`${folder}/${file}`, res);
+  }
+
+  @Get(':file')
+  async getFileDirectSingle(
+    @Param('file') file: string,
+    @Res() res: any,
+  ) {
+    return this.serveFile(file, res);
   }
 
   private async serveFile(rawPath: any, res: any) {

@@ -100,7 +100,7 @@ function RegisterPage() {
       });
       applyRememberPreference(true, mail);
       toast.success(t("auth.signUpSuccess"));
-      navigate({ to: "/auth", replace: true });
+      navigate({ to: "/vione/login", replace: true });
     } catch (e) {
       setStatus("error");
       setErrorMessage(e instanceof Error ? e.message : t("auth.genericError"));

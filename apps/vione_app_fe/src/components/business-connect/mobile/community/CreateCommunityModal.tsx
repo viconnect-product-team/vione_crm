@@ -1,7 +1,7 @@
 // BC-Mobile — Modal Tạo Cộng Đồng / Hiệp Hội Mới (Executive Minimal Luxury)
 
 import { useState, useRef } from "react";
-import { X, Upload, Plus, Building2, Sparkles, Loader2, Image as ImageIcon, Trash2 } from "lucide-react";
+import { X, Upload, Plus, Building2, Sparkles, Loader2, Image as ImageIcon, Trash2, Users, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { fetchNestApi, uploadFileToNest } from "@/lib/api-client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
+  const [communityType, setCommunityType] = useState<"b2b_networking" | "company_internal">("company_internal");
   const [name, setName] = useState("");
   const [tagline, setTagline] = useState("");
   const [about, setAbout] = useState("");
@@ -110,7 +111,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
     e.preventDefault();
     const cleanName = name.trim();
     if (!cleanName) {
-      toast.error("Vui lòng nhập tên cộng đồng / hiệp hội");
+      toast.error("Vui lòng nhập tên cộng đồng / doanh nghiệp");
       return;
     }
 
@@ -120,6 +121,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
         method: "POST",
         body: JSON.stringify({
           name: cleanName,
+          communityType,
           tagline: tagline.trim() || undefined,
           about: about.trim() || undefined,
           slug: slug.trim() || undefined,
@@ -128,7 +130,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
         }),
       });
 
-      toast.success(`Đã tạo cộng đồng "${cleanName}" thành công!`);
+      toast.success(`Đã tạo ${communityType === "company_internal" ? "cộng đồng công ty" : "cộng đồng"} "${cleanName}" thành công!`);
       void queryClient.invalidateQueries({ queryKey: communityKeys.root });
       
       // Reset form
@@ -151,28 +153,28 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="bc-app relative w-full max-w-lg overflow-hidden rounded-3xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] shadow-2xl p-6 text-[var(--bc-mobile-text)] max-h-[90vh] flex flex-col"
+        className="bc-app relative w-full max-w-lg overflow-hidden rounded-3xl border border-[#DFB76C]/30 bg-white dark:bg-[#0B0F17] shadow-2xl p-6 text-zinc-950 dark:text-white max-h-[92vh] flex flex-col"
         style={{ fontFamily: "'Be Vietnam Pro', system-ui, sans-serif" }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-[var(--bc-mobile-border)] shrink-0">
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-200 dark:border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[linear-gradient(135deg,#D8B282_0%,#8C653B_100%)] text-slate-950 font-bold shadow-md">
+            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-[#DFB76C] to-[#8C653B] text-slate-950 font-bold shadow-md">
               <Building2 className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold bg-clip-text text-transparent bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)]">
-                Tạo Cộng Đồng Mới
+              <h2 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#DFB76C] via-[#D4AF37] to-[#8C653B]">
+                Tạo Phân Hệ Cộng Đồng
               </h2>
-              <p className="text-xs text-[var(--bc-mobile-muted)]">
-                Khởi tạo CLB, Hiệp hội hoặc Liên minh doanh nghiệp
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Chọn mô hình hoạt động phù hợp cho doanh nghiệp hoặc mạng lưới
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-full bg-[var(--bc-mobile-surface-2)] text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)] transition-colors cursor-pointer"
+            className="grid h-8 w-8 place-items-center rounded-full bg-zinc-100 dark:bg-white/10 text-zinc-500 hover:text-zinc-950 dark:hover:text-white transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
@@ -180,9 +182,71 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
 
         {/* Form Body (Scrollable) */}
         <form onSubmit={handleSubmit} className="overflow-y-auto flex-1 py-4 space-y-4 pr-1">
-          {/* Ảnh bìa / Background Banner upload */}
+          {/* 1. LỰA CHỌN 2 LOẠI HÌNH CỘNG ĐỒNG */}
           <div>
-            <label className="block text-xs font-medium text-[var(--bc-mobile-muted)] mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-[#8C653B] dark:text-[#DFB76C] mb-2">
+              Loại hình cộng đồng
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Option 1: Cộng đồng nội bộ công ty */}
+              <div
+                onClick={() => setCommunityType("company_internal")}
+                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                  communityType === "company_internal"
+                    ? "border-[#DFB76C] bg-[#DFB76C]/10 ring-1 ring-[#DFB76C]"
+                    : "border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-[#121824] hover:border-zinc-300"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-[#DFB76C]/20 to-[#8C653B]/20 text-[#D4AF37] font-bold">
+                      <Briefcase className="h-4 w-4" />
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DFB76C]/20 text-[#D4AF37] border border-[#DFB76C]/30">
+                      DOANH NGHIỆP
+                    </span>
+                  </div>
+                  <h4 className="text-[13px] font-bold text-zinc-950 dark:text-white">
+                    Nội Bộ Công Ty Của Tôi
+                  </h4>
+                  <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    Giám đốc add nhân viên, giao việc, nhân viên bấm nhận việc & giám sát khách hàng CRM.
+                  </p>
+                </div>
+              </div>
+
+              {/* Option 2: Mạng lưới giao lưu B2B */}
+              <div
+                onClick={() => setCommunityType("b2b_networking")}
+                className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                  communityType === "b2b_networking"
+                    ? "border-[#DFB76C] bg-[#DFB76C]/10 ring-1 ring-[#DFB76C]"
+                    : "border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-[#121824] hover:border-zinc-300"
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="grid h-8 w-8 place-items-center rounded-xl bg-zinc-200 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 font-bold">
+                      <Users className="h-4 w-4" />
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-200 dark:bg-white/10 text-zinc-600 dark:text-zinc-400">
+                      MẠNG LƯỚI
+                    </span>
+                  </div>
+                  <h4 className="text-[13px] font-bold text-zinc-950 dark:text-white">
+                    Giao Lưu Doanh Nhân B2B
+                  </h4>
+                  <p className="mt-1 text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    Dành cho các Giám đốc / CEO kết bạn, giao lưu, tìm kiếm đối tác và cơ hội hợp tác kinh doanh.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Ảnh bìa / Background Banner upload */}
+          <div>
+            <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400 mb-1.5">
               Ảnh bìa / Banner cộng đồng
             </label>
             <input
@@ -293,7 +357,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
               required
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="Ví dụ: CLB Doanh Nhân Trẻ Hà Nội, Liên Minh CEO 1983..."
+              placeholder="Ví dụ: Gia đình ViOne, CLB Doanh Nhân Trẻ Hà Nội..."
               className="w-full rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-4 py-2.5 text-sm text-[var(--bc-mobile-text)] placeholder:text-[var(--bc-mobile-muted)]/60 focus:border-[var(--bc-mobile-accent)] focus:outline-none transition-colors"
             />
           </div>
@@ -321,7 +385,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
               type="text"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
-              placeholder="vi-du: clb-doanh-nhan-1983"
+              placeholder="vi-du: gia-dinh-vione"
               className="w-full rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-4 py-2.5 text-xs text-[var(--bc-mobile-text)] placeholder:text-[var(--bc-mobile-muted)]/60 focus:border-[var(--bc-mobile-accent)] focus:outline-none font-mono transition-colors"
             />
           </div>

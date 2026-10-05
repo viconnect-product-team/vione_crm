@@ -268,11 +268,10 @@ function AssociationSettingsScreen() {
           <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-3">
             <Sparkles className="h-3.5 w-3.5 text-[#003B95] dark:text-amber-400" /> Giao diện hiển thị
           </h3>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {[
               { mode: "light" as Theme, icon: Sun, label: "Sáng" },
               { mode: "dark" as Theme, icon: Moon, label: "Tối" },
-              { mode: "contrast" as Theme, icon: Contrast, label: "Tương phản" },
             ].map(({ mode, icon: Icon, label }) => (
               <button
                 key={mode}

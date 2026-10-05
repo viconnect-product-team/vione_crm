@@ -39,7 +39,7 @@ import { CommunityUpcomingEvents } from "./CommunityUpcomingEvents";
 import { CommunityOpportunitiesSection } from "./CommunityOpportunitiesSection";
 import { CreateCommunityModal } from "./CreateCommunityModal";
 
-type CommunityTab = "all" | "admin" | "joined" | "history";
+type CommunityTab = "all" | "company" | "networking" | "admin" | "joined" | "history";
 
 export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}) {
   const t = useT();
@@ -65,6 +65,13 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
 
   const visible = useMemo(() => {
     return enterpriseCommunities.filter((c: any) => {
+      const isCompany = c.communityType === "company_internal" || 
+        c.name?.toLowerCase().includes("công ty") || 
+        c.name?.toLowerCase().includes("tập đoàn") ||
+        c.name?.toLowerCase().includes("doanh nghiệp");
+
+      if (tab === "company" && !isCompany) return false;
+      if (tab === "networking" && isCompany) return false;
       if (tab === "admin" && c.viewerRole !== "admin") return false;
       if (tab === "joined") {
         const isJoined = c.viewerRole === "member" || c.viewerRole === "admin" || c.isMember || c.membershipStatus === "active";
@@ -110,7 +117,14 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
               Thành viên · Sự kiện · Cơ hội
             </p>
           </div>
-
+          <button
+            type="button"
+            onClick={() => setCreateModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-2xl bg-gradient-to-r from-[#F6E1C3] via-[#DFB76C] to-[#C99C47] text-slate-950 font-extrabold text-xs shadow-md border border-[#E5C07B]/60 hover:brightness-105 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
+          >
+            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <span>Tạo cộng đồng</span>
+          </button>
         </div>
 
         {initialLoading ? (
@@ -130,9 +144,9 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
             <button
               type="button"
               onClick={() => setCreateModalOpen(true)}
-              className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-xs shadow-lg hover:opacity-90 active:scale-95 transition-all cursor-pointer"
+              className="mt-2 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-[#F6E1C3] via-[#DFB76C] to-[#C99C47] text-slate-950 font-extrabold text-xs shadow-md border border-[#E5C07B]/60 hover:brightness-105 active:scale-95 transition-all cursor-pointer"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4 stroke-[2.5]" />
               <span>Tạo cộng đồng đầu tiên</span>
             </button>
             <CommunityJoinStatusCards />
@@ -145,6 +159,8 @@ export function CommunityHome({ initialTab }: { initialTab?: CommunityTab } = {}
             <div className="mt-5 flex items-center gap-5 border-b border-slate-200 dark:border-[#D8B282]/20 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {[
                 { id: "all", label: "Tất cả" },
+                { id: "company", label: "🏢 Doanh nghiệp của tôi" },
+                { id: "networking", label: "🤝 Mạng lưới B2B" },
                 ...(hasAdmin ? [{ id: "admin", label: "Đang quản trị" }] : []),
                 { id: "joined", label: "Đã tham gia" },
                 { id: "history", label: "Lịch sử yêu cầu" }
@@ -320,17 +336,17 @@ export function getCommunityVisuals(name: string, logoUrl?: string | null, banne
   ];
   let descFallback = "Liên minh xúc tiến thương mại, kết nối cơ hội kinh doanh và đầu tư quy mô lớn.";
 
-  if (lower.includes("1983") || lower.includes("ceo")) {
+  if (lower.includes("vione") || lower.includes("gia đình") || lower.includes("ceo") || lower.includes("1983")) {
     defaultBanner = "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
-    category = "C-Level • Doanh Nhân 1983";
+    category = "Gia đình ViOne • C-Level";
     categoryColor = "border-[#D8B282]/50 bg-[#D8B282]/15 text-[#8C653B] dark:text-[#F6E1C3]";
     attendees = [
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80",
     ];
-    descFallback = "Mạng lưới 200+ Chủ tịch & CEO Doanh Nhân 1983 trực thuộc HanoiBA.";
+    descFallback = "Mạng lưới kết nối Chủ tịch, CEO & Lãnh đạo doanh nghiệp thuộc Gia đình ViOne.";
   } else if (lower.includes("ai") || lower.includes("vietnam") || lower.includes("tech")) {
     defaultBanner = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80";
@@ -382,14 +398,22 @@ function CommunityCard({ community }: { community: CommunitySummaryDTO }) {
         
         {/* Category Badge over Banner */}
         <div className="absolute top-2.5 left-3 flex items-center gap-1.5">
-          <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase backdrop-blur-md border ${visuals.categoryColor}`}>
-            <span>{visuals.category}</span>
-          </span>
+          {community.communityType === "company_internal" || 
+           community.name?.toLowerCase().includes("công ty") || 
+           community.name?.toLowerCase().includes("tập đoàn") ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase backdrop-blur-md border border-[#DFB76C] bg-black/75 text-[#DFB76C] shadow-sm">
+              <span>🏢 CÔNG TY NỘI BỘ</span>
+            </span>
+          ) : (
+            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase backdrop-blur-md border ${visuals.categoryColor}`}>
+              <span>🤝 MẠNG LƯỚI B2B</span>
+            </span>
+          )}
         </div>
 
         {/* Member Status Badge */}
         <div className="absolute top-2.5 right-3">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--bc-mobile-surface-2)]/90 backdrop-blur-md border border-[var(--bc-mobile-border)] text-[10.5px] font-bold text-[var(--bc-mobile-accent)] shadow-xs">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10.5px] font-bold text-[#DFB76C] shadow-xs">
             {community.viewerRole === "admin" ? "Quản trị viên" : "Đã tham gia"}
           </span>
         </div>

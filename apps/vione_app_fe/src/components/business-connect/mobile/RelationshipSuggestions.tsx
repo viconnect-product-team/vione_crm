@@ -168,7 +168,7 @@ function FilterChip({
       onClick={onClick}
       className={`${CHIP_BASE} ${FOCUS} ${
         active
-          ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] font-semibold border-transparent shadow-[0_2px_10px_rgba(201,158,74,0.35)]"
+          ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold border-transparent shadow-[0_2px_10px_rgba(201,158,74,0.35)]"
           : "border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)]/60 text-[var(--bc-mobile-muted)] hover:border-[#D8B282]/50 hover:text-[var(--bc-mobile-text)]"
       }`}
     >

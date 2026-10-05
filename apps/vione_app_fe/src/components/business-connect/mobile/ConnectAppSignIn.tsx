@@ -15,7 +15,7 @@ import {
   Shield,
   X,
 } from "lucide-react";
-import { useT } from "@/lib/i18n";
+import { useT, useLang } from "@/lib/i18n";
 import authBg from "@/assets/connect-auth-bg.jpg";
 import { ViOneLogo } from "./ViOneLogo";
 import { LuxuryLangSwitcher } from "@/components/LuxuryLangSwitcher";
@@ -84,6 +84,7 @@ export function ConnectAppSignIn({
   onRememberChange,
 }: Props) {
   const t = useT();
+  const { lang } = useLang();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberLocal, setRememberLocal] = useState(true);
   const remember = rememberProp ?? rememberLocal;
@@ -254,7 +255,7 @@ export function ConnectAppSignIn({
         >
           <div className="space-y-1">
             <label htmlFor="bc-auth-email" className="block text-[12px] font-medium text-[#D4C3A3]">
-              {t("bc.mobile.auth.emailLabel")}
+              {lang === "vi" ? "Email hoặc Số điện thoại" : "Work email or phone"}
             </label>
             <div className="relative">
               <Mail
@@ -264,11 +265,11 @@ export function ConnectAppSignIn({
               <input
                 id="bc-auth-email"
                 type="text"
-                inputMode="email"
+                inputMode="text"
                 autoComplete="username"
                 value={email}
                 onChange={(e) => onEmailChange(e.target.value)}
-                placeholder="admin@connect.vn"
+                placeholder="admin@connect.vn hoặc 0912 345 678"
                 className={fieldClass}
               />
             </div>
@@ -365,11 +366,10 @@ export function ConnectAppSignIn({
           </button>
         </form>
 
-        {/* Sign up -> Chuyển đến Landing Page ViOne Connect theo Figma */}
+        {/* Sign up -> Chuyển đến màn Đăng ký tài khoản /register để vào App */}
         <div className="shrink-0 my-1">
           <Link
-            to="/landing"
-            search={{ apply: "true" }}
+            to="/register"
             className="relative flex h-10 w-full items-center justify-center gap-2 rounded-xl border text-[13.5px] font-semibold transition-all active:scale-[0.99] cursor-pointer border-[#D8B282]/40 bg-zinc-900/60 backdrop-blur-md text-[#E2D3B3] hover:bg-zinc-800/80"
           >
             <Shield className="h-4 w-4 text-[#E2D3B3]" aria-hidden="true" />

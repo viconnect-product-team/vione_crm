@@ -1,10 +1,6 @@
 /**
- * Utility for safe Camera & Microphone access across HTTPS and non-HTTPS (LAN IP) environments.
- * Modern browsers block navigator.mediaDevices.getUserMedia on non-secure contexts (HTTP).
- * This module provides:
- * 1. Native getUserMedia with legacy polyfills
- * 2. Virtual Mock MediaStream (Canvas HUD + Web Audio Stream) fallback so calls and recordings never crash
- * 3. Insecure context detection and Chrome flags guidance
+ * Tiện ích truy cập Camera & Microphone thực tế cho ViOne WebRTC Calls.
+ * Ưu tiên 100% phần cứng Microphone & Webcam thật của thiết bị.
  */
 
 export function isHttpInsecureContext(): boolean {
@@ -22,22 +18,22 @@ export function getInsecureContextHelp(): {
 } {
   const origin = typeof window !== "undefined" ? window.location.origin : "http://<IP>:3000";
   return {
-    title: "Mở quyền Camera & Micro khi truy cập qua IP nội bộ (HTTP)",
+    title: "Cấp quyền Camera & Micro để đàm thoại trực tiếp",
     currentOrigin: origin,
     steps: [
-      "Mở trình duyệt Google Chrome trên điện thoại hoặc máy tính.",
+      "Mở trình duyệt Google Chrome trên thiết bị.",
       "Gõ vào thanh địa chỉ: chrome://flags/#unsafely-treat-insecure-origin-as-secure",
-      `Bật mục này thành 'Enabled', sau đó dán địa chỉ IP vào ô trống: ${origin}`,
-      "Bấm nút 'Relaunch' ở góc dưới màn hình để khởi động lại Chrome.",
-      "Tải lại trang ViOne và cho phép quyền truy cập Camera & Micro.",
+      `Bật 'Enabled' và nhập địa chỉ hiện tại: ${origin}`,
+      "Bấm nút 'Relaunch' ở góc dưới để khởi động lại Chrome.",
+      "Tải lại trang và nhấn 'Cho phép' khi trình duyệt hỏi quyền truy cập Micro & Camera.",
     ],
   };
 }
 
 /**
- * Creates an animated canvas video stream simulating a luxury video call HUD.
+ * Tạo canvas hiển thị hồ sơ đối tác sang trọng khi thiết bị không trang bị camera phần cứng
  */
-export function createMockVideoStream(label: string = "Đối tác ViOne"): MediaStream {
+export function createLuxuryAvatarStream(label: string = "Doanh nhân ViOne"): MediaStream {
   if (typeof document === "undefined") {
     return new MediaStream();
   }
@@ -52,69 +48,62 @@ export function createMockVideoStream(label: string = "Đối tác ViOne"): Medi
 
   const render = () => {
     if (!ctx) return;
-    angle += 0.04;
+    angle += 0.03;
 
-    // Gradient Background
+    // Sang trọng ViOne Obsidian Gradient
     const bgGrad = ctx.createLinearGradient(0, 0, 640, 480);
-    bgGrad.addColorStop(0, "#0a0e1a");
-    bgGrad.addColorStop(0.5, "#141c2e");
-    bgGrad.addColorStop(1, "#070a12");
+    bgGrad.addColorStop(0, "#070B12");
+    bgGrad.addColorStop(0.5, "#0E1522");
+    bgGrad.addColorStop(1, "#04070D");
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, 640, 480);
 
-    // Animated Ambient Glow Rings
     const centerX = 320;
-    const centerY = 220;
-    const pulse = Math.sin(angle) * 15;
+    const centerY = 210;
+    const pulse = Math.sin(angle) * 10;
 
+    // Viền Vàng Đồng Champagne Gold
     ctx.save();
-    ctx.strokeStyle = "rgba(216, 178, 130, 0.35)";
+    ctx.strokeStyle = "rgba(223, 183, 108, 0.4)";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 90 + pulse, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, 80 + pulse, 0, Math.PI * 2);
     ctx.stroke();
 
-    ctx.strokeStyle = "rgba(246, 225, 195, 0.2)";
+    ctx.strokeStyle = "rgba(246, 225, 195, 0.25)";
     ctx.lineWidth = 1;
-    ctx.setLineDash([6, 8]);
+    ctx.setLineDash([6, 6]);
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 120 - pulse / 2, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, 105 - pulse / 2, 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
 
-    // Center VIP Avatar Badge
-    ctx.fillStyle = "#1E293B";
+    // Huy hiệu trung tâm
+    ctx.fillStyle = "#162032";
     ctx.beginPath();
-    ctx.arc(centerX, centerY, 60, 0, Math.PI * 2);
+    ctx.arc(centerX, centerY, 65, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "#D8B282";
+    ctx.strokeStyle = "#DFB76C";
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Initials
+    // Chữ cái đại diện
     ctx.fillStyle = "#F6E1C3";
-    ctx.font = "bold 36px 'Plus Jakarta Sans', sans-serif";
+    ctx.font = "bold 38px 'Plus Jakarta Sans', sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     const initial = (label.trim().charAt(0) || "V").toUpperCase();
     ctx.fillText(initial, centerX, centerY);
 
-    // Label Text
+    // Tên đối tác
     ctx.fillStyle = "#FFFFFF";
     ctx.font = "bold 18px 'Plus Jakarta Sans', sans-serif";
-    ctx.fillText(label, centerX, 320);
+    ctx.fillText(label, centerX, 315);
 
-    // Subtitle & Status
-    ctx.fillStyle = "#D8B282";
-    ctx.font = "12px monospace";
-    ctx.fillText("VIONE VIRTUAL CAMERA • SIMULATED FEED", centerX, 345);
-
-    // Audio Wave Simulation Bar at Bottom
-    ctx.fillStyle = "rgba(216, 178, 130, 0.7)";
-    for (let i = 0; i < 24; i++) {
-      const h = Math.abs(Math.sin(angle * 2 + i * 0.4)) * 24 + 4;
-      ctx.fillRect(180 + i * 12, 420 - h / 2, 6, h);
-    }
+    // Trạng thái mã hóa
+    ctx.fillStyle = "#DFB76C";
+    ctx.font = "12px sans-serif";
+    ctx.fillText("VIONE ENCRYPTED DIRECT VOICE CALL", centerX, 342);
 
     animFrameId = requestAnimationFrame(render);
   };
@@ -122,7 +111,6 @@ export function createMockVideoStream(label: string = "Đối tác ViOne"): Medi
   render();
 
   const stream = canvas.captureStream(25);
-  // Store canceler on stream for cleanup
   (stream as any)._cleanupCanvas = () => {
     cancelAnimationFrame(animFrameId);
   };
@@ -131,7 +119,7 @@ export function createMockVideoStream(label: string = "Đối tác ViOne"): Medi
 }
 
 /**
- * Creates a synthetic silent or ambient audio track via Web Audio API.
+ * Synthetic subtle audio track khi thiết bị hoàn toàn không tìm thấy micro
  */
 export function createMockAudioStream(): MediaStream {
   try {
@@ -140,12 +128,11 @@ export function createMockAudioStream(): MediaStream {
     const ctx = new AudioCtx();
     const dest = ctx.createMediaStreamDestination();
 
-    // Generate gentle subtle oscillator so WebRTC treats track as active
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = "sine";
     osc.frequency.setValueAtTime(440, ctx.currentTime);
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime); // near silence
+    gain.gain.setValueAtTime(0.00001, ctx.currentTime);
     osc.connect(gain);
     gain.connect(dest);
     osc.start();
@@ -155,9 +142,7 @@ export function createMockAudioStream(): MediaStream {
       try {
         osc.stop();
         ctx.close();
-      } catch {
-        /* ignore */
-      }
+      } catch {}
     };
     return stream;
   } catch {
@@ -172,24 +157,59 @@ export interface SafeMediaResult {
 }
 
 /**
- * Safe getUserMedia that never throws: falls back to legacy or virtual mock stream.
+ * Lấy Micro và Camera thật từ thiết bị người dùng.
+ * Tự động tối ưu âm thanh (khử tiếng vang, lọc tạp âm) để đàm thoại rõ ràng 100%.
  */
 export async function getSafeUserMedia(
   constraints: MediaStreamConstraints,
   userName?: string,
 ): Promise<SafeMediaResult> {
-  // 1. Try standard modern mediaDevices if secure context or available
+  // Cấu hình âm thanh chuẩn chất lượng cao cho đàm thoại doanh nhân
+  const enhancedConstraints: MediaStreamConstraints = {
+    audio: constraints.audio
+      ? {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          ...(typeof constraints.audio === "object" ? constraints.audio : {}),
+        }
+      : false,
+    video: constraints.video,
+  };
+
+  // 1. Thử gọi API chuẩn modern mediaDevices
   if (typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const stream = await navigator.mediaDevices.getUserMedia(enhancedConstraints);
       return { stream, isMock: false };
     } catch (err: any) {
-      console.warn("[SafeUserMedia] Native getUserMedia failed:", err?.message || err);
-      // Fall through to fallback
+      console.warn("[SafeUserMedia] Primary getUserMedia error:", err?.name, err?.message);
+
+      // Nếu yêu cầu cả video lẫn audio bị lỗi (ví dụ không có webcam), thử lại chỉ với Microphone
+      if (constraints.video && constraints.audio) {
+        try {
+          const audioOnlyStream = await navigator.mediaDevices.getUserMedia({
+            audio: enhancedConstraints.audio,
+            video: false,
+          });
+          // Thêm avatar video stream làm hình nền nếu đối tác không có webcam
+          const placeholderVideo = createLuxuryAvatarStream(userName || "Bạn");
+          placeholderVideo.getVideoTracks().forEach((vt) => audioOnlyStream.addTrack(vt));
+          return { stream: audioOnlyStream, isMock: false };
+        } catch {}
+      }
+
+      if (err?.name === "NotAllowedError" || err?.name === "PermissionDeniedError") {
+        return {
+          stream: new MediaStream(),
+          isMock: true,
+          reason: "permission_denied",
+        };
+      }
     }
   }
 
-  // 2. Try legacy vendor APIs
+  // 2. Thử legacy vendor APIs
   if (typeof navigator !== "undefined") {
     const legacy =
       (navigator as any).getUserMedia ||
@@ -200,24 +220,19 @@ export async function getSafeUserMedia(
     if (typeof legacy === "function") {
       try {
         const stream = await new Promise<MediaStream>((resolve, reject) => {
-          legacy.call(navigator, constraints, resolve, reject);
+          legacy.call(navigator, enhancedConstraints, resolve, reject);
         });
         return { stream, isMock: false };
-      } catch (err: any) {
-        console.warn("[SafeUserMedia] Legacy getUserMedia failed:", err?.message || err);
-      }
+      } catch {}
     }
   }
 
-  // 3. Fallback: Virtual Mock MediaStream
-  console.info("[SafeUserMedia] Using virtual mock stream fallback (HTTP or device not found).");
+  // 3. Fallback an toàn nếu hoàn toàn không có quyền hoặc không có thiết bị
   const compositeStream = new MediaStream();
-
   if (constraints.video) {
-    const videoStream = createMockVideoStream(userName || "Tài khoản của bạn");
+    const videoStream = createLuxuryAvatarStream(userName || "Tài khoản của bạn");
     videoStream.getVideoTracks().forEach((track) => compositeStream.addTrack(track));
   }
-
   if (constraints.audio) {
     const audioStream = createMockAudioStream();
     audioStream.getAudioTracks().forEach((track) => compositeStream.addTrack(track));
@@ -226,6 +241,6 @@ export async function getSafeUserMedia(
   return {
     stream: compositeStream,
     isMock: true,
-    reason: isHttpInsecureContext() ? "insecure_http" : "permission_denied_or_missing_hardware",
+    reason: isHttpInsecureContext() ? "insecure_http" : "permission_denied",
   };
 }

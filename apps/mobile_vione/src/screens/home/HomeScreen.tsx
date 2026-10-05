@@ -57,6 +57,7 @@ import {
 import { Colors } from "../../theme/colors";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { VIconMark } from "../../components/VIconMark";
 import { MyQrModal } from "../quick-connect/MyQrModal";
 import { ScanQrModal } from "../quick-connect/ScanQrModal";
 import { AttendanceModal } from "../../components/AttendanceModal";
@@ -66,6 +67,7 @@ import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
 import { CardScanReviewModal } from "../../components/CardScanReviewModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
 import { StaffDailyActivityModal } from "../../components/StaffDailyActivityModal";
+import { MemberCardBottomSheet } from "../../components/MemberCardBottomSheet";
 import { meApi, eventsApi, meetingsApi, networkApi } from "../../api";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -92,6 +94,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const [eventDetailModalVisible, setEventDetailModalVisible] = useState(false);
   const [selectedEventForDetail, setSelectedEventForDetail] = useState<any | null>(null);
   const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(2);
+  const [memberCardModalVisible, setMemberCardModalVisible] = useState(false);
 
   // Bộ lọc phạm vi & ngành nghề cho V · Gợi ý hôm nay
   const [distanceFilter, setDistanceFilter] = useState<"all" | "near" | "city" | "national">("all");
@@ -346,7 +349,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
     <SafeAreaView
       style={[
         styles.safeArea,
-        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+        { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
       ]}
       edges={["top"]}
     >
@@ -440,7 +443,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
         />
 
         {/* 1. Thẻ Doanh Nhân ViOne (Identity Card with Cover Banner & Avatar) */}
-        <View
+        <TouchableOpacity
           style={[
             styles.identityCard,
             {
@@ -448,6 +451,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
             },
           ]}
+          onPress={() => setMemberCardModalVisible(true)}
+          activeOpacity={0.92}
         >
           {/* Ảnh bìa doanh nhân thực tế */}
           <View style={styles.coverBannerWrap}>
@@ -498,7 +503,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               )}
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* 2. Phân Hệ HÔM NAY (Editorial schedule) */}
         <View style={styles.sectionToday}>
@@ -618,7 +623,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 activeOpacity={0.85}
               >
                 <View style={styles.vMiniEmblem}>
-                  <Text style={styles.vMiniText}>V</Text>
+                  <VIconMark size={14} />
                 </View>
                 <Text style={styles.openVBtnText}>Mở V để kết nối</Text>
               </TouchableOpacity>
@@ -1085,6 +1090,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
         event={selectedEventForDetail}
         onClose={() => setEventDetailModalVisible(false)}
       />
+      <MemberCardBottomSheet
+        visible={memberCardModalVisible}
+        onClose={() => setMemberCardModalVisible(false)}
+        onOpenMyQr={() => setMyQrVisible(true)}
+        onOpenNfc={() => Alert.alert("Chạm thẻ NFC", "Đưa điện thoại lại gần thẻ doanh nhân thông minh ViOne để kết nối.")}
+        onOpenProfile={() => navigation?.navigate("Me")}
+      />
     </SafeAreaView>
   );
 };
@@ -1092,7 +1104,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0A0A0B",
+    backgroundColor: "#0B0F17",
   },
   scrollContainer: {
     paddingHorizontal: 16,

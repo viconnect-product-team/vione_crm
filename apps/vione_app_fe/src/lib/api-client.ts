@@ -222,20 +222,32 @@ export function resolveMediaUrl(url: string | null | undefined): string | null {
     return publicBase ? `${publicBase}/${trimmed}` : `/${trimmed}`;
   }
 
-  // 5. Nếu là đường dẫn /upload/... -> Nâng cấp thành /api/upload/...
+  // 5. Nếu là đường dẫn /upload/... -> Nâng cấp thành /api/upload/file/...
   if (trimmed.startsWith("/upload/")) {
-    return publicBase ? `${publicBase}/api${trimmed}` : `/api${trimmed}`;
+    const clean = trimmed.replace(/^\/upload\/(file\/)?/, "");
+    return publicBase ? `${publicBase}/api/upload/file/${clean}` : `/api/upload/file/${clean}`;
   }
   if (trimmed.startsWith("upload/")) {
-    return publicBase ? `${publicBase}/api/${trimmed}` : `/api/${trimmed}`;
+    const clean = trimmed.replace(/^upload\/(file\/)?/, "");
+    return publicBase ? `${publicBase}/api/upload/file/${clean}` : `/api/upload/file/${clean}`;
   }
 
-  // 6. Nếu là đường dẫn /uploads/... -> Phục vụ tĩnh từ backend
+  // 6. Nếu là đường dẫn /uploads/... -> Phục vụ qua controller /api/upload/file/... (đảm bảo không bị 404)
   if (trimmed.startsWith("/uploads/")) {
-    return publicBase ? `${publicBase}${trimmed}` : trimmed;
+    const clean = trimmed.replace(/^\/uploads\//, "");
+    return publicBase ? `${publicBase}/api/upload/file/${clean}` : `/api/upload/file/${clean}`;
   }
   if (trimmed.startsWith("uploads/")) {
-    return publicBase ? `${publicBase}/${trimmed}` : `/${trimmed}`;
+    const clean = trimmed.replace(/^uploads\//, "");
+    return publicBase ? `${publicBase}/api/upload/file/${clean}` : `/api/upload/file/${clean}`;
+  }
+
+  // 6.1. Nếu là URL đầy đủ chứa /uploads/ (vd: https://14.225.217.232:5445/uploads/xxx) -> chuyển hướng sang /api/upload/file/
+  if (trimmed.includes("/uploads/")) {
+    const clean = trimmed.split("/uploads/")[1];
+    if (clean) {
+      return publicBase ? `${publicBase}/api/upload/file/${clean}` : `/api/upload/file/${clean}`;
+    }
   }
 
   // 7. Nếu là file trong avatars/ hoặc documents/ hoặc products/ hoặc events/

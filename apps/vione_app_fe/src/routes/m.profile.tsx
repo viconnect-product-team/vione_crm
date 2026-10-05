@@ -81,7 +81,6 @@ function ProfileScreen() {
   const themeOptions: { mode: Theme; icon: typeof Sun; label: string; desc: string }[] = [
     { mode: "light", icon: Sun, label: "Sáng", desc: "Tươi sáng, tinh tế" },
     { mode: "dark", icon: Moon, label: "Tối", desc: "Sang trọng, dịu mắt" },
-    { mode: "contrast", icon: Contrast, label: "Tương phản", desc: "Độ tương phản cao" },
   ];
 
   async function logout() {

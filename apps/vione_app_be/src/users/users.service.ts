@@ -13,10 +13,14 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async findByUsername(username: string): Promise<vione_users | null> {
+    const trimmed = (username || '').trim();
+    if (!trimmed) return null;
+
+    // 1. Direct match by username or email
     const user = await this.prisma.vione_users
       .findFirst({
         where: {
-          OR: [{ username }, { email: username }],
+          OR: [{ username: trimmed }, { email: trimmed }],
         },
       })
       .catch(() => null);
@@ -25,7 +29,45 @@ export class UsersService {
       return user;
     }
 
-    if (username === 'admin@connect.vn') {
+    // 2. Check by phone number format (supports 0912..., +84..., or formatted phone numbers)
+    const digitsOnly = trimmed.replace(/\D/g, '');
+    if (digitsOnly.length >= 8) {
+      // 2a. Match username or email with digitsOnly
+      const phoneUser = await this.prisma.vione_users
+        .findFirst({
+          where: {
+            OR: [
+              { username: digitsOnly },
+              { username: trimmed },
+              { email: trimmed },
+            ],
+          },
+        })
+        .catch(() => null);
+
+      if (phoneUser) {
+        return phoneUser;
+      }
+
+      // 2b. Lookup by phone in public.members or public.member_business_cards
+      try {
+        const memberMatches = await this.prisma.$queryRawUnsafe<any[]>(`
+          SELECT u.* FROM public.vione_users u
+          LEFT JOIN public.members m ON m.user_id = u.id
+          LEFT JOIN public.member_business_cards b ON b.owner_user_id = u.id
+          WHERE m.phone = $1 OR m.phone = $2 OR b.work_phone = $1 OR b.work_phone = $2
+          LIMIT 1
+        `, trimmed, digitsOnly);
+
+        if (memberMatches && memberMatches.length > 0) {
+          return memberMatches[0] as vione_users;
+        }
+      } catch (err) {
+        // Fall through to fallback
+      }
+    }
+
+    if (trimmed === 'admin@connect.vn') {
       return {
         id: '00000000-0000-0000-0000-000000000000',
         username: 'admin@connect.vn',

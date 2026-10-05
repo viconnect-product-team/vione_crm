@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import {
   X,
@@ -18,18 +18,18 @@ export interface UserGuideModalProps {
   onClose: () => void;
 }
 
-const DEFAULT_PDF_URL = "/docs/HUONG_DAN_SU_DUNG_APP_HIEP_HOI_CEO1983.pdf";
+const DEFAULT_DOC_URL = "/docs/HDSD_HE_THONG_VA_APP_VIONE_TOAN_DIEN.html";
 
 export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
-  const [pdfUrl, setPdfUrl] = useState<string>(DEFAULT_PDF_URL);
+  const [docUrl, setDocUrl] = useState<string>(DEFAULT_DOC_URL);
   const [uploading, setUploading] = useState(false);
   const [adminBarOpen, setAdminBarOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("vba_active_guide_pdf");
+      const saved = localStorage.getItem("vba_active_guide_doc");
       if (saved) {
-        setPdfUrl(saved);
+        setDocUrl(saved);
       }
     }
   }, []);
@@ -49,9 +49,9 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
     try {
       const uploadedUrl = await uploadFile(file, `HDSD_${Date.now()}.pdf`);
       if (uploadedUrl) {
-        setPdfUrl(uploadedUrl);
-        localStorage.setItem("vba_active_guide_pdf", uploadedUrl);
-        toast.success("Đã tải lên file PDF hướng dẫn sử dụng mới thành công!");
+        setDocUrl(uploadedUrl);
+        localStorage.setItem("vba_active_guide_doc", uploadedUrl);
+        toast.success("Đã tải lên file tài liệu hướng dẫn sử dụng mới thành công!");
       }
     } catch (err: any) {
       toast.error("Tải file lên thất bại. Vui lòng thử lại!");
@@ -62,9 +62,9 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
   };
 
   const handleResetDefault = () => {
-    setPdfUrl(DEFAULT_PDF_URL);
-    localStorage.removeItem("vba_active_guide_pdf");
-    toast.info("Đã khôi phục file PDF hướng dẫn sử dụng mặc định của hệ thống.");
+    setDocUrl(DEFAULT_DOC_URL);
+    localStorage.removeItem("vba_active_guide_doc");
+    toast.info("Đã khôi phục tài liệu hướng dẫn sử dụng mặc định của hệ thống.");
   };
 
   return createPortal(
@@ -84,14 +84,14 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm sm:text-base font-extrabold tracking-tight text-white">
-                  Sổ Tay Hướng Dẫn Sử Dụng
+                  Cẩm Nang Hướng Dẫn Sử Dụng
                 </h3>
                 <span className="rounded-full bg-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-200 border border-emerald-400/30">
-                  PDF Chuẩn
+                  Chuẩn Nghiệp Vụ 6.0
                 </span>
               </div>
               <p className="text-[11px] sm:text-xs text-sky-200/80">
-                CLB Doanh Nhân CEO 1983 · Bản hướng dẫn chi tiết & hình ảnh minh họa thực tế
+                Hệ Thống ViOne CRM & App ViOne Connect · 37 Chuyên Đề Quy Trình Chi Tiết
               </p>
             </div>
           </div>
@@ -102,14 +102,14 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
               type="button"
               onClick={() => setAdminBarOpen((v) => !v)}
               className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-sky-200 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-white/10 transition cursor-pointer"
-              title="Quản lý file PDF"
+              title="Quản lý tài liệu"
             >
               <Upload className="h-3.5 w-3.5" />
-              <span>Quản lý file</span>
+              <span>Quản lý</span>
             </button>
 
             <a
-              href={pdfUrl}
+              href={docUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-xl bg-white/15 hover:bg-white/25 px-3 py-1.5 text-xs font-bold text-white transition backdrop-blur-md border border-white/25 shadow-xs"
@@ -120,13 +120,13 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
             </a>
 
             <a
-              href={pdfUrl}
-              download="HUONG_DAN_SU_DUNG_APP_HIEP_HOI_CEO1983.pdf"
+              href="/docs/HDSD_HE_THONG_VA_APP_VIONE_TOAN_DIEN.docx"
+              download="HDSD_HE_THONG_VA_APP_VIONE_TOAN_DIEN.docx"
               className="inline-flex items-center gap-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 px-3.5 py-1.5 text-xs font-bold text-white transition shadow-sm"
-              title="Tải tệp PDF về máy"
+              title="Tải tệp Word (.docx) về máy"
             >
               <Download className="h-3.5 w-3.5" />
-              <span>Tải PDF</span>
+              <span>Tải Word</span>
             </a>
 
             <button
@@ -145,7 +145,7 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
           <div className="shrink-0 flex flex-wrap items-center justify-between gap-3 border-b border-sky-200 dark:border-sky-900/50 bg-sky-50 dark:bg-sky-950/40 px-4 sm:px-6 py-2.5 text-xs">
             <div className="flex items-center gap-2 text-slate-700 dark:text-sky-200 font-medium">
               <ShieldCheck className="h-4 w-4 text-sky-600" />
-              <span>Cập nhật file PDF hướng dẫn sử dụng cho hội viên:</span>
+              <span>Cập nhật file tài liệu hướng dẫn sử dụng:</span>
             </div>
             <div className="flex items-center gap-2">
               <label className="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 px-3 py-1 text-xs font-bold text-white shadow-xs cursor-pointer transition">
@@ -154,10 +154,10 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
                 ) : (
                   <Upload className="h-3.5 w-3.5" />
                 )}
-                <span>{uploading ? "Đang tải lên..." : "Tải file PDF mới"}</span>
+                <span>{uploading ? "Đang tải lên..." : "Tải file mới"}</span>
                 <input
                   type="file"
-                  accept="application/pdf,.pdf"
+                  accept="application/pdf,.pdf,.html,.docx"
                   disabled={uploading}
                   onChange={handleUploadPdf}
                   className="hidden"
@@ -177,18 +177,18 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
           </div>
         )}
 
-        {/* Main PDF Viewer Body */}
+        {/* Main Document Viewer Body */}
         <div className="flex-1 w-full overflow-hidden bg-slate-100 dark:bg-slate-950 p-2 sm:p-3 relative">
           <iframe
-            src={`${pdfUrl}#toolbar=1&navpanes=0`}
+            src={docUrl}
             className="h-full w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white shadow-inner"
-            title="Tài liệu Hướng dẫn sử dụng App Hiệp Hội CEO 1983"
+            title="Tài liệu Hướng dẫn sử dụng Hệ Thống & App ViOne Toàn Diện"
           />
 
-          {/* Mobile Fallback Overlay if browser does not render iframe PDF */}
+          {/* Mobile Fallback Overlay if browser does not render iframe */}
           <div className="sm:hidden absolute bottom-4 inset-x-4 pointer-events-none flex justify-center">
             <a
-              href={pdfUrl}
+              href={docUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="pointer-events-auto inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-lg border border-white/20 active:scale-95 transition"
@@ -204,7 +204,7 @@ export function UserGuideModal({ open, onClose }: UserGuideModalProps) {
           <div className="flex items-center gap-2">
             <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="font-semibold text-slate-700 dark:text-slate-300">
-              Tài liệu đã được xác thực 100% hình ảnh minh chứng thực tế
+              Tài liệu nghiệp vụ chuẩn hóa 100% Ma trận Quy trình & Thao tác UI (Triệt tiêu 404)
             </span>
           </div>
 
