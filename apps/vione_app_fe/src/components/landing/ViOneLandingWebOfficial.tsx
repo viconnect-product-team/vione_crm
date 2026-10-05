@@ -38,6 +38,53 @@ const SectionDivider: React.FC<{ label?: string }> = ({ label }) => (
   </div>
 );
 
+interface CrmSlideItem {
+  id: string;
+  src: string;
+  alt: string;
+  badge: string;
+  title: string;
+}
+
+// 5 Real ViOne CRM Slides for Continuous 1.5s Operation Control Showcase
+const CRM_SLIDES: CrmSlideItem[] = [
+  {
+    id: "crm-1",
+    src: "/landing_web_vione/crm-slide-1-dashboard.png",
+    alt: "Bảng Điều Hành Số & Báo Cáo Sức Khỏe Doanh Nghiệp ViOne CRM",
+    badge: "MODULE 01 • BẢNG ĐIỀU HÀNH 360°",
+    title: "Tổng quan điều hành thời gian thực phản ánh sức khỏe tài chính, KPI và dự án doanh nghiệp",
+  },
+  {
+    id: "crm-2",
+    src: "/landing_web_vione/crm-slide-2-opportunities.png",
+    alt: "Phễu Chuyển Đổi & Pipeline Cơ Hội Bán Hàng ViOne CRM",
+    badge: "MODULE 02 • PIPELINE CƠ HỘI BÁN HÀNG",
+    title: "Quản trị phễu chuyển đổi khách hàng tiềm năng và dự báo doanh số chuẩn xác từng giai đoạn",
+  },
+  {
+    id: "crm-3",
+    src: "/landing_web_vione/crm-slide-3-marketplace.png",
+    alt: "Sàn Kết Nối Cung Cầu & Gian Hàng B2B ViOne CRM",
+    badge: "MODULE 03 • MARKETPLACE GIAO THƯƠNG B2B",
+    title: "Liên kết cung cầu sản phẩm, xúc tiến thương mại giữa các doanh nghiệp trong hệ sinh thái",
+  },
+  {
+    id: "crm-4",
+    src: "/landing_web_vione/crm-slide-4-finance.png",
+    alt: "Quản Trị Tài Chính & Báo Cáo Dòng Tiền ViOne CRM",
+    badge: "MODULE 04 • QUẢN TRỊ DÒNG TIỀN DOANH NGHIỆP",
+    title: "Kiểm soát chi phí, doanh thu thực thu - thực chi và tự động đối chiếu số dư tức thời",
+  },
+  {
+    id: "crm-5",
+    src: "/landing_web_vione/crm-slide-5-meetings.png",
+    alt: "Lịch Họp Điều Hành & Trợ Lý Biên Bản AI ViOne CRM",
+    badge: "MODULE 05 • LỊCH HỌP & BIÊN BẢN AI COPILOT",
+    title: "Điều phối lịch họp HĐQT / Ban điều hành, tự động ghi nhận và trích xuất nhiệm vụ tức thì",
+  },
+];
+
 export const ViOneLandingWebOfficial: React.FC = () => {
   const [selectedTier, setSelectedTier] = useState<string>("Gói Giải Pháp Vione AI");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +101,16 @@ export const ViOneLandingWebOfficial: React.FC = () => {
     size: "15 - 50 người",
     note: "",
   });
+
+  const [activeCrmSlide, setActiveCrmSlide] = useState<number>(0);
+
+  // 1.5s continuous CRM slide loop (strictly requested by user)
+  useEffect(() => {
+    const slideTimer = setInterval(() => {
+      setActiveCrmSlide((prev) => (prev + 1) % CRM_SLIDES.length);
+    }, 1500);
+    return () => clearInterval(slideTimer);
+  }, []);
 
   // 2-second continuous stack alternating animation
   useEffect(() => {
@@ -528,15 +585,62 @@ export const ViOneLandingWebOfficial: React.FC = () => {
               </p>
             </div>
 
-            <div className="w-full rounded-2xl lg:rounded-3xl overflow-hidden border-2 border-zinc-200 shadow-2xl bg-white vione-reveal vione-delay-200">
-              <img
-                src="/landing_web_vione/operational-dashboard.png"
-                alt="Kiểm Soát Vận Hành Tổng Thể Vione"
-                className="w-full h-auto object-cover"
-                onError={(e) => {
-                  (e.target as HTMLElement).setAttribute("src", "/landing_web_vione/workflow-automation.png");
-                }}
-              />
+            {/* 5-Slide Continuous ViOne CRM Carousel (1.5s Auto Loop, Nghiêm Cấm Có Border Quanh Ảnh) */}
+            <div className="w-full relative vione-reveal vione-delay-200">
+              {/* Slide Screen (Border-free, pure clean presentation with soft drop shadow) */}
+              <div className="w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl bg-zinc-950 relative aspect-[16/10] sm:aspect-[16/9] border-0 outline-none">
+                {CRM_SLIDES.map((slide: CrmSlideItem, idx: number) => (
+                  <div
+                    key={slide.id}
+                    className={`absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out ${
+                      idx === activeCrmSlide ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                    }`}
+                  >
+                    <img
+                      src={slide.src}
+                      alt={slide.alt}
+                      className="w-full h-full object-cover object-top border-0 outline-none ring-0 block"
+                      loading="eager"
+                    />
+                    {/* Bottom Caption Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/65 to-transparent p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-white pointer-events-none">
+                      <div>
+                        <span className="inline-block px-2.5 py-0.5 rounded-full bg-[#DFB76C]/25 text-[#DFB76C] text-[10px] sm:text-xs font-mono font-bold tracking-wider mb-1">
+                          {slide.badge}
+                        </span>
+                        <h4 className="text-sm sm:text-base font-bold font-outfit text-white leading-snug">
+                          {slide.title}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-1.5 self-end sm:self-center bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono font-bold text-[#DFB76C]">
+                        <span>0{idx + 1}</span>
+                        <span className="text-zinc-500">/</span>
+                        <span className="text-zinc-400">05</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Indicator Pills / Slide Selectors (Border-free, clickable) */}
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                {CRM_SLIDES.map((slide: CrmSlideItem, idx: number) => {
+                  const isActive = idx === activeCrmSlide;
+                  return (
+                    <button
+                      key={slide.id}
+                      type="button"
+                      onClick={() => setActiveCrmSlide(idx)}
+                      className={`h-2.5 rounded-full transition-all duration-300 border-0 outline-none focus:outline-none cursor-pointer ${
+                        isActive
+                          ? "w-10 bg-gradient-to-r from-[#DFB76C] via-[#C29B69] to-[#8C653B]"
+                          : "w-3 bg-zinc-300 hover:bg-zinc-400"
+                      }`}
+                      aria-label={`Chuyển đến ảnh slide ${idx + 1}`}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
@@ -645,15 +749,22 @@ export const ViOneLandingWebOfficial: React.FC = () => {
         <section className="py-20 lg:py-28 bg-neutral-50 border-b border-zinc-200">
           <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-6 order-2 lg:order-1 vione-reveal vione-delay-200">
-              <div className="rounded-3xl overflow-hidden border-2 border-zinc-200 shadow-2xl bg-white hover:scale-[1.01] transition-transform">
+              <div className="rounded-3xl overflow-hidden shadow-2xl bg-zinc-950 hover:scale-[1.01] transition-transform border-0 outline-none relative group">
                 <img
-                  src="/landing_web_vione/business-laptop.png"
-                  alt="Giải Pháp Cho Mọi Ngành Nghề Vione"
-                  className="w-full h-auto object-cover"
+                  src="/landing_web_vione/solution-vione-real.png"
+                  alt="Mạng Lưới Đối Tác & Danh Mục Giải Pháp Doanh Nghiệp ViOne CRM Thực Tế"
+                  className="w-full h-auto object-cover border-0 outline-none block"
                   onError={(e) => {
-                    (e.target as HTMLElement).setAttribute("src", "/landing_web_vione/operational-dashboard.png");
+                    (e.target as HTMLElement).setAttribute("src", "/landing_web_vione/crm-slide-3-marketplace.png");
                   }}
                 />
+                <div className="absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-xl bg-zinc-950/85 backdrop-blur-md text-white flex items-center justify-between text-xs pointer-events-none">
+                  <span className="font-bold text-zinc-200 flex items-center gap-2">
+                    <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                    Hệ thống Quản lý Đối tác & Khách hàng ViOne CRM Thực tế
+                  </span>
+                  <span className="text-[#DFB76C] font-mono text-[10px] font-bold">LIVE CRM</span>
+                </div>
               </div>
             </div>
 

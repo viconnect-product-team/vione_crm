@@ -185,6 +185,19 @@ function Index() {
         navigate({ to: "/association", replace: true });
         return;
       }
+
+      const isViOneApp =
+        typeof window !== "undefined" &&
+        !isCrmPortal &&
+        (import.meta.env.VITE_APP_SCOPE === "vione_app" ||
+          window.location.port === "5445" ||
+          window.location.port === "5000" ||
+          window.location.hostname.includes("dev-vione."));
+
+      if (isViOneApp && window.location.pathname === "/") {
+        navigate({ to: "/connect-app", replace: true });
+        return;
+      }
     } catch {
       /* ignore */
     }
@@ -277,6 +290,20 @@ function usePostLoginRedirect(redirectAnonToLanding = false) {
           sessionStorage.getItem("crm_portal") === "1" ||
           window.location.port === "5446" ||
           window.location.hostname.includes("crm"));
+
+      const isViOneAppScope =
+        typeof window !== "undefined" &&
+        !isCrmPortal &&
+        (import.meta.env.VITE_APP_SCOPE === "vione_app" ||
+          window.location.port === "5445" ||
+          window.location.port === "5000" ||
+          window.location.hostname.includes("dev-vione."));
+
+      if (isViOneAppScope) {
+        setStatus("redirecting");
+        navigate({ to: "/connect-app", replace: true });
+        return;
+      }
 
       if (authStatus === 'out') {
         if (isCrmPortal) {

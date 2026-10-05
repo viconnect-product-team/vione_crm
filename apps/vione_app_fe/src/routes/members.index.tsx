@@ -15,14 +15,17 @@ import {
   Pin,
   Plus,
   Search,
+  Sparkles,
   Star,
   Trash2,
   UserCog,
   User,
+  Users,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/dashboard/AppShell";
+import { SmartCustomerCrmHub } from "@/components/dashboard/SmartCustomerCrmHub";
 import { CrudModal, type CrudField, type CrudValues } from "@/components/dashboard/CrudModal";
 import { MemberAccountModal } from "@/components/dashboard/MemberAccountModal";
 import { EmptyState, NoSearchResult, ListSkeleton } from "@/components/dashboard/StateKit";
@@ -260,7 +263,7 @@ function MembersPage() {
     toast.error(t("perm.denied.title"), { description: t("perm.denied.adminOnly") });
 
   const { favorites, pinned, recent, saved } = useMemberPrefs();
-
+  const [hubTab, setHubTab] = useUrlState<"smart_crm" | "members_list">("tab", "smart_crm");
   const [view, setView] = useUrlState<"cards" | "table">("view", "cards");
   const [q, setQ] = useUrlState<string>("q", "");
   const [industry, setIndustry] = useUrlState<IndustryKey | "all">("industry", "all");
@@ -566,14 +569,59 @@ function MembersPage() {
 
   return (
     <AppShell>
-      {/* Hero */}
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-[26px] font-bold tracking-tight text-foreground">
-            {t("members.title")}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("members.subtitle")}</p>
+      {/* Top Hub Navigation Bar: Smart CRM 360 vs Member Directory */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setHubTab("smart_crm")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              hubTab === "smart_crm"
+                ? "bg-gradient-to-r from-[#DFB76C] via-[#E8C98E] to-[#C99E55] text-slate-950 shadow-md shadow-[#DFB76C]/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+            }`}
+          >
+            <Sparkles className="h-4 w-4" />
+            <span>Quản lý Khách hàng Thông minh (Smart CRM 360°)</span>
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-extrabold ${
+                hubTab === "smart_crm" ? "bg-slate-950/20 text-slate-950" : "bg-primary/10 text-primary"
+              }`}
+            >
+              AI Leads
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setHubTab("members_list")}
+            className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              hubTab === "members_list"
+                ? "bg-gradient-to-r from-[#DFB76C] via-[#E8C98E] to-[#C99E55] text-slate-950 shadow-md shadow-[#DFB76C]/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+            }`}
+          >
+            <Users className="h-4 w-4" />
+            <span>Danh bạ Doanh nghiệp & Hội viên</span>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+              {members.length}
+            </span>
+          </button>
         </div>
+      </div>
+
+      {hubTab === "smart_crm" ? (
+        <SmartCustomerCrmHub />
+      ) : (
+        <>
+          {/* Hero */}
+          <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h2 className="text-[26px] font-bold tracking-tight text-foreground">
+                {t("members.title")}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">{t("members.subtitle")}</p>
+            </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="inline-flex rounded-xl border border-border bg-card p-0.5 shadow-[var(--shadow-card)]">
             <button
@@ -1078,6 +1126,8 @@ function MembersPage() {
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
     </AppShell>
   );

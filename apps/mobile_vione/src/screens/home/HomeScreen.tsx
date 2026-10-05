@@ -343,7 +343,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const avatarInitial = getInitial(displayName);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+      ]}
+      edges={["top"]}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
@@ -364,12 +370,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               style={styles.logoWordmark}
               resizeMode="contain"
             />
-            <Text style={styles.headerGreeting}>{getGreeting()}</Text>
+            <Text style={[styles.headerGreeting, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+              {getGreeting()}
+            </Text>
           </View>
 
           <View style={styles.headerRightActions}>
             <TouchableOpacity
-              style={styles.headerIconBtn}
+              style={[
+                styles.headerIconBtn,
+                {
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+                },
+              ]}
               onPress={toggleTheme}
               activeOpacity={0.7}
             >
@@ -381,7 +395,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.headerIconBtn}
+              style={[
+                styles.headerIconBtn,
+                {
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+                },
+              ]}
               onPress={() => navigation?.navigate("Network")}
               activeOpacity={0.7}
             >
@@ -392,7 +412,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.headerIconBtn}
+              style={[
+                styles.headerIconBtn,
+                {
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+                },
+              ]}
               onPress={() => Alert.alert("Thông báo", `Bạn có ${unreadNotificationsCount} thông báo kết nối doanh nghiệp mới.`)}
               activeOpacity={0.7}
             >
@@ -406,10 +432,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           </View>
         </View>
 
-        <View style={styles.headerDivider} />
+        <View
+          style={[
+            styles.headerDivider,
+            { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0" },
+          ]}
+        />
 
         {/* 1. Thẻ Doanh Nhân ViOne (Identity Card with Cover Banner & Avatar) */}
-        <View style={styles.identityCard}>
+        <View
+          style={[
+            styles.identityCard,
+            {
+              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+            },
+          ]}
+        >
           {/* Ảnh bìa doanh nhân thực tế */}
           <View style={styles.coverBannerWrap}>
             <Image
@@ -722,7 +761,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           </TouchableOpacity>
         </View>
 
-        {/* 5. Khối ĐIỀU HÀNH & GIÁM SÁT DOANH NGHIỆP (Theo mô tả BRD Master 5.0) */}
+        {/* 5. Khối ĐIỀU HÀNH & GIÁM SÁT DOANH NGHIỆP */}
         <View style={styles.opsSection}>
           <View style={styles.opsHeaderRow}>
             <View style={styles.opsHeaderLeft}>
@@ -739,7 +778,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             TỔNG THỂ QUY TRÌNH & TIẾN ĐỘ NHÂN VIÊN
           </Text>
           <Text style={styles.opsSubtitle}>
-            Kiểm soát luồng công việc BPMN, khối lượng tải làm việc của từng nhân sự, chấm công GPS và phê duyệt chi 3 cấp theo chuẩn BRD.
+            Tổng quan điều hành, chấm công thông minh và phê duyệt tức thì.
           </Text>
 
           {/* Grid 4 Thẻ Nghiệp Vụ Giám Sát C-Level */}
@@ -760,7 +799,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               </View>
               <Text style={styles.opsCardTitle}>Chấm công GPS & AI FaceID</Text>
               <Text style={styles.opsCardDesc}>
-                Bán kính ≤ 50m (BR-HRM-01) · Độ khớp khuôn mặt ≥ 92% (BR-HRM-02) · 1-chạm điểm danh
+                Nhận diện khuôn mặt AI tự động · Điểm danh 1-chạm
               </Text>
               <View style={styles.opsCardFooter}>
                 <Text style={styles.opsCardActionText}>Mở bảng điểm danh & xin nghỉ</Text>
@@ -768,7 +807,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               </View>
             </TouchableOpacity>
 
-            {/* Thẻ 2: Giám sát lịch trình & hoạt động nhân sự trong ngày (MỚI CHO CẤP GIÁM ĐỐC) */}
+            {/* Thẻ 2: Giám sát lịch trình & hoạt động nhân sự trong ngày */}
             <TouchableOpacity
               style={[styles.opsCard, { borderColor: isDark ? "rgba(216, 178, 130, 0.45)" : "rgba(163, 112, 60, 0.5)" }]}
               onPress={() => setStaffDailyModalVisible(true)}
@@ -784,9 +823,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   </Text>
                 </View>
               </View>
-              <Text style={styles.opsCardTitle}>Giám sát hoạt động nhân sự trong ngày</Text>
+              <Text style={styles.opsCardTitle}>Giám sát hoạt động trong ngày</Text>
               <Text style={styles.opsCardDesc}>
-                Phân hệ Giám Đốc: Xem nhân sự làm gì hôm nay · Lịch đi gặp khách · Check-in GPS & báo cáo công việc thời gian thực
+                Lịch gặp đối tác · Check-in GPS & báo cáo công việc thời gian thực
               </Text>
               <View style={styles.opsCardFooter}>
                 <Text style={[styles.opsCardActionText, { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
@@ -811,12 +850,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   <Text style={styles.opsCardBadgeRedText}>2 VIỆC TRỄ HẠN</Text>
                 </View>
               </View>
-              <Text style={styles.opsCardTitle}>Quy trình & Tiến độ nhân sự</Text>
+              <Text style={styles.opsCardTitle}>Tiến độ công việc & Kanban</Text>
               <Text style={styles.opsCardDesc}>
-                12 việc đang xử lý · WIP ≤ 5 (BR-WRK-06) · 1 nhân sự quá tải &gt; 45h/tuần (BR-WRK-14)
+                12 việc đang xử lý · 2 việc cần ưu tiên đẩy nhanh tiến độ
               </Text>
               <View style={styles.opsCardFooter}>
-                <Text style={styles.opsCardActionText}>Theo dõi tiến độ đội ngũ & Kanban</Text>
+                <Text style={styles.opsCardActionText}>Theo dõi tiến độ đội ngũ</Text>
                 <ChevronRight size={14} color="#D8B282" />
               </View>
             </TouchableOpacity>
@@ -835,12 +874,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   <Text style={styles.opsCardBadgeAmberText}>3 TỜ TRÌNH CHỜ DUYỆT</Text>
                 </View>
               </View>
-              <Text style={styles.opsCardTitle}>Phê duyệt chi 3 cấp</Text>
+              <Text style={styles.opsCardTitle}>Phê duyệt chi trực tuyến</Text>
               <Text style={styles.opsCardDesc}>
-                Maker → Checker → Approver · Hạn mức &gt; 20 triệu thẩm quyền CEO duyệt (BR-FIN-02)
+                Quy trình 3 cấp kiểm duyệt · Ký duyệt chi & Napas VietQR
               </Text>
               <View style={styles.opsCardFooter}>
-                <Text style={styles.opsCardActionText}>Ký duyệt chi & Napas VietQR</Text>
+                <Text style={styles.opsCardActionText}>Ký duyệt chi ngay</Text>
                 <ChevronRight size={14} color="#D8B282" />
               </View>
             </TouchableOpacity>

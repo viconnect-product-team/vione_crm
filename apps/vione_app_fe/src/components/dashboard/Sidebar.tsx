@@ -448,13 +448,37 @@ export function Sidebar({
   const fetchMine = useServerFn(listMyAssociationsFn);
   const { data: myAssocs, reload } = useServerData<MyAssociation[]>(() => fetchMine(), []);
   const activeAssoc = myAssocs?.find((a) => a.isActive) ?? myAssocs?.[0];
-  const brandName = activeAssoc?.name ?? t("brand.name");
+
+  const [customLogo, setCustomLogo] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vione_custom_logo") || localStorage.getItem("vba_active_assoc_logo") || null;
+    }
+    return null;
+  });
+
+  const [customBrandName, setCustomBrandName] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vba_active_assoc_name") || null;
+    }
+    return null;
+  });
+
+  const brandName = customBrandName || activeAssoc?.name || t("brand.name");
+  const displayLogo = customLogo || (activeAssoc?.logoUrl ? (resolveMediaUrl(activeAssoc.logoUrl) || activeAssoc.logoUrl) : null);
 
   const unreadNotify = useUnreadNotifications();
   const badges: Record<string, number> = { "/notifications": unreadNotify };
 
   useEffect(() => {
-    const onChange = () => reload();
+    const onChange = (e: any) => {
+      reload();
+      if (e?.detail?.logoUrl !== undefined) {
+        setCustomLogo(e.detail.logoUrl);
+      }
+      if (e?.detail?.name) {
+        setCustomBrandName(e.detail.name);
+      }
+    };
     window.addEventListener("association-changed", onChange);
     return () => window.removeEventListener("association-changed", onChange);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -509,23 +533,23 @@ export function Sidebar({
             isCollapsed ? "justify-center px-2" : "px-6"
           }`}
         >
-          {activeAssoc?.logoUrl ? (
+          {displayLogo ? (
             <img
-              src={resolveMediaUrl(activeAssoc.logoUrl) || activeAssoc.logoUrl}
+              src={displayLogo}
               alt={brandName}
               className="w-9 h-9 rounded-xl object-contain bg-white p-1 border border-slate-700/60 shadow-md shrink-0"
             />
           ) : (
-            <div className="w-8 h-8 bg-gradient-to-l from-amber-600 via-amber-500 to-amber-600 rounded-lg inline-flex flex-col justify-center items-center shrink-0 shadow-md">
+            <div className="w-8 h-8 bg-gradient-to-l from-[#C99E55] via-[#DFB76C] to-[#E8C98E] rounded-lg inline-flex flex-col justify-center items-center shrink-0 shadow-md">
               <span className="text-zinc-950 text-lg font-extrabold font-['Inter'] leading-none">V</span>
             </div>
           )}
           {!isCollapsed && (
             <div className="flex items-center gap-2 min-w-0">
               <span className="text-white text-xl font-extrabold font-['Inter'] tracking-tight truncate">
-                {brandName === "Hiệp hội Doanh nghiệp Việt Nam" ? "Vione" : brandName}
+                {brandName === "Hiệp hội Doanh nghiệp Việt Nam" ? "ViOne" : brandName}
               </span>
-              <span className="rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold px-1.5 py-0.5 border border-amber-500/30 shrink-0 font-mono">
+              <span className="rounded bg-[#DFB76C]/20 text-[#DFB76C] text-[10px] font-bold px-1.5 py-0.5 border border-[#DFB76C]/30 shrink-0 font-mono">
                 CRM
               </span>
             </div>

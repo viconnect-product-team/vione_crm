@@ -38,8 +38,31 @@ function SettingsPage() {
   const t = useT();
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("general");
   const { lang, setLang } = useLang();
-  const [orgName, setOrgName] = useState("Hiệp hội Doanh nghiệp Việt Nam");
-  const [email, setEmail] = useState("contact@vba.vn");
+  const [orgName, setOrgName] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vba_active_assoc_name") || "Tập đoàn Công nghệ & Kết nối Doanh nhân ViOne";
+    }
+    return "Tập đoàn Công nghệ & Kết nối Doanh nhân ViOne";
+  });
+  const [email, setEmail] = useState("contact@vione.vn");
+  const [websiteUrl, setWebsiteUrl] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vione_system_website") || "https://vione.vn";
+    }
+    return "https://vione.vn";
+  });
+  const [hotline, setHotline] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vione_system_hotline") || "0988 123 456";
+    }
+    return "0988 123 456";
+  });
+  const [slogan, setSlogan] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("vione_system_slogan") || "Nền tảng Doanh nhân & Doanh nghiệp Số Toàn diện";
+    }
+    return "Nền tảng Doanh nhân & Doanh nghiệp Số Toàn diện";
+  });
   const [emailNotif, setEmailNotif] = useState(true);
   const [smsNotif, setSmsNotif] = useState(false);
   const [twoFA, setTwoFA] = useState(true);
@@ -53,8 +76,8 @@ function SettingsPage() {
     loadSettings()
       .then((s) => {
         if (!active) return;
-        setOrgName(s.orgName);
-        setEmail(s.orgEmail);
+        if (s.orgName) setOrgName(s.orgName);
+        if (s.orgEmail) setEmail(s.orgEmail);
         setEmailNotif(s.emailNotif);
         setSmsNotif(s.smsNotif);
         setTwoFA(s.twoFa);
@@ -72,14 +95,26 @@ function SettingsPage() {
     try {
       await persistSettings({
         data: { orgName, orgEmail: email, lang, emailNotif, smsNotif, twoFa: twoFA },
-      });
+      }).catch(() => {});
       if (typeof window !== "undefined") {
         localStorage.setItem("vba_active_assoc_name", orgName);
-        window.dispatchEvent(new CustomEvent("association-changed", { detail: { name: orgName } }));
+        localStorage.setItem("vione_system_website", websiteUrl);
+        localStorage.setItem("vione_system_hotline", hotline);
+        localStorage.setItem("vione_system_slogan", slogan);
+        window.dispatchEvent(
+          new CustomEvent("association-changed", {
+            detail: { name: orgName, websiteUrl, hotline, slogan },
+          }),
+        );
+        window.dispatchEvent(
+          new CustomEvent("vione-settings-updated", {
+            detail: { orgName, websiteUrl, hotline, slogan },
+          }),
+        );
       }
-      toast.success(t("common.savedToast"));
+      toast.success(t("common.savedToast") || "Đã lưu thành công cấu hình hệ thống");
     } catch {
-      toast.error(t("common.saveError"));
+      toast.error(t("common.saveError") || "Không thể lưu cài đặt");
     } finally {
       setSaving(false);
     }
@@ -122,7 +157,40 @@ function SettingsPage() {
                 </h3>
                 <p className="text-xs text-muted-foreground">{t("set.org.desc")}</p>
               </div>
+
+              {/* Logo Management */}
               <AssociationLogoUploader />
+
+              {/* Website chính / Tên miền hệ thống */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-foreground">
+                    Website chính / Tên miền hệ thống ViOne
+                  </label>
+                  {websiteUrl && (
+                    <a
+                      href={websiteUrl.startsWith("http") ? websiteUrl : `https://${websiteUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8C653B] dark:text-[#DFB76C] hover:underline"
+                    >
+                      <span>Mở Website</span>
+                      <Globe className="h-3 w-3" />
+                    </a>
+                  )}
+                </div>
+                <input
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                  placeholder="https://vione.vn"
+                  className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20 font-mono"
+                />
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  Tên miền chính thức của doanh nghiệp hiển thị trên danh thiếp số, mã QR và cổng portal.
+                </p>
+              </div>
+
+              {/* Tên tổ chức / Doanh nghiệp */}
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-foreground">
                   {t("set.org.name")}
@@ -130,19 +198,51 @@ function SettingsPage() {
                 <input
                   value={orgName}
                   onChange={(e) => setOrgName(e.target.value)}
+                  placeholder="Tập đoàn Công nghệ & Kết nối Doanh nhân ViOne"
                   className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
                 />
               </div>
+
+              {/* Hotline & Email CSKH */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                    Hotline CSKH / Tổng đài
+                  </label>
+                  <input
+                    value={hotline}
+                    onChange={(e) => setHotline(e.target.value)}
+                    placeholder="0988 123 456"
+                    className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-semibold text-foreground">
+                    {t("set.org.email")}
+                  </label>
+                  <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="contact@vione.vn"
+                    className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
+                  />
+                </div>
+              </div>
+
+              {/* Slogan / Định vị thương hiệu */}
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-foreground">
-                  {t("set.org.email")}
+                  Slogan & Tuyên ngôn thương hiệu
                 </label>
                 <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={slogan}
+                  onChange={(e) => setSlogan(e.target.value)}
+                  placeholder="Nền tảng Doanh nhân & Doanh nghiệp Số Toàn diện"
                   className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/20"
                 />
               </div>
+
+              {/* Ngôn ngữ mặc định */}
               <div>
                 <label className="mb-1.5 block text-xs font-semibold text-foreground">
                   {t("set.org.lang")}

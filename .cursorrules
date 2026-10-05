@@ -29,6 +29,14 @@
 - **React 18 vs 19 Monorepo Isolation**: `apps/mobile_vione` (React Native 0.76) strictly requires React 18. In `apps/mobile_vione/metro.config.js`, custom `resolveRequest` and `extraNodeModules` must redirect all `react` and `react/*` imports to `apps/mobile_vione/node_modules/react` to prevent React 19 leaking into the APK bundle and crashing with `TypeError: Cannot read property 'ReactCurrentDispatcher' of undefined`.
 - **Vite & PWA Plugins**: Do NOT add manual Vite or PWA plugins to `apps/web/vite.config.ts` unless extending. The preset `@lovable.dev/vite-tanstack-config` already manages these; duplicate declarations break the build.
 - **Cookie Security**: When setting auth cookies, the `secure` flag must only be attached if the current protocol is HTTPS (`window.location.protocol === 'https:'`). Bypassing this is required to allow auth sessions to be saved when accessing Server Dev over HTTP.
+- **Mobile Native Minimalist & Web Parity (STRICT NO FIXED ICONS & MINIMALIST TEXT)**:
+  - **Khử Icon Cố Định & Bỏ Chữ Rườm Rà**: Nghiêm cấm dùng icon cố định, cứng nhắc trên app mobile ViOne native (`apps/mobile_vione`). Mọi icon phải sử dụng dynamic Lucide icons responsive theo kích thước và bảng màu thương hiệu.
+  - **Khử Text Kỹ Thuật**: Loại bỏ hoàn toàn các tường chữ kỹ thuật (mã quy tắc "BR-HRM-01", "BR-FIN-02", "WIP <= 5") và các số liệu bio giả lập cố định (15+ năm kinh nghiệm, 500+ đối tác).
+  - **Parity Chuẩn 100% Web Responsive PWA**: Màn hình Profile "Tôi" (`ProfileScreen.tsx`) phải đồng bộ trọn vẹn với `MeIdentityCard` và `MeQuickContact`: Card "DANH TÍNH SỐ" với ảnh chân dung lãnh đạo, chữ ký chìm V, 2 nút vàng gradient `[QR của tôi]` & `[Chạm NFC]`, link `Xem hồ sơ >`; Card "LIÊN HỆ NHANH" gồm 5 kênh trực tiếp qua `Linking` (Gọi điện, Email, Viber, WhatsApp, Telegram).
+- **Smart Customer CRM Hub (360° Lead Management)**: Hệ thống CRM ViOne (`apps/vione_app_fe`) tích hợp trung tâm quản trị khách hàng thông minh (`SmartCustomerCrmHub.tsx` tại `/members`) hỗ trợ 4 KPI, phân loại nguồn chuyển đổi (NFC Tap, Quét Card OCR, B2B Network, Website Lead), chấm điểm tiềm năng AI (AI Lead Score), cảnh báo nhịp SLA và hành động nhanh (Gọi, Mail, AI Pitch, xuất CSV).
+- **CRM System Settings & Customization**: Cho phép trực tiếp thay đổi Website chính hệ thống (`websiteUrl`), Hotline CSKH, Slogan và Logo tùy biến tại `/settings`, lưu trữ bền vững vào `localStorage` (`vba_active_assoc_logo`, `vione_custom_logo`) và phát sự kiện `association-changed` cập nhật tức thì lên `Sidebar.tsx`.
+- **CRM Login UI Light Mode Default**: Màn hình đăng nhập hệ thống CRM (`/auth`) mặc định sử dụng phong cách Trắng Sáng Sang Trọng (Light Mode), ảnh nền kiến trúc đô thị `/skyline_perspective_light.jpg`, lớp phủ sáng ngọc trai, viền vàng Champagne Gold `#DFB76C` và logo wordmark `vione-wordmark.png`.
+
 - **CEO 1983 Brand Identity, Namecard & Landing Architecture**:
   - Header & Card Visit: Logo sử dụng hình số 8 3D kết hợp chữ "CEO" Navy và "1983" Cam (`/ceo1983-official-logo.png`). Mặt trước danh thiếp theo Brandbook Namecard (`Ung_dung-namecard-1024x576.png`): gỡ bỏ hoàn toàn text tên CLB và link ở góc trên trái, logo đặt góc trên phải, tên hội viên Navy in hoa đậm, chức danh màu cam `#EA580C`. Mặt sau danh thiếp chuẩn nền xanh hoàng gia `#24357B`, logo trắng `/brand-header-logo-white.png`, khẩu hiệu cam `#FFA500` "Gắn kết bền - Phát triển vững" và vòng tròn đồng tâm.
   - Landing Page CEO 1983 (`/landing/ceo/v1`, `/landing/ceo1983/cinematic`): Trải nghiệm Cuộn Điện Ảnh Liên Tục (Immersive Cinematic Scroll Experience) xuyên qua 6 phân cảnh (01 Sky ☀️, 02 Birds, 03 Kites, 04 Villas [20-25% chiều cao chân trời đáy], 05 Water [hồ bơi vô cực khổng lồ & camera đâm xuyên mặt nước], 06 Underwater [đại dương 3D, cá mập bơi tầng sâu, 4 đài tháp ánh sáng lãnh đạo Monolith, thông điệp thương hiệu & Master CTA]). TUYỆT ĐỐI KHÔNG dùng template 4-card lặp lại, icon grid hay corporate SaaS blocks. CẤM dùng từ 'diều', 'cá' trong toàn bộ văn bản/tiêu đề; bảo tồn 100% câu từ doanh nhân chuẩn mực từ `ceo1983.com`. Tông màu thanh lịch Trắng ngọc trai, Xanh da trời nhạt (`#EFF6FF`, `#E0F2FE`) và Vàng kim sang trọng (`#D97706`). Tích hợp Menu danh mục tại Header và Floating Scroll Pill Bar cố định ở đáy theo dõi vị trí cuộn (Scroll-Spy).
@@ -936,3 +944,44 @@ The project is deployed to a remote server (`14.225.217.232`) with 2 primary pro
        * Web App PWA (`ExecutiveHome.tsx`) và Native App (`HomeScreen.tsx`) đồng bộ đầy đủ nút Theme Switcher Sáng/Tối tại Header cạnh thông báo.
        * Khối "V · Gợi ý hôm nay (AI)" luôn hiển thị 2 thanh Filter Chips phân loại Không gian (Tất cả, Gần tôi, Cùng TP, Toàn quốc) & Lĩnh vực (Công nghệ & AI, Chuỗi cung ứng & Bán lẻ, Quỹ đầu tư & Vốn...) kèm dữ liệu fallback C-Level `DEMO_RECOMMENDATIONS` chống rỗng state.
 
+210. **Quy Chuẩn Đồng Bộ Tuyệt Đối UI/UX Mobile Native (APK) vs Web PWA & Trình Chiếu CRM Slide Không Viền Trên Landing Web**:
+     - **1) Đồng Bộ Hoàn Toàn Giao Diện & Trải Nghiệm Người Dùng (Full UI/UX Parity: Mobile Native APK vs Web PWA)**:
+       * Hệ thống thanh điều hướng đáy `CustomBottomTabBar.tsx` trong `apps/mobile_vione` bắt buộc tích hợp hook `useTheme()`:
+         - Khi ở chế độ Sáng (`Light Mode`): Nền thanh điều hướng chuyển thành trắng `#FFFFFF`, đường viền đỉnh thanh thoát `#E2E8F0`, màu icon & nhãn không kích hoạt `#64748B`, icon kích hoạt `#926227` với nền highlight `rgba(216, 178, 130, 0.2)`. Nút 'V' mạ vàng hoàng gia giữ trọn vẹn hào quang gradient cao cấp.
+         - Khi ở chế độ Tối (`Dark Mode`): Nền `#0A0A0B`, viền `rgba(216, 178, 130, 0.18)`, icon & nhãn không kích hoạt `#94A3B8`, icon & nhãn kích hoạt `#D8B282`.
+       * Các màn hình chính (`HomeScreen.tsx`, `NetworkScreen.tsx`, `CommunityScreen.tsx`, `ProfileScreen.tsx`):
+         - Đồng bộ tích hợp `useTheme()` với nút chuyển đổi Theme 1-chạm (☀️ / 🌙) tại Header bên cạnh các biểu tượng thông báo / tin nhắn.
+         - Tự động thay đổi nền `safeArea` và `header` (`isDark ? "#0A0A0B" : "#F8FAFC"`), màu tiêu đề (`#FFFFFF` vs `#0F172A`), màu phụ đề (`#94A3B8` vs `#64748B`), và nền thẻ (`#12151F` vs `#FFFFFF`).
+     - **2) Quy Chuẩn Trình Chiếu CRM Slide Trên Landing Web ViOne (`ViOneLandingWebOfficial.tsx`)**:
+       * Mục 5: "Kiểm Soát Vận Hành Tổng Thể" bắt buộc sử dụng ảnh chụp thực tế của hệ thống ViOne CRM chạy dạng Slide tự động chu kỳ 1.5 giây (`1500ms`) luân phiên 5 ảnh:
+         1. `crm-slide-1-dashboard.png`: Module 01 • Bảng Điều Hành 360° (Sức khỏe doanh nghiệp).
+         2. `crm-slide-2-opportunities.png`: Module 02 • Pipeline Cơ Hội Bán Hàng (Phễu chuyển đổi).
+         3. `crm-slide-3-marketplace.png`: Module 03 • Marketplace Giao Thương B2B (Sàn kết nối).
+         4. `crm-slide-4-finance.png`: Module 04 • Quản Trị Dòng Tiền Doanh Nghiệp (Thu/chi thực tế).
+         5. `crm-slide-5-meetings.png`: Module 05 • Lịch Họp & Biên Bản AI Copilot (Điều phối HĐQT).
+       * **NGHIÊM CẤM CÓ BORDER QUANH ẢNH**: Cả khung trình chiếu và thẻ `img` đều phải thiết lập `border-0`, `border-none`, loại bỏ hoàn toàn viền `border-2 border-zinc-200` để giữ bố cục hình ảnh thuần khiết, hiện đại và cao cấp.
+       * Tích hợp thanh chấm chỉ thị (Indicator Pills) mượt mà không viền, cho phép click nhảy trực tiếp tới slide mong muốn.
+     - **3) Quy Chuẩn Ảnh Thực Tế Cho Phân Hệ Giải Pháp Doanh Nghiệp (Mục 8 Landing Web)**:
+       * Thay thế toàn bộ ảnh chụp stock laptop chung chung bằng ảnh giao diện thực tế của ViOne CRM: `solution-vione-real.png` (Quản trị mạng lưới đối tác & khách hàng doanh nghiệp).
+       * Nghiêm cấm sử dụng ảnh không liên quan hoặc ảnh stock vô nghĩa, luôn bảo đảm tính xác thực và tin cậy cao nhất cho khách hàng B2B.
+     - **4) Tuân Thủ Tuyệt Đối Luật Git**:
+       * TUYỆT ĐỐI KHÔNG TỰ ĐỘNG CHẠY `git push` HAY `git commit`. Mọi thay đổi mã nguồn chỉ chỉnh sửa cục bộ (local).
+
+211. **Quy Chuẩn Kiến Trúc Tách Biệt Độc Lập Giữa Web CRM, Web PWA (/connect-app) & Mobile Native App (APK)**:
+     - **1) Phân Tách 3 Phân Hệ Độc Lập Trong Hệ Sinh Thái ViOne**:
+       * **Mobile Native App APK (`apps/mobile_vione`)**:
+         - Ứng dụng Android độc lập 100% (Pure React Native / Expo SDK 52 Native), biên dịch trực tiếp ra tệp APK máy chủ độc lập (`release_apk/ViOne-Connect-latest.apk`).
+         - **TUYỆT ĐỐI KHÔNG dùng WebView hay load bundle từ Web frontend**: Ứng dụng chạy mã native bytecode trên thiết bị, sử dụng bộ nhớ nội bộ `AsyncStorage`, và chỉ giao tiếp với Backend NestJS (`apps/vione_app_be`) thông qua các giao thức mạng thuần túy (RESTful API endpoints tại `/api/*` và WebSocket Socket.IO).
+       * **Web PWA ViOne Connect (`/connect-app`)**:
+         - Bản Web Mobile / Progressive Web App nằm trong dự án web frontend `apps/vione_app_fe`.
+         - Mục đích: Cho phép người dùng máy tính hoặc trình duyệt di động truy cập trực tiếp các tiện ích kết nối của App ViOne Connect mà không bắt buộc phải cài APK.
+       * **Web CRM Quản Trị Doanh Nghiệp (`/`, `/members`, `/events`, `/finance-report`...)**:
+         - Cổng quản lý điều hành tổng thể dành cho Ban lãnh đạo C-Level và các nhà quản trị doanh nghiệp.
+     - **2) Quy Hoạch Cổng Mạng & Cơ Chế Định Tuyến Root `/`**:
+       * **Cổng 5445 (`https://14.225.217.232:5445`) - Phân hệ ViOne App (`VITE_APP_SCOPE = "vione_app"`)**:
+         - Mặc định khi người dùng truy cập trang chủ root `/` trên cổng 5445 (hoặc hostname app), hệ thống **BẮT BUỘC TỰ ĐỘNG CHUYỂN HƯỚNG TỚI `/connect-app`** (ViOne Connect App).
+         - Tuyệt đối không hiển thị Bảng điều khiển CRM Dashboard hay chuyển sang Landing CRM gây hiểu lầm cho người dùng khi đang truy cập cổng App.
+         - Chỉ hiển thị CRM khi có cờ tường minh `?portal=crm` hoặc truy cập trực tiếp vào các route quản trị chuyên biệt.
+       * **Cổng 5446 (`https://14.225.217.232:5446`) - Phân hệ ViOne CRM Platform (`VITE_APP_SCOPE = "crm_platform"`)**:
+         - Cổng chuyên biệt dành riêng cho Web CRM quản trị doanh nghiệp.
+         - Root `/` hiển thị Bảng điều hành C-Level Dashboard (nếu đã đăng nhập) hoặc Landing Page hệ sinh thái CRM (nếu là khách vãng lai).

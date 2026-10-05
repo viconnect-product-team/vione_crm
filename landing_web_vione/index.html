@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ViOne Platform 5.0 - Hệ Điều Hành Doanh Nghiệp Toàn Diện & CRM Hợp Nhất</title>
-  <meta name="description" content="ViOne Platform 5.0 Enterprise Edition: Hệ điều hành doanh nghiệp toàn diện, quan sát toàn bộ quy trình làm việc, theo dõi tiến độ nhân viên 24/7, chấm công GPS/FaceID, phê duyệt chi 3 cấp và danh thiếp Titanium NFC.">
+  <title>Vione AI 5.0 - Nền Tảng Quản Trị & Tự Động Hóa Doanh Nghiệp Thông Minh</title>
+  <meta name="description" content="Chạm đỉnh tương lai với Vione AI 5.0. Tối ưu hóa quy trình vận hành toàn diện thông qua trợ lý trí tuệ nhân tạo thế hệ mới. Đưa ra quyết định thông minh hơn, nhanh hơn gấp 10 lần.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -20,20 +20,14 @@
             mono: ['"Geist Mono"', 'monospace'],
           },
           colors: {
-            vione: {
-              gold: '#D8B282',
-              goldLight: '#F8E7D1',
-              goldMid: '#C29B69',
-              goldDark: '#A67A47',
-              goldBrown: '#855A2A',
-              goldDeep: '#664319',
-              amber: '#B45309',
-              cream: '#FFF8EE',
-              surface: '#12141E',
-              card: '#181B27',
-              dark: '#080A0F',
-              accentSoft: 'rgba(216, 178, 130, 0.15)',
-              borderGold: 'rgba(216, 178, 130, 0.35)',
+            brand: {
+              gold: '#EAB308',
+              goldLight: '#FEF08A',
+              goldDark: '#CA8A04',
+              goldDeep: '#854D0E',
+              dark: '#09090B',
+              surface: '#121215',
+              card: '#18181B'
             }
           }
         }
@@ -41,28 +35,7 @@
     }
   </script>
   <style>
-    /* ViOne Signature V-Button Gradient & Glow */
-    .vione-btn-gold {
-      background: linear-gradient(135deg, #F8E7D1 0%, #D8B282 48%, #A67A47 100%);
-      border: 2px solid #FFF2DC;
-      box-shadow: 0 4px 20px rgba(216, 178, 130, 0.45), 0 0 12px rgba(246, 225, 195, 0.3);
-      color: #3C240E;
-    }
-    .vione-btn-gold:hover {
-      filter: brightness(1.05);
-      box-shadow: 0 6px 28px rgba(216, 178, 130, 0.6), 0 0 16px rgba(246, 225, 195, 0.4);
-    }
-
-    .vione-card-gold {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 248, 238, 0.8) 100%);
-      border: 1px solid rgba(216, 178, 130, 0.3);
-    }
-    .dark .vione-card-gold {
-      background: linear-gradient(180deg, #12141E 0%, #0D0F17 100%);
-      border: 1px solid rgba(216, 178, 130, 0.22);
-    }
-
-    /* 4800ms Looping Keyframe Animation */
+    /* 4800ms Looping Keyframe Animation (Exact JSON timeline) */
     @keyframes vionePopForward {
       0% {
         transform: translate3d(80px, 35px, 0) scale(0.98);
@@ -78,7 +51,7 @@
         transform: translate3d(15px, 0px, 0) scale(1.05);
         z-index: 30;
         opacity: 1;
-        box-shadow: 0 30px 60px -12px rgba(216, 178, 130, 0.45), 0 0 40px rgba(248, 231, 209, 0.3);
+        box-shadow: 0 30px 60px -12px rgba(234, 179, 8, 0.4), 0 0 40px rgba(234, 179, 8, 0.25);
       }
       48% {
         transform: translate3d(15px, 0px, 0) scale(1.05);
@@ -111,790 +84,827 @@
       animation: floatSlow 4s ease-in-out infinite;
     }
 
+    /* Kinetic typography scroll reveal */
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     /* Custom Luxury Scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #090A0F;
+      background: #09090b;
     }
     ::-webkit-scrollbar-thumb {
-      background: #A67A47;
+      background: #ca8a04;
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #D8B282;
+      background: #eab308;
     }
   </style>
 </head>
-<body class="bg-neutral-950 text-neutral-100 font-inter antialiased selection:bg-[#D8B282] selection:text-[#3C240E]">
+<body class="bg-white text-zinc-900 font-inter antialiased selection:bg-yellow-500 selection:text-black">
 
   <!-- ================= 1. HEADER / NAVIGATION ================= -->
-  <header class="sticky top-0 z-50 bg-[#090A0F]/90 backdrop-blur-md border-b border-[#D8B282]/20">
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-zinc-200">
     <div class="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex justify-between items-center">
-      <!-- Logo Vione với nút tròn V mạ vàng nâu -->
-      <a href="#hero" class="flex items-center gap-3.5 group">
-        <div class="size-11 vione-btn-gold rounded-full flex justify-center items-center group-hover:scale-105 transition-transform">
-          <span class="text-[#3C240E] text-2xl font-black font-outfit">V</span>
+      <!-- Logo -->
+      <a href="#hero" class="flex items-center gap-3 group">
+        <div class="size-10 bg-yellow-500 rounded-xl flex justify-center items-center shadow-lg shadow-yellow-500/30 group-hover:scale-105 transition-transform">
+          <span class="text-zinc-950 text-2xl font-extrabold font-outfit">V</span>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-white text-2xl font-extrabold font-outfit tracking-tight">ViOne</span>
-          <span class="px-2.5 py-0.5 bg-[#D8B282]/15 border border-[#D8B282]/30 text-[#F8E7D1] text-[11px] font-bold rounded-full font-mono">5.0 ENTERPRISE</span>
+          <span class="text-zinc-950 text-2xl font-extrabold font-outfit tracking-tight">Vione</span>
+          <span class="px-2 py-0.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-700 text-xs font-bold rounded-full font-mono">5.0 AI</span>
         </div>
       </a>
 
       <!-- Menu Navigation -->
-      <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-neutral-300">
-        <a href="#hero" class="hover:text-[#D8B282] transition-colors">Trang chủ</a>
-        <a href="#modules" class="hover:text-[#D8B282] transition-colors">Hệ Điều Hành</a>
-        <a href="#workflow-tracking" class="hover:text-[#D8B282] transition-colors">Theo Dõi Quy Trình</a>
-        <a href="#hrm-attendance" class="hover:text-[#D8B282] transition-colors">Chấm Công & Nhân Sự</a>
-        <a href="#finance-approval" class="hover:text-[#D8B282] transition-colors">Phê Duyệt Chi 3 Cấp</a>
-        <a href="#roi" class="hover:text-[#D8B282] transition-colors">Hiệu Quả ROI</a>
-        <a href="#pricing" class="hover:text-[#D8B282] transition-colors">Bảng giá</a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-600">
+        <a href="#hero" class="hover:text-yellow-600 transition-colors">Trang chủ</a>
+        <a href="#modules" class="hover:text-yellow-600 transition-colors">Sản phẩm</a>
+        <a href="#ai-copilot" class="hover:text-yellow-600 transition-colors">Tính năng AI</a>
+        <a href="#workflow" class="hover:text-yellow-600 transition-colors">Quy trình</a>
+        <a href="#pricing" class="hover:text-yellow-600 transition-colors">Bảng giá</a>
+        <a href="#faq" class="hover:text-yellow-600 transition-colors">FAQ</a>
       </nav>
 
       <!-- Action Buttons -->
       <div class="flex items-center gap-3">
-        <a href="http://localhost:5173/auth" class="px-4 py-2.5 text-sm font-semibold text-neutral-300 hover:text-white hover:bg-neutral-900 border border-neutral-800 rounded-xl transition-all">
-          Đăng nhập CRM
+        <a href="http://localhost:5173/auth" class="px-4 py-2 text-sm font-semibold text-zinc-700 hover:text-zinc-950 hover:bg-zinc-100 rounded-xl transition-all">
+          Đăng nhập
         </a>
-        <button onclick="openQuoteModal('Tư Vấn Doanh Nghiệp Toàn Diện')" class="px-5 py-2.5 vione-btn-gold font-extrabold text-sm rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
-          <span>Trải nghiệm ngay</span>
-          <span class="text-base">→</span>
+        <button onclick="openQuoteModal('Gói Dùng Thử Miễn Phí')" class="px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white text-sm font-bold rounded-xl shadow-lg shadow-zinc-950/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+          <span>Dùng thử miễn phí</span>
+          <span class="text-yellow-400">→</span>
         </button>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- ================= 2. HERO SECTION VỚI NHẬN DIỆN VÀNG NÂU VIONE ================= -->
-    <section id="hero" class="relative overflow-hidden bg-gradient-to-b from-[#090A0F] via-[#12141E] to-[#090A0F] py-16 lg:py-24 border-b border-[#D8B282]/20">
-      <!-- Ambient Glow Vàng Nâu -->
-      <div class="absolute top-1/4 right-1/4 w-[480px] h-[480px] bg-[#D8B282]/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute bottom-10 left-10 w-[380px] h-[380px] bg-[#A67A47]/10 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- ================= 2. HERO SECTION WITH 4.8s KEYFRAME POP-UP ANIMATION ================= -->
+    <section id="hero" class="relative overflow-hidden bg-gradient-to-b from-white via-neutral-50/50 to-white py-16 lg:py-24 border-b border-zinc-200">
+      <!-- Ambient Glow Background -->
+      <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-yellow-400/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
         <!-- Left Column: Copy & Actions -->
         <div class="lg:col-span-7 flex flex-col items-start gap-6">
           <!-- Badge Pill -->
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-[#D8B282]/15 border border-[#D8B282]/35 rounded-full text-[#F8E7D1] text-xs font-bold font-mono tracking-wider uppercase">
-            <span class="size-2 rounded-full bg-[#D8B282] animate-ping"></span>
-            • HỆ ĐIỀU HÀNH DOANH NGHIỆP TOÀN DIỆN & CRM HỢP NHẤT
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-yellow-500/10 border border-yellow-500/25 rounded-full text-yellow-800 text-xs font-bold font-mono tracking-wider uppercase">
+            <span class="size-2 rounded-full bg-yellow-500 animate-ping"></span>
+            • TRÍ TUỆ NHÂN TẠO THẾ HỆ MỚI
           </div>
 
           <!-- Main Title -->
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-outfit text-white leading-[1.15] tracking-tight">
-            Quan sát toàn bộ quy trình, <br />
-            <span class="bg-gradient-to-r from-[#F8E7D1] via-[#D8B282] to-[#A67A47] bg-clip-text text-transparent">giám sát tiến độ nhân sự 24/7</span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-outfit text-zinc-950 leading-[1.15] tracking-tight">
+            Chạm đỉnh tương lai với <span class="bg-gradient-to-r from-yellow-500 via-amber-600 to-yellow-600 bg-clip-text text-transparent">Vione AI 5.0</span>
           </h1>
 
-          <!-- Description theo BRD Master 5.0 -->
-          <p class="text-neutral-300 text-base sm:text-lg font-normal leading-relaxed max-w-2xl">
-            Không chỉ là công cụ kết nối kinh doanh, <strong class="text-white font-semibold">ViOne Platform 5.0</strong> giúp ban lãnh đạo bao quát toàn bộ tiến trình công việc, giám sát tải công việc (Workload) nhân viên, chấm công FaceID/GPS chống gian lận, duyệt chi 3 cấp và tự động hóa phễu bán hàng CRM trên một nền tảng thống nhất.
+          <!-- Description -->
+          <p class="text-zinc-600 text-base sm:text-lg font-normal leading-relaxed max-w-xl">
+            Tối ưu hóa quy trình vận hành toàn diện thông qua trợ lý trí tuệ nhân tạo thế hệ mới. Đưa ra quyết định thông minh hơn, nhanh hơn gấp 10 lần bằng một điểm chạm duy nhất.
           </p>
 
-          <!-- Buttons & Actions -->
+          <!-- Buttons & Trust Metrics -->
           <div class="flex flex-wrap items-center gap-4 pt-2">
-            <button onclick="openQuoteModal('Trải Nghiệm ViOne 5.0')" class="px-7 py-3.5 vione-btn-gold font-extrabold text-base rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2.5">
-              <span>Đăng ký khảo sát 1-1</span>
+            <button onclick="openQuoteModal('Trải Nghiệm Ngay')" class="px-7 py-3.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 text-zinc-950 font-extrabold text-base rounded-xl shadow-xl shadow-yellow-500/25 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2.5">
+              <span>Trải nghiệm ngay</span>
               <span class="text-lg">→</span>
             </button>
-            <a href="http://localhost:5173/workflow" class="px-6 py-3.5 bg-neutral-900 border border-[#D8B282]/30 hover:border-[#D8B282] text-[#F8E7D1] font-bold text-base rounded-xl hover:bg-neutral-800 transition-all flex items-center gap-2">
-              <svg class="size-5 text-[#D8B282]" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
-              <span>Xem Demo Quy Trình & CRM</span>
+            <a href="#ai-copilot" class="px-6 py-3.5 bg-white border border-zinc-300 hover:border-zinc-400 text-zinc-800 font-bold text-base rounded-xl hover:bg-zinc-50 transition-all flex items-center gap-2">
+              <svg class="size-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+              <span>Xem video giới thiệu</span>
             </a>
           </div>
 
-          <!-- Bottom Micro Metrics (Chuẩn BRD SMART) -->
-          <div class="grid grid-cols-4 gap-4 pt-6 border-t border-neutral-800/80 w-full max-w-xl">
+          <!-- Bottom Micro Metrics -->
+          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-zinc-200/80 w-full max-w-lg">
             <div>
-              <div class="text-2xl font-extrabold font-outfit text-[#D8B282]">98%</div>
-              <div class="text-xs text-neutral-400 font-medium mt-0.5">Việc đúng hạn (Kanban)</div>
+              <div class="text-2xl font-extrabold font-outfit text-zinc-950">98.4%</div>
+              <div class="text-xs text-zinc-500 font-medium mt-0.5">Độ chính xác AI</div>
             </div>
             <div>
-              <div class="text-2xl font-extrabold font-outfit text-[#D8B282]">&lt;15p</div>
-              <div class="text-xs text-neutral-400 font-medium mt-0.5">Phản hồi Lead CRM</div>
+              <div class="text-2xl font-extrabold font-outfit text-zinc-950">10x</div>
+              <div class="text-xs text-zinc-500 font-medium mt-0.5">Tốc độ xử lý tác vụ</div>
             </div>
             <div>
-              <div class="text-2xl font-extrabold font-outfit text-[#D8B282]">1 Giây</div>
-              <div class="text-xs text-neutral-400 font-medium mt-0.5">Napas VietQR gạch nợ</div>
-            </div>
-            <div>
-              <div class="text-2xl font-extrabold font-outfit text-[#D8B282]">100%</div>
-              <div class="text-xs text-neutral-400 font-medium mt-0.5">Chống gian lận FaceID</div>
+              <div class="text-2xl font-extrabold font-outfit text-zinc-950">24/7</div>
+              <div class="text-xs text-zinc-500 font-medium mt-0.5">Vận hành tự động</div>
             </div>
           </div>
         </div>
 
         <!-- Right Column: Interactive 3D Mockup with 4.8s Pop-up Keyframe -->
-        <div class="lg:col-span-5 relative flex justify-center items-center min-h-[540px]">
-          <!-- Portrait Image Behind -->
-          <div class="absolute left-4 top-4 w-[280px] h-[460px] rounded-3xl overflow-hidden border-2 border-[#D8B282]/40 animate-portrait-pop cursor-pointer transition-all">
-            <img src="./professional-portrait.png" alt="Lãnh đạo doanh nghiệp ViOne" class="w-full h-full object-cover object-center" onerror="this.src='./saas-portrait.png'">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+        <div class="lg:col-span-5 relative flex justify-center items-center min-h-[520px]">
+          <!-- Portrait Image Behind (Animated to pop in front every 4.8s) -->
+          <div class="absolute left-4 top-4 w-[280px] h-[460px] rounded-3xl overflow-hidden border-2 border-yellow-500/40 animate-portrait-pop cursor-pointer transition-all">
+            <img src="./professional-portrait.png" alt="Doanh nhân thành đạt Vione AI" class="w-full h-full object-cover object-center" onerror="this.src='./saas-portrait.png'">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
             <div class="absolute bottom-4 left-4 right-4 text-white">
-              <div class="text-xs font-mono font-bold text-[#D8B282]">C-LEVEL OPERATING SYSTEM</div>
-              <div class="text-sm font-bold font-outfit leading-tight mt-0.5">Giám sát tải làm việc & tiến độ tức thì</div>
+              <div class="text-xs font-mono font-bold text-yellow-400">CREATOR AI 5.0</div>
+              <div class="text-sm font-bold font-outfit leading-tight mt-0.5">Nhân rộng tầm ảnh hưởng doanh nghiệp</div>
             </div>
           </div>
 
-          <!-- Floating Pill 1: Giám sát quy trình nhân viên -->
-          <div class="absolute -top-4 -left-6 z-20 bg-neutral-900/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-[#D8B282]/30 flex items-center gap-3 animate-float max-w-[260px]">
-            <div class="size-9 rounded-full vione-btn-gold flex items-center justify-center font-bold">
-              <svg class="size-5 text-[#3C240E]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <!-- Floating Pill 1: Tương tác đa kênh -->
+          <div class="absolute -top-4 -left-6 z-20 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-zinc-200 flex items-center gap-3 animate-float max-w-[240px]">
+            <div class="size-9 bg-yellow-100 rounded-xl flex items-center justify-center text-yellow-600 font-bold">
+              <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
             </div>
             <div>
-              <div class="text-xs font-bold text-[#F8E7D1] font-outfit uppercase">THEO DÕI NHÂN SỰ</div>
-              <div class="text-[11px] text-neutral-400 leading-tight">42/45 nhân sự đang trong ca làm • 0 trễ hạn</div>
+              <div class="text-xs font-bold text-zinc-950 font-outfit">TƯƠNG TÁC ĐA KÊNH</div>
+              <div class="text-[11px] text-zinc-500 leading-tight">Tự động trả lời 5,400 tin nhắn hôm nay</div>
             </div>
           </div>
 
-          <!-- Front Phone Mockup (VIONE CONNECT & WORKFLOW PWA) -->
-          <div class="relative z-20 w-[275px] h-[530px] bg-neutral-950 rounded-[44px] p-3 shadow-2xl border-4 border-neutral-800 flex flex-col justify-between">
-            <div class="relative w-full h-full bg-[#0D0F17] rounded-[34px] overflow-hidden flex flex-col text-white p-4">
+          <!-- Front Phone Mockup (VIONE MOBILE) -->
+          <div class="relative z-20 w-[270px] h-[520px] bg-zinc-950 rounded-[44px] p-3 shadow-2xl border-4 border-zinc-800 flex flex-col justify-between">
+            <!-- Screen Content -->
+            <div class="relative w-full h-full bg-zinc-900 rounded-[34px] overflow-hidden flex flex-col text-white p-4">
               <!-- Top Status Bar -->
-              <div class="flex justify-between items-center text-xs text-neutral-400 pb-2">
+              <div class="flex justify-between items-center text-xs text-zinc-400 pb-2">
                 <span class="font-mono font-bold text-white text-[11px]">09:41</span>
                 <div class="w-16 h-3.5 bg-black rounded-full mx-auto"></div>
                 <div class="flex items-center gap-1.5">
-                  <span class="text-[10px] text-emerald-400 font-mono">5G</span>
+                  <img src="./ios-signal.svg" alt="Signal" class="h-2.5 opacity-80" onerror="this.style.display='none'">
+                  <img src="./ios-wifi-signal.svg" alt="WiFi" class="h-2.5 opacity-80" onerror="this.style.display='none'">
+                  <img src="./ios-battery-full.svg" alt="Battery" class="h-2.5 opacity-80" onerror="this.style.display='none'">
                 </div>
               </div>
 
               <!-- Header inside Phone -->
-              <div class="flex justify-between items-center py-2 border-b border-neutral-800">
+              <div class="flex justify-between items-center py-2 border-b border-zinc-800">
                 <div class="flex items-center gap-2">
-                  <div class="size-6 vione-btn-gold rounded-full flex items-center justify-center text-[#3C240E] font-black text-xs">V</div>
-                  <span class="text-xs font-extrabold tracking-tight font-outfit">VIONE EXECUTIVE</span>
+                  <div class="size-6 bg-yellow-500 rounded-lg flex items-center justify-center text-black font-extrabold text-xs">V</div>
+                  <span class="text-xs font-extrabold tracking-tight font-outfit">VIONE MOBILE</span>
                 </div>
-                <span class="px-2 py-0.5 bg-[#D8B282]/20 text-[#D8B282] text-[9px] font-bold rounded-full font-mono">BPMN 2.0</span>
+                <span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-[9px] font-bold rounded-full font-mono">LIVE AI</span>
               </div>
 
-              <!-- Card: Tình hình vận hành hôm nay -->
-              <div class="mt-3 p-3 bg-neutral-900 rounded-2xl border border-[#D8B282]/30">
-                <div class="text-[10px] text-neutral-400 font-mono uppercase">VẬN HÀNH HÔM NAY</div>
-                <div class="text-xl font-extrabold font-outfit text-[#F8E7D1] mt-0.5 flex items-baseline justify-between">
-                  <span>93.3% Có Mặt</span>
-                  <span class="text-[11px] font-bold text-emerald-400 font-mono">42/45 NV</span>
+              <!-- Card: Hiệu suất hôm nay -->
+              <div class="mt-3 p-3 bg-zinc-800/80 rounded-2xl border border-zinc-700/60">
+                <div class="text-[10px] text-zinc-400 font-mono">HIỆU SUẤT HÔM NAY</div>
+                <div class="text-2xl font-extrabold font-outfit text-yellow-400 mt-0.5 flex items-baseline gap-2">
+                  98.4%
+                  <span class="text-[10px] font-bold text-emerald-400 font-mono">+12.5%</span>
                 </div>
-                <div class="text-[10px] text-neutral-400 mt-1 flex items-center gap-1">
-                  <span class="size-1.5 rounded-full bg-emerald-400"></span> GPS & FaceID hoàn tất trong 50m
-                </div>
+                <div class="text-[10px] text-zinc-400 mt-1">Đang tối ưu 3 luồng vận hành</div>
               </div>
 
-              <!-- Realtime Work & Approval Tasks -->
+              <!-- Realtime AI Bot Tasks -->
               <div class="mt-3 flex-1 flex flex-col gap-2">
-                <div class="text-[10px] font-mono text-neutral-400 uppercase tracking-wider">TIẾN TRÌNH CÔNG VIỆC (KANBAN)</div>
+                <div class="text-[10px] font-mono text-zinc-400 uppercase tracking-wider">TIẾN TRÌNH AI BOT</div>
 
-                <div class="p-2.5 bg-neutral-900/80 rounded-xl border border-neutral-800">
+                <div class="p-2.5 bg-zinc-800/60 rounded-xl border border-zinc-700/40">
                   <div class="flex justify-between text-[11px] font-medium">
-                    <span class="truncate">Dự án Alpha V5.0</span>
-                    <span class="text-[#D8B282] font-mono font-bold">In Progress</span>
+                    <span class="truncate">Báo cáo tài chính tháng 2</span>
+                    <span class="text-yellow-400 font-mono font-bold">100%</span>
                   </div>
-                  <div class="w-full bg-neutral-800 h-1.5 rounded-full mt-1.5 overflow-hidden">
-                    <div class="bg-gradient-to-r from-[#D8B282] to-[#A67A47] h-full rounded-full w-[85%]"></div>
+                  <div class="w-full bg-zinc-700 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                    <div class="bg-yellow-400 h-full rounded-full w-full"></div>
                   </div>
                 </div>
 
-                <div class="p-2.5 bg-neutral-900/80 rounded-xl border border-neutral-800">
+                <div class="p-2.5 bg-zinc-800/60 rounded-xl border border-zinc-700/40">
                   <div class="flex justify-between text-[11px] font-medium">
-                    <span class="truncate">Duyệt chi VietQR: 15.5tr</span>
-                    <span class="text-amber-400 font-mono font-bold">Chờ Approver</span>
+                    <span class="truncate">Phản hồi Hotline CSKH</span>
+                    <span class="text-yellow-400 font-mono font-bold">86%</span>
                   </div>
-                  <div class="text-[10px] text-neutral-400 mt-0.5">Maker: Kế toán Nam • Hạn mức 20tr</div>
+                  <div class="w-full bg-zinc-700 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                    <div class="bg-yellow-400 h-full rounded-full w-[86%]"></div>
+                  </div>
                 </div>
 
-                <div class="p-2.5 bg-neutral-900/80 rounded-xl border border-neutral-800">
+                <div class="p-2.5 bg-zinc-800/60 rounded-xl border border-zinc-700/40">
                   <div class="flex justify-between text-[11px] font-medium">
-                    <span class="truncate">Phễu Lead B2B: 8 Lead mới</span>
-                    <span class="text-emerald-400 font-mono font-bold">Đã phân bổ 60s</span>
+                    <span class="truncate">Đồng bộ API SAP ERP</span>
+                    <span class="text-yellow-400 font-mono font-bold">72%</span>
                   </div>
-                  <div class="text-[10px] text-neutral-400 mt-0.5">Thuật toán Round-Robin cho 4 Sales</div>
+                  <div class="w-full bg-zinc-700 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                    <div class="bg-yellow-400 h-full rounded-full w-[72%]"></div>
+                  </div>
                 </div>
               </div>
 
               <!-- Phone Bottom Action -->
               <div class="pt-2">
-                <a href="http://localhost:5173/workflow" class="w-full py-2 vione-btn-gold text-[#3C240E] text-xs font-bold rounded-xl transition-all shadow-md flex justify-center items-center gap-1">
-                  <span>Mở Trung Tâm Điều Hành</span>
+                <button onclick="openQuoteModal('Vione Mobile Demo')" class="w-full py-2 bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold rounded-xl transition-all shadow-md flex justify-center items-center gap-1">
+                  <span>Mở Trợ Lý Copilot</span>
                   <span>→</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Floating Pill 2: Bảo mật & Chuẩn ISO -->
-          <div class="absolute -bottom-4 -right-4 z-30 bg-neutral-900 text-white p-3 rounded-2xl shadow-xl border border-[#D8B282]/40 flex items-center gap-3 animate-float" style="animation-delay: -2s;">
-            <div class="size-8 rounded-full vione-btn-gold text-[#3C240E] flex items-center justify-center font-bold">
+          <!-- Floating Pill 2: Bảo mật AI & Tự động hóa -->
+          <div class="absolute -bottom-4 -right-4 z-30 bg-zinc-950 text-white p-3 rounded-2xl shadow-xl border border-zinc-700 flex items-center gap-3 animate-float" style="animation-delay: -2s;">
+            <div class="size-8 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center font-bold">
               ✓
             </div>
             <div>
-              <div class="text-xs font-bold font-outfit text-white">PHÊ DUYỆT 3 CẤP SMARTPHONE</div>
-              <div class="text-[10px] text-neutral-400">Maker • Checker • Approver 24/7</div>
+              <div class="text-xs font-bold font-outfit text-white">BẢO MẬT CHUẨN AES-256</div>
+              <div class="text-[10px] text-zinc-400">Vận hành tự động 24/7</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= 3. NỀN TẢNG HỢP NHẤT: 5 MÔ ĐUN CỐT LÕI (BRD CHAPTER 4) ================= -->
-    <section id="modules" class="py-20 lg:py-28 bg-[#090A0F] border-b border-neutral-800">
+    <!-- ================= 3. MÔ ĐUN LIÊN KẾT - KIẾN TRÚC HOẠT ĐỘNG HỢP NHẤT ================= -->
+    <section id="modules" class="py-20 lg:py-28 bg-white border-b border-zinc-200">
       <div class="max-w-7xl mx-auto px-6 lg:px-12">
         <div class="text-center max-w-3xl mx-auto mb-16">
-          <div class="text-[#D8B282] text-xs font-bold font-mono tracking-widest uppercase mb-3">5 MÔ ĐUN HỢP NHẤT</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight">
-            Hệ Điều Hành Doanh Nghiệp ViOne 5.0
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase mb-3">MÔ ĐUN LIÊN KẾT</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight">
+            Kiến Trúc Hoạt Động Hợp Nhất
           </h2>
-          <p class="text-neutral-400 text-base mt-4">
-            Giải quyết triệt để 3 bài toán lớn của doanh nghiệp: Xóa bỏ dữ liệu phân mảnh, cắt giảm 40% chi phí hành chính và hiện đại hóa kết nối giao thương B2B.
+          <p class="text-zinc-600 text-base mt-4">
+            Kết nối liền mạch các phòng ban trọng yếu trên một nền tảng dữ liệu đồng nhất, xóa bỏ hoàn toàn ốc đảo thông tin.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <!-- Mod 1: CRM & Phễu Lead 360 -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 hover:border-[#D8B282] transition-all group flex flex-col justify-between hover:shadow-2xl hover:shadow-[#D8B282]/10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Card 1: Vione CRM -->
+          <div class="p-8 bg-neutral-50 hover:bg-white rounded-2xl border border-zinc-200 hover:border-yellow-500/50 hover:shadow-xl transition-all group flex flex-col justify-between">
             <div>
-              <div class="size-14 rounded-2xl vione-btn-gold flex items-center justify-center font-black text-xl mb-6 shadow-md">
+              <div class="size-12 bg-yellow-100 group-hover:bg-yellow-500 text-yellow-800 group-hover:text-black rounded-xl flex items-center justify-center font-bold text-lg transition-colors mb-6 shadow-sm">
                 CRM
               </div>
-              <h3 class="text-xl font-bold font-outfit text-white mb-3">Quản Trị Bán Hàng & Phễu Lead 360°</h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                Lead từ Landing Web đổ về trong 1 giây, tự động phân bổ Round-Robin. Báo giá B2B chuẩn hóa trong 2 phút, khóa hạn mức chiết khấu theo phân quyền và tự động cảnh báo nợ khó đòi quá 60 ngày.
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Vione CRM</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Quản trị quan hệ khách hàng chuyên sâu, tự động hóa phễu bán hàng và tối ưu tỷ lệ chuyển đổi lead thành doanh thu.
               </p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex items-center gap-2">• Round-Robin phân bổ Lead trong 60 giây (BR-CRM-02)</div>
-                <div class="flex items-center gap-2">• Khóa chiết khấu Sales: &gt;15% cần CEO duyệt (BR-CRM-05)</div>
-                <div class="flex items-center gap-2">• AI chấm điểm Lead Score 0-100 (BR-CRM-14)</div>
-              </div>
             </div>
-            <div class="pt-6 border-t border-neutral-800 mt-6 flex items-center justify-between text-xs font-bold text-[#D8B282]">
-              <a href="http://localhost:5173/opportunities" class="hover:underline flex items-center gap-1">Khám phá CRM &rarr;</a>
-              <span class="text-neutral-500 font-mono">BR-CRM-01 &rarr; 20</span>
+            <div class="pt-6 border-t border-zinc-200/60 mt-6 flex items-center text-xs font-bold text-yellow-600 group-hover:text-yellow-700">
+              <span>Khám phá CRM</span>
+              <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </div>
 
-          <!-- Mod 2: Quản Lý Quy Trình & Công Việc (Work & Workflow Tracking) -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/30 hover:border-[#D8B282] transition-all group flex flex-col justify-between hover:shadow-2xl hover:shadow-[#D8B282]/15 relative">
-            <div class="absolute -top-3 right-6 px-3 py-0.5 vione-btn-gold text-[10px] font-black uppercase rounded-full">
-              TRỌNG TÂM BRD
-            </div>
+          <!-- Card 2: Vione Work -->
+          <div class="p-8 bg-neutral-50 hover:bg-white rounded-2xl border border-zinc-200 hover:border-yellow-500/50 hover:shadow-xl transition-all group flex flex-col justify-between">
             <div>
-              <div class="size-14 rounded-2xl vione-btn-gold flex items-center justify-center font-black text-xl mb-6 shadow-md">
-                WRK
+              <div class="size-12 bg-yellow-100 group-hover:bg-yellow-500 text-yellow-800 group-hover:text-black rounded-xl flex items-center justify-center font-bold text-lg transition-colors mb-6 shadow-sm">
+                Work
               </div>
-              <h3 class="text-xl font-bold font-outfit text-white mb-3">Quy Trình & Giám Sát Nhân Viên (Workflow)</h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                Quản lý tập trung trên Bảng Kanban kéo thả và Gantt Chart phụ thuộc. Giám sát tải công việc nhân viên (Workload Heatmap), cảnh báo quá hạn đỏ rực và kiểm soát giới hạn việc đang làm (WIP &le; 5).
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Vione Work</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Quản lý công việc, dự án và cộng tác nhóm không giới hạn không gian và thời gian. Theo dõi tiến độ Gantt chuẩn xác.
               </p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex items-center gap-2">• Bắt buộc Assignee & Deadline (BR-WRK-01)</div>
-                <div class="flex items-center gap-2">• Cảnh báo quá hạn thẻ đổi màu ĐỎ RỰC (BR-WRK-02)</div>
-                <div class="flex items-center gap-2">• Cảnh báo quá tải Workload &gt; 45h/tuần (BR-WRK-14)</div>
-              </div>
             </div>
-            <div class="pt-6 border-t border-neutral-800 mt-6 flex items-center justify-between text-xs font-bold text-[#D8B282]">
-              <a href="http://localhost:5173/workflow" class="hover:underline flex items-center gap-1">Khám phá Workflow &rarr;</a>
-              <span class="text-neutral-500 font-mono">BR-WRK-01 &rarr; 15</span>
+            <div class="pt-6 border-t border-zinc-200/60 mt-6 flex items-center text-xs font-bold text-yellow-600 group-hover:text-yellow-700">
+              <span>Khám phá Work</span>
+              <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </div>
 
-          <!-- Mod 3: HRM & Chấm Công GPS/FaceID -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 hover:border-[#D8B282] transition-all group flex flex-col justify-between hover:shadow-2xl hover:shadow-[#D8B282]/10">
+          <!-- Card 3: Vione Finance -->
+          <div class="p-8 bg-neutral-50 hover:bg-white rounded-2xl border border-zinc-200 hover:border-yellow-500/50 hover:shadow-xl transition-all group flex flex-col justify-between">
             <div>
-              <div class="size-14 rounded-2xl vione-btn-gold flex items-center justify-center font-black text-xl mb-6 shadow-md">
+              <div class="size-12 bg-yellow-100 group-hover:bg-yellow-500 text-yellow-800 group-hover:text-black rounded-xl flex items-center justify-center font-bold text-lg transition-colors mb-6 shadow-sm">
+                Fin
+              </div>
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Vione Finance</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Theo dõi dòng tiền, hoạch định ngân sách chi tiêu và lập báo cáo tài chính thời gian thực, tích hợp VietQR thông minh.
+              </p>
+            </div>
+            <div class="pt-6 border-t border-zinc-200/60 mt-6 flex items-center text-xs font-bold text-yellow-600 group-hover:text-yellow-700">
+              <span>Khám phá Finance</span>
+              <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Vione HRM -->
+          <div class="p-8 bg-neutral-50 hover:bg-white rounded-2xl border border-zinc-200 hover:border-yellow-500/50 hover:shadow-xl transition-all group flex flex-col justify-between">
+            <div>
+              <div class="size-12 bg-yellow-100 group-hover:bg-yellow-500 text-yellow-800 group-hover:text-black rounded-xl flex items-center justify-center font-bold text-lg transition-colors mb-6 shadow-sm">
                 HRM
               </div>
-              <h3 class="text-xl font-bold font-outfit text-white mb-3">Quản Trị Nhân Sự & Chấm Công FaceID/GPS</h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                Chấm công di động định vị GPS bán kính 50m kết hợp AI nhận diện khuôn mặt 92% chống gian lận. Nộp và duyệt đơn nghỉ phép online 1-chạm, tự động tính lương và phát hành E-Payslip bảo mật.
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Vione HRM</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Quản lý nhân sự toàn diện từ tuyển dụng, hợp đồng, chấm công định vị GPS đến tính lương và đánh giá hiệu suất KPI tự động.
               </p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex items-center gap-2">• Định vị GPS bán kính 50m (BR-HRM-01)</div>
-                <div class="flex items-center gap-2">• AI FaceID Liveness khớp &ge; 92% (BR-HRM-02)</div>
-                <div class="flex items-center gap-2">• Bộ máy Payroll Engine tính lương 10 giây (BR-HRM-07)</div>
-              </div>
             </div>
-            <div class="pt-6 border-t border-neutral-800 mt-6 flex items-center justify-between text-xs font-bold text-[#D8B282]">
-              <a href="http://localhost:5173/attendance" class="hover:underline flex items-center gap-1">Khám phá HRM &rarr;</a>
-              <span class="text-neutral-500 font-mono">BR-HRM-01 &rarr; 15</span>
-            </div>
-          </div>
-
-          <!-- Mod 4: Quản Trị Tài Chính & Phê Duyệt 3 Cấp -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 hover:border-[#D8B282] transition-all group flex flex-col justify-between hover:shadow-2xl hover:shadow-[#D8B282]/10">
-            <div>
-              <div class="size-14 rounded-2xl vione-btn-gold flex items-center justify-center font-black text-xl mb-6 shadow-md">
-                FIN
-              </div>
-              <h3 class="text-xl font-bold font-outfit text-white mb-3">Tài Chính & Phê Duyệt Chi 3 Cấp</h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                Quy trình phê duyệt điện tử 3 cấp (Maker &rarr; Checker &rarr; Approver) trên smartphone. Cổng VietQR Napas 24/7 gạch nợ tức thời 1 giây, kiểm soát ngân sách và AI dự báo dòng tiền 90 ngày.
-              </p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex items-center gap-2">• Duyệt chi 3 cấp Maker - Checker - Approver (BR-FIN-01)</div>
-                <div class="flex items-center gap-2">• VietQR Napas 24/7 gạch nợ tự động trong 1 giây (BR-FIN-03)</div>
-                <div class="flex items-center gap-2">• Cảnh báo dòng tiền âm dự báo 30-90 ngày (BR-FIN-08)</div>
-              </div>
-            </div>
-            <div class="pt-6 border-t border-neutral-800 mt-6 flex items-center justify-between text-xs font-bold text-[#D8B282]">
-              <a href="http://localhost:5173/payment-approvals" class="hover:underline flex items-center gap-1">Khám phá Tài Chính &rarr;</a>
-              <span class="text-neutral-500 font-mono">BR-FIN-01 &rarr; 15</span>
-            </div>
-          </div>
-
-          <!-- Mod 5: Danh Thiếp Titanium NFC & App Di Động ViOne -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 hover:border-[#D8B282] transition-all group flex flex-col justify-between hover:shadow-2xl hover:shadow-[#D8B282]/10">
-            <div>
-              <div class="size-14 rounded-2xl vione-btn-gold flex items-center justify-center font-black text-xl mb-6 shadow-md">
-                APP
-              </div>
-              <h3 class="text-xl font-bold font-outfit text-white mb-3">Thẻ Titanium NFC & App Doanh Nhân</h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                Thẻ danh thiếp Titanium NFC mạ vàng độc bản; chạm 1-giây mở Portfolio số không cần cài app. Khóa thẻ từ xa 1 giây nếu mất thẻ. Ứng dụng di động ViOne Connect mã hóa chat E2E và soát vé QR động.
-              </p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex items-center gap-2">• Mã hóa Token chip NFC & Khóa từ xa tức thì (BR-APP-01/02)</div>
-                <div class="flex items-center gap-2">• QR Code sự kiện động đổi mã sau 30 giây (BR-APP-03)</div>
-                <div class="flex items-center gap-2">• Mã hóa trò chuyện đầu cuối End-to-End (BR-APP-06)</div>
-              </div>
-            </div>
-            <div class="pt-6 border-t border-neutral-800 mt-6 flex items-center justify-between text-xs font-bold text-[#D8B282]">
-              <a href="http://localhost:5173/connect-app" class="hover:underline flex items-center gap-1">Khám phá App & NFC &rarr;</a>
-              <span class="text-neutral-500 font-mono">BR-APP-01 &rarr; 15</span>
-            </div>
-          </div>
-
-          <!-- Mod 6: Nền Tảng Multi-Tenancy & Bảo Mật Chuẩn Doanh Nghiệp -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 hover:border-[#D8B282] transition-all group flex flex-col justify-between hover:shadow-2xl hover:shadow-[#D8B282]/10">
-            <div>
-              <div class="size-14 rounded-2xl vione-btn-gold flex items-center justify-center font-black text-xl mb-6 shadow-md">
-                SEC
-              </div>
-              <h3 class="text-xl font-bold font-outfit text-white mb-3">Bảo Mật Cấp Doanh Nghiệp (Enterprise NFR)</h3>
-              <p class="text-neutral-400 text-sm leading-relaxed mb-4">
-                Kiến trúc Multi-tenancy cô lập dữ liệu từng doanh nghiệp tuyệt đối. Mã hóa AES-256 cơ sở dữ liệu, đường truyền TLS 1.3, cam kết SLA 99.98%, RPO &lt; 2 giờ, RTO &lt; 30 phút và nhật ký Audit Trail bất biến.
-              </p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex items-center gap-2">• Phân quyền RBAC & Ma trận RACI 25 tác vụ</div>
-                <div class="flex items-center gap-2">• Đáp ứng &gt; 10,000 người dùng đồng thời, API &lt; 150ms</div>
-                <div class="flex items-center gap-2">• Sao lưu toàn phần lúc 03:00 AM và vi sai mỗi 2 giờ</div>
-              </div>
-            </div>
-            <div class="pt-6 border-t border-neutral-800 mt-6 flex items-center justify-between text-xs font-bold text-[#D8B282]">
-              <a href="http://localhost:5173/platform/permissions" class="hover:underline flex items-center gap-1">Xem Phân Quyền &rarr;</a>
-              <span class="text-neutral-500 font-mono">ISO/IEC 27001</span>
+            <div class="pt-6 border-t border-zinc-200/60 mt-6 flex items-center text-xs font-bold text-yellow-600 group-hover:text-yellow-700">
+              <span>Khám phá HRM</span>
+              <span class="ml-1 group-hover:translate-x-1 transition-transform">→</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= 4. ĐIỂM NHẤN: THEO DÕI QUY TRÌNH & TIẾN ĐỘ NHÂN VIÊN ================= -->
-    <section id="workflow-tracking" class="py-20 lg:py-28 bg-[#12141E] border-b border-neutral-800">
+    <!-- ================= 4. AI WORKFLOW COPILOT ================= -->
+    <section id="ai-copilot" class="py-20 lg:py-28 bg-neutral-50 border-b border-zinc-200">
       <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <!-- Copy -->
         <div class="lg:col-span-6 flex flex-col items-start gap-5">
-          <div class="text-[#D8B282] text-xs font-bold font-mono tracking-widest uppercase">QUAN TÂM & GIÁM SÁT TOÀN DIỆN</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight leading-tight">
-            Nhìn Được Toàn Bộ Quy Trình, <br />
-            Theo Dõi Nhân Viên Làm Việc
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase">AI WORKFLOW COPILOT</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight leading-tight">
+            Trợ Lý Thiết Lập Quy Trình Thông Minh
           </h2>
-          <p class="text-neutral-300 text-base leading-relaxed">
-            ViOne Platform không chỉ kết nối các bộ phận mà còn mang lại cho ban giám đốc khả năng <strong class="text-white">quan sát xuyên suốt toàn bộ vòng đời công việc</strong> của từng nhân sự, từ lúc nhận việc, tiến độ thực hiện theo giờ đến khi nghiệm thu hoàn thành.
+          <p class="text-zinc-600 text-base leading-relaxed">
+            AI tự động phân tích dữ liệu hiệu suất phòng ban để phát hiện điểm nghẽn và chủ động gợi ý các luồng tự động hóa tối ưu, giúp vận hành doanh nghiệp mượt mà.
           </p>
-          <div class="space-y-3.5 pt-2 w-full">
-            <div class="p-3.5 bg-neutral-900/90 rounded-2xl border border-neutral-800 flex items-start gap-3">
-              <span class="size-6 rounded-full vione-btn-gold text-[#3C240E] flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white text-sm block">Bảng Kanban Trực Quan & Cảnh Báo Đỏ Rực</strong>
-                <span class="text-neutral-400 text-xs">Trước 2 giờ đến hạn chót hệ thống nhắc việc tự động; quá hạn thẻ tự động chuyển sang màu đỏ rực để quản lý can thiệp kịp thời (BR-WRK-02).</span>
-              </div>
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center gap-3 text-sm text-zinc-800 font-medium">
+              <span class="size-5 rounded-full bg-yellow-500 text-black flex items-center justify-center text-xs font-bold">✓</span>
+              Tự động hóa phân loại email, tin nhắn khách hàng 24/7
             </div>
-            <div class="p-3.5 bg-neutral-900/90 rounded-2xl border border-neutral-800 flex items-start gap-3">
-              <span class="size-6 rounded-full vione-btn-gold text-[#3C240E] flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white text-sm block">Biểu Đồ Tải Công Việc (Workload Heatmap)</strong>
-                <span class="text-neutral-400 text-xs">Phát hiện ngay nhân sự bị quá tải (&gt;45h/tuần) hoặc người đang ngồi rảnh để điều phối lại nguồn lực công bằng và tối ưu (BR-WRK-14).</span>
-              </div>
+            <div class="flex items-center gap-3 text-sm text-zinc-800 font-medium">
+              <span class="size-5 rounded-full bg-yellow-500 text-black flex items-center justify-center text-xs font-bold">✓</span>
+              Phát hiện và cảnh báo sai lệch dòng tiền, nợ quá hạn
             </div>
-            <div class="p-3.5 bg-neutral-900/90 rounded-2xl border border-neutral-800 flex items-start gap-3">
-              <span class="size-6 rounded-full vione-btn-gold text-[#3C240E] flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white text-sm block">Ghi Nhận Timesheet Thực Tế & Khóa WIP &le; 5</strong>
-                <span class="text-neutral-400 text-xs">Mỗi nhân viên chỉ được nhận tối đa 5 việc đang làm cùng lúc để tập trung cao độ, ghi giờ công việc thực tế minh bạch (BR-WRK-04, BR-WRK-07).</span>
-              </div>
+            <div class="flex items-center gap-3 text-sm text-zinc-800 font-medium">
+              <span class="size-5 rounded-full bg-yellow-500 text-black flex items-center justify-center text-xs font-bold">✓</span>
+              Kích hoạt workflow đa phòng ban theo điều kiện logic
             </div>
           </div>
-          <a href="http://localhost:5173/workflow" class="mt-4 px-6 py-3 vione-btn-gold font-bold text-sm rounded-xl transition-all shadow-md flex items-center gap-2">
-            <span>Trải nghiệm Bảng Quy Trình Kanban</span>
+          <button onclick="openQuoteModal('Tìm Hiểu AI Workflow')" class="mt-4 px-6 py-3 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center gap-2">
+            <span>Khám phá trợ lý AI</span>
             <span>→</span>
-          </a>
+          </button>
         </div>
 
-        <!-- Graphic Screenshot -->
+        <!-- Graphic Screenshot (Rectangle (1).png) -->
         <div class="lg:col-span-6">
-          <div class="rounded-3xl overflow-hidden border-2 border-[#D8B282]/30 shadow-2xl bg-neutral-900 hover:scale-[1.01] transition-transform">
-            <img src="./workflow-automation.png" alt="Theo dõi quy trình nhân viên ViOne" class="w-full h-auto object-cover" onerror="this.src='./operational-dashboard.png'">
+          <div class="rounded-3xl overflow-hidden border-2 border-zinc-200 shadow-2xl bg-white hover:scale-[1.01] transition-transform">
+            <img src="./workflow-automation.png" alt="AI Workflow Copilot Vione" class="w-full h-auto object-cover" onerror="this.src='./operational-dashboard.png'">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= 5. CHẤM CÔNG GPS/FACEID & QUẢN TRỊ NHÂN SỰ ================= -->
-    <section id="hrm-attendance" class="py-20 lg:py-28 bg-[#090A0F] border-b border-neutral-800">
+    <!-- ================= 5. GIÁM SÁT HOẠT ĐỘNG - KIỂM SOÁT VẬN HÀNH TỔNG THỂ ================= -->
+    <section class="py-20 lg:py-28 bg-white border-b border-zinc-200">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col items-center">
+        <div class="text-center max-w-3xl mb-12">
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase mb-3">GIÁM SÁT HOẠT ĐỘNG</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight">
+            Kiểm Soát Vận Hành Tổng Thể
+          </h2>
+          <p class="text-zinc-600 text-base mt-4">
+            Bảng điều hành thời gian thực phản ánh sức khỏe toàn diện của doanh nghiệp qua biểu đồ và chỉ số KPI trực quan.
+          </p>
+        </div>
+
+        <!-- Wide Screenshot (Strictly NO Border, 5-Slide 1.5s ViOne CRM Carousel) -->
+        <div class="w-full relative">
+          <div id="crm-slide-screen" class="w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl bg-zinc-950 relative aspect-[16/10] sm:aspect-[16/9] border-0">
+            <img id="crm-slide-img" src="./crm-slide-1-dashboard.png" alt="Kiểm Soát Vận Hành Tổng Thể ViOne CRM" class="w-full h-full object-cover object-top border-0 block transition-opacity duration-500">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/60 to-transparent p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-white pointer-events-none">
+              <div>
+                <span id="crm-slide-badge" class="inline-block px-2.5 py-0.5 rounded-full bg-yellow-500/25 text-yellow-400 text-[10px] sm:text-xs font-mono font-bold tracking-wider mb-1">MODULE 01 • BẢNG ĐIỀU HÀNH 360°</span>
+                <h4 id="crm-slide-title" class="text-sm sm:text-base font-bold font-outfit text-white leading-snug">Tổng quan điều hành thời gian thực phản ánh sức khỏe tài chính, KPI và dự án doanh nghiệp</h4>
+              </div>
+              <div class="flex items-center gap-1.5 self-end sm:self-center bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono font-bold text-yellow-400">
+                <span id="crm-slide-num">01</span><span class="text-zinc-500">/</span><span class="text-zinc-400">05</span>
+              </div>
+            </div>
+          </div>
+          <div id="crm-slide-dots" class="mt-4 flex items-center justify-center gap-2"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6. 3 BƯỚC THIẾT LẬP TỰ ĐỘNG ================= -->
+    <section id="workflow" class="py-20 lg:py-28 bg-neutral-50 border-b border-zinc-200">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase mb-3">3 BƯỚC THIẾT LẬP</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight">
+            Xây Dựng Quy Trình Tự Động Trong 5 Phút
+          </h2>
+          <p class="text-zinc-600 text-base mt-4">
+            Không cần viết code. Thiết lập quy trình làm việc tự động với giao diện kéo thả trực quan.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Step 01 -->
+          <div class="p-8 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+            <div>
+              <div class="text-yellow-500 text-5xl font-extrabold font-outfit mb-4">01</div>
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Lựa Chọn Trình Kích Hoạt</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Chọn sự kiện bắt đầu như: Khách hàng mới, Hóa đơn quá hạn, Yêu cầu tạm ứng hay Đăng ký nghỉ phép được gửi lên.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-zinc-100 text-xs font-mono font-bold text-zinc-400">BƯỚC KHỞI TẠO</div>
+          </div>
+
+          <!-- Step 02 -->
+          <div class="p-8 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+            <div>
+              <div class="text-yellow-500 text-5xl font-extrabold font-outfit mb-4">02</div>
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Kết Nối Các Hành Động</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Thêm các hành động tiếp theo giữa các bộ phận để dữ liệu tự động đồng bộ liên thông, gửi thông báo phê duyệt tức thì.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-zinc-100 text-xs font-mono font-bold text-zinc-400">BƯỚC LIÊN THÔNG</div>
+          </div>
+
+          <!-- Step 03 -->
+          <div class="p-8 bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between">
+            <div>
+              <div class="text-yellow-500 text-5xl font-extrabold font-outfit mb-4">03</div>
+              <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Kích Hoạt & Giám Sát</h3>
+              <p class="text-zinc-600 text-sm leading-relaxed">
+                Để AI tự động hóa vận hành 24/7, theo dõi tiến độ công việc theo thời gian thực và cảnh báo các điểm nghẽn trước khi xảy ra sự cố.
+              </p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-zinc-100 text-xs font-mono font-bold text-zinc-400">BƯỚC VẬN HÀNH</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 7. GIÁ TRỊ DOANH NGHIỆP ================= -->
+    <section class="py-20 lg:py-28 bg-white border-b border-zinc-200">
+      <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="text-center max-w-3xl mx-auto mb-16">
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase mb-3">GIÁ TRỊ DOANH NGHIỆP</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight">
+            Vì Sao Chọn Nền Tảng Vione?
+          </h2>
+          <p class="text-zinc-600 text-base mt-4">
+            Đột phá hiệu suất tổ chức nhờ công nghệ tự động hóa hợp nhất chuẩn quốc tế.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="p-8 bg-neutral-50 rounded-2xl border border-zinc-200">
+            <div class="size-12 bg-yellow-500/20 text-yellow-700 rounded-xl flex items-center justify-center font-bold text-xl mb-6">
+              360°
+            </div>
+            <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Quản lý tập trung 360°</h3>
+            <p class="text-zinc-600 text-sm leading-relaxed">
+              Toàn bộ dữ liệu khách hàng, dự án, doanh thu và nhân sự được đồng bộ trên một nền tảng duy nhất, loại bỏ hoàn toàn phân mảnh thông tin.
+            </p>
+          </div>
+
+          <div class="p-8 bg-neutral-50 rounded-2xl border border-zinc-200">
+            <div class="size-12 bg-yellow-500/20 text-yellow-700 rounded-xl flex items-center justify-center font-bold text-xl mb-6">
+              📊
+            </div>
+            <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Quyết định dựa trên dữ liệu</h3>
+            <p class="text-zinc-600 text-sm leading-relaxed">
+              Hệ thống báo cáo thông minh thời gian thực giúp ban lãnh đạo ra quyết định điều hành chính xác gấp 10 lần dựa trên dữ liệu định lượng.
+            </p>
+          </div>
+
+          <div class="p-8 bg-neutral-50 rounded-2xl border border-zinc-200">
+            <div class="size-12 bg-yellow-500/20 text-yellow-700 rounded-xl flex items-center justify-center font-bold text-xl mb-6">
+              ⚡
+            </div>
+            <h3 class="text-xl font-bold font-outfit text-zinc-950 mb-3">Tiết kiệm 40% thời gian</h3>
+            <p class="text-zinc-600 text-sm leading-relaxed">
+              Tự động hóa triệt để các tác vụ hành chính lặp đi lặp lại giúp đội ngũ tập trung 100% vào việc sáng tạo và gia tăng giá trị kinh doanh.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 8. PHÙ HỢP NHIỀU MÔ HÌNH - GIẢI PHÁP CHO MỌI NGÀNH NGHỀ ================= -->
+    <section class="py-20 lg:py-28 bg-neutral-50 border-b border-zinc-200">
       <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <!-- Graphic Screenshot -->
+        <!-- Graphic Screenshot (Real ViOne CRM Solution, Border-free) -->
         <div class="lg:col-span-6 order-2 lg:order-1">
-          <div class="rounded-3xl overflow-hidden border-2 border-[#D8B282]/30 shadow-2xl bg-neutral-900 hover:scale-[1.01] transition-transform">
-            <img src="./operational-dashboard.png" alt="Bảng điều hành nhân sự và chấm công ViOne" class="w-full h-auto object-cover" onerror="this.src='./business-laptop.png'">
+          <div class="rounded-3xl overflow-hidden shadow-2xl bg-zinc-950 hover:scale-[1.01] transition-transform border-0 relative">
+            <img src="./solution-vione-real.png" alt="Mạng Lưới Đối Tác & Danh Mục Giải Pháp ViOne CRM Thực Tế" class="w-full h-auto object-cover border-0 block" onerror="this.src='./crm-slide-3-marketplace.png'">
+            <div class="absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-xl bg-zinc-950/85 backdrop-blur-md text-white flex items-center justify-between text-xs pointer-events-none">
+              <span class="font-bold text-zinc-200 flex items-center gap-2">
+                <span class="size-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Hệ thống Quản lý Đối tác & Khách hàng ViOne CRM Thực tế
+              </span>
+              <span class="text-yellow-400 font-mono text-[10px] font-bold">LIVE CRM</span>
+            </div>
           </div>
         </div>
 
         <!-- Copy -->
         <div class="lg:col-span-6 order-1 lg:order-2 flex flex-col items-start gap-5">
-          <div class="text-[#D8B282] text-xs font-bold font-mono tracking-widest uppercase">CHẤM CÔNG AI & QUẢN TRỊ NHÂN SỰ</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight leading-tight">
-            Chấm Công GPS 50m & Nhận Diện Khuôn Mặt AI 1-Giây
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase">PHÙ HỢP NHIỀU MÔ HÌNH</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight leading-tight">
+            Giải Pháp Cho Mọi Ngành Nghề
           </h2>
-          <p class="text-neutral-300 text-base leading-relaxed">
-            Chấm dứt hoàn toàn tình trạng chấm công hộ, lỗi cảm biến vân tay hoặc mất 3-5 ngày tính lương cuối tháng. Nhân viên chấm công trên smartphone trong 1 giây, HR có bảng công tự động tức thì.
+          <p class="text-zinc-600 text-base leading-relaxed">
+            Dù doanh nghiệp của bạn hoạt động trong lĩnh vực Thương mại, Dịch vụ, Công nghệ hay Sản xuất, Vione đều đáp ứng linh hoạt với kiến trúc module mở rộng.
           </p>
-          <div class="grid grid-cols-2 gap-4 pt-2 w-full">
-            <div class="p-4 bg-neutral-900 rounded-2xl border border-neutral-800">
-              <div class="text-[#D8B282] font-mono font-bold text-lg">GPS &lt; 50M</div>
-              <div class="text-white text-xs font-bold mt-1">Định Vị Tọa Độ Thật</div>
-              <div class="text-neutral-400 text-[11px] mt-1">Tự động đối chiếu vị trí chi nhánh, chống Fake GPS.</div>
+          <div class="space-y-4 pt-2">
+            <div class="p-4 bg-white rounded-xl border border-zinc-200 text-sm text-zinc-700">
+              <span class="font-bold text-zinc-950 block mb-1">• Doanh nghiệp Công nghệ & Dịch vụ:</span>
+              Quản lý dự án Agile mượt mà, kết nối dữ liệu từ phễu chuyển đổi sang báo cáo tài chính dự báo.
             </div>
-            <div class="p-4 bg-neutral-900 rounded-2xl border border-neutral-800">
-              <div class="text-[#D8B282] font-mono font-bold text-lg">AI 92% LIVENESS</div>
-              <div class="text-white text-xs font-bold mt-1">Khuôn Mặt Sống</div>
-              <div class="text-neutral-400 text-[11px] mt-1">Phát hiện khuôn mặt sống, chống chụp ảnh lại từ máy khác.</div>
+            <div class="p-4 bg-white rounded-xl border border-zinc-200 text-sm text-zinc-700">
+              <span class="font-bold text-zinc-950 block mb-1">• Doanh nghiệp Chuỗi & Bán lẻ:</span>
+              Quản lý tập trung chi nhánh, kiểm soát dòng tiền chi tiết và tự động tính KPI nhân viên.
             </div>
-            <div class="p-4 bg-neutral-900 rounded-2xl border border-neutral-800">
-              <div class="text-[#D8B282] font-mono font-bold text-lg">1-CHẠM ONLINE</div>
-              <div class="text-white text-xs font-bold mt-1">Duyệt Đơn Nghỉ Phép</div>
-              <div class="text-neutral-400 text-[11px] mt-1">Nộp đơn nghỉ, đơn OT, đổi ca trực duyệt trực tiếp trên app.</div>
-            </div>
-            <div class="p-4 bg-neutral-900 rounded-2xl border border-neutral-800">
-              <div class="text-[#D8B282] font-mono font-bold text-lg">10 GIÂY</div>
-              <div class="text-white text-xs font-bold mt-1">Payroll & E-Payslip</div>
-              <div class="text-neutral-400 text-[11px] mt-1">Tự động tính thuế TNCN lũy tiến 7 bậc và gửi phiếu lương bảo mật.</div>
-            </div>
-          </div>
-          <a href="http://localhost:5173/attendance" class="mt-4 px-6 py-3 vione-btn-gold font-bold text-sm rounded-xl transition-all shadow-md flex items-center gap-2">
-            <span>Xem Bảng Chấm Công Thời Gian Thực</span>
-            <span>→</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= 6. PHÊ DUYỆT CHI 3 CẤP & VIETQR NAPAS 24/7 ================= -->
-    <section id="finance-approval" class="py-20 lg:py-28 bg-[#12141E] border-b border-neutral-800">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <!-- Copy -->
-        <div class="lg:col-span-6 flex flex-col items-start gap-5">
-          <div class="text-[#D8B282] text-xs font-bold font-mono tracking-widest uppercase">QUẢN TRỊ TÀI CHÍNH & DÒNG TIỀN</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight leading-tight">
-            Phê Duyệt Chi Tiền 3 Cấp <br />
-            & Thanh Toán VietQR 1 Giây
-          </h2>
-          <p class="text-neutral-300 text-base leading-relaxed">
-            Loại bỏ hoàn toàn giấy tờ in ký tay chờ lãnh đạo có mặt tại văn phòng. Mọi đề nghị thanh toán được kiểm soát nghiêm ngặt theo mô hình 3 cấp trên điện thoại di động mọi lúc mọi nơi.
-          </p>
-          <div class="space-y-3 pt-2 w-full">
-            <div class="flex items-center gap-3 p-3 bg-neutral-900 rounded-xl border border-neutral-800">
-              <span class="px-2.5 py-1 vione-btn-gold rounded-lg font-mono font-extrabold text-xs">CẤP 1</span>
-              <div>
-                <span class="text-white font-bold text-sm">Maker (Nhân viên / Trưởng phòng đề xuất):</span>
-                <span class="text-neutral-400 text-xs block">Trưởng phòng được duyệt chi dưới 5 triệu đồng.</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-neutral-900 rounded-xl border border-neutral-800">
-              <span class="px-2.5 py-1 vione-btn-gold rounded-lg font-mono font-extrabold text-xs">CẤP 2</span>
-              <div>
-                <span class="text-white font-bold text-sm">Checker (Kế toán trưởng kiểm soát):</span>
-                <span class="text-neutral-400 text-xs block">Kiểm soát chứng từ, ngân sách phòng ban và duyệt chi dưới 20 triệu đồng.</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-3 p-3 bg-neutral-900 rounded-xl border border-neutral-800">
-              <span class="px-2.5 py-1 vione-btn-gold rounded-lg font-mono font-extrabold text-xs">CẤP 3</span>
-              <div>
-                <span class="text-white font-bold text-sm">Approver (Tổng Giám Đốc ký duyệt):</span>
-                <span class="text-neutral-400 text-xs block">Bắt buộc phê duyệt đối với các khoản chi trên 20 triệu đồng.</span>
-              </div>
-            </div>
-          </div>
-          <a href="http://localhost:5173/payment-approvals" class="mt-4 px-6 py-3 vione-btn-gold font-bold text-sm rounded-xl transition-all shadow-md flex items-center gap-2">
-            <span>Khám phá Trung Tâm Phê Duyệt Chi</span>
-            <span>→</span>
-          </a>
-        </div>
-
-        <!-- Graphic Laptop -->
-        <div class="lg:col-span-6">
-          <div class="rounded-3xl overflow-hidden border-2 border-[#D8B282]/30 shadow-2xl bg-neutral-900 hover:scale-[1.01] transition-transform">
-            <img src="./business-laptop.png" alt="Phê duyệt chi tiền VietQR ViOne" class="w-full h-auto object-cover" onerror="this.src='./operational-dashboard.png'">
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= 7. KHUNG LỢI TỨC ĐẦU TƯ ROI 3 NĂM (BRD CHAPTER 2) ================= -->
-    <section id="roi" class="py-20 lg:py-28 bg-[#090A0F] border-b border-neutral-800">
+    <!-- ================= 9. KHÁCH HÀNG THÀNH CÔNG ================= -->
+    <section class="py-20 lg:py-24 bg-white border-b border-zinc-200">
+      <div class="max-w-4xl mx-auto px-6 text-center flex flex-col items-center gap-8">
+        <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase">KHÁCH HÀNG THÀNH CÔNG</div>
+        <blockquote class="text-2xl sm:text-3xl font-extrabold font-outfit text-zinc-950 leading-snug">
+          &ldquo;Từ khi áp dụng Vione, toàn bộ báo cáo tài chính và tiến độ dự án của 5 chi nhánh được tôi kiểm soát trực tiếp theo thời gian thực ngay trên điện thoại.&rdquo;
+        </blockquote>
+        <div class="flex items-center gap-4">
+          <img src="./avatar-ceo.png" alt="Ông Nguyễn Minh Đăng" class="size-14 rounded-full border-2 border-yellow-500 shadow-md object-cover" onerror="this.src='./professional-portrait.png'">
+          <div class="text-left">
+            <div class="text-zinc-950 text-base font-bold font-outfit">Ông Nguyễn Minh Đăng</div>
+            <div class="text-zinc-500 text-xs font-medium font-mono">CEO, Alpha Group</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 10. BẢNG GIÁ DỊCH VỤ - DOANH NGHIỆP TÙY BIẾN (KHÔNG ĐỂ GIÁ CỤ THỂ) ================= -->
+    <section id="pricing" class="py-20 lg:py-28 bg-neutral-50 border-b border-zinc-200">
       <div class="max-w-7xl mx-auto px-6 lg:px-12">
         <div class="text-center max-w-3xl mx-auto mb-16">
-          <div class="text-[#D8B282] text-xs font-bold font-mono tracking-widest uppercase mb-3">HIỆU QUẢ KINH TẾ (ROI)</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight">
-            Khung Lợi Tức Đầu Tư 3 Năm Chuẩn BRD
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase mb-3">BẢNG GIÁ DỊCH VỤ</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight">
+            Gói Giải Pháp Linh Hoạt Cho Mọi Quy Mô
           </h2>
-          <p class="text-neutral-400 text-base mt-4">
-            Đầu tư cho ViOne Platform 5.0 không phải là chi phí công nghệ, mà là một khoản đầu tư sinh lời vượt trội với ROI tăng dần qua từng năm tài chính.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Năm 1 -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-mono font-bold text-[#D8B282] uppercase">NĂM TÀI CHÍNH THỨ 1</span>
-                <span class="px-2.5 py-0.5 bg-[#D8B282]/20 text-[#D8B282] text-xs font-bold rounded-full font-mono">144.4% ROI</span>
-              </div>
-              <div class="text-3xl font-extrabold font-outfit text-white mb-2">144.4%</div>
-              <p class="text-neutral-400 text-xs mb-6">Giai đoạn chuẩn hóa dữ liệu, xóa bỏ ốc đảo và đưa toàn bộ quy trình lên hệ sinh thái số.</p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex justify-between"><span>Chi phí đầu tư:</span> <strong class="text-white">180,000,000 VNĐ</strong></div>
-                <div class="flex justify-between"><span>Giá trị thu về:</span> <strong class="text-[#D8B282]">440,000,000 VNĐ</strong></div>
-                <div class="flex justify-between"><span>Tiết kiệm chi phí:</span> <strong class="text-emerald-400">40% hành chính</strong></div>
-              </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-neutral-800 text-[11px] text-neutral-400">Hoàn vốn ngay trong 6 tháng đầu.</div>
-          </div>
-
-          <!-- Năm 2 -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border-2 border-[#D8B282] relative flex flex-col justify-between shadow-xl shadow-[#D8B282]/10">
-            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 vione-btn-gold text-[10px] font-black uppercase rounded-full">
-              BỨT PHÁ QUY MÔ
-            </div>
-            <div>
-              <div class="flex justify-between items-center mb-4 mt-1">
-                <span class="text-xs font-mono font-bold text-[#D8B282] uppercase">NĂM TÀI CHÍNH THỨ 2</span>
-                <span class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-full font-mono">283.3% ROI</span>
-              </div>
-              <div class="text-3xl font-extrabold font-outfit text-[#D8B282] mb-2">283.3%</div>
-              <p class="text-neutral-400 text-xs mb-6">Tối ưu hóa vận hành, AI dự báo dòng tiền và mở rộng mạng lưới giao thương B2B đối tác.</p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex justify-between"><span>Chi phí vận hành:</span> <strong class="text-white">60,000,000 VNĐ</strong></div>
-                <div class="flex justify-between"><span>Giá trị thu về:</span> <strong class="text-[#D8B282]">680,000,000 VNĐ</strong></div>
-                <div class="flex justify-between"><span>Rút ngắn sales cycle:</span> <strong class="text-emerald-400">50% chu kỳ</strong></div>
-              </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-neutral-800 text-[11px] text-[#D8B282] font-semibold">Tăng tốc dòng tiền & lợi nhuận.</div>
-          </div>
-
-          <!-- Năm 3 -->
-          <div class="p-8 bg-[#12141E] rounded-3xl border border-[#D8B282]/20 flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-mono font-bold text-[#D8B282] uppercase">NĂM TÀI CHÍNH THỨ 3</span>
-                <span class="px-2.5 py-0.5 bg-[#D8B282]/20 text-[#D8B282] text-xs font-bold rounded-full font-mono">416.7% ROI</span>
-              </div>
-              <div class="text-3xl font-extrabold font-outfit text-white mb-2">416.7%</div>
-              <p class="text-neutral-400 text-xs mb-6">Hệ điều hành vận hành tự động toàn diện, doanh thu gia tăng vượt trội nhờ hệ sinh thái ViOne.</p>
-              <div class="space-y-2 text-xs text-neutral-300">
-                <div class="flex justify-between"><span>Chi phí duy trì:</span> <strong class="text-white">60,000,000 VNĐ</strong></div>
-                <div class="flex justify-between"><span>Giá trị thu về:</span> <strong class="text-[#D8B282]">950,000,000 VNĐ</strong></div>
-                <div class="flex justify-between"><span>Tỷ lệ khách quay lại:</span> <strong class="text-emerald-400">+35% tăng thêm</strong></div>
-              </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-neutral-800 text-[11px] text-neutral-400">Vị thế dẫn đầu ngành trong kỷ nguyên số.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= 8. BẢNG GIÁ & GÓI TRIỂN KHAI DOANH NGHIỆP ================= -->
-    <section id="pricing" class="py-20 lg:py-28 bg-[#12141E] border-b border-neutral-800">
-      <div class="max-w-7xl mx-auto px-6 lg:px-12">
-        <div class="text-center max-w-3xl mx-auto mb-16">
-          <div class="text-[#D8B282] text-xs font-bold font-mono tracking-widest uppercase mb-3">GÓI GIẢI PHÁP LINH HOẠT</div>
-          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white tracking-tight">
-            Lộ Trình Triển Khai 8 Tuần Chuẩn Hóa
-          </h2>
-          <p class="text-neutral-400 text-base mt-4">
-            Được thiết kế theo đúng quy mô và cấu trúc phòng ban của doanh nghiệp Việt Nam năm 2026.
+          <p class="text-zinc-600 text-base mt-4">
+            Thiết kế chi phí theo đúng quy mô và lộ trình chuyển đổi số của doanh nghiệp. Liên hệ ngay để nhận báo giá chi tiết và chương trình ưu đãi độc quyền.
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-          <!-- Gói 1: Khởi Nghiệp -->
-          <div class="p-8 lg:p-10 bg-neutral-900 rounded-3xl border border-neutral-800 flex flex-col justify-between">
+          <!-- Gói 1: Khởi Nghiệp (Startup) -->
+          <div class="p-8 lg:p-10 bg-white rounded-3xl border border-zinc-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-bold font-mono text-neutral-400 uppercase">GÓI TIÊU CHUẨN</span>
-                <span class="px-2.5 py-1 bg-neutral-800 text-neutral-300 text-xs font-bold rounded-full">Dưới 20 NS</span>
+                <span class="text-sm font-bold font-mono text-zinc-500 uppercase tracking-wider">GÓI KHỞI NGHIỆP</span>
+                <span class="px-3 py-1 bg-zinc-100 text-zinc-700 text-xs font-bold rounded-full">Startup</span>
               </div>
-              <h3 class="text-2xl font-bold font-outfit text-white mb-2">Startup & SME</h3>
-              <p class="text-neutral-400 text-xs mb-6">Số hóa quy trình cốt lõi: CRM, Kanban việc và chấm công GPS di động.</p>
+              <h3 class="text-2xl font-bold font-outfit text-zinc-950 mb-2">Khởi nghiệp (Startup)</h3>
+              <p class="text-zinc-600 text-sm mb-6">Phù hợp cho các nhóm nhỏ muốn số hóa quy trình cơ bản ban đầu.</p>
 
-              <div class="p-4 bg-neutral-950 rounded-2xl border border-neutral-800 mb-6">
-                <div class="text-xs text-neutral-400">Khảo sát & Báo giá:</div>
-                <div class="text-2xl font-extrabold font-outfit text-[#D8B282] mt-1">Tư Vấn Theo Quy Mô</div>
-                <div class="text-xs text-neutral-400 mt-1">Triển khai trọn gói trong 2 tuần</div>
+              <!-- Mức Giá Thay Thế (Không để giá cụ thể) -->
+              <div class="p-4 bg-zinc-50 rounded-2xl border border-zinc-200/80 mb-6">
+                <div class="text-xs text-zinc-500 font-medium">Chi phí đầu tư:</div>
+                <div class="text-2xl font-extrabold font-outfit text-zinc-950 mt-1">Báo Giá Theo Quy Mô</div>
+                <div class="text-xs text-yellow-600 font-semibold mt-1">Tối ưu cho đội ngũ dưới 15 người</div>
               </div>
 
-              <div class="space-y-2.5 text-xs text-neutral-300">
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Đầy đủ CRM bán hàng & Phễu Lead 360°</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Bảng việc Kanban & Cảnh báo quá hạn đỏ</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Chấm công GPS bán kính 50m trên smartphone</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Duyệt đơn nghỉ phép online 1-chạm</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Trang bị 5 thẻ Titanium NFC cho C-Level</div>
+              <!-- Danh sách tính năng -->
+              <div class="space-y-3 text-sm text-zinc-700">
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Tối đa 15 thành viên truy cập
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Đầy đủ module Vione Work & Tasks
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Dung lượng lưu trữ 10GB đám mây
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Hỗ trợ kỹ thuật qua Email & Ticket
+                </div>
               </div>
             </div>
 
-            <button onclick="openQuoteModal('Gói SME Tiêu Chuẩn')" class="mt-8 w-full py-3.5 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-sm rounded-xl transition-all">
-              Nhận Báo Giá SME
+            <button onclick="openQuoteModal('Gói Khởi Nghiệp (Startup)')" class="mt-8 w-full py-3.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-950 font-bold text-sm rounded-xl transition-all flex justify-center items-center gap-2">
+              <span>Liên hệ nhận báo giá</span>
+              <span>→</span>
             </button>
           </div>
 
-          <!-- Gói 2: Tăng Trưởng (Khuyên dùng) -->
-          <div class="p-8 lg:p-10 bg-neutral-950 rounded-3xl border-2 border-[#D8B282] relative flex flex-col justify-between shadow-2xl shadow-[#D8B282]/20">
-            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 vione-btn-gold text-[10px] font-black uppercase rounded-full shadow-md font-mono">
-              ★ ĐƯỢC CHỌN NHIỀU NHẤT
+          <!-- Gói 2: Tăng Trưởng (Growth) - Khuyên dùng -->
+          <div class="p-8 lg:p-10 bg-zinc-950 text-white rounded-3xl border-2 border-yellow-500 shadow-2xl relative flex flex-col justify-between transform lg:-translate-y-2">
+            <!-- Badge Đề xuất -->
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-yellow-500 to-amber-500 text-zinc-950 text-xs font-black uppercase rounded-full shadow-md font-mono">
+              ★ PHỔ BIẾN NHẤT
             </div>
+
             <div>
               <div class="flex justify-between items-center mb-4 mt-2">
-                <span class="text-xs font-bold font-mono text-[#D8B282] uppercase">GÓI TĂNG TRƯỞNG</span>
-                <span class="px-2.5 py-1 bg-[#D8B282]/20 text-[#D8B282] text-xs font-bold rounded-full font-mono">20 - 100 NS</span>
+                <span class="text-sm font-bold font-mono text-yellow-400 uppercase tracking-wider">GÓI TĂNG TRƯỞNG</span>
+                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 text-xs font-bold rounded-full font-mono">Growth</span>
               </div>
-              <h3 class="text-2xl font-bold font-outfit text-white mb-2">Growth Enterprise</h3>
-              <p class="text-neutral-400 text-xs mb-6">Hệ điều hành toàn diện: Workload Heatmap, Chấm công FaceID, Duyệt chi 3 cấp & VietQR.</p>
+              <h3 class="text-2xl font-bold font-outfit text-white mb-2">Tăng trưởng (Growth)</h3>
+              <p class="text-zinc-400 text-sm mb-6">Giải pháp toàn diện cho doanh nghiệp đang bứt phá mạnh mẽ.</p>
 
-              <div class="p-4 bg-[#12141E] rounded-2xl border border-[#D8B282]/30 mb-6">
-                <div class="text-xs text-neutral-400">Lộ trình triển khai:</div>
-                <div class="text-2xl font-extrabold font-outfit text-[#F8E7D1] mt-1">4 Tuần Hoàn Tất 100%</div>
-                <div class="text-xs text-emerald-400 font-semibold mt-1">Kèm 4 buổi đào tạo Onboarding chuyên sâu</div>
+              <!-- Mức Giá Thay Thế -->
+              <div class="p-4 bg-zinc-900 rounded-2xl border border-zinc-800 mb-6">
+                <div class="text-xs text-zinc-400 font-medium">Chi phí đầu tư:</div>
+                <div class="text-2xl font-extrabold font-outfit text-yellow-400 mt-1">Tư Vấn 1-1 Chuyên Sâu</div>
+                <div class="text-xs text-zinc-300 font-semibold mt-1">Kèm gói tài trợ đào tạo onboarding</div>
               </div>
 
-              <div class="space-y-2.5 text-xs text-neutral-300">
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Toàn bộ tính năng gói SME + HRM nâng cao</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Biểu đồ Workload Heatmap giám sát tải nhân viên</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Chấm công AI FaceID 92% chống giả mạo</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Phê duyệt chi tiền 3 cấp Maker - Checker - Approver</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Cổng thanh toán VietQR Napas gạch nợ tức thời 1 giây</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Trang bị thẻ Titanium NFC cho toàn bộ Ban Quản Lý</div>
+              <!-- Danh sách tính năng -->
+              <div class="space-y-3 text-sm text-zinc-300">
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-400 font-bold">✓</span> Không giới hạn thành viên tham gia
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-400 font-bold">✓</span> Trọn bộ 4 module: CRM, Work, Fin, HRM
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-400 font-bold">✓</span> Trợ lý AI Workflow Copilot thế hệ mới
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-400 font-bold">✓</span> Dung lượng lưu trữ 100GB tốc độ cao
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-400 font-bold">✓</span> Hỗ trợ chuyên gia 24/7 qua Hotline VIP
+                </div>
               </div>
             </div>
 
-            <button onclick="openQuoteModal('Gói Growth Enterprise')" class="mt-8 w-full py-3.5 vione-btn-gold font-extrabold text-sm rounded-xl transition-all shadow-xl">
-              Đăng Ký Khảo Sát & Nhận Báo Giá
+            <button onclick="openQuoteModal('Gói Tăng Trưởng (Growth)')" class="mt-8 w-full py-3.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 text-zinc-950 font-extrabold text-sm rounded-xl transition-all shadow-xl shadow-yellow-500/25 flex justify-center items-center gap-2">
+              <span>Nhận tư vấn & Báo giá ngay</span>
+              <span>→</span>
             </button>
           </div>
 
-          <!-- Gói 3: Tập Đoàn (Custom) -->
-          <div class="p-8 lg:p-10 bg-neutral-900 rounded-3xl border border-neutral-800 flex flex-col justify-between">
+          <!-- Gói 3: Doanh Nghiệp (Enterprise) -->
+          <div class="p-8 lg:p-10 bg-white rounded-3xl border border-zinc-200 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
             <div>
               <div class="flex justify-between items-center mb-4">
-                <span class="text-xs font-bold font-mono text-neutral-400 uppercase">TẬP ĐOÀN ĐA NGÀNH</span>
-                <span class="px-2.5 py-1 bg-neutral-800 text-neutral-300 text-xs font-bold rounded-full font-mono">&gt;100 NS</span>
+                <span class="text-sm font-bold font-mono text-zinc-500 uppercase tracking-wider">DOANH NGHIỆP LỚN</span>
+                <span class="px-3 py-1 bg-zinc-100 text-zinc-700 text-xs font-bold rounded-full font-mono">Custom</span>
               </div>
-              <h3 class="text-2xl font-bold font-outfit text-white mb-2">Corporation Multi-Tenant</h3>
-              <p class="text-neutral-400 text-xs mb-6">Thiết kế hạ tầng đám mây cô lập riêng biệt, tích hợp trực tiếp ERP và huấn luyện AI riêng.</p>
+              <h3 class="text-2xl font-bold font-outfit text-zinc-950 mb-2">Doanh nghiệp (Enterprise)</h3>
+              <p class="text-zinc-600 text-sm mb-6">Thiết kế riêng cho các tập đoàn lớn cần tùy biến sâu quy trình.</p>
 
-              <div class="p-4 bg-neutral-950 rounded-2xl border border-neutral-800 mb-6">
-                <div class="text-xs text-neutral-400">Kiến trúc hệ thống:</div>
-                <div class="text-2xl font-extrabold font-outfit text-white mt-1">Multi-Tenant Cô Lập</div>
-                <div class="text-xs text-[#D8B282] font-semibold mt-1">Cam kết SLA 99.98% & RTO &lt; 30 phút</div>
+              <!-- Mức Giá Thay Thế -->
+              <div class="p-4 bg-zinc-50 rounded-2xl border border-zinc-200/80 mb-6">
+                <div class="text-xs text-zinc-500 font-medium">Chi phí đầu tư:</div>
+                <div class="text-2xl font-extrabold font-outfit text-zinc-950 mt-1">Tùy Biến Theo Yêu Cầu</div>
+                <div class="text-xs text-yellow-600 font-semibold mt-1">Khảo sát & Báo giá theo giải pháp</div>
               </div>
 
-              <div class="space-y-2.5 text-xs text-neutral-300">
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Không giới hạn số lượng tài khoản & chi nhánh</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Tích hợp hai chiều SAP, Oracle, Bravo, MISA</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Huấn luyện riêng mô hình AI Copilot theo dữ liệu nội bộ</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Cấp tên miền riêng & thương hiệu doanh nghiệp riêng</div>
-                <div class="flex items-center gap-2"><span class="text-[#D8B282] font-bold">✓</span> Kỹ sư giải pháp bảo trợ vận hành tại chỗ</div>
+              <!-- Danh sách tính năng -->
+              <div class="space-y-3 text-sm text-zinc-700">
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Hạ tầng máy chủ riêng biệt (On-Prem / Cloud)
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> AI Copilot huấn luyện riêng theo dữ liệu nội bộ
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Bảo mật nâng cao, xác thực SSO, MFA
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Tích hợp trực tiếp hệ thống SAP, Oracle ERP
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-yellow-500 font-bold">✓</span> Kỹ sư trưởng bảo trợ vận hành tại chỗ
+                </div>
               </div>
             </div>
 
-            <button onclick="openQuoteModal('Gói Tập Đoàn Multi-Tenant')" class="mt-8 w-full py-3.5 bg-neutral-800 hover:bg-neutral-700 text-white font-bold text-sm rounded-xl transition-all">
-              Liên Hệ Chuyên Gia Cấp Cao
+            <button onclick="openQuoteModal('Gói Doanh Nghiệp (Enterprise)')" class="mt-8 w-full py-3.5 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-sm rounded-xl transition-all flex justify-center items-center gap-2">
+              <span>Liên hệ chuyên gia Enterprise</span>
+              <span>→</span>
             </button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= 9. BANNER CTA ================= -->
-    <section class="py-20 lg:py-24 bg-gradient-to-r from-[#090A0F] via-[#1A120B] to-[#090A0F] border-b border-neutral-800 relative overflow-hidden">
+    <!-- ================= 11. HỎI ĐÁP THƯỜNG GẶP (FAQ) ================= -->
+    <section id="faq" class="py-20 lg:py-28 bg-white border-b border-zinc-200">
+      <div class="max-w-4xl mx-auto px-6 lg:px-12">
+        <div class="text-center mb-16">
+          <div class="text-yellow-600 text-xs font-bold font-mono tracking-widest uppercase mb-3">HỎI ĐÁP THƯỜNG GẶP</div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold font-outfit text-zinc-950 tracking-tight">
+            Câu Hỏi Thường Gặp
+          </h2>
+          <p class="text-zinc-600 text-base mt-4">
+            Giải đáp các thắc mắc phổ biến về triển khai và bảo mật hệ thống Vione.
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- FAQ 1 -->
+          <div class="border border-zinc-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(1)" class="w-full p-6 text-left font-bold font-outfit text-lg text-zinc-950 flex justify-between items-center bg-neutral-50/50 hover:bg-neutral-50 transition-colors">
+              <span>Vione có thể tích hợp với các hệ thống hiện tại của doanh nghiệp không?</span>
+              <span id="faq-icon-1" class="text-xl font-mono text-zinc-400 transition-transform">+</span>
+            </button>
+            <div id="faq-content-1" class="hidden p-6 text-zinc-600 text-sm leading-relaxed border-t border-zinc-100 bg-white">
+              Hoàn toàn được. Vione cung cấp chuẩn kết nối RESTful API và Webhook mở, cho phép đồng bộ dữ liệu hai chiều với các hệ thống ERP hàng đầu (như SAP, Oracle, Bravo), phần mềm kế toán (MISA, FAST) và các cổng thanh toán ngân hàng trực tuyến.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="border border-zinc-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(2)" class="w-full p-6 text-left font-bold font-outfit text-lg text-zinc-950 flex justify-between items-center bg-neutral-50/50 hover:bg-neutral-50 transition-colors">
+              <span>Dữ liệu trên Vione được bảo mật như thế nào?</span>
+              <span id="faq-icon-2" class="text-xl font-mono text-zinc-400 transition-transform">+</span>
+            </button>
+            <div id="faq-content-2" class="hidden p-6 text-zinc-600 text-sm leading-relaxed border-t border-zinc-100 bg-white">
+              Toàn bộ dữ liệu của doanh nghiệp được mã hóa chuẩn quân sự AES-256 ở trạng thái lưu trữ và giao thức TLS 1.3 khi truyền tải. Hệ thống hỗ trợ xác thực đa yếu tố (MFA), phân quyền chi tiết Role-Based Access Control (RBAC) và lưu vết audit log 100% mọi thao tác.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="border border-zinc-200 rounded-2xl overflow-hidden">
+            <button onclick="toggleFaq(3)" class="w-full p-6 text-left font-bold font-outfit text-lg text-zinc-950 flex justify-between items-center bg-neutral-50/50 hover:bg-neutral-50 transition-colors">
+              <span>Chúng tôi có được dùng thử phần mềm trước khi mua không?</span>
+              <span id="faq-icon-3" class="text-xl font-mono text-zinc-400 transition-transform">+</span>
+            </button>
+            <div id="faq-content-3" class="hidden p-6 text-zinc-600 text-sm leading-relaxed border-t border-zinc-100 bg-white">
+              Có. Vione cung cấp chương trình dùng thử 14 ngày miễn phí với đầy đủ tính năng của cả 4 phân hệ (CRM, Work, Finance, HRM) và trợ lý AI Copilot. Đội ngũ chuyên gia của chúng tôi sẽ hướng dẫn thiết lập luồng vận hành ban đầu cho doanh nghiệp của bạn.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 12. BANNER CTA ================= -->
+    <section class="py-20 lg:py-24 bg-zinc-950 text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-radial from-yellow-500/20 via-transparent to-transparent opacity-30"></div>
       <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
-        <div class="size-16 rounded-full vione-btn-gold mx-auto mb-6 flex items-center justify-center font-black text-3xl">V</div>
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold font-outfit text-white tracking-tight mb-6">
-          Bắt đầu chuyển đổi số toàn diện <br />
-          với ViOne Platform 5.0 ngay hôm nay
+          Bắt đầu kỷ nguyên quản trị tự động cùng Vione
         </h2>
-        <p class="text-neutral-300 text-base sm:text-lg max-w-2xl mx-auto mb-8">
-          Hơn 500+ doanh nghiệp đã gia tăng 35% tỷ lệ chốt deal, loại bỏ 100% sai sót đối soát tiền tệ và làm chủ quy trình làm việc nhân viên 24/7.
+        <p class="text-zinc-400 text-base sm:text-lg max-w-2xl mx-auto mb-8">
+          Tham gia cùng hàng nghìn doanh nghiệp Việt đang số hóa và bứt phá ngoạn mục bằng hệ thống điều hành Vione AI 5.0.
         </p>
         <div class="flex flex-wrap justify-center items-center gap-4">
-          <button onclick="openQuoteModal('CTA Cuối Trang')" class="px-8 py-4 vione-btn-gold font-extrabold text-base rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all">
-            Đăng ký khảo sát & dùng thử miễn phí
+          <button onclick="openQuoteModal('CTA Cuối Trang')" class="px-8 py-4 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 text-zinc-950 font-extrabold text-base rounded-2xl shadow-xl shadow-yellow-500/30 hover:scale-105 active:scale-95 transition-all">
+            Đăng ký dùng thử miễn phí
           </button>
-          <a href="http://localhost:5173/auth" class="px-8 py-4 bg-neutral-900 border border-[#D8B282]/40 hover:border-[#D8B282] text-[#F8E7D1] font-bold text-base rounded-2xl transition-all">
-            Đăng nhập hệ thống CRM
+          <a href="http://localhost:5173/auth" class="px-8 py-4 bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-white font-bold text-base rounded-2xl transition-all">
+            Đăng nhập hệ thống
           </a>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ================= 10. FOOTER ================= -->
-  <footer class="bg-neutral-950 text-neutral-400 border-t border-neutral-800 py-16">
+  <!-- ================= 13. FOOTER ================= -->
+  <footer class="bg-zinc-950 text-zinc-400 border-t border-zinc-800/80 py-16">
     <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-10">
-      <div>
+      <!-- Col 1: Brand -->
+      <div class="md:col-span-1">
         <div class="flex items-center gap-2.5 mb-4">
-          <div class="size-8 vione-btn-gold rounded-full flex items-center justify-center text-[#3C240E] font-black text-lg">V</div>
-          <span class="text-white text-xl font-extrabold font-outfit tracking-tight">ViOne</span>
+          <div class="size-8 bg-yellow-500 rounded-lg flex items-center justify-center text-black font-extrabold text-lg">V</div>
+          <span class="text-white text-xl font-extrabold font-outfit tracking-tight">Vione</span>
         </div>
-        <p class="text-xs text-neutral-500 leading-relaxed mb-4">
-          Hệ Điều Hành Doanh Nghiệp Toàn Diện & CRM Hợp Nhất ViOne Platform 5.0. Bản quyền thuộc Tập Đoàn Công Nghệ VioConnect.
+        <p class="text-xs text-zinc-500 leading-relaxed mb-4">
+          Nền tảng quản trị và tự động hóa vận hành doanh nghiệp toàn diện bằng Trí tuệ Nhân tạo thế hệ mới.
         </p>
-        <div class="text-xs text-neutral-600 font-mono">
-          Mã tài liệu: BRD-VIONE-ENTERPRISE-MASTER-V5.0
+        <div class="text-xs text-zinc-600">
+          © 2026 Vione. Bảo lưu mọi quyền.
         </div>
       </div>
 
+      <!-- Col 2: Products -->
       <div>
-        <div class="text-white text-sm font-bold font-outfit uppercase tracking-wider mb-4">Hệ Thống Phân Hệ</div>
-        <ul class="space-y-2 text-xs text-neutral-400">
-          <li><a href="http://localhost:5173/opportunities" class="hover:text-[#D8B282] transition-colors">CRM Bán Hàng & Phễu Lead 360°</a></li>
-          <li><a href="http://localhost:5173/workflow" class="hover:text-[#D8B282] transition-colors">Quy Trình & Công Việc (Kanban)</a></li>
-          <li><a href="http://localhost:5173/workload" class="hover:text-[#D8B282] transition-colors">Theo Dõi Nhân Viên & Workload</a></li>
-          <li><a href="http://localhost:5173/attendance" class="hover:text-[#D8B282] transition-colors">Chấm Công FaceID & GPS 50m</a></li>
-          <li><a href="http://localhost:5173/payment-approvals" class="hover:text-[#D8B282] transition-colors">Phê Duyệt Chi 3 Cấp (Maker-Checker)</a></li>
+        <div class="text-white text-sm font-bold font-outfit uppercase tracking-wider mb-4">Sản Phẩm</div>
+        <ul class="space-y-2.5 text-xs text-zinc-400">
+          <li><a href="#modules" class="hover:text-yellow-400 transition-colors">Vione CRM</a></li>
+          <li><a href="#modules" class="hover:text-yellow-400 transition-colors">Vione Work</a></li>
+          <li><a href="#modules" class="hover:text-yellow-400 transition-colors">Vione Finance</a></li>
+          <li><a href="#modules" class="hover:text-yellow-400 transition-colors">Vione HRM</a></li>
+          <li><a href="#ai-copilot" class="hover:text-yellow-400 transition-colors">AI Workflow Copilot</a></li>
         </ul>
       </div>
 
+      <!-- Col 3: Resources -->
       <div>
-        <div class="text-white text-sm font-bold font-outfit uppercase tracking-wider mb-4">Kết Nối & Hội Viên</div>
-        <ul class="space-y-2 text-xs text-neutral-400">
-          <li><a href="http://localhost:5173/connect-app" class="hover:text-[#D8B282] transition-colors">ViOne Connect PWA & Mobile App</a></li>
-          <li><a href="http://localhost:5173/admin/business-cards" class="hover:text-[#D8B282] transition-colors">Danh Thiếp Titanium NFC Mạ Vàng</a></li>
-          <li><a href="http://localhost:5173/marketplace" class="hover:text-[#D8B282] transition-colors">Sàn Giao Thương Doanh Nghiệp B2B</a></li>
-          <li><a href="http://localhost:5173/docs" class="hover:text-[#D8B282] transition-colors">Tài Liệu Hướng Dẫn Sử Dụng</a></li>
+        <div class="text-white text-sm font-bold font-outfit uppercase tracking-wider mb-4">Tài Nguyên</div>
+        <ul class="space-y-2.5 text-xs text-zinc-400">
+          <li><a href="#pricing" class="hover:text-yellow-400 transition-colors">Bảng giá dịch vụ</a></li>
+          <li><a href="#faq" class="hover:text-yellow-400 transition-colors">Câu hỏi thường gặp</a></li>
+          <li><a href="http://localhost:5173/auth" class="hover:text-yellow-400 transition-colors">Cổng Quản Trị CRM</a></li>
+          <li><a href="http://localhost:5173/docs" class="hover:text-yellow-400 transition-colors">Tài liệu hướng dẫn</a></li>
         </ul>
       </div>
 
+      <!-- Col 4: Contact -->
       <div>
-        <div class="text-white text-sm font-bold font-outfit uppercase tracking-wider mb-4">Liên Hệ Trực Tiếp</div>
-        <ul class="space-y-2 text-xs text-neutral-400">
-          <li>Hotline C-Level: <span class="text-white font-semibold">1900 6883</span> (24/7)</li>
-          <li>Email tư vấn: <span class="text-white font-semibold">enterprise@vione.vn</span></li>
-          <li>Trụ sở: Tòa nhà ViOne Technology Tower, Hà Nội</li>
+        <div class="text-white text-sm font-bold font-outfit uppercase tracking-wider mb-4">Liên Hệ</div>
+        <ul class="space-y-2.5 text-xs text-zinc-400">
+          <li>Hotline: <span class="text-white font-semibold">1900 1234</span> (24/7)</li>
+          <li>Email: <span class="text-white font-semibold">contact@vione.vn</span></li>
+          <li>Văn phòng: Tầng 12, Tòa nhà Công Nghệ ViOne, Hà Nội</li>
           <li class="pt-2">
-            <span class="inline-block px-2.5 py-1 bg-[#D8B282]/15 border border-[#D8B282]/30 rounded-md text-[#F8E7D1] text-[11px] font-mono">
-              SLA Hỗ Trợ Kỹ Thuật: 99.98%
+            <span class="inline-block px-2.5 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-md text-yellow-400 text-[11px]">
+              Thời gian hỗ trợ: 8:00 - 22:00
             </span>
           </li>
         </ul>
@@ -902,69 +912,72 @@
     </div>
   </footer>
 
-  <!-- ================= 11. LUXURY GOLD CONTACT & QUOTE MODAL ================= -->
-  <div id="quoteModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg bg-[#0F121C] border border-[#D8B282]/40 rounded-3xl p-6 sm:p-8 shadow-2xl text-white">
-      <button onclick="closeQuoteModal()" class="absolute top-5 right-5 text-neutral-400 hover:text-white p-2 rounded-full hover:bg-neutral-800 transition-colors">
+  <!-- ================= 14. LUXURY GOLD CONTACT & QUOTE MODAL ================= -->
+  <div id="quoteModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg bg-zinc-950 border border-yellow-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl text-white">
+      <!-- Close button -->
+      <button onclick="closeQuoteModal()" class="absolute top-5 right-5 text-zinc-400 hover:text-white p-2 rounded-full hover:bg-zinc-800 transition-colors">
         <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
 
+      <!-- Modal Header -->
       <div class="flex items-center gap-3 mb-5">
-        <div class="size-10 vione-btn-gold rounded-full flex items-center justify-center text-[#3C240E] font-black text-xl">V</div>
+        <div class="size-10 bg-yellow-500 rounded-xl flex items-center justify-center text-black font-extrabold text-xl">V</div>
         <div>
-          <h3 class="text-xl font-bold font-outfit text-white">Yêu Cầu Khảo Sát & Tư Vấn 1-1</h3>
-          <p class="text-xs text-[#D8B282] font-mono" id="modalTierTitle">Hệ Điều Hành ViOne 5.0</p>
+          <h3 class="text-xl font-bold font-outfit text-white">Yêu Cầu Báo Giá & Tư Vấn 1-1</h3>
+          <p class="text-xs text-yellow-400 font-mono" id="modalTierTitle">Gói Giải Pháp Vione AI</p>
         </div>
       </div>
 
+      <!-- Form -->
       <form id="quoteForm" onsubmit="handleQuoteSubmit(event)" class="space-y-4 text-left">
         <div>
-          <label class="block text-xs font-semibold text-neutral-300 mb-1">Họ và tên lãnh đạo đại diện *</label>
-          <input type="text" id="custName" required placeholder="Nguyễn Minh Đăng" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-[#D8B282] rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]">
+          <label class="block text-xs font-semibold text-zinc-300 mb-1">Họ và tên đại diện *</label>
+          <input type="text" id="custName" required placeholder="Nguyễn Văn A" class="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-yellow-500">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-neutral-300 mb-1">Số điện thoại di động *</label>
-            <input type="tel" id="custPhone" required placeholder="0901 234 567" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-[#D8B282] rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]">
+            <label class="block text-xs font-semibold text-zinc-300 mb-1">Số điện thoại *</label>
+            <input type="tel" id="custPhone" required placeholder="0901 234 567" class="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-yellow-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-neutral-300 mb-1">Email doanh nghiệp *</label>
-            <input type="email" id="custEmail" required placeholder="ceo@alphagroup.vn" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-[#D8B282] rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]">
+            <label class="block text-xs font-semibold text-zinc-300 mb-1">Email doanh nghiệp *</label>
+            <input type="email" id="custEmail" required placeholder="ceo@company.com" class="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-yellow-500">
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-neutral-300 mb-1">Tên công ty / Tập đoàn</label>
-            <input type="text" id="custCompany" placeholder="Tập Đoàn Alpha" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-[#D8B282] rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]">
+            <label class="block text-xs font-semibold text-zinc-300 mb-1">Tên công ty / Doanh nghiệp</label>
+            <input type="text" id="custCompany" placeholder="Tập đoàn Alpha" class="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-yellow-500">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-neutral-300 mb-1">Quy mô nhân sự</label>
-            <select id="custSize" class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-[#D8B282] rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]">
-              <option value="Dưới 20 nhân sự">Dưới 20 nhân sự</option>
-              <option value="20 - 50 nhân sự">20 - 50 nhân sự</option>
-              <option value="50 - 200 nhân sự">50 - 200 nhân sự</option>
-              <option value="Trên 200 nhân sự (Tập đoàn)">Trên 200 nhân sự (Tập đoàn)</option>
+            <label class="block text-xs font-semibold text-zinc-300 mb-1">Quy mô nhân sự</label>
+            <select id="custSize" class="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-yellow-500">
+              <option value="Dưới 15 người">Dưới 15 người</option>
+              <option value="15 - 50 người">15 - 50 người</option>
+              <option value="50 - 200 người">50 - 200 người</option>
+              <option value="Trên 200 người">Trên 200 người (Tập đoàn)</option>
             </select>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-neutral-300 mb-1">Nhu cầu trọng tâm cần giải quyết</label>
-          <textarea id="custNote" rows="2" placeholder="Cần theo dõi quy trình làm việc nhân viên, chấm công GPS và duyệt chi 3 cấp..." class="w-full px-4 py-2.5 bg-neutral-900 border border-neutral-700 focus:border-[#D8B282] rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#D8B282]"></textarea>
+          <label class="block text-xs font-semibold text-zinc-300 mb-1">Nhu cầu tính năng / Lời nhắn</label>
+          <textarea id="custNote" rows="2" placeholder="Tôi muốn tư vấn tích hợp AI CRM và quản lý tài chính..." class="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-700 focus:border-yellow-500 rounded-xl text-sm text-white focus:outline-none focus:ring-1 focus:ring-yellow-500"></textarea>
         </div>
 
-        <button type="submit" id="submitBtn" class="w-full py-3.5 vione-btn-gold font-extrabold text-sm rounded-xl shadow-xl transition-all">
-          Gửi Yêu Cầu Khảo Sát & Nhận Báo Giá Ngay (Phản Hồi &lt; 15 Phút)
+        <button type="submit" id="submitBtn" class="w-full py-3.5 bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 hover:from-yellow-400 hover:to-amber-500 text-zinc-950 font-extrabold text-sm rounded-xl shadow-xl shadow-yellow-500/25 transition-all">
+          Gửi Yêu Cầu Nhận Báo Giá Ngay
         </button>
       </form>
 
       <div id="modalSuccess" class="hidden text-center py-8">
-        <div class="size-16 rounded-full vione-btn-gold text-[#3C240E] flex items-center justify-center text-3xl mx-auto mb-4 font-black">✓</div>
-        <h4 class="text-xl font-bold font-outfit text-white mb-2">Đã Tiếp Nhận Thành Công!</h4>
-        <p class="text-sm text-neutral-300">Chuyên viên tư vấn ViOne sẽ liên hệ trong tối đa 15 phút (theo quy tắc BR-CRM-03) để gửi giải pháp và tài liệu BRD mẫu.</p>
-        <button onclick="closeQuoteModal()" class="mt-6 px-6 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold rounded-xl transition-all">
+        <div class="size-16 bg-yellow-500/20 text-yellow-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 border border-yellow-500/40">✓</div>
+        <h4 class="text-xl font-bold font-outfit text-white mb-2">Gửi Yêu Cầu Thành Công!</h4>
+        <p class="text-sm text-zinc-300">Chuyên viên tư vấn ViOne sẽ liên hệ qua điện thoại/email trong vòng 15 phút để gửi bảng báo giá tùy biến.</p>
+        <button onclick="closeQuoteModal()" class="mt-6 px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold rounded-xl transition-all">
           Đóng cửa sổ
         </button>
       </div>
@@ -972,8 +985,24 @@
   </div>
 
   <script>
+    // FAQ Toggle
+    function toggleFaq(id) {
+      const content = document.getElementById('faq-content-' + id);
+      const icon = document.getElementById('faq-icon-' + id);
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.textContent = '−';
+        icon.classList.add('text-yellow-500');
+      } else {
+        content.classList.add('hidden');
+        icon.textContent = '+';
+        icon.classList.remove('text-yellow-500');
+      }
+    }
+
+    // Modal Control
     function openQuoteModal(tierName) {
-      document.getElementById('modalTierTitle').textContent = tierName || 'Hệ Điều Hành ViOne 5.0';
+      document.getElementById('modalTierTitle').textContent = tierName || 'Gói Giải Pháp Vione AI';
       document.getElementById('quoteForm').classList.remove('hidden');
       document.getElementById('modalSuccess').classList.add('hidden');
       document.getElementById('quoteModal').classList.remove('hidden');
@@ -981,6 +1010,8 @@
     function closeQuoteModal() {
       document.getElementById('quoteModal').classList.add('hidden');
     }
+
+    // Form Submit
     function handleQuoteSubmit(e) {
       e.preventDefault();
       const payload = {
@@ -993,7 +1024,7 @@
         tier: document.getElementById('modalTierTitle').textContent,
         createdAt: new Date().toISOString()
       };
-      console.log('Lead submitted:', payload);
+      console.log('Quote Request:', payload);
       try {
         const stored = JSON.parse(localStorage.getItem('vione_quote_leads') || '[]');
         stored.push(payload);
@@ -1002,9 +1033,94 @@
       document.getElementById('quoteForm').classList.add('hidden');
       document.getElementById('modalSuccess').classList.remove('hidden');
     }
+
+    // Close on backdrop click
     document.getElementById('quoteModal').addEventListener('click', function(e) {
       if (e.target === this) closeQuoteModal();
     });
+
+    // 5-Slide ViOne CRM 1.5s Continuous Carousel Runner
+    (function initCrmCarousel() {
+      const slides = [
+        {
+          src: "./crm-slide-1-dashboard.png",
+          alt: "Bảng Điều Hành Số & Báo Cáo Sức Khỏe Doanh Nghiệp ViOne CRM",
+          badge: "MODULE 01 • BẢNG ĐIỀU HÀNH 360°",
+          title: "Tổng quan điều hành thời gian thực phản ánh sức khỏe tài chính, KPI và dự án doanh nghiệp"
+        },
+        {
+          src: "./crm-slide-2-opportunities.png",
+          alt: "Phễu Chuyển Đổi & Pipeline Cơ Hội Bán Hàng ViOne CRM",
+          badge: "MODULE 02 • PIPELINE CƠ HỘI BÁN HÀNG",
+          title: "Quản trị phễu chuyển đổi khách hàng tiềm năng và dự báo doanh số chuẩn xác từng giai đoạn"
+        },
+        {
+          src: "./crm-slide-3-marketplace.png",
+          alt: "Sàn Kết Nối Cung Cầu & Gian Hàng B2B ViOne CRM",
+          badge: "MODULE 03 • MARKETPLACE GIAO THƯƠNG B2B",
+          title: "Liên kết cung cầu sản phẩm, xúc tiến thương mại giữa các doanh nghiệp trong hệ sinh thái"
+        },
+        {
+          src: "./crm-slide-4-finance.png",
+          alt: "Quản Trị Tài Chính & Báo Cáo Dòng Tiền ViOne CRM",
+          badge: "MODULE 04 • QUẢN TRỊ DÒNG TIỀN DOANH NGHIỆP",
+          title: "Kiểm soát chi phí, doanh thu thực thu - thực chi và tự động đối chiếu số dư tức thời"
+        },
+        {
+          src: "./crm-slide-5-meetings.png",
+          alt: "Lịch Họp Điều Hành & Trợ Lý Biên Bản AI ViOne CRM",
+          badge: "MODULE 05 • LỊCH HỌP & BIÊN BẢN AI COPILOT",
+          title: "Điều phối lịch họp HĐQT / Ban điều hành, tự động ghi nhận và trích xuất nhiệm vụ tức thì"
+        }
+      ];
+
+      let currentIndex = 0;
+      const img = document.getElementById('crm-slide-img');
+      const badge = document.getElementById('crm-slide-badge');
+      const title = document.getElementById('crm-slide-title');
+      const num = document.getElementById('crm-slide-num');
+      const dotsContainer = document.getElementById('crm-slide-dots');
+
+      if (!img || !dotsContainer) return;
+
+      // Render dots
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = 'h-2.5 rounded-full transition-all duration-300 border-0 cursor-pointer ' + (idx === 0 ? 'w-10 bg-yellow-500' : 'w-3 bg-zinc-300');
+        dot.setAttribute('aria-label', 'Slide ' + (idx + 1));
+        dot.onclick = () => showSlide(idx);
+        dotsContainer.appendChild(dot);
+      });
+
+      function showSlide(idx) {
+        currentIndex = idx;
+        const cur = slides[idx];
+        img.style.opacity = '0';
+        setTimeout(() => {
+          img.src = cur.src;
+          img.alt = cur.alt;
+          badge.textContent = cur.badge;
+          title.textContent = cur.title;
+          num.textContent = '0' + (idx + 1);
+          img.style.opacity = '1';
+        }, 150);
+
+        Array.from(dotsContainer.children).forEach((dot, dIdx) => {
+          if (dIdx === idx) {
+            dot.className = 'h-2.5 rounded-full transition-all duration-300 border-0 cursor-pointer w-10 bg-yellow-500';
+          } else {
+            dot.className = 'h-2.5 rounded-full transition-all duration-300 border-0 cursor-pointer w-3 bg-zinc-300';
+          }
+        });
+      }
+
+      // Auto cycle every 1.5 seconds (1500ms)
+      setInterval(() => {
+        const next = (currentIndex + 1) % slides.length;
+        showSlide(next);
+      }, 1500);
+    })();
   </script>
 </body>
 </html>

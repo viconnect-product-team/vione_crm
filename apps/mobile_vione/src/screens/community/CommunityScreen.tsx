@@ -37,6 +37,8 @@ import {
   Star,
   ScanLine,
   Filter,
+  Sun,
+  Moon,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { useTheme } from "../../context/ThemeContext";
@@ -231,7 +233,7 @@ const MOCK_EVENTS: B2BEvent[] = [
 type CommunityTab = "all" | "joined" | "admin" | "events" | "leads";
 
 export const CommunityScreen: React.FC = () => {
-  const { colors, isDark } = useTheme();
+  const { colors, isDark, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<CommunityTab>("leads");
   const [searchQuery, setSearchQuery] = useState("");
   const [communities, setCommunities] = useState<CommunityItem[]>(MOCK_COMMUNITIES);
@@ -388,31 +390,75 @@ export const CommunityScreen: React.FC = () => {
   }, [communities, activeTab, searchQuery]);
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+      ]}
+      edges={["top"]}
+    >
       {/* 1. Header Thương Hiệu ViOne */}
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+        ]}
+      >
         <View style={styles.headerBrand}>
           <Image
             source={require("../../../assets/vione-wordmark.png")}
             style={styles.logoWordmark}
             resizeMode="contain"
           />
-          <Text style={styles.headerGreeting}>{getGreeting()}</Text>
+          <Text style={[styles.headerGreeting, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+            {getGreeting()}
+          </Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.bellBtn}
-          onPress={() => Alert.alert("Thông báo", "Bạn có 2 thông báo sự kiện cộng đồng mới.")}
-          activeOpacity={0.7}
-        >
-          <Bell size={20} color="#D8B282" strokeWidth={1.8} />
-          <View style={styles.bellBadge}>
-            <Text style={styles.bellBadgeText}>2</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+          <TouchableOpacity
+            style={[
+              styles.bellBtn,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
+            onPress={toggleTheme}
+            activeOpacity={0.7}
+          >
+            {isDark ? (
+              <Sun size={19} color="#D8B282" strokeWidth={1.8} />
+            ) : (
+              <Moon size={19} color="#A3703C" strokeWidth={1.8} />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.bellBtn,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
+            onPress={() => Alert.alert("Thông báo", "Bạn có 2 thông báo sự kiện cộng đồng mới.")}
+            activeOpacity={0.7}
+          >
+            <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
+            <View style={styles.bellBadge}>
+              <Text style={styles.bellBadgeText}>2</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      <View style={styles.headerDivider} />
+      <View
+        style={[
+          styles.headerDivider,
+          { backgroundColor: isDark ? "rgba(216, 178, 130, 0.15)" : "#E2E8F0" },
+        ]}
+      />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -430,8 +476,10 @@ export const CommunityScreen: React.FC = () => {
         <View style={styles.titleSection}>
           <View style={styles.titleRow}>
             <View>
-              <Text style={styles.screenTitle}>Cộng đồng</Text>
-              <Text style={styles.screenSubtitle}>
+              <Text style={[styles.screenTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                Cộng đồng
+              </Text>
+              <Text style={[styles.screenSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                 Thành viên · Sự kiện · Cơ hội
               </Text>
             </View>

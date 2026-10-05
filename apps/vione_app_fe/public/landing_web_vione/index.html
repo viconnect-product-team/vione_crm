@@ -459,9 +459,21 @@
           </p>
         </div>
 
-        <!-- Wide Screenshot (Rectangle.png) -->
-        <div class="w-full rounded-2xl lg:rounded-3xl overflow-hidden border-2 border-zinc-200 shadow-2xl bg-white">
-          <img src="./operational-dashboard.png" alt="Kiểm Soát Vận Hành Tổng Thể Vione" class="w-full h-auto object-cover" onerror="this.src='./workflow-automation.png'">
+        <!-- Wide Screenshot (Strictly NO Border, 5-Slide 1.5s ViOne CRM Carousel) -->
+        <div class="w-full relative">
+          <div id="crm-slide-screen" class="w-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl bg-zinc-950 relative aspect-[16/10] sm:aspect-[16/9] border-0">
+            <img id="crm-slide-img" src="./crm-slide-1-dashboard.png" alt="Kiểm Soát Vận Hành Tổng Thể ViOne CRM" class="w-full h-full object-cover object-top border-0 block transition-opacity duration-500">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-zinc-950/95 via-zinc-950/60 to-transparent p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-white pointer-events-none">
+              <div>
+                <span id="crm-slide-badge" class="inline-block px-2.5 py-0.5 rounded-full bg-yellow-500/25 text-yellow-400 text-[10px] sm:text-xs font-mono font-bold tracking-wider mb-1">MODULE 01 • BẢNG ĐIỀU HÀNH 360°</span>
+                <h4 id="crm-slide-title" class="text-sm sm:text-base font-bold font-outfit text-white leading-snug">Tổng quan điều hành thời gian thực phản ánh sức khỏe tài chính, KPI và dự án doanh nghiệp</h4>
+              </div>
+              <div class="flex items-center gap-1.5 self-end sm:self-center bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs font-mono font-bold text-yellow-400">
+                <span id="crm-slide-num">01</span><span class="text-zinc-500">/</span><span class="text-zinc-400">05</span>
+              </div>
+            </div>
+          </div>
+          <div id="crm-slide-dots" class="mt-4 flex items-center justify-center gap-2"></div>
         </div>
       </div>
     </section>
@@ -569,10 +581,17 @@
     <!-- ================= 8. PHÙ HỢP NHIỀU MÔ HÌNH - GIẢI PHÁP CHO MỌI NGÀNH NGHỀ ================= -->
     <section class="py-20 lg:py-28 bg-neutral-50 border-b border-zinc-200">
       <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <!-- Graphic Screenshot (Rectangle (2).png) -->
+        <!-- Graphic Screenshot (Real ViOne CRM Solution, Border-free) -->
         <div class="lg:col-span-6 order-2 lg:order-1">
-          <div class="rounded-3xl overflow-hidden border-2 border-zinc-200 shadow-2xl bg-white hover:scale-[1.01] transition-transform">
-            <img src="./business-laptop.png" alt="Giải Pháp Cho Mọi Ngành Nghề Vione" class="w-full h-auto object-cover" onerror="this.src='./operational-dashboard.png'">
+          <div class="rounded-3xl overflow-hidden shadow-2xl bg-zinc-950 hover:scale-[1.01] transition-transform border-0 relative">
+            <img src="./solution-vione-real.png" alt="Mạng Lưới Đối Tác & Danh Mục Giải Pháp ViOne CRM Thực Tế" class="w-full h-auto object-cover border-0 block" onerror="this.src='./crm-slide-3-marketplace.png'">
+            <div class="absolute bottom-3 left-3 right-3 px-3.5 py-2 rounded-xl bg-zinc-950/85 backdrop-blur-md text-white flex items-center justify-between text-xs pointer-events-none">
+              <span class="font-bold text-zinc-200 flex items-center gap-2">
+                <span class="size-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Hệ thống Quản lý Đối tác & Khách hàng ViOne CRM Thực tế
+              </span>
+              <span class="text-yellow-400 font-mono text-[10px] font-bold">LIVE CRM</span>
+            </div>
           </div>
         </div>
 
@@ -1019,6 +1038,89 @@
     document.getElementById('quoteModal').addEventListener('click', function(e) {
       if (e.target === this) closeQuoteModal();
     });
+
+    // 5-Slide ViOne CRM 1.5s Continuous Carousel Runner
+    (function initCrmCarousel() {
+      const slides = [
+        {
+          src: "./crm-slide-1-dashboard.png",
+          alt: "Bảng Điều Hành Số & Báo Cáo Sức Khỏe Doanh Nghiệp ViOne CRM",
+          badge: "MODULE 01 • BẢNG ĐIỀU HÀNH 360°",
+          title: "Tổng quan điều hành thời gian thực phản ánh sức khỏe tài chính, KPI và dự án doanh nghiệp"
+        },
+        {
+          src: "./crm-slide-2-opportunities.png",
+          alt: "Phễu Chuyển Đổi & Pipeline Cơ Hội Bán Hàng ViOne CRM",
+          badge: "MODULE 02 • PIPELINE CƠ HỘI BÁN HÀNG",
+          title: "Quản trị phễu chuyển đổi khách hàng tiềm năng và dự báo doanh số chuẩn xác từng giai đoạn"
+        },
+        {
+          src: "./crm-slide-3-marketplace.png",
+          alt: "Sàn Kết Nối Cung Cầu & Gian Hàng B2B ViOne CRM",
+          badge: "MODULE 03 • MARKETPLACE GIAO THƯƠNG B2B",
+          title: "Liên kết cung cầu sản phẩm, xúc tiến thương mại giữa các doanh nghiệp trong hệ sinh thái"
+        },
+        {
+          src: "./crm-slide-4-finance.png",
+          alt: "Quản Trị Tài Chính & Báo Cáo Dòng Tiền ViOne CRM",
+          badge: "MODULE 04 • QUẢN TRỊ DÒNG TIỀN DOANH NGHIỆP",
+          title: "Kiểm soát chi phí, doanh thu thực thu - thực chi và tự động đối chiếu số dư tức thời"
+        },
+        {
+          src: "./crm-slide-5-meetings.png",
+          alt: "Lịch Họp Điều Hành & Trợ Lý Biên Bản AI ViOne CRM",
+          badge: "MODULE 05 • LỊCH HỌP & BIÊN BẢN AI COPILOT",
+          title: "Điều phối lịch họp HĐQT / Ban điều hành, tự động ghi nhận và trích xuất nhiệm vụ tức thì"
+        }
+      ];
+
+      let currentIndex = 0;
+      const img = document.getElementById('crm-slide-img');
+      const badge = document.getElementById('crm-slide-badge');
+      const title = document.getElementById('crm-slide-title');
+      const num = document.getElementById('crm-slide-num');
+      const dotsContainer = document.getElementById('crm-slide-dots');
+
+      if (!img || !dotsContainer) return;
+
+      // Render dots
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = 'h-2.5 rounded-full transition-all duration-300 border-0 cursor-pointer ' + (idx === 0 ? 'w-10 bg-yellow-500' : 'w-3 bg-zinc-300');
+        dot.setAttribute('aria-label', 'Slide ' + (idx + 1));
+        dot.onclick = () => showSlide(idx);
+        dotsContainer.appendChild(dot);
+      });
+
+      function showSlide(idx) {
+        currentIndex = idx;
+        const cur = slides[idx];
+        img.style.opacity = '0';
+        setTimeout(() => {
+          img.src = cur.src;
+          img.alt = cur.alt;
+          badge.textContent = cur.badge;
+          title.textContent = cur.title;
+          num.textContent = '0' + (idx + 1);
+          img.style.opacity = '1';
+        }, 150);
+
+        Array.from(dotsContainer.children).forEach((dot, dIdx) => {
+          if (dIdx === idx) {
+            dot.className = 'h-2.5 rounded-full transition-all duration-300 border-0 cursor-pointer w-10 bg-yellow-500';
+          } else {
+            dot.className = 'h-2.5 rounded-full transition-all duration-300 border-0 cursor-pointer w-3 bg-zinc-300';
+          }
+        });
+      }
+
+      // Auto cycle every 1.5 seconds (1500ms)
+      setInterval(() => {
+        const next = (currentIndex + 1) % slides.length;
+        showSlide(next);
+      }, 1500);
+    })();
   </script>
 </body>
 </html>

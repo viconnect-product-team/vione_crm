@@ -35,8 +35,11 @@ import {
   Clock,
   ChevronRight,
   SlidersHorizontal,
+  Sun,
+  Moon,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
+import { useTheme } from "../../context/ThemeContext";
 import { Avatar } from "../../components/common/Avatar";
 import { ConnectionPerson, DmThreadSummary } from "../../types";
 import { apiRequest } from "../../api/client";
@@ -278,6 +281,7 @@ type MessageCategory = "all" | "unread" | "groups" | "requests";
 
 export const NetworkScreen: React.FC = () => {
   const { user } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<NetworkTab>("network");
 
   // Partners state
@@ -468,25 +472,62 @@ export const NetworkScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      {/* 1. Sticky Header Thương Hiệu: Wordmark + Greeting + Inbox & Notification Menu */}
-      <View style={styles.header}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+      ]}
+      edges={["top"]}
+    >
+      {/* 1. Sticky Header Thương Hiệu: Wordmark + Greeting + Theme Toggle + Inbox & Notification Menu */}
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: isDark ? "#0A0A0B" : "#F8FAFC" },
+        ]}
+      >
         <View style={styles.headerBrand}>
           <Image
             source={require("../../../assets/vione-wordmark.png")}
             style={styles.logoWordmark}
             resizeMode="contain"
           />
-          <Text style={styles.headerGreeting}>{getGreeting()}</Text>
+          <Text style={[styles.headerGreeting, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+            {getGreeting()}
+          </Text>
         </View>
 
         <View style={styles.headerRightActions}>
           <TouchableOpacity
-            style={styles.headerIconBtn}
+            style={[
+              styles.headerIconBtn,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
+            onPress={toggleTheme}
+            activeOpacity={0.7}
+          >
+            {isDark ? (
+              <Sun size={19} color="#D8B282" strokeWidth={1.8} />
+            ) : (
+              <Moon size={19} color="#A3703C" strokeWidth={1.8} />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.headerIconBtn,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
             onPress={() => setActiveTab("messages")}
             activeOpacity={0.7}
           >
-            <MessageSquare size={20} color="#D8B282" strokeWidth={1.8} />
+            <MessageSquare size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
             {totalUnreadCount > 0 && (
               <View style={styles.bellBadge}>
                 <Text style={styles.bellBadgeText}>{totalUnreadCount}</Text>
@@ -495,11 +536,17 @@ export const NetworkScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.headerIconBtn}
+            style={[
+              styles.headerIconBtn,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
             onPress={() => Alert.alert("Thông báo", "Bạn có 2 thông báo kết nối doanh nghiệp mới.")}
             activeOpacity={0.7}
           >
-            <Bell size={20} color="#D8B282" strokeWidth={1.8} />
+            <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
             <View style={styles.bellBadge}>
               <Text style={styles.bellBadgeText}>2</Text>
             </View>
@@ -507,13 +554,20 @@ export const NetworkScreen: React.FC = () => {
         </View>
       </View>
 
-      <View style={styles.headerDivider} />
+      <View
+        style={[
+          styles.headerDivider,
+          { backgroundColor: isDark ? "rgba(216, 178, 130, 0.15)" : "#E2E8F0" },
+        ]}
+      />
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {/* 2. Page Title Header: Network + Add Person Button + Subtitle */}
         <View style={styles.titleSection}>
           <View style={styles.titleRow}>
-            <Text style={styles.pageTitle}>Network</Text>
+            <Text style={[styles.pageTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+              Network
+            </Text>
             <TouchableOpacity
               style={styles.addPersonBtn}
               onPress={() => Alert.alert("Thêm kết nối", "Quét mã QR hoặc nhập thông tin doanh nhân mới.")}

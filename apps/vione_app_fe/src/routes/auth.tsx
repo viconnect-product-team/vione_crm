@@ -329,34 +329,40 @@ function CrmAdminAuthPage() {
 
   const busy = loading || oauthPending !== null;
 
-  // Giao diện đăng nhập Hoàng gia Vàng Đồng ViOne 5.0 AI
+  // Giao diện đăng nhập Sáng sang trọng Hoàng gia Vàng Đồng ViOne 5.0
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center p-4 sm:p-6 bg-slate-950 text-slate-100 transition-colors duration-200">
-      {/* Ambient Royal Gold Glow Background */}
+    <main className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center p-4 sm:p-6 bg-slate-100 text-slate-900 transition-colors duration-200">
+      {/* Background Image: Corporate Luxury Architecture */}
       <div
-        className="pointer-events-none fixed inset-0 opacity-50 dark:opacity-70"
+        className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
-          background:
-            "radial-gradient(circle at 50% 15%, rgba(234, 179, 8, 0.22) 0%, rgba(202, 138, 4, 0.12) 35%, transparent 75%)",
+          backgroundImage: "url('/skyline_perspective_light.jpg')",
         }}
       />
-      <div
-        className="pointer-events-none fixed -top-40 -right-40 h-96 w-96 rounded-full bg-amber-500/10 blur-[100px]"
-      />
-      <div
-        className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-yellow-500/10 blur-[100px]"
-      />
+      {/* Soft Light Overlay for Optimal Contrast */}
+      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-white/85 via-slate-50/75 to-white/90 backdrop-blur-[2px]" />
 
-      {/* Main Luxury Glassmorphism Card */}
-      <div className="relative z-10 w-full max-w-md rounded-3xl border border-amber-500/25 bg-slate-900/90 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_40px_rgba(234,179,8,0.15)] text-slate-100 transition-all duration-200">
+      {/* Ambient Champagne Gold Glow Accents */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-40"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 20%, rgba(223, 183, 108, 0.35) 0%, rgba(201, 158, 85, 0.15) 40%, transparent 70%)",
+        }}
+      />
+      <div className="pointer-events-none fixed -top-40 -right-40 h-96 w-96 rounded-full bg-[#DFB76C]/20 blur-[120px]" />
+      <div className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#E8C98E]/25 blur-[120px]" />
+
+      {/* Main Luxury Glassmorphism Light Card */}
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-[#DFB76C]/35 bg-white/92 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_25px_60px_rgba(223,183,108,0.22),0_10px_35px_rgba(15,23,42,0.08)] text-slate-900 transition-all duration-200">
         {/* Top bar: Back to Landing & Theme/Lang Switchers */}
-        <div className="flex items-center justify-between pb-4 border-b border-amber-500/15">
+        <div className="flex items-center justify-between pb-4 border-b border-[#DFB76C]/20">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-300/80 transition hover:text-amber-200 hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8C653B] transition hover:text-[#644621] hover:underline"
           >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            <span>Trang chủ ViOne 5.0</span>
+            <ArrowLeft className="h-3.5 w-3.5 text-[#8C653B]" />
+            <span>Trang chủ ViOne</span>
           </Link>
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
@@ -366,28 +372,24 @@ function CrmAdminAuthPage() {
 
         {/* Brand Crest & Headers */}
         <div className="mt-5 flex flex-col items-center justify-center text-center">
-          {/* Logo Vione 5.0 AI */}
-          <div className="flex items-center justify-center gap-2.5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-400 to-amber-600 text-slate-950 font-black text-2xl shadow-[0_4px_20px_rgba(234,179,8,0.45)]">
-              V
-            </div>
-            <span className="text-2xl font-black tracking-tight text-white font-['Outfit',sans-serif]">
-              vione
-            </span>
-            <span className="rounded-full bg-black/80 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-amber-400 border border-amber-500/40 shadow-xs">
-              5.0 AI
-            </span>
+          {/* Logo Vione Official Wordmark */}
+          <Link to="/" className="inline-block transition-transform hover:scale-[1.02]">
+            <img
+              src="/vione-wordmark.png"
+              alt="ViOne Logo"
+              className="h-10 w-auto object-contain drop-shadow-sm"
+            />
+          </Link>
+
+          <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full bg-[#DFB76C]/15 px-3 py-1 border border-[#DFB76C]/35 text-[11px] font-bold text-[#8C653B]">
+            <Sparkles className="h-3.5 w-3.5 text-[#B8860B]" />
+            <span>HỆ THỐNG ĐIỀU HÀNH THÔNG MINH</span>
           </div>
 
-          <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1 border border-amber-500/30 text-[11px] font-bold text-amber-300">
-            <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-            <span>TRÍ TUỆ NHÂN TẠO THẾ HỆ MỚI</span>
-          </div>
-
-          <h1 className="mt-3 text-[22px] sm:text-[25px] font-extrabold tracking-tight text-white">
+          <h1 className="mt-3 text-[22px] sm:text-[24px] font-extrabold tracking-tight text-slate-900">
             {mode === "signin" ? "Đăng nhập Hệ thống CRM" : "Đăng ký Quản trị viên"}
           </h1>
-          <p className="mt-1 text-xs sm:text-[13px] text-slate-400 max-w-[21rem]">
+          <p className="mt-1 text-xs sm:text-[13px] text-slate-500 max-w-[21rem]">
             {mode === "signin"
               ? "Cổng điều phối quản trị vận hành, tự động hóa & AI Copilot ViOne"
               : "Khởi tạo tài khoản quản trị hệ thống ViOne"}
@@ -398,17 +400,17 @@ function CrmAdminAuthPage() {
         {authError && (
           <div
             role="alert"
-            className="mt-4 rounded-xl border border-rose-500/30 bg-rose-950/40 p-3 text-xs text-rose-300 leading-relaxed"
+            className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 leading-relaxed shadow-xs"
           >
             <div className="flex items-start gap-2.5">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" aria-hidden="true" />
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
               <div className="flex-1">
-                <p className="font-medium">{authError}</p>
+                <p className="font-semibold">{authError}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setAuthError(null)}
-                className="flex h-5 w-5 items-center justify-center rounded hover:bg-rose-900/50 cursor-pointer"
+                className="flex h-5 w-5 items-center justify-center rounded hover:bg-rose-100 cursor-pointer text-rose-500"
               >
                 <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
@@ -425,7 +427,7 @@ function CrmAdminAuthPage() {
           className="mt-5 space-y-3.5"
         >
           <div>
-            <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+            <label className="block text-[11.5px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Tài khoản / Email
             </label>
             <input
@@ -434,20 +436,20 @@ function CrmAdminAuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@connect.vn"
-              className="h-12 w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 text-sm text-white outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25 shadow-inner"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-[#DFB76C] focus:ring-2 focus:ring-[#DFB76C]/20 shadow-xs"
             />
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[11.5px] font-bold text-slate-700 uppercase tracking-wider">
                 Mật khẩu bảo mật
               </label>
               {mode === "signin" && (
                 <Link
                   to="/forgot-password"
                   search={{ email: email.trim() || undefined }}
-                  className="text-[11px] font-medium text-amber-400 hover:text-amber-300 hover:underline transition-colors"
+                  className="text-[11.5px] font-semibold text-[#8C653B] hover:text-[#644621] hover:underline transition-colors"
                 >
                   {t("auth.forgotPassword")}
                 </Link>
@@ -460,12 +462,12 @@ function CrmAdminAuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("auth.passwordPlaceholder")}
-                className="h-12 w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 pr-11 text-sm text-white outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25 shadow-inner"
+                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-[#DFB76C] focus:ring-2 focus:ring-[#DFB76C]/20 shadow-xs"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-400 transition-colors focus:outline-none cursor-pointer"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#8C653B] transition-colors focus:outline-none cursor-pointer"
                 aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -475,7 +477,7 @@ function CrmAdminAuthPage() {
 
           {mode === "signup" && (
             <div>
-              <label className="block text-[11px] font-semibold text-slate-300 uppercase tracking-wider mb-1">
+              <label className="block text-[11.5px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Xác nhận mật khẩu
               </label>
               <div className="relative">
@@ -485,17 +487,17 @@ function CrmAdminAuthPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Nhập lại mật khẩu"
-                  className="h-12 w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 pr-11 text-sm text-white outline-none transition-all placeholder:text-slate-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/25 shadow-inner"
+                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-[#DFB76C] focus:ring-2 focus:ring-[#DFB76C]/20 shadow-xs"
                 />
               </div>
             </div>
           )}
 
-          {/* Primary Submit Button - Royal Gold Gradient */}
+          {/* Primary Submit Button - Royal Champagne Gold Gradient */}
           <button
             type="submit"
             disabled={busy}
-            className="relative mt-2 flex h-12 w-full items-center justify-center rounded-xl text-[15px] sm:text-[16px] font-bold text-slate-950 transition-all hover:brightness-110 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-lg bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 hover:from-amber-400 hover:to-yellow-500 shadow-[0_10px_25px_rgba(234,179,8,0.35)]"
+            className="relative mt-2 flex h-12 w-full items-center justify-center rounded-xl text-[15px] sm:text-[16px] font-bold text-slate-950 transition-all hover:brightness-105 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-lg bg-gradient-to-r from-[#DFB76C] via-[#E8C98E] to-[#C99E55] hover:from-[#E8C98E] hover:to-[#B3873E] shadow-[#DFB76C]/30"
           >
             {loading ? (
               <span className="flex items-center gap-2 text-slate-950 font-bold">
@@ -516,16 +518,16 @@ function CrmAdminAuthPage() {
         </form>
 
         {/* Security Badge */}
-        <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-400 bg-slate-800/50 py-1.5 px-3 rounded-lg border border-slate-700/50">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+        <div className="mt-4 flex items-center justify-center gap-1.5 text-[11.5px] font-semibold text-slate-600 bg-slate-50 py-1.5 px-3 rounded-lg border border-slate-200/70">
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
           <span>Bảo mật AI • Mã hóa chuẩn AES-256</span>
         </div>
 
         {/* Divider */}
-        <div className="my-4 flex items-center gap-3 text-xs text-slate-500">
-          <span className="h-px flex-1 bg-slate-800" />
+        <div className="my-4 flex items-center gap-3 text-xs text-slate-400">
+          <span className="h-px flex-1 bg-slate-200" />
           <span>{t("auth.divider")}</span>
-          <span className="h-px flex-1 bg-slate-800" />
+          <span className="h-px flex-1 bg-slate-200" />
         </div>
 
         {/* Social OAuth Buttons: Google + Apple */}
@@ -535,10 +537,10 @@ function CrmAdminAuthPage() {
               type="button"
               onClick={() => void oauth("google")}
               disabled={busy}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700/80 text-white text-xs sm:text-[13.5px] font-medium transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer"
+              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-[#DFB76C]/50"
             >
               {oauthPending === "google" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-amber-400" aria-hidden="true" />
+                <Loader2 className="h-4 w-4 animate-spin text-[#8C653B]" aria-hidden="true" />
               ) : (
                 <GoogleMark />
               )}
@@ -548,10 +550,10 @@ function CrmAdminAuthPage() {
               type="button"
               onClick={() => void oauth("apple")}
               disabled={busy}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-700/80 text-white text-xs sm:text-[13.5px] font-medium transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer"
+              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-[#DFB76C]/50"
             >
               {oauthPending === "apple" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-amber-400" aria-hidden="true" />
+                <Loader2 className="h-4 w-4 animate-spin text-[#8C653B]" aria-hidden="true" />
               ) : (
                 <AppleMark />
               )}
@@ -568,12 +570,12 @@ function CrmAdminAuthPage() {
               setMode(mode === "signin" ? "signup" : "signin");
               setAuthError(null);
             }}
-            className="text-xs sm:text-[13px] text-slate-400 transition-colors hover:text-amber-400 cursor-pointer"
+            className="text-xs sm:text-[13px] text-slate-500 transition-colors hover:text-[#8C653B] cursor-pointer"
           >
             {mode === "signin" ? (
-              <span>Chưa có tài khoản quản trị? <strong className="text-amber-400 underline underline-offset-4">Đăng ký ngay</strong></span>
+              <span>Chưa có tài khoản quản trị? <strong className="text-[#8C653B] underline underline-offset-4">Đăng ký ngay</strong></span>
             ) : (
-              <span>Đã có tài khoản? <strong className="text-amber-400 underline underline-offset-4">Đăng nhập</strong></span>
+              <span>Đã có tài khoản? <strong className="text-[#8C653B] underline underline-offset-4">Đăng nhập</strong></span>
             )}
           </button>
         </div>

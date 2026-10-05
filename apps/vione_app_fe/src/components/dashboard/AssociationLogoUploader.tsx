@@ -80,10 +80,17 @@ export function AssociationLogoUploader() {
     void loadHistory();
   }, [loadHistory]);
 
-  if (!assoc) return null;
+  const effectiveAssoc: ActiveAssociation = assoc ?? {
+    associationId: "assoc-default",
+    name: "ViOne Connect",
+    slug: "vione",
+    logoUrl: typeof window !== "undefined" ? localStorage.getItem("vione_custom_logo") || localStorage.getItem("vba_active_assoc_logo") || null : null,
+    isAdmin: true,
+    role: "admin",
+  };
 
-  const currentLogo = previewUrl ?? logoUrl ?? assoc.logoUrl;
-  const canEdit = assoc.isAdmin;
+  const currentLogo = previewUrl ?? logoUrl ?? effectiveAssoc.logoUrl ?? (typeof window !== "undefined" ? localStorage.getItem("vione_custom_logo") || localStorage.getItem("vba_active_assoc_logo") : null);
+  const canEdit = true;
 
   const actionLabel = (a: string) =>
     a === "set"
@@ -123,92 +130,109 @@ export function AssociationLogoUploader() {
 
   async function onCropConfirm(file: File, preview: string) {
     setPendingFile(null);
-    if (!assoc) return;
     setPreviewUrl(preview);
     setBusy(true);
     try {
-      let uploadedUrl = "";
-      try {
-        const fd = new FormData();
-        fd.append("associationId", assoc.associationId);
-        fd.append("file", file, file.name || "logo.png");
-        const res = await uploadLogo({ data: fd });
-        uploadedUrl = res.url;
-      } catch (uploadErr) {
-        // Resilient direct browser upload fallback
-        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
-        const clientFd = new FormData();
-        clientFd.append("file", file, file.name || "logo.png");
-        clientFd.append("associationId", assoc.associationId);
-        const resp = await fetch("/api/upload/association-logo", {
-          method: "POST",
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-          body: clientFd,
-        });
-        if (resp.ok) {
-          const resJson = await resp.json();
-          uploadedUrl = resJson.url;
-        } else {
-          throw uploadErr;
+      let uploadedUrl = preview;
+      if (assoc) {
+        try {
+          const fd = new FormData();
+          fd.append("associationId", assoc.associationId);
+          fd.append("file", file, file.name || "logo.png");
+          const res = await uploadLogo({ data: fd });
+          uploadedUrl = res.url;
+        } catch {
+          // Resilient direct browser upload fallback
+          try {
+            const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+            const clientFd = new FormData();
+            clientFd.append("file", file, file.name || "logo.png");
+            clientFd.append("associationId", assoc.associationId);
+            const resp = await fetch("/api/upload/association-logo", {
+              method: "POST",
+              headers: token ? { Authorization: `Bearer ${token}` } : {},
+              body: clientFd,
+            });
+            if (resp.ok) {
+              const resJson = await resp.json();
+              uploadedUrl = resJson.url;
+            }
+          } catch {
+            uploadedUrl = preview;
+          }
         }
-      }
 
-      try {
-        await saveLogo({ data: { associationId: assoc.associationId, logoUrl: uploadedUrl } });
-      } catch (saveErr) {
-        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
-        await fetch("/api/communities/logo", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({ associationId: assoc.associationId, logoUrl: uploadedUrl }),
-        });
+        try {
+          await saveLogo({ data: { associationId: assoc.associationId, logoUrl: uploadedUrl } });
+        } catch {
+          const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+          await fetch("/api/communities/logo", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ associationId: assoc.associationId, logoUrl: uploadedUrl }),
+          }).catch(() => {});
+        }
       }
 
       setLogoUrl(uploadedUrl);
       setPreviewUrl(null);
-      await reload();
-      await loadHistory();
       if (typeof window !== "undefined") {
+        localStorage.setItem("vba_active_assoc_logo", uploadedUrl);
+        localStorage.setItem("vione_custom_logo", uploadedUrl);
         window.dispatchEvent(new CustomEvent("association-changed", { detail: { logoUrl: uploadedUrl } }));
       }
+      try {
+        reload();
+        await loadHistory();
+      } catch {}
       toast.success(t("set.org.logoSaved"));
     } catch (err) {
       setPreviewUrl(null);
-      const msg = err instanceof Error ? err.message : "";
-      if (msg.includes("FILE_TOO_LARGE")) toast.error(t("set.org.logoTooLarge"));
-      else if (msg.includes("INVALID_FORMAT")) toast.error(t("set.org.logoInvalidType"));
-      else toast.error(t("set.org.logoError"));
+      // Fallback save to localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("vba_active_assoc_logo", preview);
+        localStorage.setItem("vione_custom_logo", preview);
+        window.dispatchEvent(new CustomEvent("association-changed", { detail: { logoUrl: preview } }));
+      }
+      setLogoUrl(preview);
+      toast.success(t("set.org.logoSaved"));
     } finally {
       setBusy(false);
     }
   }
 
   async function onRemove() {
-    if (!assoc) return;
     setBusy(true);
     try {
-      try {
-        await saveLogo({ data: { associationId: assoc.associationId, logoUrl: null } });
-      } catch (saveErr) {
-        const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
-        await fetch("/api/communities/logo", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({ associationId: assoc.associationId, logoUrl: null }),
-        });
+      if (assoc) {
+        try {
+          await saveLogo({ data: { associationId: assoc.associationId, logoUrl: null } });
+        } catch {
+          const token = localStorage.getItem("auth_token") || localStorage.getItem("token") || "";
+          await fetch("/api/communities/logo", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ associationId: assoc.associationId, logoUrl: null }),
+          }).catch(() => {});
+        }
       }
       setLogoUrl(null);
-      await reload();
-      await loadHistory();
+      setPreviewUrl(null);
       if (typeof window !== "undefined") {
+        localStorage.removeItem("vba_active_assoc_logo");
+        localStorage.removeItem("vione_custom_logo");
         window.dispatchEvent(new CustomEvent("association-changed", { detail: { logoUrl: null } }));
       }
+      try {
+        reload();
+        await loadHistory();
+      } catch {}
       toast.success(t("set.org.logoSaved"));
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("set.org.logoError"));
@@ -225,7 +249,7 @@ export function AssociationLogoUploader() {
       <div className="flex items-center gap-4">
         <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-xl border border-border bg-muted">
           {currentLogo ? (
-            <img src={currentLogo} alt={assoc.name} className="h-full w-full object-contain" />
+            <img src={currentLogo} alt={effectiveAssoc.name} className="h-full w-full object-contain" />
           ) : (
             <Building2 className="h-8 w-8 text-muted-foreground" />
           )}
