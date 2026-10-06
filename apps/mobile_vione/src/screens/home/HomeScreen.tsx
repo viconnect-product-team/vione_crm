@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   View,
   Text,
@@ -9,23 +9,10 @@ import {
   Image,
   Alert,
   Dimensions,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
-
-interface AiPartnerItem {
-  id: string;
-  name: string;
-  title: string;
-  company: string;
-  industry: string;
-  industryKey: string;
-  location: string;
-  distanceTier: "near" | "city" | "national";
-  suggestion: string;
-  matchScore: string;
-  initial: string;
-}
 import {
   Bell,
   Pencil,
@@ -53,6 +40,10 @@ import {
   UserPlus,
   Sun,
   Moon,
+  Mic,
+  Play,
+  Pause,
+  Plus,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { useAuth } from "../../context/AuthContext";
@@ -68,9 +59,35 @@ import { CardScanReviewModal } from "../../components/CardScanReviewModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
 import { StaffDailyActivityModal } from "../../components/StaffDailyActivityModal";
 import { MemberCardBottomSheet } from "../../components/MemberCardBottomSheet";
+import { PostMomentModal } from "../../components/PostMomentModal";
 import { meApi, eventsApi, meetingsApi, networkApi } from "../../api";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+interface AiPartnerItem {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  industry: string;
+  industryKey: string;
+  location: string;
+  distanceTier: "near" | "city" | "national";
+  suggestion: string;
+  matchScore: string;
+  initial: string;
+}
+
+interface VoiceMomentItem {
+  id: string;
+  title: string;
+  author: string;
+  date: string;
+  duration: string;
+  location: string;
+  transcript: string;
+  audioUrl?: string;
+}
 
 interface HomeScreenProps {
   navigation?: any;
@@ -79,9 +96,15 @@ interface HomeScreenProps {
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) => {
   const { user } = useAuth();
-  const { isDark, toggleTheme, colors } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"today" | "upcoming" | "reminders">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "upcoming" | "reminders" | "voice_moments">("today");
+
+  // Location permission state
+  const [hasLocationPermission, setHasLocationPermission] = useState<boolean>(true);
+  const [requestingLocation, setRequestingLocation] = useState<boolean>(false);
+
+  // Modals state
   const [myQrVisible, setMyQrVisible] = useState(false);
   const [scanQrVisible, setScanQrVisible] = useState(false);
   const [attendanceVisible, setAttendanceVisible] = useState(false);
@@ -93,187 +116,167 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const [cardScanReviewVisible, setCardScanReviewVisible] = useState(false);
   const [eventDetailModalVisible, setEventDetailModalVisible] = useState(false);
   const [selectedEventForDetail, setSelectedEventForDetail] = useState<any | null>(null);
-  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(2);
+  const [unreadNotificationsCount, setUnreadNotificationsCount] = useState<number>(0);
   const [memberCardModalVisible, setMemberCardModalVisible] = useState(false);
+  const [postMomentVisible, setPostMomentVisible] = useState(false);
 
-  // Bộ lọc phạm vi & ngành nghề cho V · Gợi ý hôm nay
+  // Filters for AI suggestions
   const [distanceFilter, setDistanceFilter] = useState<"all" | "near" | "city" | "national">("all");
   const [industryFilter, setIndustryFilter] = useState<string>("all");
 
-  // Danh sách sự kiện sắp tới
-  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([
+  // Dynamic data lists
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [remindersList, setRemindersList] = useState<any[]>([]);
+  const [aiSuggestedPartners, setAiSuggestedPartners] = useState<AiPartnerItem[]>([]);
+  const [todayPool, setTodayPool] = useState<any[]>([]);
+
+  // Voice moments audio player simulation
+  const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
+  const [voiceMomentsList, setVoiceMomentsList] = useState<VoiceMomentItem[]>([
     {
-      id: "ev-1",
-      title: "Giao lưu Kết nối C-Level & Khởi nghiệp 2026",
-      date: "05/10/2026",
-      time: "09:30",
-      location: "Khách sạn Daewoo Hà Nội",
-      community: "CLB Doanh Nhân ViOne",
+      id: "vm-seed-01",
+      title: "Cuộc gặp ký kết đối tác chiến lược",
+      author: "Tổng Giám Đốc",
+      date: "10:15 Hôm nay",
+      duration: "01:45",
+      location: "Hà Nội, Việt Nam",
+      transcript:
+        "Thảo luận về cơ chế phân phối sản phẩm ViOne Connect và ký kết biên bản ghi nhớ hợp tác thương mại 2026.",
+      audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
+    },
+    {
+      id: "vm-seed-02",
+      title: "Thảo luận nhanh chuyển đổi số & CRM",
+      author: "Giám Đốc Vận Hành",
+      date: "14:20 Hôm qua",
+      duration: "00:58",
+      location: "Bình Dương, Việt Nam",
+      transcript:
+        "Ghi chú nhanh các yêu cầu kỹ thuật tích hợp API CRM và danh thiếp thông minh cho đoàn doanh nghiệp.",
+      audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_background.ogg",
     },
   ]);
 
-  // Danh sách nhắc lịch
-  const [remindersList, setRemindersList] = useState<any[]>([
-    {
-      id: "rem-1",
-      title: "Cuộc gặp 1-1: Đối tác Đầu tư Công nghệ",
-      date: "02/10/2026",
-      time: "14:30",
-      location: "Trụ sở ViOne Connect",
-      type: "meeting",
-    },
-  ]);
+  const togglePlayVoice = (id: string) => {
+    if (playingVoiceId === id) {
+      setPlayingVoiceId(null);
+    } else {
+      setPlayingVoiceId(id);
+      setTimeout(() => {
+        setPlayingVoiceId((prev) => (prev === id ? null : prev));
+      }, 5000);
+    }
+  };
 
-  // Danh sách đối tác gợi ý bởi AI phong phú theo khu vực & ngành nghề
-  const [aiSuggestedPartners, setAiSuggestedPartners] = useState<AiPartnerItem[]>([
-    {
-      id: "ai-1",
-      name: "Hoàng Gia Bảo",
-      title: "Phó Tổng Giám Đốc",
-      company: "Chuỗi Bán Lẻ & Logistics Toàn Quốc",
-      industry: "Bán Lẻ & Chuỗi Cung Ứng",
-      industryKey: "logistics",
-      location: "Hà Nội",
-      distanceTier: "near",
-      suggestion: "Tìm thấy cơ hội liên kết chuỗi logistics và hệ sinh thái phân phối bán lẻ",
-      matchScore: "94% tương đồng chuỗi cung ứng",
-      initial: "B",
-    },
-    {
-      id: "ai-2",
-      name: "Đặng Quang Huy",
-      title: "Nhà Sáng Lập & CEO",
-      company: "Huy Đặng Media & Digital Marketing",
-      industry: "Truyền Thông Doanh Nghiệp",
-      industryKey: "media",
-      location: "TP. Hồ Chí Minh",
-      distanceTier: "city",
-      suggestion: "Đối tác tiềm năng hỗ trợ mở rộng nhận diện thương hiệu doanh nghiệp đa kênh",
-      matchScore: "88% khớp hồ sơ hợp tác B2B",
-      initial: "H",
-    },
-    {
-      id: "ai-3",
-      name: "Trần Nhật Long",
-      title: "Giám Đốc Quỹ Đầu Tư",
-      company: "ViOne Capital Ventures",
-      industry: "Đầu Tư & Tài Chính",
-      industryKey: "investment",
-      location: "Hà Nội",
-      distanceTier: "near",
-      suggestion: "Đang tìm kiếm doanh nghiệp tăng trưởng nhanh để rót vốn chiến lược giai đoạn 2026",
-      matchScore: "96% tương thích danh mục đầu tư",
-      initial: "L",
-    },
-    {
-      id: "ai-4",
-      name: "Nguyễn Thị Phương Thảo",
-      title: "Chủ Tịch HĐQT",
-      company: "Tập Đoàn Hạ Tầng Cloud & AI",
-      industry: "Công Nghệ & AI",
-      industryKey: "tech",
-      location: "TP. Hồ Chí Minh",
-      distanceTier: "city",
-      suggestion: "Cơ hội liên kết cung cấp giải pháp máy chủ điện toán đám mây và trung tâm dữ liệu",
-      matchScore: "92% khớp chuỗi giá trị số",
-      initial: "T",
-    },
-    {
-      id: "ai-5",
-      name: "Bùi Anh Tuấn",
-      title: "Tổng Giám Đốc",
-      company: "Tập Đoàn Xây Dựng & Bất Động Sản Vicone",
-      industry: "Đầu Tư & Xây Dựng",
-      industryKey: "construction",
-      location: "Đà Nẵng",
-      distanceTier: "national",
-      suggestion: "Tìm kiếm nhà thầu phụ và nhà cung ứng vật tư xây dựng quy mô lớn khu vực miền Trung",
-      matchScore: "85% tương thích dự án hạ tầng",
-      initial: "T",
-    },
-    {
-      id: "ai-6",
-      name: "Vũ Kim Ngân",
-      title: "Giám Đốc Chuỗi Cung Ứng",
-      company: "Global Express Logistics",
-      industry: "Bán Lẻ & Chuỗi Cung Ứng",
-      industryKey: "logistics",
-      location: "Hà Nội",
-      distanceTier: "near",
-      suggestion: "Tối ưu hóa chi phí vận chuyển đường bộ và hệ thống kho bãi thông minh",
-      matchScore: "90% tương thích logistics",
-      initial: "N",
-    },
-  ]);
+  const handleRequestLocation = () => {
+    setRequestingLocation(true);
+    setTimeout(() => {
+      setRequestingLocation(false);
+      setHasLocationPermission(true);
+      Alert.alert(
+        "Định vị AI",
+        "Đã bật chia sẻ vị trí thành công! Trợ lý AI ViOne đã sẵn sàng tìm kiếm đối tác quanh bạn."
+      );
+    }, 600);
+  };
 
-  // Bộ lọc gợi ý AI theo phạm vi và ngành nghề
-  const filteredAiPartners = useMemo(() => {
-    return aiSuggestedPartners.filter((p) => {
-      if (distanceFilter !== "all") {
-        if (distanceFilter === "near" && p.distanceTier !== "near") return false;
-        if (distanceFilter === "city" && p.distanceTier !== "near" && p.distanceTier !== "city") return false;
-        if (distanceFilter === "national" && p.distanceTier !== "national") return false;
-      }
-      if (industryFilter !== "all") {
-        if (p.industryKey !== industryFilter) return false;
-      }
-      return true;
-    });
-  }, [aiSuggestedPartners, distanceFilter, industryFilter]);
-
+  // Load live data from API
   const loadData = async () => {
     try {
-      // 1. Unread notifications count
+      // 1. Unread notifications
       const notifRes = await meApi.getUnreadNotificationCount();
       if (notifRes?.data?.count !== undefined) {
         setUnreadNotificationsCount(notifRes.data.count);
       }
-    } catch (e) {
-      // Keep initial count
-    }
+    } catch {}
 
     try {
-      // 2. Events
+      // 2. Events from NestJS API
       const eventsRes = await eventsApi.getEvents();
-      const eventsList = Array.isArray(eventsRes?.data) ? eventsRes.data : [];
+      const eventsList = Array.isArray(eventsRes?.data)
+        ? eventsRes.data
+        : (eventsRes?.data as any)?.items || [];
+
       if (eventsList.length > 0) {
-        setUpcomingEvents(
-          eventsList.map((ev: any) => ({
-            id: ev.id,
-            title: ev.title,
-            date: ev.startsAt ? new Date(ev.startsAt).toLocaleDateString("vi-VN") : "05/10/2026",
-            time: ev.startsAt ? new Date(ev.startsAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "09:30",
-            location: ev.location || "ViOne Business Hub",
-            community: ev.category || "Cộng đồng ViOne",
-          }))
-        );
+        const now = new Date();
+        const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+        const mapped = eventsList.map((ev: any) => {
+          const rawDate = ev.date || ev.startDate || ev.startsAt || ev.start_date;
+          const dt = rawDate ? new Date(rawDate) : null;
+          return {
+            id: String(ev.id),
+            title: ev.title || ev.name || "Sự kiện kết nối Doanh nghiệp",
+            date: dt ? dt.toLocaleDateString("vi-VN") : "Hôm nay",
+            time: dt ? dt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "09:30",
+            location: ev.location || ev.venue || "Hội trường ViOne Connect",
+            community: ev.associationName || ev.communityName || "CLB Doanh Nhân ViOne",
+            dt,
+          };
+        });
+
+        // Filter upcoming events (future dates)
+        const upcoming = mapped.filter((ev: any) => ev.dt && ev.dt > todayEnd);
+        setUpcomingEvents(upcoming.length > 0 ? upcoming : mapped.slice(0, 5));
+
+        // Filter today events
+        const todayEvents = mapped.filter((ev: any) => {
+          if (!ev.dt) return false;
+          const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          return ev.dt >= start && ev.dt <= todayEnd;
+        });
+        setTodayPool(todayEvents);
       }
-    } catch (e) {
-      // Keep fallback
-    }
+    } catch {}
 
     try {
-      // 3. Meetings
+      // 3. Meetings from NestJS API
       const meetingsRes = await meetingsApi.getMeetings();
-      const meetingsList = Array.isArray(meetingsRes?.data) ? meetingsRes.data : [];
+      const meetingsList = Array.isArray(meetingsRes?.data)
+        ? meetingsRes.data
+        : (meetingsRes?.data as any)?.items || [];
+
       if (meetingsList.length > 0) {
         setRemindersList(
-          meetingsList.map((m: any) => ({
-            id: m.id || `m-${Math.random()}`,
-            title: m.title || "Cuộc gặp 1-1",
-            date: m.meetingDate ? new Date(m.meetingDate).toLocaleDateString("vi-VN") : "Hôm nay",
-            time: m.meetingTime || "14:30",
-            location: m.locationName || (m.locationType === "online" ? "Trực tuyến (Google Meet)" : "Trụ sở ViOne Connect"),
-            type: "meeting",
-          }))
+          meetingsList.map((m: any) => {
+            const rawDate = m.meetingDate || m.scheduled_start_at || m.date || m.time;
+            const dt = rawDate ? new Date(rawDate) : null;
+            const isOnline =
+              m.locationType === "online" ||
+              m.format === "online" ||
+              (m.locationName && m.locationName.toLowerCase().includes("meet"));
+
+            return {
+              id: String(m.id),
+              title: m.title || `Cuộc gặp 1-1: ${m.partnerName || m.counterpart || "Doanh nhân Đối tác"}`,
+              date: dt ? dt.toLocaleDateString("vi-VN") : "Hôm nay",
+              time: dt ? dt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : (m.time || "14:30"),
+              location: isOnline
+                ? "Google Meet Trực Tuyến"
+                : m.locationName || m.location || "Trụ sở ViOne Connect",
+              format: isOnline ? "online" : "offline",
+              type: "meeting",
+            };
+          })
         );
+      } else {
+        // Fallback default scheduled meeting for display
+        setRemindersList([
+          {
+            id: "rem-1",
+            title: "Cuộc gặp 1-1: Đối tác Đầu tư Công nghệ",
+            date: "Hôm nay",
+            time: "14:30",
+            location: "Trụ sở ViOne Connect",
+            format: "offline",
+            type: "meeting",
+          },
+        ]);
       }
-    } catch (e) {
-      // Keep fallback
-    }
+    } catch {}
 
     try {
-      // 4. AI Recommendations
+      // 4. AI Recommendations from NestJS API
       const recoRes = await networkApi.getTodayRecommendations();
       const recoList = Array.isArray(recoRes?.data) ? recoRes.data : [];
       if (recoList.length > 0) {
@@ -281,7 +284,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           recoList.map((r: any, idx: number): AiPartnerItem => ({
             id: r.id || `reco-${idx}`,
             name: r.name || r.displayName || "Doanh nhân đối tác",
-            title: r.title || "Lãnh đạo Doanh nghiệp",
+            title: r.title || r.headline || "Lãnh đạo Doanh nghiệp",
             company: r.company || r.companyName || "Tập đoàn Đối tác",
             industry: r.industry || "Kinh doanh & Đầu tư",
             industryKey: r.industryKey || "tech",
@@ -292,10 +295,50 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             initial: (r.name || r.displayName || "V").trim().slice(-1).toUpperCase(),
           }))
         );
+      } else {
+        setAiSuggestedPartners([
+          {
+            id: "ai-1",
+            name: "Hoàng Gia Bảo",
+            title: "Phó Tổng Giám Đốc",
+            company: "Chuỗi Bán Lẻ & Logistics Toàn Quốc",
+            industry: "Bán Lẻ & Chuỗi Cung Ứng",
+            industryKey: "logistics",
+            location: "Hà Nội",
+            distanceTier: "near",
+            suggestion: "Tìm thấy cơ hội liên kết chuỗi logistics và hệ sinh thái phân phối bán lẻ",
+            matchScore: "94% tương đồng chuỗi cung ứng",
+            initial: "B",
+          },
+          {
+            id: "ai-2",
+            name: "Đặng Quang Huy",
+            title: "Nhà Sáng Lập & CEO",
+            company: "Huy Đặng Media & Digital Marketing",
+            industry: "Truyền Thông Doanh Nghiệp",
+            industryKey: "media",
+            location: "TP. Hồ Chí Minh",
+            distanceTier: "city",
+            suggestion: "Đối tác tiềm năng hỗ trợ mở rộng nhận diện thương hiệu doanh nghiệp đa kênh",
+            matchScore: "88% khớp hồ sơ hợp tác B2B",
+            initial: "H",
+          },
+          {
+            id: "ai-3",
+            name: "Trần Nhật Long",
+            title: "Giám Đốc Quỹ Đầu Tư",
+            company: "ViOne Capital Ventures",
+            industry: "Đầu Tư & Tài Chính",
+            industryKey: "investment",
+            location: "Hà Nội",
+            distanceTier: "near",
+            suggestion: "Đang tìm kiếm doanh nghiệp tăng trưởng nhanh để rót vốn chiến lược giai đoạn 2026",
+            matchScore: "96% tương thích danh mục đầu tư",
+            initial: "L",
+          },
+        ]);
       }
-    } catch (e) {
-      // Keep fallback
-    }
+    } catch {}
   };
 
   useEffect(() => {
@@ -308,15 +351,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
     setRefreshing(false);
   };
 
-  // Lời chào theo thời gian thực (Chào buổi sáng / chiều / tối)
+  // Real-time greeting with live hour and minute matching PWA
   const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return "Chào buổi sáng,";
-    if (hour >= 12 && hour < 18) return "Chào buổi chiều,";
-    return "Chào buổi tối,";
+    const now = new Date();
+    const h = now.getHours();
+    const timeStr = `${String(h).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    if (h >= 5 && h < 12) return `Chào buổi sáng · ${timeStr}`;
+    if (h >= 12 && h < 18) return `Chào buổi chiều · ${timeStr}`;
+    return `Chào buổi tối · ${timeStr}`;
   };
 
-  // Định dạng ngày tiếng Việt: "Thứ Sáu, 02 Tháng 10"
+  // Formatted date in Vietnamese
   const getFormattedDate = () => {
     const days = [
       "Chủ Nhật",
@@ -345,6 +390,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const userPhone = user?.phone || "0912 345 678";
   const avatarInitial = getInitial(displayName);
 
+  // Filter AI partners by distance and industry
+  const filteredAiPartners = useMemo(() => {
+    return aiSuggestedPartners.filter((p) => {
+      if (distanceFilter !== "all") {
+        if (distanceFilter === "near" && p.distanceTier !== "near") return false;
+        if (distanceFilter === "city" && p.distanceTier !== "near" && p.distanceTier !== "city") return false;
+        if (distanceFilter === "national" && p.distanceTier !== "national") return false;
+      }
+      if (industryFilter !== "all") {
+        if (p.industryKey !== industryFilter) return false;
+      }
+      return true;
+    });
+  }, [aiSuggestedPartners, distanceFilter, industryFilter]);
+
   return (
     <SafeAreaView
       style={[
@@ -365,7 +425,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           />
         }
       >
-        {/* Top Header: Logo ViOne + Greeting + Bell Notification */}
+        {/* Top Header: Logo ViOne + Realtime Greeting + Bell Notification + Theme Switch */}
         <View style={styles.header}>
           <View style={styles.headerBrand}>
             <Image
@@ -399,30 +459,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
 
             <TouchableOpacity
               style={[
-                styles.headerIconBtn,
+                styles.bellBtn,
                 {
                   backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
                   borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
                 },
               ]}
-              onPress={() => navigation?.navigate("Network")}
-              activeOpacity={0.7}
-            >
-              <MessageSquare size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
-              <View style={styles.bellBadge}>
-                <Text style={styles.bellBadgeText}>1</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.headerIconBtn,
-                {
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                  borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-                },
-              ]}
-              onPress={() => Alert.alert("Thông báo", `Bạn có ${unreadNotificationsCount} thông báo kết nối doanh nghiệp mới.`)}
+              onPress={() =>
+                Alert.alert("Thông báo", `Bạn có ${unreadNotificationsCount} thông báo kết nối doanh nghiệp mới.`)
+              }
               activeOpacity={0.7}
             >
               <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
@@ -454,7 +499,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           onPress={() => setMemberCardModalVisible(true)}
           activeOpacity={0.92}
         >
-          {/* Ảnh bìa doanh nhân thực tế */}
+          {/* Ảnh bìa doanh nhân */}
           <View style={styles.coverBannerWrap}>
             <Image
               source={require("../../../assets/vba-hero.jpg")}
@@ -467,14 +512,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             />
             <TouchableOpacity
               style={styles.editBtn}
-              onPress={() => Alert.alert("Hồ sơ", "Chỉnh sửa thông tin doanh nhân ViOne.")}
+              onPress={() => setMemberCardModalVisible(true)}
               activeOpacity={0.8}
             >
               <Pencil size={14} color="#D8B282" />
             </TouchableOpacity>
           </View>
 
-          {/* Thông tin doanh nhân bên dưới ảnh bìa: Left Info & Right Avatar */}
+          {/* Thông tin doanh nhân: Left Info & Right Avatar */}
           <View style={styles.identityBody}>
             <View style={styles.identityLeft}>
               <View style={styles.roleBadge}>
@@ -494,10 +539,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               {user?.avatarUrl ? (
                 <Image source={{ uri: user.avatarUrl }} style={styles.avatarImg} />
               ) : (
-                <LinearGradient
-                  colors={["#2A2016", "#14110E"]}
-                  style={styles.avatarCircle}
-                >
+                <LinearGradient colors={["#2A2016", "#14110E"]} style={styles.avatarCircle}>
                   <Text style={styles.avatarInitialText}>{avatarInitial}</Text>
                 </LinearGradient>
               )}
@@ -505,10 +547,64 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           </View>
         </TouchableOpacity>
 
-        {/* 2. Phân Hệ HÔM NAY (Editorial schedule) */}
+        {/* Trạng thái chia sẻ vị trí AI & Định vị xung quanh (Matching 100% PWA) */}
+        <View style={styles.locationBanner}>
+          <View style={styles.locationLeft}>
+            <View style={styles.locationDotWrap}>
+              <View
+                style={[
+                  styles.locationDot,
+                  { backgroundColor: hasLocationPermission ? "#10B981" : "#F59E0B" },
+                ]}
+              />
+            </View>
+            <View style={{ flex: 1 }}>
+              <View style={styles.locationTitleRow}>
+                <MapPin size={13} color="#F59E0B" style={{ marginRight: 4 }} />
+                <Text style={styles.locationTitle}>
+                  {hasLocationPermission ? "Định vị AI: Đang chia sẻ vị trí" : "Định vị AI: Chưa bật vị trí"}
+                </Text>
+              </View>
+              <Text style={styles.locationDesc} numberOfLines={1}>
+                {hasLocationPermission
+                  ? "Bán kính định vị AI sẵn sàng tìm kiếm đối tác & người dùng ViOne quanh bạn"
+                  : "Bật quyền vị trí để AI quét và kết nối doanh nhân ở gần bạn nhất"}
+              </Text>
+            </View>
+          </View>
+          {!hasLocationPermission && (
+            <TouchableOpacity
+              style={styles.enableLocationBtn}
+              onPress={handleRequestLocation}
+              disabled={requestingLocation}
+              activeOpacity={0.85}
+            >
+              <LinearGradient
+                colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.enableLocationBtnGrad}
+              >
+                <Text style={styles.enableLocationBtnText}>
+                  {requestingLocation ? "Đang bật..." : "Bật vị trí"}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* 2. Phân Hệ HÔM NAY (Editorial schedule: 4 TABS Khớp 100% PWA) */}
         <View style={styles.sectionToday}>
           <View style={styles.todayHeaderRow}>
-            <Text style={styles.todaySectionTitle}>HÔM NAY</Text>
+            <Text style={styles.todaySectionTitle}>
+              {activeTab === "today"
+                ? "HÔM NAY"
+                : activeTab === "upcoming"
+                ? "LỊCH TRÌNH SẮP TỚI"
+                : activeTab === "reminders"
+                ? "NHẮC LỊCH CUỘC GẶP & SỰ KIỆN"
+                : "LỊCH SỬ KHOẢNG KHẮC GHI ÂM"}
+            </Text>
             <TouchableOpacity
               style={styles.viewCalendarBtn}
               onPress={() => Alert.alert("Lịch", "Xem toàn bộ lịch hoạt động & sự kiện.")}
@@ -520,11 +616,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </TouchableOpacity>
           </View>
 
-          {/* Ngày tiếng Việt động */}
-          <Text style={styles.todayDateTitle}>{getFormattedDate()}</Text>
+          {/* Ngày tiếng Việt động hoặc Tiêu đề Tab */}
+          <Text style={styles.todayDateTitle}>
+            {activeTab === "today"
+              ? getFormattedDate()
+              : activeTab === "upcoming"
+              ? "Sự kiện sắp diễn ra"
+              : activeTab === "reminders"
+              ? "Cuộc gặp & Nhắc hẹn"
+              : "🎙️ Ghi âm khoảnh khắc"}
+          </Text>
 
-          {/* Bộ 3 Tabs: [Hôm nay] [Sắp tới (1)] [Nhắc lịch (1)] */}
+          {/* Bộ 4 Segmented Tabs: [Hôm nay] [Sắp tới (N)] [Nhắc lịch (N)] [🎙️ Ghi âm (N)] */}
           <View style={styles.tabsRow}>
+            {/* Tab 1: Hôm nay */}
             <TouchableOpacity
               style={styles.tabPill}
               onPress={() => setActiveTab("today")}
@@ -537,13 +642,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   end={{ x: 1, y: 1 }}
                   style={styles.tabGradientActive}
                 >
-                  <Text style={styles.tabPillTextActive}>Hôm nay</Text>
+                  <Text style={styles.tabPillTextActive}>
+                    Hôm nay {todayPool.length > 0 ? `(${todayPool.length})` : ""}
+                  </Text>
                 </LinearGradient>
               ) : (
                 <Text style={styles.tabPillTextInactive}>Hôm nay</Text>
               )}
             </TouchableOpacity>
 
+            {/* Tab 2: Sắp tới */}
             <TouchableOpacity
               style={styles.tabPill}
               onPress={() => setActiveTab("upcoming")}
@@ -557,20 +665,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   style={styles.tabGradientActive}
                 >
                   <Text style={styles.tabPillTextActive}>Sắp tới</Text>
-                  <View style={styles.tabBadgeActive}>
-                    <Text style={styles.tabBadgeTextActive}>{upcomingEvents.length}</Text>
-                  </View>
+                  {upcomingEvents.length > 0 && (
+                    <View style={styles.tabBadgeActive}>
+                      <Text style={styles.tabBadgeTextActive}>{upcomingEvents.length}</Text>
+                    </View>
+                  )}
                 </LinearGradient>
               ) : (
                 <View style={styles.tabInactiveInner}>
                   <Text style={styles.tabPillTextInactive}>Sắp tới</Text>
-                  <View style={styles.tabBadgeInactive}>
-                    <Text style={styles.tabBadgeTextInactive}>{upcomingEvents.length}</Text>
-                  </View>
+                  {upcomingEvents.length > 0 && (
+                    <View style={styles.tabBadgeInactive}>
+                      <Text style={styles.tabBadgeTextInactive}>{upcomingEvents.length}</Text>
+                    </View>
+                  )}
                 </View>
               )}
             </TouchableOpacity>
 
+            {/* Tab 3: Nhắc lịch */}
             <TouchableOpacity
               style={styles.tabPill}
               onPress={() => setActiveTab("reminders")}
@@ -584,87 +697,173 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   style={styles.tabGradientActive}
                 >
                   <Text style={styles.tabPillTextActive}>Nhắc lịch</Text>
-                  <View style={styles.tabBadgeActive}>
-                    <Text style={styles.tabBadgeTextActive}>{remindersList.length}</Text>
-                  </View>
+                  {remindersList.length > 0 && (
+                    <View style={styles.tabBadgeActive}>
+                      <Text style={styles.tabBadgeTextActive}>{remindersList.length}</Text>
+                    </View>
+                  )}
                 </LinearGradient>
               ) : (
                 <View style={styles.tabInactiveInner}>
                   <Text style={styles.tabPillTextInactive}>Nhắc lịch</Text>
-                  <View style={styles.tabBadgeInactive}>
-                    <Text style={styles.tabBadgeTextInactive}>{remindersList.length}</Text>
-                  </View>
+                  {remindersList.length > 0 && (
+                    <View style={styles.tabBadgeInactive}>
+                      <Text style={styles.tabBadgeTextInactive}>{remindersList.length}</Text>
+                    </View>
+                  )}
+                </View>
+              )}
+            </TouchableOpacity>
+
+            {/* Tab 4: Ghi âm khoảnh khắc (🎙️ Ghi âm) */}
+            <TouchableOpacity
+              style={styles.tabPill}
+              onPress={() => setActiveTab("voice_moments")}
+              activeOpacity={0.8}
+            >
+              {activeTab === "voice_moments" ? (
+                <LinearGradient
+                  colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.tabGradientActive}
+                >
+                  <Mic size={11} color="#050C15" style={{ marginRight: 2 }} />
+                  <Text style={styles.tabPillTextActive}>Ghi âm</Text>
+                  {voiceMomentsList.length > 0 && (
+                    <View style={styles.tabBadgeActive}>
+                      <Text style={styles.tabBadgeTextActive}>{voiceMomentsList.length}</Text>
+                    </View>
+                  )}
+                </LinearGradient>
+              ) : (
+                <View style={styles.tabInactiveInner}>
+                  <Mic size={11} color="#EF4444" style={{ marginRight: 2 }} />
+                  <Text style={styles.tabPillTextInactive}>Ghi âm</Text>
+                  {voiceMomentsList.length > 0 && (
+                    <View style={[styles.tabBadgeInactive, { backgroundColor: "rgba(239, 68, 68, 0.2)" }]}>
+                      <Text style={[styles.tabBadgeTextInactive, { color: "#EF4444" }]}>
+                        {voiceMomentsList.length}
+                      </Text>
+                    </View>
+                  )}
                 </View>
               )}
             </TouchableOpacity>
           </View>
 
-          {/* Nội dung Tab HÔM NAY: Trạng thái yên tĩnh */}
+          {/* Nội dung Tab HÔM NAY */}
           {activeTab === "today" && (
-            <View style={styles.quietBox}>
-              <View style={styles.quietIconWrap}>
-                <CheckCircle2 size={26} color="#D8B282" strokeWidth={1.8} />
-              </View>
-              <Text style={styles.quietTitle}>Hôm nay thật yên tĩnh</Text>
-              <Text style={styles.quietSubtitle}>
-                Không có gì cần xử lý ngay. Có thể đây là lúc tốt để mở rộng kết nối mới.
-              </Text>
-
-              {/* Nút Mở V để kết nối */}
-              <TouchableOpacity
-                style={styles.openVBtn}
-                onPress={() => {
-                  if (onOpenV) {
-                    onOpenV();
-                  } else {
-                    Alert.alert("ViOne Connect", "Mở menu kết nối nhanh 1-chạm.");
-                  }
-                }}
-                activeOpacity={0.85}
-              >
-                <View style={styles.vMiniEmblem}>
-                  <VIconMark size={14} />
+            todayPool.length === 0 ? (
+              <View style={styles.quietBox}>
+                <View style={styles.quietIconWrap}>
+                  <CheckCircle2 size={26} color="#D8B282" strokeWidth={1.8} />
                 </View>
-                <Text style={styles.openVBtnText}>Mở V để kết nối</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* Nội dung Tab SẮP TỚI */}
-          {activeTab === "upcoming" && (
-            <View style={styles.listContainer}>
-              {upcomingEvents.map((ev) => (
+                <Text style={styles.quietTitle}>Hôm nay thật yên tĩnh</Text>
+                <Text style={styles.quietSubtitle}>
+                  Không có việc khẩn cần xử lý ngay. Có thể đây là lúc tốt để mở rộng kết nối mới.
+                </Text>
                 <TouchableOpacity
-                  key={ev.id}
-                  style={styles.eventCard}
+                  style={styles.openVBtn}
                   onPress={() => {
-                    setSelectedEventForDetail({
-                      id: ev.id,
-                      title: ev.title,
-                      startsAt: `${ev.time} · ${ev.date}`,
-                      location: ev.location,
-                      category: ev.community,
-                      isRegistered: true,
-                      registeredCount: 88,
-                    });
-                    setEventDetailModalVisible(true);
+                    if (onOpenV) onOpenV();
                   }}
                   activeOpacity={0.85}
                 >
-                  <View style={styles.cardHeaderRow}>
-                    <View style={styles.cardTag}>
-                      <CalendarDays size={12} color="#D8B282" style={{ marginRight: 4 }} />
-                      <Text style={styles.cardTagText}>{ev.community}</Text>
-                    </View>
-                    <Text style={styles.cardDate}>{ev.time} · {ev.date}</Text>
+                  <View style={styles.vMiniEmblem}>
+                    <VIconMark size={14} />
                   </View>
-                  <Text style={styles.cardTitle}>{ev.title}</Text>
-                  <View style={styles.cardLocationRow}>
-                    <MapPin size={13} color="#D4C3A3" style={{ marginRight: 4 }} />
-                    <Text style={styles.cardLocationText}>{ev.location}</Text>
-                  </View>
+                  <Text style={styles.openVBtnText}>Mở V để kết nối</Text>
                 </TouchableOpacity>
-              ))}
+              </View>
+            ) : (
+              <View style={styles.listContainer}>
+                {todayPool.map((ev) => (
+                  <TouchableOpacity
+                    key={ev.id}
+                    style={styles.eventCard}
+                    onPress={() => {
+                      setSelectedEventForDetail(ev);
+                      setEventDetailModalVisible(true);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <View style={styles.cardHeaderRow}>
+                      <View style={styles.cardTag}>
+                        <CalendarDays size={12} color="#D8B282" style={{ marginRight: 4 }} />
+                        <Text style={styles.cardTagText}>{ev.community}</Text>
+                      </View>
+                      <Text style={styles.cardDate}>{ev.time} · Hôm nay</Text>
+                    </View>
+                    <Text style={styles.cardTitle}>{ev.title}</Text>
+                    <View style={styles.cardLocationRow}>
+                      <MapPin size={13} color="#D4C3A3" style={{ marginRight: 4 }} />
+                      <Text style={styles.cardLocationText}>{ev.location}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )
+          )}
+
+          {/* Nội dung Tab SẮP TỚI (Timeline & List sự kiện sắp tới) */}
+          {activeTab === "upcoming" && (
+            <View style={styles.listContainer}>
+              {upcomingEvents.length === 0 ? (
+                <View style={styles.quietBox}>
+                  <CalendarDays size={28} color="#94A3B8" />
+                  <Text style={styles.quietTitle}>Chưa có sự kiện sắp diễn ra</Text>
+                </View>
+              ) : (
+                upcomingEvents.map((ev) => (
+                  <TouchableOpacity
+                    key={ev.id}
+                    style={styles.eventCard}
+                    onPress={() => {
+                      setSelectedEventForDetail({
+                        id: ev.id,
+                        title: ev.title,
+                        startsAt: `${ev.time} · ${ev.date}`,
+                        location: ev.location,
+                        category: ev.community,
+                        isRegistered: true,
+                        registeredCount: 88,
+                      });
+                      setEventDetailModalVisible(true);
+                    }}
+                    activeOpacity={0.85}
+                  >
+                    <View style={styles.cardHeaderRow}>
+                      <View style={styles.cardTag}>
+                        <CalendarDays size={12} color="#D8B282" style={{ marginRight: 4 }} />
+                        <Text style={styles.cardTagText}>{ev.community}</Text>
+                      </View>
+                      <Text style={styles.cardDate}>{ev.time} · {ev.date}</Text>
+                    </View>
+                    <Text style={styles.cardTitle}>{ev.title}</Text>
+                    <View style={styles.cardLocationRow}>
+                      <MapPin size={13} color="#D4C3A3" style={{ marginRight: 4 }} />
+                      <Text style={styles.cardLocationText}>{ev.location}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))
+              )}
+
+              {upcomingEvents.length > 0 && (
+                <TouchableOpacity
+                  style={styles.viewAllEventsRow}
+                  onPress={() => Alert.alert("Lịch sự kiện", "Đang mở toàn bộ lịch hoạt động.")}
+                  activeOpacity={0.8}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                    <CalendarDays size={15} color="#D8B282" />
+                    <Text style={styles.viewAllEventsText}>
+                      Xem tất cả ({upcomingEvents.length}) sự kiện trong lịch
+                    </Text>
+                  </View>
+                  <ChevronRight size={15} color="#D8B282" />
+                </TouchableOpacity>
+              )}
             </View>
           )}
 
@@ -683,20 +882,130 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   <Text style={styles.cardTitle}>{rem.title}</Text>
                   <View style={styles.cardFooterRow}>
                     <View style={styles.cardLocationRow}>
-                      <MapPin size={13} color="#D4C3A3" style={{ marginRight: 4 }} />
-                      <Text style={styles.cardLocationText}>{rem.location}</Text>
+                      {rem.format === "online" ? (
+                        <Video size={13} color="#D8B282" style={{ marginRight: 4 }} />
+                      ) : (
+                        <MapPin size={13} color="#D4C3A3" style={{ marginRight: 4 }} />
+                      )}
+                      <Text style={styles.cardLocationText} numberOfLines={1}>
+                        {rem.location}
+                      </Text>
                     </View>
-                    <View style={styles.confirmedPill}>
-                      <Text style={styles.confirmedPillText}>Đã xác nhận</Text>
-                    </View>
+
+                    {rem.format === "online" ? (
+                      <TouchableOpacity
+                        style={styles.joinMeetingBtn}
+                        onPress={() => Linking.openURL("https://meet.google.com/new")}
+                        activeOpacity={0.85}
+                      >
+                        <Text style={styles.joinMeetingBtnText}>Vào họp</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <View style={styles.confirmedPill}>
+                        <Text style={styles.confirmedPillText}>Đã xác nhận</Text>
+                      </View>
+                    )}
                   </View>
                 </View>
               ))}
             </View>
           )}
+
+          {/* Nội dung Tab GHI ÂM KHOẢNH KHẮC (Khớp 100% PWA) */}
+          {activeTab === "voice_moments" && (
+            <View style={styles.listContainer}>
+              <View style={styles.voiceSectionHeader}>
+                <Text style={styles.voiceSectionHeaderSub}>
+                  Lưu vết khoảnh khắc giọng nói đã đồng bộ AI:
+                </Text>
+                <TouchableOpacity
+                  style={styles.newVoiceBtn}
+                  onPress={() => setPostMomentVisible(true)}
+                  activeOpacity={0.7}
+                >
+                  <Mic size={12} color="#D8B282" style={{ marginRight: 4 }} />
+                  <Text style={styles.newVoiceBtnText}>Ghi âm mới</Text>
+                </TouchableOpacity>
+              </View>
+
+              {voiceMomentsList.map((vm) => {
+                const isPlaying = playingVoiceId === vm.id;
+                return (
+                  <View key={vm.id} style={styles.voiceCard}>
+                    <View style={styles.voiceCardTop}>
+                      <View style={styles.voiceMetaLeft}>
+                        <View style={styles.voiceMicIcon}>
+                          <Mic size={16} color="#EF4444" />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.voiceCardTitle}>{vm.title}</Text>
+                          <Text style={styles.voiceCardAuthor}>
+                            {vm.author} · {vm.date} · {vm.duration}
+                          </Text>
+                        </View>
+                      </View>
+
+                      <TouchableOpacity
+                        style={[
+                          styles.playVoiceBtn,
+                          isPlaying ? styles.playVoiceBtnActive : styles.playVoiceBtnNormal,
+                        ]}
+                        onPress={() => togglePlayVoice(vm.id)}
+                        activeOpacity={0.85}
+                      >
+                        {isPlaying ? (
+                          <>
+                            <Pause size={12} color="#FFFFFF" style={{ marginRight: 4 }} />
+                            <Text style={styles.playVoiceBtnActiveText}>Tạm dừng</Text>
+                          </>
+                        ) : (
+                          <>
+                            <Play size={12} color="#050C15" style={{ marginRight: 4 }} />
+                            <Text style={styles.playVoiceBtnText}>Phát lại</Text>
+                          </>
+                        )}
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* AI Transcript */}
+                    {vm.transcript ? (
+                      <View style={styles.voiceTranscriptBox}>
+                        <Text style={styles.voiceTranscriptLabel}>Nội dung ghi âm AI: </Text>
+                        <Text style={styles.voiceTranscriptText}>"{vm.transcript}"</Text>
+                      </View>
+                    ) : null}
+
+                    {/* Waveform indicator when playing */}
+                    {isPlaying && (
+                      <View style={styles.waveformWrap}>
+                        {[10, 16, 8, 20, 12, 18, 14, 8, 22, 10, 15, 6].map((h, i) => (
+                          <View
+                            key={i}
+                            style={[styles.waveformBar, { height: h, backgroundColor: "#EF4444" }]}
+                          />
+                        ))}
+                        <Text style={styles.waveformText}>Đang phát âm thanh gốc...</Text>
+                      </View>
+                    )}
+
+                    {/* Footer */}
+                    <View style={styles.voiceCardFooter}>
+                      <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <MapPin size={11} color="#F59E0B" style={{ marginRight: 4 }} />
+                        <Text style={styles.voiceLocationText}>{vm.location}</Text>
+                      </View>
+                      <Text style={styles.voiceCrmBadge}>
+                        Đã lưu vết CSDL • AI có thể tìm thấy
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })}
+            </View>
+          )}
         </View>
 
-        {/* 3. Khối INSIGHT DÀNH CHO BẠN (Matching responsive PWA) */}
+        {/* 3. Khối INSIGHT DÀNH CHO BẠN (Matching 100% PWA) */}
         <View style={styles.insightCard}>
           <View style={styles.insightHeaderRow}>
             <Sparkles size={16} color="#D8B282" style={{ marginRight: 6 }} />
@@ -721,7 +1030,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           </TouchableOpacity>
         </View>
 
-        {/* 4. Bộ 3 Phím Tắt Nhanh (QUICK ACTIONS - Matching responsive PWA) */}
+        {/* 4. Bộ 3 Phím Tắt Nhanh (QUICK ACTIONS - Matching 100% PWA) */}
         <View style={styles.quickActionsGrid}>
           {/* Quick Action 1: Cuộc gặp 1-1 */}
           <TouchableOpacity
@@ -753,10 +1062,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             <Text style={styles.quickActionLabel}>Quét thẻ</Text>
           </TouchableOpacity>
 
-          {/* Quick Action 3: Thẻ của tôi */}
+          {/* Quick Action 3: Danh thiếp của tôi */}
           <TouchableOpacity
             style={styles.quickActionCard}
-            onPress={() => setMyQrVisible(true)}
+            onPress={() => setMemberCardModalVisible(true)}
             activeOpacity={0.8}
           >
             <View style={styles.quickActionIconWrap}>
@@ -766,7 +1075,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           </TouchableOpacity>
         </View>
 
-        {/* 5. Khối ĐIỀU HÀNH & GIÁM SÁT DOANH NGHIỆP */}
+        {/* 5. Khối ĐIỀU HÀNH & GIÁM SÁT DOANH NGHIỆP (Trung Tâm Điều Hành C-Level) */}
         <View style={styles.opsSection}>
           <View style={styles.opsHeaderRow}>
             <View style={styles.opsHeaderLeft}>
@@ -775,118 +1084,92 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </View>
             <View style={styles.opsLiveBadge}>
               <View style={styles.opsLiveDot} />
-              <Text style={styles.opsLiveText}>THỜI GIAN THỰC</Text>
+              <Text style={styles.opsLiveText}>TRỰC TUYẾN</Text>
             </View>
           </View>
 
-          <Text style={styles.opsHeadline}>
-            TỔNG THỂ QUY TRÌNH & TIẾN ĐỘ NHÂN VIÊN
-          </Text>
+          <Text style={styles.opsHeadline}>Trung Tâm Điều Hành C-Level</Text>
           <Text style={styles.opsSubtitle}>
-            Tổng quan điều hành, chấm công thông minh và phê duyệt tức thì.
+            Tổng quan điều hành, chấm công GPS và phê duyệt ngân sách 3 cấp.
           </Text>
 
-          {/* Grid 4 Thẻ Nghiệp Vụ Giám Sát C-Level */}
-          <View style={styles.opsCardsCol}>
-            {/* Thẻ 1: Chấm công GPS & AI FaceID */}
+          {/* 3 Metric Tiles (Interactive Executive Metrics) */}
+          <View style={styles.opsMetricsGrid}>
+            {/* KPI 1: Chấm công */}
             <TouchableOpacity
-              style={styles.opsCard}
+              style={styles.opsMetricTile}
               onPress={() => setAttendanceVisible(true)}
               activeOpacity={0.8}
             >
-              <View style={styles.opsCardTop}>
-                <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.18)" }]}>
-                  <MapPin size={18} color="#D8B282" />
+              <View style={styles.metricTileHeader}>
+                <View style={styles.metricIconWrap}>
+                  <MapPin size={14} color="#D8B282" />
                 </View>
-                <View style={styles.opsCardBadgeGreen}>
-                  <Text style={styles.opsCardBadgeGreenText}>42/45 CÓ MẶT (93.3%)</Text>
-                </View>
+                <ChevronRight size={13} color="#94A3B8" />
               </View>
-              <Text style={styles.opsCardTitle}>Chấm công GPS & AI FaceID</Text>
-              <Text style={styles.opsCardDesc}>
-                Nhận diện khuôn mặt AI tự động · Điểm danh 1-chạm
+              <Text style={styles.metricValue}>
+                42<Text style={styles.metricSub}>/45</Text>
               </Text>
-              <View style={styles.opsCardFooter}>
-                <Text style={styles.opsCardActionText}>Mở bảng điểm danh & xin nghỉ</Text>
-                <ChevronRight size={14} color="#D8B282" />
-              </View>
+              <Text style={styles.metricBadgeGreen}>93.3% có mặt</Text>
+              <Text style={styles.metricLabel}>Chấm công GPS</Text>
             </TouchableOpacity>
 
-            {/* Thẻ 2: Giám sát lịch trình & hoạt động nhân sự trong ngày */}
+            {/* KPI 2: Quy trình */}
             <TouchableOpacity
-              style={[styles.opsCard, { borderColor: isDark ? "rgba(216, 178, 130, 0.45)" : "rgba(163, 112, 60, 0.5)" }]}
-              onPress={() => setStaffDailyModalVisible(true)}
-              activeOpacity={0.8}
-            >
-              <View style={styles.opsCardTop}>
-                <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.25)" }]}>
-                  <Activity size={18} color={isDark ? "#D8B282" : "#A3703C"} />
-                </View>
-                <View style={[styles.opsCardBadgeGreen, { backgroundColor: "rgba(216, 178, 130, 0.22)" }]}>
-                  <Text style={[styles.opsCardBadgeGreenText, { color: isDark ? "#D8B282" : "#A3703C" }]}>
-                    8 ĐANG GẶP ĐỐI TÁC
-                  </Text>
-                </View>
-              </View>
-              <Text style={styles.opsCardTitle}>Giám sát hoạt động trong ngày</Text>
-              <Text style={styles.opsCardDesc}>
-                Lịch gặp đối tác · Check-in GPS & báo cáo công việc thời gian thực
-              </Text>
-              <View style={styles.opsCardFooter}>
-                <Text style={[styles.opsCardActionText, { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
-                  Mở bảng giám sát nhân sự C-Level
-                </Text>
-                <ChevronRight size={14} color={isDark ? "#D8B282" : "#A3703C"} />
-              </View>
-            </TouchableOpacity>
-
-            {/* Thẻ 3: Quy trình & Tiến độ nhân sự */}
-            <TouchableOpacity
-              style={styles.opsCard}
+              style={styles.opsMetricTile}
               onPress={() => setWorkflowVisible(true)}
               activeOpacity={0.8}
             >
-              <View style={styles.opsCardTop}>
-                <View style={[styles.opsIconWrap, { backgroundColor: "rgba(56, 189, 248, 0.15)" }]}>
-                  <Layers size={18} color="#38BDF8" />
+              <View style={styles.metricTileHeader}>
+                <View style={styles.metricIconWrap}>
+                  <Layers size={14} color="#D8B282" />
                 </View>
-                <View style={styles.opsCardBadgeRed}>
-                  <AlertCircle size={11} color="#F43F5E" style={{ marginRight: 3 }} />
-                  <Text style={styles.opsCardBadgeRedText}>2 VIỆC TRỄ HẠN</Text>
-                </View>
+                <ChevronRight size={13} color="#94A3B8" />
               </View>
-              <Text style={styles.opsCardTitle}>Tiến độ công việc & Kanban</Text>
-              <Text style={styles.opsCardDesc}>
-                12 việc đang xử lý · 2 việc cần ưu tiên đẩy nhanh tiến độ
-              </Text>
-              <View style={styles.opsCardFooter}>
-                <Text style={styles.opsCardActionText}>Theo dõi tiến độ đội ngũ</Text>
-                <ChevronRight size={14} color="#D8B282" />
-              </View>
+              <Text style={styles.metricValue}>12</Text>
+              <Text style={styles.metricBadgeRed}>2 việc trễ</Text>
+              <Text style={styles.metricLabel}>Tiến độ nhân sự</Text>
             </TouchableOpacity>
 
-            {/* Thẻ 4: Phê duyệt chi 3 cấp */}
+            {/* KPI 3: Duyệt chi */}
             <TouchableOpacity
-              style={styles.opsCard}
+              style={styles.opsMetricTile}
               onPress={() => setApprovalsVisible(true)}
               activeOpacity={0.8}
             >
-              <View style={styles.opsCardTop}>
-                <View style={[styles.opsIconWrap, { backgroundColor: "rgba(168, 85, 247, 0.15)" }]}>
-                  <FileCheck size={18} color="#C084FC" />
+              <View style={styles.metricTileHeader}>
+                <View style={styles.metricIconWrap}>
+                  <ShieldCheck size={14} color="#D8B282" />
                 </View>
-                <View style={styles.opsCardBadgeAmber}>
-                  <Text style={styles.opsCardBadgeAmberText}>3 TỜ TRÌNH CHỜ DUYỆT</Text>
-                </View>
+                <ChevronRight size={13} color="#94A3B8" />
               </View>
-              <Text style={styles.opsCardTitle}>Phê duyệt chi trực tuyến</Text>
-              <Text style={styles.opsCardDesc}>
-                Quy trình 3 cấp kiểm duyệt · Ký duyệt chi & Napas VietQR
+              <Text style={styles.metricValue}>3</Text>
+              <Text style={styles.metricBadgeGold}>41.5 Tr chờ</Text>
+              <Text style={styles.metricLabel}>Ký duyệt chi</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Action Banner mạ vàng sang trọng — 1 chạm điểm danh */}
+          <View style={styles.opsActionBanner}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flex: 1 }}>
+              <Sparkles size={14} color="#D8B282" />
+              <Text style={styles.opsBannerText} numberOfLines={1}>
+                Hôm nay: 3 việc ưu tiên & 1 tờ trình cần ký
               </Text>
-              <View style={styles.opsCardFooter}>
-                <Text style={styles.opsCardActionText}>Ký duyệt chi ngay</Text>
-                <ChevronRight size={14} color="#D8B282" />
-              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.opsBannerBtn}
+              onPress={() => setAttendanceVisible(true)}
+              activeOpacity={0.85}
+            >
+              <LinearGradient
+                colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.opsBannerBtnGrad}
+              >
+                <Text style={styles.opsBannerBtnText}>Chấm công ngay</Text>
+              </LinearGradient>
             </TouchableOpacity>
           </View>
         </View>
@@ -913,11 +1196,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             Hệ sinh thái AI tự động tính toán dữ liệu năng lực, chuỗi giá trị và đề xuất đối tác C-Level tương thích cao nhất.
           </Text>
 
-          {/* THANH BỘ LỌC PHẠM VI KHOẢNG CÁCH (KHÔI PHỤC THEO YÊU CẦU NGƯỜI DÙNG) */}
+          {/* Lọc theo phạm vi */}
           <View style={{ marginTop: 12, marginBottom: 6 }}>
-            <Text style={{ fontSize: 10, fontWeight: "700", color: isDark ? "#D8B282" : "#A3703C", letterSpacing: 0.6, marginBottom: 6 }}>
-              LỌC THEO PHẠM VI KHÔNG GIAN
-            </Text>
+            <Text style={styles.filterGroupTitle}>LỌC THEO PHẠM VI KHÔNG GIAN</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
               {[
                 { id: "all", label: "Tất cả phạm vi" },
@@ -929,16 +1210,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 return (
                   <TouchableOpacity
                     key={df.id}
-                    style={[
-                      styles.aiFilterChip,
-                      active && {
-                        backgroundColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#FEF3C7",
-                        borderColor: isDark ? "#D8B282" : "#A3703C",
-                      },
-                    ]}
+                    style={[styles.aiFilterChip, active && styles.aiFilterChipActive]}
                     onPress={() => setDistanceFilter(df.id as any)}
                   >
-                    <Text style={[styles.aiFilterChipText, active && { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
+                    <Text style={[styles.aiFilterChipText, active && styles.aiFilterChipTextActive]}>
                       {df.label}
                     </Text>
                   </TouchableOpacity>
@@ -947,11 +1222,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </ScrollView>
           </View>
 
-          {/* THANH BỘ LỌC THEO NGÀNH NGHỀ / LIÊN MINH */}
+          {/* Lọc theo ngành nghề */}
           <View style={{ marginTop: 6, marginBottom: 12 }}>
-            <Text style={{ fontSize: 10, fontWeight: "700", color: isDark ? "#D8B282" : "#A3703C", letterSpacing: 0.6, marginBottom: 6 }}>
-              LỌC THEO LĨNH VỰC & CHUỖI GIÁ TRỊ
-            </Text>
+            <Text style={styles.filterGroupTitle}>LỌC THEO LĨNH VỰC & CHUỖI GIÁ TRỊ</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
               {[
                 { id: "all", label: "Tất cả ngành nghề" },
@@ -965,16 +1238,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 return (
                   <TouchableOpacity
                     key={ind.id}
-                    style={[
-                      styles.aiFilterChip,
-                      active && {
-                        backgroundColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#FEF3C7",
-                        borderColor: isDark ? "#D8B282" : "#A3703C",
-                      },
-                    ]}
+                    style={[styles.aiFilterChip, active && styles.aiFilterChipActive]}
                     onPress={() => setIndustryFilter(ind.id)}
                   >
-                    <Text style={[styles.aiFilterChipText, active && { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" }]}>
+                    <Text style={[styles.aiFilterChipText, active && styles.aiFilterChipTextActive]}>
                       {ind.label}
                     </Text>
                   </TouchableOpacity>
@@ -983,7 +1250,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </ScrollView>
           </View>
 
-          {/* DANH SÁCH ĐỐI TÁC GỢI Ý ĐÃ LỌC */}
+          {/* Danh sách đối tác gợi ý */}
           <View style={styles.aiListCol}>
             {filteredAiPartners.length === 0 ? (
               <View style={{ paddingVertical: 20, alignItems: "center" }}>
@@ -1006,16 +1273,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               filteredAiPartners.map((item: AiPartnerItem) => (
                 <View key={item.id} style={styles.aiPartnerCard}>
                   <View style={styles.aiPartnerTop}>
-                    <LinearGradient
-                      colors={["#2A2016", "#14110E"]}
-                      style={styles.aiAvatarCircle}
-                    >
+                    <LinearGradient colors={["#2A2016", "#14110E"]} style={styles.aiAvatarCircle}>
                       <Text style={styles.aiAvatarInitial}>{item.initial}</Text>
                     </LinearGradient>
 
                     <View style={styles.aiPartnerInfo}>
                       <View style={styles.aiNameRow}>
-                        <Text style={styles.aiPartnerName} numberOfLines={1}>{item.name}</Text>
+                        <Text style={styles.aiPartnerName} numberOfLines={1}>
+                          {item.name}
+                        </Text>
                         <View style={styles.aiLocationTag}>
                           <MapPin size={10} color="#D8B282" style={{ marginRight: 2 }} />
                           <Text style={styles.aiLocationText}>{item.location}</Text>
@@ -1044,11 +1310,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                   <View style={styles.aiActionRow}>
                     <TouchableOpacity
                       style={styles.aiConnectBtn}
-                      onPress={() => Alert.alert("Kết nối", `Đã gửi lời mời kết nối doanh nghiệp tới ${item.name}.`)}
+                      onPress={() => {
+                        setSelectedPartnerForMeeting({
+                          name: item.name,
+                          company: item.company,
+                        });
+                        setScheduleMeetingVisible(true);
+                      }}
                       activeOpacity={0.8}
                     >
-                      <UserPlus size={13} color="#050C15" style={{ marginRight: 4 }} />
-                      <Text style={styles.aiConnectBtnText}>Kết nối ngay</Text>
+                      <Handshake size={13} color="#050C15" style={{ marginRight: 4 }} />
+                      <Text style={styles.aiConnectBtnText}>Lên lịch 1-1</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -1067,7 +1339,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
         </View>
       </ScrollView>
 
-      {/* Modals hỗ trợ kết nối nhanh & nghiệp vụ BRD */}
+      {/* Modals hỗ trợ kết nối & nghiệp vụ */}
       <MyQrModal visible={myQrVisible} onClose={() => setMyQrVisible(false)} />
       <ScanQrModal visible={scanQrVisible} onClose={() => setScanQrVisible(false)} />
       <AttendanceModal visible={attendanceVisible} onClose={() => setAttendanceVisible(false)} />
@@ -1097,6 +1369,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
         onOpenNfc={() => Alert.alert("Chạm thẻ NFC", "Đưa điện thoại lại gần thẻ doanh nhân thông minh ViOne để kết nối.")}
         onOpenProfile={() => navigation?.navigate("Me")}
       />
+      <PostMomentModal
+        visible={postMomentVisible}
+        onClose={() => setPostMomentVisible(false)}
+        onPostSuccess={() => {
+          setPostMomentVisible(false);
+          loadData();
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -1122,7 +1402,7 @@ const styles = StyleSheet.create({
   },
   logoWordmark: {
     width: 140,
-    height: 48,
+    height: 44,
   },
   headerGreeting: {
     color: "#94A3B8",
@@ -1144,7 +1424,6 @@ const styles = StyleSheet.create({
     borderColor: "rgba(216, 178, 130, 0.22)",
     alignItems: "center",
     justifyContent: "center",
-    position: "relative",
   },
   bellBtn: {
     width: 38,
@@ -1159,20 +1438,20 @@ const styles = StyleSheet.create({
   },
   bellBadge: {
     position: "absolute",
-    top: 5,
-    right: 5,
-    backgroundColor: "#D8B282",
+    top: 4,
+    right: 4,
     minWidth: 16,
     height: 16,
     borderRadius: 8,
+    backgroundColor: "#EF4444",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 3,
   },
   bellBadgeText: {
-    color: "#050C15",
+    color: "#FFFFFF",
     fontSize: 9.5,
-    fontWeight: "900",
+    fontWeight: "800",
   },
   headerDivider: {
     height: 1,
@@ -1180,21 +1459,21 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   identityCard: {
-    backgroundColor: "#12151F",
-    borderRadius: 24,
+    borderRadius: 22,
+    overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(216, 178, 130, 0.25)",
-    overflow: "hidden",
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
-    shadowRadius: 14,
-    elevation: 6,
+    backgroundColor: "#12151F",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 4,
   },
   coverBannerWrap: {
     height: 110,
+    width: "100%",
     position: "relative",
-    backgroundColor: "#181D2A",
   },
   coverBannerImg: {
     width: "100%",
@@ -1202,10 +1481,7 @@ const styles = StyleSheet.create({
   },
   coverGradient: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    inset: 0,
   },
   editBtn: {
     position: "absolute",
@@ -1214,32 +1490,31 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(10, 10, 11, 0.75)",
+    backgroundColor: "rgba(0, 0, 0, 0.65)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.35)",
+    borderColor: "rgba(255, 255, 255, 0.2)",
     alignItems: "center",
     justifyContent: "center",
   },
   identityBody: {
+    padding: 14,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
   },
   identityLeft: {
     flex: 1,
-    marginRight: 12,
+    paddingRight: 12,
   },
   roleBadge: {
     alignSelf: "flex-start",
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.3)",
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
-    marginBottom: 5,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+    marginBottom: 4,
   },
   roleBadgeText: {
     color: "#D8B282",
@@ -1248,9 +1523,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   displayName: {
-    color: "#FFFFFF",
     fontSize: 18,
     fontWeight: "700",
+    color: "#FFFFFF",
+    lineHeight: 23,
   },
   phoneRow: {
     flexDirection: "row",
@@ -1258,18 +1534,17 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   phoneText: {
-    color: "#D8B282",
-    fontSize: 13,
+    fontSize: 12.5,
     fontWeight: "600",
+    color: "#D8B282",
   },
   avatarWrap: {
-    width: 62,
-    height: 62,
-    borderRadius: 31,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     borderWidth: 2,
     borderColor: "#D8B282",
     padding: 2,
-    backgroundColor: "#12151F",
   },
   avatarImg: {
     width: "100%",
@@ -1284,9 +1559,65 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarInitialText: {
-    color: "#F6E1C3",
+    color: "#D8B282",
     fontSize: 22,
-    fontWeight: "900",
+    fontWeight: "800",
+  },
+  locationBanner: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.22)",
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  locationLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    flex: 1,
+  },
+  locationDotWrap: {
+    width: 10,
+    height: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  locationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  locationTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  locationTitle: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#FFFFFF",
+  },
+  locationDesc: {
+    fontSize: 10.5,
+    color: "#94A3B8",
+    marginTop: 1,
+  },
+  enableLocationBtn: {
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  enableLocationBtnGrad: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  enableLocationBtnText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#050811",
   },
   sectionToday: {
     marginTop: 20,
@@ -1297,464 +1628,617 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   todaySectionTitle: {
-    color: "#94A3B8",
-    fontSize: 11,
+    fontSize: 10.5,
     fontWeight: "700",
-    letterSpacing: 1,
-    textTransform: "uppercase",
+    color: "#94A3B8",
+    letterSpacing: 0.8,
   },
   viewCalendarBtn: {
     flexDirection: "row",
     alignItems: "center",
   },
   viewCalendarText: {
-    color: "#D4C3A3",
     fontSize: 12,
     fontWeight: "600",
+    color: "#D8B282",
     marginRight: 2,
   },
   todayDateTitle: {
-    color: "#FFFFFF",
-    fontSize: 19,
+    fontSize: 20,
     fontWeight: "700",
-    marginTop: 4,
+    color: "#FFFFFF",
+    marginTop: 2,
+    textTransform: "capitalize",
   },
   tabsRow: {
     flexDirection: "row",
-    backgroundColor: "#181D2A",
-    borderRadius: 14,
-    padding: 3,
+    gap: 6,
     marginTop: 12,
+    padding: 4,
+    borderRadius: 14,
+    backgroundColor: "rgba(255, 255, 255, 0.04)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(216, 178, 130, 0.15)",
   },
   tabPill: {
     flex: 1,
-    height: 34,
     borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    overflow: "hidden",
   },
   tabGradientActive: {
-    flex: 1,
-    width: "100%",
-    borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    paddingVertical: 7,
+    paddingHorizontal: 4,
   },
   tabPillTextActive: {
-    color: "#050C15",
-    fontSize: 12,
-    fontWeight: "700",
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#050811",
+  },
+  tabPillTextInactive: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#94A3B8",
+    textAlign: "center",
+    paddingVertical: 7,
   },
   tabInactiveInner: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
-  },
-  tabPillTextInactive: {
-    color: "#94A3B8",
-    fontSize: 12,
-    fontWeight: "600",
+    paddingVertical: 7,
+    gap: 3,
   },
   tabBadgeActive: {
-    backgroundColor: "rgba(5, 12, 21, 0.2)",
-    paddingHorizontal: 5,
+    marginLeft: 3,
+    paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
   },
   tabBadgeTextActive: {
-    color: "#050C15",
-    fontSize: 9.5,
+    fontSize: 9,
     fontWeight: "800",
+    color: "#050811",
   },
   tabBadgeInactive: {
-    backgroundColor: "rgba(216, 178, 130, 0.18)",
-    paddingHorizontal: 5,
+    marginLeft: 2,
+    paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 8,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
   },
   tabBadgeTextInactive: {
-    color: "#D8B282",
-    fontSize: 9.5,
+    fontSize: 9,
     fontWeight: "700",
+    color: "#D8B282",
   },
   quietBox: {
-    backgroundColor: "#12151F",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    alignItems: "center",
-    paddingVertical: 22,
-    paddingHorizontal: 20,
     marginTop: 14,
+    padding: 24,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.15)",
+    alignItems: "center",
   },
   quietIconWrap: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "rgba(216, 178, 130, 0.12)",
-    alignItems: "center",
-    justifyContent: "center",
     marginBottom: 10,
   },
   quietTitle: {
-    color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "700",
+    color: "#FFFFFF",
+    marginBottom: 4,
   },
   quietSubtitle: {
+    fontSize: 12,
     color: "#94A3B8",
-    fontSize: 12.5,
     textAlign: "center",
-    marginTop: 4,
-    lineHeight: 18,
+    lineHeight: 17,
+    maxWidth: 260,
+    marginBottom: 16,
   },
   openVBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
-    borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.35)",
+    gap: 6,
+    paddingVertical: 8,
     paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 16,
-    marginTop: 14,
-    gap: 8,
+    borderRadius: 12,
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
   },
   vMiniEmblem: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: "#D8B282",
+    width: 16,
+    height: 16,
     alignItems: "center",
     justifyContent: "center",
   },
-  vMiniText: {
-    color: "#050C15",
-    fontSize: 12,
-    fontWeight: "900",
-  },
   openVBtnText: {
-    color: "#F6E1C3",
-    fontSize: 13,
+    fontSize: 12.5,
     fontWeight: "700",
+    color: "#D8B282",
   },
   listContainer: {
-    marginTop: 12,
+    marginTop: 14,
     gap: 10,
   },
   eventCard: {
-    backgroundColor: "#12151F",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
     padding: 14,
+    borderRadius: 18,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.2)",
   },
   cardHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 8,
+    marginBottom: 6,
   },
   cardTag: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(216, 178, 130, 0.12)",
-    paddingHorizontal: 7,
+    paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 8,
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
   },
   cardTagText: {
-    color: "#D8B282",
-    fontSize: 10.5,
+    fontSize: 11,
     fontWeight: "700",
+    color: "#D8B282",
   },
   cardDate: {
-    color: "#94A3B8",
-    fontSize: 11,
+    fontSize: 11.5,
     fontWeight: "600",
+    color: "#94A3B8",
   },
   cardTitle: {
-    color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 14.5,
     fontWeight: "700",
-    lineHeight: 20,
+    color: "#FFFFFF",
+    lineHeight: 19,
+    marginBottom: 6,
   },
   cardLocationRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 6,
+    flex: 1,
   },
   cardLocationText: {
-    color: "#94A3B8",
     fontSize: 12,
+    color: "#94A3B8",
+    flex: 1,
   },
   cardFooterRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: 2,
+    gap: 8,
   },
   confirmedPill: {
-    backgroundColor: "rgba(16, 185, 129, 0.15)",
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: 8,
+    backgroundColor: "rgba(16, 185, 129, 0.15)",
   },
   confirmedPillText: {
+    fontSize: 10.5,
+    fontWeight: "700",
     color: "#10B981",
-    fontSize: 10.5,
-    fontWeight: "700",
   },
-  insightCard: {
-    backgroundColor: "#12151F",
-    borderRadius: 20,
+  joinMeetingBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 8,
+    backgroundColor: "rgba(216, 178, 130, 0.25)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.35)",
-    padding: 18,
-    marginTop: 18,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 4,
+    borderColor: "#D8B282",
   },
-  insightHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  insightSmallLabel: {
-    color: "#D4C3A3",
-    fontSize: 10.5,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-  },
-  insightHeadline: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "700",
-    marginTop: 10,
-    lineHeight: 22,
-  },
-  insightGoldNumber: {
+  joinMeetingBtnText: {
+    fontSize: 11,
+    fontWeight: "800",
     color: "#D8B282",
-    fontSize: 18,
-    fontWeight: "900",
   },
-  insightSubtitle: {
-    color: "#94A3B8",
-    fontSize: 12.5,
-    marginTop: 6,
-    lineHeight: 18,
-  },
-  insightCta: {
+  viewAllEventsRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 12,
-  },
-  insightCtaText: {
-    color: "#D8B282",
-    fontSize: 13,
-    fontWeight: "700",
-  },
-  quickActionsGrid: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 16,
-  },
-  quickActionCard: {
-    flex: 1,
-    backgroundColor: "#12151F",
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    paddingVertical: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  quickActionIconWrap: {
-    width: 44,
-    height: 44,
+    justifyContent: "space-between",
+    padding: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(216, 178, 130, 0.12)",
+    backgroundColor: "rgba(255, 255, 255, 0.02)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.25)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
+    borderColor: "rgba(216, 178, 130, 0.18)",
+    marginTop: 4,
   },
-  quickActionLabel: {
-    color: "#FFFFFF",
+  viewAllEventsText: {
     fontSize: 12,
     fontWeight: "600",
+    color: "#D8B282",
   },
-  opsSection: {
-    marginTop: 22,
-    backgroundColor: "#12151F",
-    borderRadius: 22,
-    borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.25)",
-    padding: 18,
-  },
-  opsHeaderRow: {
+  voiceSectionHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 6,
   },
-  opsHeaderLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  opsSectionLabel: {
-    color: "#D4C3A3",
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-  },
-  opsLiveBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(16, 185, 129, 0.15)",
-    paddingHorizontal: 7,
-    paddingVertical: 3,
-    borderRadius: 10,
-  },
-  opsLiveDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#10B981",
-    marginRight: 4,
-  },
-  opsLiveText: {
-    color: "#10B981",
-    fontSize: 9.5,
-    fontWeight: "800",
-  },
-  opsHeadline: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "800",
-    marginTop: 10,
-    textTransform: "uppercase",
-  },
-  opsSubtitle: {
+  voiceSectionHeaderSub: {
+    fontSize: 11.5,
     color: "#94A3B8",
-    fontSize: 12,
-    marginTop: 4,
-    lineHeight: 18,
+    flex: 1,
   },
-  opsCardsCol: {
-    marginTop: 14,
-    gap: 10,
+  newVoiceBtn: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  opsCard: {
-    backgroundColor: "#181D2A",
-    borderRadius: 16,
+  newVoiceBtnText: {
+    fontSize: 11.5,
+    fontWeight: "700",
+    color: "#D8B282",
+  },
+  voiceCard: {
+    padding: 14,
+    borderRadius: 18,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    padding: 13,
+    borderColor: "rgba(216, 178, 130, 0.2)",
   },
-  opsCardTop: {
+  voiceCardTop: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    gap: 8,
   },
-  opsIconWrap: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
+  voiceMetaLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+  },
+  voiceMicIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.25)",
     alignItems: "center",
     justifyContent: "center",
   },
-  opsCardBadgeGreen: {
-    backgroundColor: "rgba(16, 185, 129, 0.15)",
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  opsCardBadgeGreenText: {
-    color: "#10B981",
-    fontSize: 9.5,
+  voiceCardTitle: {
+    fontSize: 13.5,
     fontWeight: "700",
+    color: "#FFFFFF",
   },
-  opsCardBadgeRed: {
+  voiceCardAuthor: {
+    fontSize: 11,
+    color: "#94A3B8",
+    marginTop: 1,
+  },
+  playVoiceBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(244, 63, 94, 0.15)",
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 10,
   },
-  opsCardBadgeRedText: {
-    color: "#F43F5E",
-    fontSize: 9.5,
-    fontWeight: "700",
+  playVoiceBtnNormal: {
+    backgroundColor: "#D8B282",
   },
-  opsCardBadgeAmber: {
-    backgroundColor: "rgba(245, 158, 11, 0.15)",
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
+  playVoiceBtnActive: {
+    backgroundColor: "#EF4444",
   },
-  opsCardBadgeAmberText: {
-    color: "#F59E0B",
-    fontSize: 9.5,
-    fontWeight: "700",
-  },
-  opsCardTitle: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "700",
-    marginTop: 8,
-  },
-  opsCardDesc: {
-    color: "#94A3B8",
+  playVoiceBtnText: {
     fontSize: 11.5,
-    marginTop: 3,
-    lineHeight: 16,
+    fontWeight: "800",
+    color: "#050C15",
   },
-  opsCardFooter: {
+  playVoiceBtnActiveText: {
+    fontSize: 11.5,
+    fontWeight: "800",
+    color: "#FFFFFF",
+  },
+  voiceTranscriptBox: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    borderLeftWidth: 2,
+    borderLeftColor: "#D8B282",
+  },
+  voiceTranscriptLabel: {
+    fontSize: 11,
+    fontWeight: "700",
+    color: "#D8B282",
+  },
+  voiceTranscriptText: {
+    fontSize: 11.5,
+    color: "#E2E8F0",
+    fontStyle: "italic",
+    lineHeight: 16,
+    marginTop: 2,
+  },
+  waveformWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    marginTop: 10,
+    paddingHorizontal: 4,
+  },
+  waveformBar: {
+    width: 3,
+    borderRadius: 2,
+  },
+  waveformText: {
+    fontSize: 10.5,
+    color: "#EF4444",
+    fontWeight: "600",
+    marginLeft: 6,
+  },
+  voiceCardFooter: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginTop: 10,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.06)",
+    borderTopColor: "rgba(255, 255, 255, 0.05)",
   },
-  opsCardActionText: {
+  voiceLocationText: {
+    fontSize: 11,
+    color: "#94A3B8",
+  },
+  voiceCrmBadge: {
+    fontSize: 9.5,
     color: "#D8B282",
-    fontSize: 11.5,
     fontWeight: "600",
+  },
+  insightCard: {
+    marginTop: 20,
+    padding: 18,
+    borderRadius: 22,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.25)",
+  },
+  insightHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+  },
+  insightSmallLabel: {
+    fontSize: 10.5,
+    fontWeight: "700",
+    color: "#94A3B8",
+    letterSpacing: 0.6,
+  },
+  insightHeadline: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    lineHeight: 24,
+    marginBottom: 6,
+  },
+  insightGoldNumber: {
+    color: "#D8B282",
+  },
+  insightSubtitle: {
+    fontSize: 12.5,
+    color: "#94A3B8",
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  insightCta: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  insightCtaText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#D8B282",
+  },
+  quickActionsGrid: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 16,
+  },
+  quickActionCard: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 4,
+    borderRadius: 18,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.2)",
+  },
+  quickActionIconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  quickActionLabel: {
+    fontSize: 11.5,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    textAlign: "center",
+  },
+  opsSection: {
+    marginTop: 22,
+    padding: 18,
+    borderRadius: 24,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+  },
+  opsHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  opsHeaderLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  opsSectionLabel: {
+    fontSize: 10.5,
+    fontWeight: "800",
+    color: "#D8B282",
+    letterSpacing: 0.8,
+  },
+  opsLiveBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
+  },
+  opsLiveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#10B981",
+  },
+  opsLiveText: {
+    fontSize: 9.5,
+    fontWeight: "800",
+    color: "#D8B282",
+  },
+  opsHeadline: {
+    fontSize: 15,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    marginTop: 4,
+  },
+  opsSubtitle: {
+    fontSize: 11.5,
+    color: "#94A3B8",
+    marginTop: 2,
+    marginBottom: 14,
+  },
+  opsMetricsGrid: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  opsMetricTile: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+  },
+  metricTileHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  metricIconWrap: {
+    width: 26,
+    height: 26,
+    borderRadius: 8,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  metricValue: {
+    fontSize: 18,
+    fontWeight: "900",
+    color: "#FFFFFF",
+  },
+  metricSub: {
+    fontSize: 11,
+    color: "#94A3B8",
+    fontWeight: "700",
+  },
+  metricBadgeGreen: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#10B981",
+    marginTop: 2,
+  },
+  metricBadgeRed: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#EF4444",
+    marginTop: 2,
+  },
+  metricBadgeGold: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#D8B282",
+    marginTop: 2,
+  },
+  metricLabel: {
+    fontSize: 9.5,
+    color: "#94A3B8",
+    marginTop: 4,
+  },
+  opsActionBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(255, 255, 255, 0.06)",
+    gap: 8,
+  },
+  opsBannerText: {
+    fontSize: 11.5,
+    fontWeight: "700",
+    color: "#E2E8F0",
+  },
+  opsBannerBtn: {
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  opsBannerBtnGrad: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  opsBannerBtnText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#050811",
   },
   aiSection: {
     marginTop: 22,
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: "#12151F",
+    padding: 18,
+    borderRadius: 24,
+    backgroundColor: "rgba(255, 255, 255, 0.03)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.2)",
+    borderColor: "rgba(216, 178, 130, 0.25)",
   },
   aiHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 4,
   },
   aiHeaderLeft: {
     flexDirection: "row",
     alignItems: "center",
   },
   aiSectionLabel: {
-    color: "#D8B282",
-    fontSize: 11,
+    fontSize: 10.5,
     fontWeight: "800",
+    color: "#D8B282",
     letterSpacing: 0.8,
   },
   aiViewAllBtn: {
@@ -1762,66 +2246,79 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   aiViewAllText: {
-    color: "#D8B282",
-    fontSize: 11.5,
+    fontSize: 12,
     fontWeight: "600",
+    color: "#D8B282",
     marginRight: 2,
   },
   aiHeadline: {
-    color: "#FFFFFF",
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "800",
-    marginTop: 8,
-    letterSpacing: -0.3,
+    color: "#FFFFFF",
+    marginTop: 4,
   },
   aiSubtitle: {
-    color: "#94A3B8",
     fontSize: 11.5,
-    marginTop: 4,
-    lineHeight: 16,
+    color: "#94A3B8",
+    marginTop: 2,
   },
-  aiListCol: {
-    marginTop: 12,
-    gap: 10,
+  filterGroupTitle: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#D8B282",
+    letterSpacing: 0.6,
+    marginBottom: 6,
   },
   aiFilterChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
     backgroundColor: "rgba(255, 255, 255, 0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+  },
+  aiFilterChipActive: {
+    backgroundColor: "rgba(216, 178, 130, 0.2)",
+    borderColor: "#D8B282",
   },
   aiFilterChipText: {
     fontSize: 11,
     color: "#94A3B8",
     fontWeight: "600",
   },
+  aiFilterChipTextActive: {
+    color: "#D8B282",
+    fontWeight: "700",
+  },
+  aiListCol: {
+    marginTop: 8,
+    gap: 10,
+  },
   aiPartnerCard: {
-    backgroundColor: "#181D2A",
-    borderRadius: 14,
-    padding: 12,
+    padding: 14,
+    borderRadius: 18,
+    backgroundColor: "rgba(255, 255, 255, 0.025)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: "rgba(216, 178, 130, 0.18)",
   },
   aiPartnerTop: {
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
+    gap: 12,
   },
   aiAvatarCircle: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: "#D8B282",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 10,
   },
   aiAvatarInitial: {
+    fontSize: 18,
+    fontWeight: "800",
     color: "#D8B282",
-    fontSize: 17,
-    fontWeight: "700",
   },
   aiPartnerInfo: {
     flex: 1,
@@ -1832,23 +2329,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   aiPartnerName: {
-    color: "#FFFFFF",
-    fontSize: 14,
+    fontSize: 14.5,
     fontWeight: "700",
+    color: "#FFFFFF",
     flex: 1,
   },
   aiLocationTag: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(216, 178, 130, 0.12)",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
   },
   aiLocationText: {
+    fontSize: 10.5,
     color: "#D8B282",
-    fontSize: 10,
-    fontWeight: "600",
   },
   aiMetaRow: {
     flexDirection: "row",
@@ -1856,38 +2348,39 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   aiMetaText: {
-    color: "#94A3B8",
     fontSize: 11.5,
+    color: "#CBD5E1",
     flex: 1,
   },
   aiIndustryText: {
-    color: "#D8B282",
     fontSize: 11,
-    fontWeight: "500",
+    color: "#94A3B8",
     flex: 1,
   },
   aiReasonBox: {
-    backgroundColor: "rgba(10, 10, 11, 0.6)",
-    borderRadius: 8,
-    padding: 8,
     marginTop: 8,
+    padding: 8,
+    borderRadius: 10,
+    backgroundColor: "rgba(216, 178, 130, 0.08)",
     borderLeftWidth: 2,
     borderLeftColor: "#D8B282",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 6,
   },
   aiSuggestionText: {
-    color: "#E2E8F0",
-    fontSize: 11.5,
-    lineHeight: 16,
+    fontSize: 11,
+    color: "#F6E1C3",
+    flex: 1,
   },
   aiMatchScoreText: {
-    color: "#D8B282",
-    fontSize: 10.5,
+    fontSize: 10,
     fontWeight: "700",
-    marginTop: 4,
+    color: "#D8B282",
   },
   aiActionRow: {
     flexDirection: "row",
-    alignItems: "center",
     gap: 8,
     marginTop: 10,
   },
@@ -1896,29 +2389,29 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 8,
+    borderRadius: 10,
     backgroundColor: "#D8B282",
-    paddingVertical: 7,
-    borderRadius: 8,
   },
   aiConnectBtnText: {
-    color: "#050C15",
     fontSize: 11.5,
-    fontWeight: "700",
+    fontWeight: "800",
+    color: "#050C15",
   },
   aiMessageBtn: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 8,
+    borderRadius: 10,
     backgroundColor: "rgba(255, 255, 255, 0.05)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.3)",
-    paddingVertical: 7,
-    borderRadius: 8,
+    borderColor: "rgba(216, 178, 130, 0.25)",
   },
   aiMessageBtnText: {
-    color: "#D8B282",
     fontSize: 11.5,
-    fontWeight: "600",
+    fontWeight: "700",
+    color: "#D8B282",
   },
 });

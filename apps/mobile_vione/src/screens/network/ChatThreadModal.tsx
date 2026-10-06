@@ -26,6 +26,10 @@ import { Avatar } from "../../components/common/Avatar";
 import { DmThreadSummary, DmMessage } from "../../types";
 import { apiRequest } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
+import {
+  OpportunityMeetingProposalCard,
+  OpportunityMeetingData,
+} from "../../components/OpportunityMeetingProposalCard";
 
 interface ChatThreadModalProps {
   visible: boolean;
@@ -257,6 +261,35 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
                 }
 
                 const isMe = item.isFromMe;
+
+                // Check for Opportunity Meeting Proposal card
+                if (item.body.startsWith("[opportunity_meeting_proposal]")) {
+                  let proposalData: OpportunityMeetingData = {};
+                  try {
+                    const jsonStr = item.body.replace("[opportunity_meeting_proposal]", "").trim();
+                    proposalData = JSON.parse(jsonStr);
+                  } catch {
+                    proposalData = { opportunityTitle: "Đề xuất hẹn gặp trao đổi cơ hội" };
+                  }
+
+                  return (
+                    <View style={[styles.msgRow, isMe ? styles.msgRowRight : styles.msgRowLeft, { maxWidth: "90%" }]}>
+                      {!isMe && !thread.isGroup && (
+                        <View style={{ marginRight: 8, alignSelf: "flex-end" }}>
+                          <Avatar url={thread.avatarUrl} name={thread.displayName} size={28} />
+                        </View>
+                      )}
+                      <View style={{ flex: 1 }}>
+                        <OpportunityMeetingProposalCard
+                          data={proposalData}
+                          isFromMe={isMe}
+                          messageId={item.id}
+                        />
+                      </View>
+                    </View>
+                  );
+                }
+
                 return (
                   <View style={[styles.msgRow, isMe ? styles.msgRowRight : styles.msgRowLeft]}>
                     {!isMe && !thread.isGroup && (

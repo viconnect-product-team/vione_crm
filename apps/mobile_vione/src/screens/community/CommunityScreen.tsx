@@ -9,6 +9,9 @@ import {
   TextInput,
   Image,
   RefreshControl,
+  Dimensions,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,9 +19,8 @@ import {
   Users,
   Calendar,
   MapPin,
-  CheckCircle,
+  CheckCircle2,
   ChevronRight,
-  Award,
   Bell,
   Search,
   X,
@@ -32,17 +34,19 @@ import {
   Mail,
   MessageSquare,
   Handshake,
-  Flame,
-  Crown,
   Star,
-  ScanLine,
-  Filter,
-  Sun,
-  Moon,
+  Settings,
+  ArrowLeft,
+  UserPlus,
+  AlertTriangle,
+  Building2,
+  Newspaper,
+  Target,
+  Share2,
+  Eye,
 } from "lucide-react-native";
-import { Colors } from "../../theme/colors";
 import { useTheme } from "../../context/ThemeContext";
-import { CommunityItem, B2BEvent } from "../../types";
+import { B2BEvent } from "../../types";
 import { CreateCommunityGroupModal } from "../../components/CreateCommunityGroupModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
 import {
@@ -50,90 +54,257 @@ import {
   CommunityOpportunityItem,
 } from "../../components/OpportunityDetailModal";
 import { CreateOpportunityModal } from "../../components/CreateOpportunityModal";
-import { CardScanReviewModal, CustomerLeadTier } from "../../components/CardScanReviewModal";
-import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
-import { communityApi, eventsApi, opportunityApi, customerApi, B2BCustomerData } from "../../api";
+import { ProposeOpportunityMeetingModal } from "../../components/ProposeOpportunityMeetingModal";
+import { EditCommunityModal } from "../../components/EditCommunityModal";
+import { ShareEventModal } from "../../components/ShareEventModal";
+import { AssignTaskModal } from "../../components/AssignTaskModal";
+import { communityApi, eventsApi, opportunityApi } from "../../api";
+import { apiRequest } from "../../api/client";
 
-export interface CustomerLeadItem {
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+// ==========================================
+// Types
+// ==========================================
+export type CommunityType = "company_internal" | "b2b_networking";
+export type CommunityTab = "all" | "company" | "networking" | "admin" | "joined" | "history";
+export type DetailTab = "tasks" | "supervision" | "opportunities" | "news" | "events" | "members";
+
+export interface CommunityDetailModel {
+  id: string;
+  name: string;
+  shortDescription?: string;
+  description?: string;
+  logoUrl?: string | null;
+  bannerUrl?: string | null;
+  communityType: CommunityType;
+  memberCount: number;
+  viewerRole: "admin" | "member" | "none";
+  isMember: boolean;
+  upcomingEventsCount: number;
+  openOpportunityCount: number;
+  canEdit?: boolean;
+}
+
+export interface TaskItem {
+  id: string;
+  communityId: string;
+  title: string;
+  description: string;
+  assigneeId: string;
+  assigneeName: string;
+  assignerName?: string;
+  priority: "urgent" | "high" | "medium" | "low";
+  status: "assigned" | "in_progress" | "completed" | "cancelled";
+  acceptedAt: string | null;
+  completedAt: string | null;
+  deadline: string;
+  customerName?: string;
+  customerPhone?: string;
+  customerRequirements?: string;
+  createdAt: string;
+}
+
+export interface NewsPostItem {
+  id: string;
+  authorName: string;
+  authorTitle: string;
+  authorAvatar?: string;
+  timeAgo: string;
+  title: string;
+  content: string;
+  imageUrl?: string;
+  likes: number;
+  comments: number;
+}
+
+export interface MemberItem {
   id: string;
   name: string;
   title: string;
   company: string;
+  avatarUrl?: string;
+  role: "admin" | "member";
   phone: string;
   email: string;
-  dealValue: string;
-  tier: CustomerLeadTier;
-  stage: "prospect" | "qualified" | "proposal" | "negotiation";
-  assignedStaff: string;
-  notes: string;
-  nextAction: string;
-  source: string;
 }
 
-const MOCK_LEADS: CustomerLeadItem[] = [
+// ==========================================
+// Helper functions (Matching PWA 100%)
+// ==========================================
+export function getVNTimeGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return "Chào buổi sáng,";
+  if (hour >= 12 && hour < 18) return "Chào buổi chiều,";
+  return "Chào buổi tối,";
+}
+
+export function getCommunityVisuals(name: string, logoUrl?: string | null, bannerUrl?: string | null) {
+  const lower = (name || "").toLowerCase();
+
+  let defaultBanner = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80";
+  let defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80";
+  let category = "Hiệp Hội Doanh Nghiệp B2B";
+  let attendees = [
+    "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100&auto=format&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80",
+  ];
+  let descFallback = "Liên minh xúc tiến thương mại, kết nối cơ hội kinh doanh và đầu tư quy mô lớn.";
+
+  if (lower.includes("vione") || lower.includes("gia đình") || lower.includes("ceo") || lower.includes("1983")) {
+    defaultBanner = "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80";
+    defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
+    category = "Gia đình ViOne • C-Level";
+    attendees = [
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80",
+    ];
+    descFallback = "Mạng lưới kết nối Chủ tịch, CEO & Lãnh đạo doanh nghiệp thuộc Gia đình ViOne.";
+  } else if (lower.includes("ai") || lower.includes("vietnam") || lower.includes("tech")) {
+    defaultBanner = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80";
+    defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80";
+    category = "AI & Chuyển Đổi Số";
+    attendees = [
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80",
+    ];
+    descFallback = "Cộng đồng chuyên gia, Founder & Kỹ sư AI tiên phong ứng dụng công nghệ thực chiến.";
+  }
+
+  return {
+    bannerUrl: bannerUrl || defaultBanner,
+    avatarUrl: defaultAvatar,
+    category,
+    attendees,
+    descFallback,
+  };
+}
+
+// Initial canonical communities list matching PWA
+const INITIAL_COMMUNITIES: CommunityDetailModel[] = [
   {
-    id: "lead-1",
-    name: "Nguyễn Văn Hùng",
-    title: "Tổng Giám Đốc",
-    company: "Tập Đoàn Đầu Tư Hạ Tầng Hùng Cường",
-    phone: "0918 889 999",
-    email: "hung.nguyen@hungcuonggroup.vn",
-    dealValue: "1.5 Tỷ VNĐ",
-    tier: "hot",
-    stage: "prospect",
-    assignedStaff: "Trần Minh Hoàng (Trưởng phòng KD)",
-    notes: "Đã quét danh thiếp tại sự kiện. Cần báo giá ViOne ERP và hệ thống danh thiếp số 250 tài khoản.",
-    nextAction: "Hẹn gặp 1-1 tại Landmark 81 chiều nay",
-    source: "Card Scan AI OCR",
+    id: "c-vione-internal",
+    name: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
+    shortDescription: "Không gian làm việc & giao việc nội bộ Ban Điều Hành và toàn thể cán bộ nhân viên ViOne.",
+    description: "Cộng đồng nội bộ chính thức của Tập đoàn ViOne. Phân hệ điều hành công việc, báo cáo CRM, giao nhiệm vụ và kiểm soát mục tiêu chiến lược thời gian thực.",
+    logoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80",
+    communityType: "company_internal",
+    memberCount: 48,
+    viewerRole: "admin",
+    isMember: true,
+    upcomingEventsCount: 2,
+    openOpportunityCount: 3,
+    canEdit: true,
   },
   {
-    id: "lead-2",
-    name: "Phạm Hải Yến",
-    title: "Chủ Tịch HĐQT",
-    company: "Chuỗi Khách Sạn & Nghỉ Dưỡng Grand Sapphire",
-    phone: "0903 222 111",
-    email: "yen.pham@grandsapphire.vn",
-    dealValue: "3.2 Tỷ VNĐ",
-    tier: "vip",
-    stage: "proposal",
-    assignedStaff: "Lê Thu Hà (Chuyên viên CSKH)",
-    notes: "Nhu cầu số hóa quản trị tài sản và thẻ hội viên VIP cho 5 cụm resort Đà Nẵng - Phú Quốc.",
-    nextAction: "Gửi bản trình diễn tính năng và dự thảo hợp đồng",
-    source: "Cộng đồng ViOne",
+    id: "c-b2b-leaders",
+    name: "CLB Doanh Nhân ViOne Global Leaders",
+    shortDescription: "Liên minh xúc tiến thương mại, kết nối cơ hội kinh doanh và đầu tư quy mô lớn.",
+    description: "Cộng đồng quy tụ các Chủ tịch, CEO & Nhà sáng lập doanh nghiệp tiên phong kết nối & phát triển bền vững đa ngành.",
+    logoUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
+    communityType: "b2b_networking",
+    memberCount: 320,
+    viewerRole: "member",
+    isMember: true,
+    upcomingEventsCount: 3,
+    openOpportunityCount: 5,
+    canEdit: false,
   },
   {
-    id: "lead-3",
-    name: "Vũ Quang Vinh",
-    title: "Giám Đốc Cung Ứng Toàn Cầu",
-    company: "Tập Đoàn Logistics & Xuất Nhập Khẩu Vinh Phát",
-    phone: "0938 777 666",
-    email: "vinh.vu@vinhphatlogistics.com",
-    dealValue: "800 Triệu VNĐ",
-    tier: "care24h",
-    stage: "negotiation",
-    assignedStaff: "Trần Minh Hoàng (Trưởng phòng KD)",
-    notes: "Cần care gấp trong 24h: Khách hàng muốn chốt hợp đồng trước thứ 2 tuần tới.",
-    nextAction: "Gọi điện chốt phương án chiết khấu thanh toán",
-    source: "Đối tác kết nối B2B",
+    id: "c-b2b-tech",
+    name: "Liên Minh Doanh Nghiệp Công Nghệ & AI Việt Nam",
+    shortDescription: "Cộng đồng chuyên gia, Founder & Kỹ sư AI tiên phong ứng dụng công nghệ thực chiến.",
+    description: "Tổ chức xúc tiến ứng dụng Trí tuệ nhân tạo và Tự động hóa quy trình cho doanh nghiệp quy mô lớn tại Việt Nam.",
+    logoUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80",
+    communityType: "b2b_networking",
+    memberCount: 280,
+    viewerRole: "admin",
+    isMember: true,
+    upcomingEventsCount: 1,
+    openOpportunityCount: 4,
+    canEdit: true,
   },
   {
-    id: "lead-4",
-    name: "Lê Hoàng Long",
-    title: "Phó Tổng Giám Đốc Công Nghệ",
-    company: "Công Ty Cổ Phần Năng Lượng Tái Tạo Solaria",
-    phone: "0977 444 333",
-    email: "long.le@solariaenergy.vn",
-    dealValue: "650 Triệu VNĐ",
-    tier: "featured",
-    stage: "prospect",
-    assignedStaff: "Lê Thu Hà (Chuyên viên CSKH)",
-    notes: "Khách hàng nổi bật tại Diễn đàn Đầu tư B2B, quan tâm mở rộng chuỗi cung ứng điện mặt trời.",
-    nextAction: "Xếp lịch cà phê CEO 1-1",
-    source: "Sự kiện B2B",
+    id: "c-b2b-forum",
+    name: "Diễn Đàn Đầu Tư B2B Việt Nam",
+    shortDescription: "Mạng lưới kết nối các Quỹ đầu tư, Vốn tư nhân và Doanh nghiệp vừa & lớn mở rộng quy mô.",
+    description: "Diễn đàn kết nối tài chính, gọi vốn và hợp tác liên doanh giữa các chủ doanh nghiệp hàng đầu.",
+    logoUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
+    communityType: "b2b_networking",
+    memberCount: 310,
+    viewerRole: "none",
+    isMember: false,
+    upcomingEventsCount: 2,
+    openOpportunityCount: 2,
+    canEdit: false,
   },
 ];
 
-const MOCK_OPPORTUNITIES: CommunityOpportunityItem[] = [
+const INITIAL_TASKS: TaskItem[] = [
+  {
+    id: "task-01",
+    communityId: "c-vione-internal",
+    title: "Tư vấn bộ giải pháp Danh Thiếp Số 3D & Thẻ NFC Doanh Nhân cho Tập đoàn Hoàng Minh",
+    description: "Gặp gỡ ban lãnh đạo Hoàng Minh, tư vấn cấu hình thẻ NFC mạ vàng Champagne Gold và đồng bộ CRM nội bộ cho 50 C-Level.",
+    assigneeId: "emp-01",
+    assigneeName: "Nguyễn Thị Mai",
+    assignerName: "Giám Đốc Điều Hành",
+    priority: "urgent",
+    status: "in_progress",
+    acceptedAt: "2026-10-05T08:30:00.000Z",
+    completedAt: null,
+    deadline: "Hôm nay, 17:30",
+    customerName: "Tập đoàn Hoàng Minh",
+    customerPhone: "0912.888.999",
+    customerRequirements: "Tích hợp logo thương hiệu mạ vàng, phân quyền CRM theo 3 cấp quản lý.",
+    createdAt: "2026-10-05T08:00:00.000Z",
+  },
+  {
+    id: "task-02",
+    communityId: "c-vione-internal",
+    title: "Demo tính năng phê duyệt chi ngân sách 3 cấp cho Công ty CP Dược Phẩm Á Châu",
+    description: "Chuẩn bị slide và demo trực tiếp quy trình lập phiếu chi, kế toán soát xét và Giám đốc duyệt chi 1 chạm trên mobile.",
+    assigneeId: "emp-03",
+    assigneeName: "Lê Thu Hà",
+    assignerName: "Giám Đốc Điều Hành",
+    priority: "high",
+    status: "assigned", // CHỜ NHẬN VIỆC -> NÚT [⚡ TIẾN HÀNH NHẬN VIỆC]
+    acceptedAt: null,
+    completedAt: null,
+    deadline: "Ngày mai, 11:00",
+    customerName: "Công ty CP Dược Phẩm Á Châu",
+    customerPhone: "0988.345.678",
+    customerRequirements: "Yêu cầu bảo mật ngân hàng và quét mã VietQR tự động khi duyệt.",
+    createdAt: "2026-10-05T09:15:00.000Z",
+  },
+  {
+    id: "task-03",
+    communityId: "c-vione-internal",
+    title: "Soạn thảo hợp đồng & ký kết triển khai cho Chuỗi Khách Sạn Mường Thanh",
+    description: "Hoàn tất điều khoản hợp đồng cung cấp thẻ định danh nhân viên và kết nối mạng lưới xúc tiến thương mại B2B.",
+    assigneeId: "emp-02",
+    assigneeName: "Trần Văn Long",
+    assignerName: "Giám Đốc Điều Hành",
+    priority: "medium",
+    status: "completed",
+    acceptedAt: "2026-10-04T09:15:00.000Z",
+    completedAt: "2026-10-05T10:00:00.000Z",
+    deadline: "Hôm nay, 12:00",
+    customerName: "Chuỗi Khách Sạn Mường Thanh",
+    customerPhone: "0903.111.222",
+    customerRequirements: "Áp dụng chính sách chiết khấu hội viên B2B ViOne.",
+    createdAt: "2026-10-04T08:30:00.000Z",
+  },
+];
+
+const INITIAL_OPPORTUNITIES: CommunityOpportunityItem[] = [
   {
     id: "opp-1",
     title: "Dự án Tổng thầu EPC Điện Mặt Trời Áp Mái KCN VSIP",
@@ -166,41 +337,7 @@ const MOCK_OPPORTUNITIES: CommunityOpportunityItem[] = [
   },
 ];
 
-const MOCK_COMMUNITIES: CommunityItem[] = [
-  {
-    id: "c-1",
-    name: "CLB Doanh Nhân ViOne Global Leaders",
-    description: "Cộng đồng quy tụ các Chủ tịch, CEO & Nhà sáng lập doanh nghiệp tiên phong kết nối & phát triển bền vững.",
-    memberCount: 320,
-    isMember: true,
-    role: "Thành viên Doanh nghiệp chính thức",
-  },
-  {
-    id: "c-2",
-    name: "ViOne C-Level Enterprise Hub",
-    description: "Liên minh Doanh nghiệp Chuyển đổi số & Xúc tiến thương mại đa ngành toàn quốc.",
-    memberCount: 450,
-    isMember: true,
-    role: "Ban Điều Hành",
-  },
-  {
-    id: "c-3",
-    name: "Diễn Đàn Đầu Tư B2B Việt Nam",
-    description: "Mạng lưới kết nối các Quỹ đầu tư, Vốn tư nhân và Doanh nghiệp vừa & lớn mở rộng quy mô.",
-    memberCount: 310,
-    isMember: false,
-  },
-  {
-    id: "c-4",
-    name: "Liên Minh Doanh Nghiệp Công Nghệ & AI Việt Nam",
-    description: "Tổ chức xúc tiến ứng dụng Trí tuệ nhân tạo và Tự động hóa quy trình cho doanh nghiệp quy mô lớn.",
-    memberCount: 280,
-    isMember: true,
-    role: "Thành viên Doanh nghiệp chính thức",
-  },
-];
-
-const MOCK_EVENTS: B2BEvent[] = [
+const INITIAL_EVENTS: B2BEvent[] = [
   {
     id: "e-1",
     title: "Đại Hội Thượng Đỉnh Giao Thương Doanh Nhân 2026",
@@ -230,57 +367,166 @@ const MOCK_EVENTS: B2BEvent[] = [
   },
 ];
 
-type CommunityTab = "all" | "joined" | "admin" | "events" | "leads";
+const INITIAL_NEWS: NewsPostItem[] = [
+  {
+    id: "news-1",
+    authorName: "Ban Truyền Thông ViOne",
+    authorTitle: "Quản trị viên",
+    authorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
+    timeAgo: "2 giờ trước",
+    title: "Thông báo lịch nghỉ lễ & Kế hoạch trực chiến kinh doanh Quý 4/2026",
+    content: "Kính gửi toàn thể Cán bộ nhân viên và Quý đối tác, Ban Giám Đốc xin trân trọng thông báo kế hoạch vận hành và chỉ tiêu doanh số thần tốc Quý 4...",
+    imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80",
+    likes: 24,
+    comments: 6,
+  },
+  {
+    id: "news-2",
+    authorName: "Trần Minh Hoàng",
+    authorTitle: "Trưởng phòng Kinh Doanh",
+    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
+    timeAgo: "Hôm qua",
+    title: "Báo cáo tiến độ ký kết 3 hợp đồng giải pháp thẻ doanh nhân NFC",
+    content: "Đội ngũ kinh doanh đã hoàn thành ký kết cùng 3 tập đoàn đối tác trong mạng lưới B2B với tổng giá trị triển khai 1.2 Tỷ đồng.",
+    likes: 42,
+    comments: 11,
+  },
+];
 
+const INITIAL_MEMBERS: MemberItem[] = [
+  {
+    id: "m-1",
+    name: "Vũ Minh Khang",
+    title: "Chủ Tịch HĐQT & Tổng Giám Đốc",
+    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+    role: "admin",
+    phone: "0983 000 001",
+    email: "ceo@vione.vn",
+  },
+  {
+    id: "m-2",
+    name: "Nguyễn Thị Mai",
+    title: "Giám Đốc Vận Hành (COO)",
+    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80",
+    role: "admin",
+    phone: "0912 345 678",
+    email: "mai.nguyen@vione.vn",
+  },
+  {
+    id: "m-3",
+    name: "Trần Minh Hoàng",
+    title: "Trưởng Phòng Kinh Doanh B2B",
+    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
+    role: "member",
+    phone: "0934 567 890",
+    email: "hoang.tran@vione.vn",
+  },
+  {
+    id: "m-4",
+    name: "Lê Thu Hà",
+    title: "Chuyên Viên Chăm Sóc Khách Hàng",
+    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
+    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=80",
+    role: "member",
+    phone: "0978 123 456",
+    email: "ha.le@vione.vn",
+  },
+];
+
+// ==========================================
+// Main Component
+// ==========================================
 export const CommunityScreen: React.FC = () => {
-  const { colors, isDark, toggleTheme } = useTheme();
-  const [activeTab, setActiveTab] = useState<CommunityTab>("leads");
+  const { colors, isDark } = useTheme();
+
+  // Navigation State: null = CommunityHome (Level 1); string = CommunityDetail (Level 2)
+  const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
+
+  // Home Level 1 States
+  const [activeTab, setActiveTab] = useState<CommunityTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [communities, setCommunities] = useState<CommunityItem[]>(MOCK_COMMUNITIES);
-  const [events, setEvents] = useState<B2BEvent[]>(MOCK_EVENTS);
-  const [createGroupVisible, setCreateGroupVisible] = useState(false);
-  const [opportunities, setOpportunities] = useState<CommunityOpportunityItem[]>(MOCK_OPPORTUNITIES);
+  const [communities, setCommunities] = useState<CommunityDetailModel[]>(INITIAL_COMMUNITIES);
+  const [events, setEvents] = useState<B2BEvent[]>(INITIAL_EVENTS);
+  const [opportunities, setOpportunities] = useState<CommunityOpportunityItem[]>(INITIAL_OPPORTUNITIES);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Detail Level 2 States
+  const [detailTab, setDetailTab] = useState<DetailTab>("tasks");
+  const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
+  const [taskFilter, setTaskFilter] = useState<"all" | "assigned" | "in_progress" | "completed">("all");
+  const [acceptingTaskId, setAcceptingTaskId] = useState<string | null>(null);
+
+  // Modals
+  const [createCommunityVisible, setCreateCommunityVisible] = useState(false);
+  const [editCommunityVisible, setEditCommunityVisible] = useState(false);
+  const [shareEventVisible, setShareEventVisible] = useState(false);
+  const [assignTaskVisible, setAssignTaskVisible] = useState(false);
+  const [createOppVisible, setCreateOppVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<B2BEvent | null>(null);
   const [eventModalVisible, setEventModalVisible] = useState(false);
   const [selectedOpp, setSelectedOpp] = useState<CommunityOpportunityItem | null>(null);
   const [oppModalVisible, setOppModalVisible] = useState(false);
-  const [createOppVisible, setCreateOppVisible] = useState(false);
-  const [cardScanVisible, setCardScanVisible] = useState(false);
-  const [scheduleMeetingVisible, setScheduleMeetingVisible] = useState(false);
-  const [selectedLeadForMeeting, setSelectedLeadForMeeting] = useState<CustomerLeadItem | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [proposeMeetingVisible, setProposeMeetingVisible] = useState(false);
+  const [selectedOppForMeeting, setSelectedOppForMeeting] = useState<CommunityOpportunityItem | null>(null);
 
-  // CRM Leads Pipeline State
-  const [leadsList, setLeadsList] = useState<CustomerLeadItem[]>(MOCK_LEADS);
-  const [leadTierFilter, setLeadTierFilter] = useState<"all" | CustomerLeadTier>("all");
+  // Active community in Detail view
+  const currentCommunity = useMemo(() => {
+    if (!selectedCommunityId) return null;
+    return communities.find((c) => c.id === selectedCommunityId) || communities[0];
+  }, [selectedCommunityId, communities]);
 
+  // Load backend data
   const loadData = async () => {
     try {
-      // 1. Communities
       const commRes = await communityApi.getMyCommunities();
-      const commList = Array.isArray(commRes?.data) ? commRes.data : [];
+      const commList = Array.isArray(commRes) ? commRes : (commRes as any)?.data || [];
       if (commList.length > 0) {
-        setCommunities(commList);
+        setCommunities((prev) => {
+          // Merge api items
+          const mapped = commList.map((c: any) => {
+            const isCompany =
+              c.communityType === "company_internal" ||
+              c.name?.toLowerCase().includes("công ty") ||
+              c.name?.toLowerCase().includes("tập đoàn");
+            return {
+              id: c.id || c.communityId,
+              name: c.name,
+              shortDescription: c.shortDescription || c.description,
+              description: c.description,
+              logoUrl: c.logoUrl,
+              bannerUrl: c.bannerUrl,
+              communityType: (isCompany ? "company_internal" : "b2b_networking") as CommunityType,
+              memberCount: c.memberCount || 24,
+              viewerRole: (c.viewerRole || (c.role === "Ban Điều Hành" ? "admin" : "member")) as any,
+              isMember: c.isMember ?? true,
+              upcomingEventsCount: 2,
+              openOpportunityCount: 3,
+              canEdit: c.viewerRole === "admin",
+            };
+          });
+          return mapped;
+        });
       }
-    } catch (e) {
-      // fallback
+    } catch {
+      // Keep initial
     }
 
     try {
-      // 2. Events
       const eventsRes = await eventsApi.getEvents();
-      const eventsList = Array.isArray(eventsRes?.data) ? eventsRes.data : [];
+      const eventsList = Array.isArray(eventsRes) ? eventsRes : (eventsRes as any)?.data || [];
       if (eventsList.length > 0) {
         setEvents(eventsList);
       }
-    } catch (e) {
-      // fallback
+    } catch {
+      // Keep initial
     }
 
     try {
-      // 3. Opportunities
       const oppRes = await opportunityApi.getOpportunities();
-      const oppList = Array.isArray(oppRes?.data) ? oppRes.data : [];
+      const oppList = Array.isArray(oppRes) ? oppRes : (oppRes as any)?.data || [];
       if (oppList.length > 0) {
         setOpportunities(
           oppList.map((op: any, idx: number) => ({
@@ -288,52 +534,15 @@ export const CommunityScreen: React.FC = () => {
             title: op.title || "Cơ hội kinh doanh B2B",
             organization: op.organization || op.companyName || "Doanh nghiệp ViOne",
             communityName: op.communityName || "Cộng đồng ViOne",
-            dealValue: op.budget ? `${op.budget.toLocaleString("vi-VN")} đ` : (op.dealValue || "Thỏa thuận"),
+            dealValue: op.budget ? `${op.budget.toLocaleString("vi-VN")} đ` : op.dealValue || "Thỏa thuận",
             category: op.category || "Hợp tác kinh doanh",
             daysLeft: op.duration || "Còn 7 ngày",
             interested: !!op.interested,
           }))
         );
       }
-    } catch (e) {
-      // fallback
-    }
-
-    try {
-      // 4. CRM Customers & Leads
-      const custRes = await customerApi.getCustomers();
-      const custList = Array.isArray(custRes?.data) ? custRes.data : [];
-      if (custList.length > 0) {
-        const mapped = custList.map((c: any, idx: number) => {
-          const tierStr = (c.tags || []).join(" ").toLowerCase();
-          const tier: CustomerLeadTier = tierStr.includes("hot")
-            ? "hot"
-            : tierStr.includes("vip")
-            ? "vip"
-            : tierStr.includes("24h")
-            ? "care24h"
-            : "featured";
-
-          return {
-            id: c.id || `lead-api-${idx}`,
-            name: c.name || c.displayName || c.contactPerson || "Khách hàng B2B",
-            title: c.title || "Lãnh đạo Doanh nghiệp",
-            company: c.company || c.companyName || "Doanh nghiệp ViOne",
-            phone: c.phone || "0900 000 000",
-            email: c.email || "partner@vione.vn",
-            dealValue: c.dealValue || (c.expectedValue ? `${Number(c.expectedValue).toLocaleString("vi-VN")} đ` : "500 Triệu VNĐ"),
-            tier: tier,
-            stage: (c.stage as any) || "prospect",
-            assignedStaff: c.assignedStaff || "Trần Minh Hoàng (Trưởng phòng KD)",
-            notes: c.notes || c.note || "Nhu cầu hợp tác phát triển thị trường",
-            nextAction: c.nextAction || "Liên hệ tư vấn trong 24h",
-            source: c.sourceLabel || "Card Scan AI OCR",
-          };
-        });
-        setLeadsList(mapped);
-      }
-    } catch (e) {
-      // fallback
+    } catch {
+      // Keep initial
     }
   };
 
@@ -347,47 +556,120 @@ export const CommunityScreen: React.FC = () => {
     setRefreshing(false);
   };
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return "Chào buổi sáng,";
-    if (hour >= 12 && hour < 18) return "Chào buổi chiều,";
-    return "Chào buổi tối,";
-  };
-
-  const handleRegisterEvent = async (id: string, title: string) => {
+  // Event handlers
+  const handleRegisterEvent = async (event: B2BEvent) => {
     try {
-      await eventsApi.registerEvent(id);
-    } catch (e) {
-      // Silent error or fallback
+      await eventsApi.registerEvent(event.id);
+    } catch {
+      // fallback
     }
     setEvents((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, isRegistered: true } : e))
+      prev.map((e) => (e.id === event.id ? { ...e, isRegistered: true } : e))
     );
-    Alert.alert("Đăng ký thành công", `Bạn đã đăng ký tham gia: ${title}. Thẻ vé điện tử QR đã được cấp.`);
+    Alert.alert("Đăng ký thành công", `Bạn đã đăng ký tham gia: ${event.title}. Thẻ vé điện tử QR đã được cấp.`);
   };
 
-  const handleInterestOpportunity = async (id: string, title: string) => {
+  const handleInterestOpp = async (opp: CommunityOpportunityItem) => {
     try {
-      await opportunityApi.expressInterest(id, "high");
-    } catch (e) {
-      // Silent error or fallback
+      await opportunityApi.expressInterest(opp.id, "high");
+    } catch {
+      // fallback
     }
     setOpportunities((prev) =>
-      prev.map((op) => (op.id === id ? { ...op, interested: true } : op))
+      prev.map((o) => (o.id === opp.id ? { ...o, interested: true } : o))
     );
-    Alert.alert("Quan tâm cơ hội", `Đã gửi hồ sơ năng lực và thông tin kết nối tới ban quản trị dự án: ${title}`);
+    Alert.alert("Quan tâm cơ hội", `Đã gửi hồ sơ năng lực và thông tin kết nối tới ban quản trị dự án: ${opp.title}`);
   };
 
+  // ==========================================
+  // [⚡ TIẾN HÀNH NHẬN VIỆC] Action (PWA Synchronized)
+  // ==========================================
+  const handleAcceptTask = async (task: TaskItem) => {
+    setAcceptingTaskId(task.id);
+    try {
+      if (selectedCommunityId) {
+        await apiRequest(`connect-app/community/${selectedCommunityId}/tasks/${task.id}/accept`, {
+          method: "POST",
+        }).catch(() => null);
+      }
+
+      const nowStr = new Date().toISOString();
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? { ...t, status: "in_progress", acceptedAt: nowStr }
+            : t
+        )
+      );
+
+      Alert.alert(
+        "✓ Nhận Việc Thành Công",
+        `Bạn đã tiến hành nhận việc "${task.title}".\n\nHệ thống đã ghi nhận thời gian bắt đầu và thông báo tới Ban Giám Đốc.`,
+        [{ text: "Đóng", style: "default" }]
+      );
+    } catch {
+      Alert.alert("Lỗi", "Không thể nhận việc lúc này. Vui lòng thử lại!");
+    } finally {
+      setAcceptingTaskId(null);
+    }
+  };
+
+  const handleCompleteTask = async (task: TaskItem) => {
+    const nowStr = new Date().toISOString();
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === task.id
+          ? { ...t, status: "completed", completedAt: nowStr }
+          : t
+      )
+    );
+    Alert.alert("Hoàn thành việc", `Đã hoàn tất nhiệm vụ: ${task.title}`);
+  };
+
+  // Join community
+  const handleJoinCommunity = (commId: string) => {
+    setCommunities((prev) =>
+      prev.map((c) =>
+        c.id === commId
+          ? { ...c, isMember: true, viewerRole: "member", memberCount: c.memberCount + 1 }
+          : c
+      )
+    );
+    Alert.alert("Thành công", "Bạn đã gia nhập cộng đồng thành công!");
+  };
+
+  // Filtered communities for Level 1 Home
   const filteredCommunities = useMemo(() => {
     return communities.filter((c) => {
+      const isCompany = c.communityType === "company_internal";
+      if (activeTab === "company" && !isCompany) return false;
+      if (activeTab === "networking" && isCompany) return false;
+      if (activeTab === "admin" && c.viewerRole !== "admin") return false;
       if (activeTab === "joined" && !c.isMember) return false;
-      if (activeTab === "admin" && c.role !== "Ban Điều Hành") return false;
 
       const q = searchQuery.trim().toLowerCase();
       if (!q) return true;
-      return c.name.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q);
+      return (
+        c.name.toLowerCase().includes(q) ||
+        (c.shortDescription && c.shortDescription.toLowerCase().includes(q))
+      );
     });
   }, [communities, activeTab, searchQuery]);
+
+  const hasAdmin = communities.some((c) => c.viewerRole === "admin");
+
+  // Filtered tasks in Level 2 Detail
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((t) => {
+      if (taskFilter === "all") return true;
+      return t.status === taskFilter;
+    });
+  }, [tasks, taskFilter]);
+
+  const totalTasks = tasks.length;
+  const assignedTasksCount = tasks.filter((t) => t.status === "assigned").length;
+  const inProgressTasksCount = tasks.filter((t) => t.status === "in_progress").length;
+  const completedTasksCount = tasks.filter((t) => t.status === "completed").length;
 
   return (
     <SafeAreaView
@@ -397,594 +679,1644 @@ export const CommunityScreen: React.FC = () => {
       ]}
       edges={["top"]}
     >
-      {/* 1. Header Thương Hiệu ViOne */}
-      <View
-        style={[
-          styles.header,
-          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
-        ]}
-      >
-        <View style={styles.headerBrand}>
-          <Image
-            source={require("../../../assets/vione-wordmark.png")}
-            style={styles.logoWordmark}
-            resizeMode="contain"
-          />
-          <Text style={[styles.headerGreeting, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-            {getGreeting()}
-          </Text>
-        </View>
-
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <TouchableOpacity
+      {/* ========================================================================= */}
+      {/* LEVEL 1: COMMUNITY HOME (When selectedCommunityId is null)                */}
+      {/* ========================================================================= */}
+      {!selectedCommunityId && (
+        <>
+          {/* Sticky Header thương hiệu chung matching PWA BusinessConnectTopBar */}
+          <View
             style={[
-              styles.bellBtn,
+              styles.stickyHeader,
               {
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
+                backgroundColor: isDark ? "rgba(11, 15, 23, 0.95)" : "rgba(255, 255, 255, 0.95)",
+                borderBottomColor: isDark ? "rgba(216, 178, 130, 0.18)" : "#E2E8F0",
               },
             ]}
-            onPress={toggleTheme}
-            activeOpacity={0.7}
           >
-            {isDark ? (
-              <Sun size={19} color="#D8B282" strokeWidth={1.8} />
-            ) : (
-              <Moon size={19} color="#A3703C" strokeWidth={1.8} />
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.bellBtn,
-              {
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-              },
-            ]}
-            onPress={() => Alert.alert("Thông báo", "Bạn có 2 thông báo sự kiện cộng đồng mới.")}
-            activeOpacity={0.7}
-          >
-            <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
-            <View style={styles.bellBadge}>
-              <Text style={styles.bellBadgeText}>2</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        style={[
-          styles.headerDivider,
-          { backgroundColor: isDark ? "rgba(216, 178, 130, 0.15)" : "#E2E8F0" },
-        ]}
-      />
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#D8B282"
-            colors={["#D8B282"]}
-          />
-        }
-      >
-        {/* 2. Tiêu Đề Phân Hệ & Nút Tạo Liên Minh */}
-        <View style={styles.titleSection}>
-          <View style={styles.titleRow}>
-            <View>
-              <Text style={[styles.screenTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
-                Cộng đồng
-              </Text>
-              <Text style={[styles.screenSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-                Thành viên · Sự kiện · Cơ hội
+            <View style={styles.brandRow}>
+              <View style={styles.logoBadge}>
+                <Text style={styles.logoText}>VIONE</Text>
+              </View>
+              <Text style={[styles.greetingText, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                {getVNTimeGreeting()}
               </Text>
             </View>
+
             <TouchableOpacity
-              style={styles.createGroupBtn}
-              onPress={() => setCreateGroupVisible(true)}
-              activeOpacity={0.85}
+              style={styles.bellButton}
+              onPress={() => Alert.alert("Thông báo", "Bạn không có thông báo cộng đồng mới.")}
             >
-              <LinearGradient
-                colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.createGroupGradient}
-              >
-                <Plus size={15} color="#050C15" strokeWidth={2.5} style={{ marginRight: 4 }} />
-                <Text style={styles.createGroupBtnText}>Tạo nhóm</Text>
-              </LinearGradient>
+              <Bell size={20} color="#D8B282" />
+              <View style={styles.unreadBadge}>
+                <Text style={styles.unreadBadgeText}>3</Text>
+              </View>
             </TouchableOpacity>
           </View>
-        </View>
 
-        {/* 3. Search Bar */}
-        <View style={styles.searchWrapper}>
-          <Search size={16} color="#D8B282" style={{ marginRight: 8 }} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Tìm cộng đồng, sự kiện, ngành nghề..."
-            placeholderTextColor="#94A3B8"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery !== "" && (
-            <TouchableOpacity onPress={() => setSearchQuery("")}>
-              <X size={15} color="#94A3B8" />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* 4. Horizontal Tabs (Khớp 100% CommunityHome) */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.tabsScroll}
-        >
-          {[
-            { id: "leads", label: "🎯 Khách hàng tiềm năng & Cần care" },
-            { id: "all", label: "Tất cả cộng đồng" },
-            { id: "joined", label: "Đã tham gia" },
-            { id: "admin", label: "Ban Điều Hành" },
-            { id: "events", label: "Sự kiện B2B" },
-          ].map((t) => (
-            <TouchableOpacity
-              key={t.id}
-              style={[styles.tabPill, activeTab === t.id && styles.tabPillActive]}
-              onPress={() => setActiveTab(t.id as any)}
-            >
-              <Text
-                style={[
-                  styles.tabPillText,
-                  activeTab === t.id && styles.tabPillTextActive,
-                ]}
-              >
-                {t.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        {/* 5. Content theo Tab */}
-        {activeTab === "leads" ? (
-          <View style={styles.leadsSection}>
-            {/* Hero Banner: Trung Tâm Chăm Sóc Khách Hàng Tiềm Năng */}
-            <View style={[styles.leadHeroBanner, { backgroundColor: isDark ? "#141824" : "#F1F5F9", borderColor: isDark ? "rgba(216, 178, 130, 0.35)" : "rgba(163, 112, 60, 0.4)" }]}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#DFB76C"
+                colors={["#DFB76C"]}
+              />
+            }
+          >
+            {/* Title & Button Tạo cộng đồng */}
+            <View style={styles.titleSection}>
               <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Flame size={16} color="#F59E0B" style={{ marginRight: 6 }} />
-                  <Text style={[styles.leadHeroTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
-                    PIPELINE KHÁCH HÀNG & ĐỐI TÁC CẦN CARE
-                  </Text>
-                </View>
-                <Text style={[styles.leadHeroSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-                  {leadsList.length} khách hàng tiềm năng · 4 Hot Leads · 6.15 Tỷ VNĐ giá trị dự kiến
+                <Text style={[styles.pageTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                  Cộng đồng
+                </Text>
+                <Text style={[styles.pageSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                  Thành viên · Sự kiện · Cơ hội
                 </Text>
               </View>
 
               <TouchableOpacity
-                style={styles.scanLeadBtn}
-                onPress={() => setCardScanVisible(true)}
-                activeOpacity={0.85}
+                style={styles.createCommunityBtn}
+                onPress={() => setCreateCommunityVisible(true)}
               >
                 <LinearGradient
-                  colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                  colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
                   start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.scanLeadGradient}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.createCommunityGrad}
                 >
-                  <ScanLine size={13} color="#050C15" style={{ marginRight: 4 }} />
-                  <Text style={styles.scanLeadBtnText}>Quét Card</Text>
+                  <Plus size={16} color="#050C15" strokeWidth={2.5} />
+                  <Text style={styles.createCommunityText}>Tạo cộng đồng</Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
 
-            {/* Bộ Lọc Tier: Hot Lead / VIP / Cần care 24h / Nổi bật */}
-            <View style={{ marginBottom: 12 }}>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-                {[
-                  { id: "all", label: "Tất cả khách hàng" },
-                  { id: "hot", label: "⭐ Hot Lead" },
-                  { id: "vip", label: "💎 VIP C-Level" },
-                  { id: "care24h", label: "🎯 Cần care 24h" },
-                  { id: "featured", label: "🌟 Nổi bật" },
-                ].map((tierItem) => {
-                  const active = leadTierFilter === tierItem.id;
-                  return (
-                    <TouchableOpacity
-                      key={tierItem.id}
+            {/* Filter Tabs matching PWA: Tất cả, Doanh nghiệp của tôi, Mạng lưới B2B, Đang quản trị, Đã tham gia, Lịch sử yêu cầu */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.tabsScroll}
+              style={styles.tabsWrapper}
+            >
+              {[
+                { id: "all", label: "Tất cả" },
+                { id: "company", label: "🏢 Doanh nghiệp của tôi" },
+                { id: "networking", label: "🤝 Mạng lưới B2B" },
+                ...(hasAdmin ? [{ id: "admin", label: "Đang quản trị" }] : []),
+                { id: "joined", label: "Đã tham gia" },
+                { id: "history", label: "Lịch sử yêu cầu" },
+              ].map((item) => {
+                const isActive = activeTab === item.id;
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => setActiveTab(item.id as any)}
+                    style={[
+                      styles.tabItem,
+                      isActive && styles.tabItemActive,
+                    ]}
+                  >
+                    <Text
                       style={[
-                        styles.tierFilterChip,
-                        { borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "rgba(15, 23, 42, 0.1)", backgroundColor: isDark ? "#181D2A" : "#FFFFFF" },
-                        active && {
-                          backgroundColor: isDark ? "rgba(216, 178, 130, 0.22)" : "#FEF3C7",
-                          borderColor: isDark ? "#D8B282" : "#A3703C",
+                        styles.tabLabel,
+                        {
+                          color: isActive
+                            ? "#D8B282"
+                            : isDark
+                            ? "#94A3B8"
+                            : "#64748B",
+                          fontWeight: isActive ? "800" : "500",
                         },
                       ]}
-                      onPress={() => setLeadTierFilter(tierItem.id as any)}
                     >
-                      <Text
-                        style={[
-                          styles.tierFilterChipText,
-                          { color: isDark ? "#94A3B8" : "#64748B" },
-                          active && { color: isDark ? "#D8B282" : "#A3703C", fontWeight: "700" },
-                        ]}
-                      >
-                        {tierItem.label}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </ScrollView>
+                      {item.label}
+                    </Text>
+                    {isActive && <View style={styles.activeIndicator} />}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Ô tìm kiếm 100% chiều rộng nằm dưới Tabs */}
+            <View
+              style={[
+                styles.searchBarContainer,
+                {
+                  backgroundColor: isDark ? "#121824" : "#F8FAFC",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+                },
+              ]}
+            >
+              <Search size={18} color="#D8B282" />
+              <TextInput
+                style={[
+                  styles.searchInput,
+                  { color: isDark ? "#FFFFFF" : "#0F172A" },
+                ]}
+                placeholder="Tìm cộng đồng, liên minh, sự kiện..."
+                placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery("")}>
+                  <X size={16} color="#94A3B8" />
+                </TouchableOpacity>
+              )}
             </View>
 
-            {/* Danh Sách Khách Hàng Tiềm Năng */}
-            <View style={{ gap: 12 }}>
-              {leadsList
-                .filter((l) => leadTierFilter === "all" || l.tier === leadTierFilter)
-                .filter((l) => {
-                  if (!searchQuery.trim()) return true;
-                  const q = searchQuery.toLowerCase().trim();
-                  return (
-                    l.name.toLowerCase().includes(q) ||
-                    l.company.toLowerCase().includes(q) ||
-                    l.notes.toLowerCase().includes(q)
-                  );
-                })
-                .map((lead) => (
-                  <View
-                    key={lead.id}
+            {/* Nếu đang ở tab Lịch sử yêu cầu */}
+            {activeTab === "history" ? (
+              <View style={styles.historyPanel}>
+                <View
+                  style={[
+                    styles.historyCard,
+                    {
+                      backgroundColor: isDark ? "#121824" : "#F8FAFC",
+                      borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                    },
+                  ]}
+                >
+                  <View style={styles.historyRow}>
+                    <Building2 size={20} color="#D8B282" />
+                    <View style={{ flex: 1, marginLeft: 12 }}>
+                      <Text style={[styles.historyName, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                        Diễn Đàn Đầu Tư B2B Việt Nam
+                      </Text>
+                      <Text style={styles.historyTime}>Yêu cầu gửi lúc 09:30 · Hôm qua</Text>
+                    </View>
+                    <View style={styles.pendingPill}>
+                      <Text style={styles.pendingPillText}>Đang chờ duyệt</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <>
+                {/* Search result count */}
+                {searchQuery.trim().length > 0 && (
+                  <Text style={[styles.searchResultCount, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Kết quả tìm kiếm ({filteredCommunities.length})
+                  </Text>
+                )}
+
+                {/* Danh Sách Thẻ Cộng Đồng */}
+                {filteredCommunities.length === 0 ? (
+                  <View style={styles.emptyContainer}>
+                    <Users size={36} color="#94A3B8" />
+                    <Text style={[styles.emptyTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                      Không tìm thấy cộng đồng phù hợp
+                    </Text>
+                    <Text style={[styles.emptySubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                      Thử tìm kiếm với từ khóa khác hoặc tạo cộng đồng mới của riêng bạn.
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.communitiesList}>
+                    {filteredCommunities.map((community) => {
+                      const visuals = getCommunityVisuals(
+                        community.name,
+                        community.logoUrl,
+                        community.bannerUrl
+                      );
+                      const isCompany = community.communityType === "company_internal";
+
+                      return (
+                        <View
+                          key={community.id}
+                          style={[
+                            styles.communityCard,
+                            {
+                              backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                              borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+                            },
+                          ]}
+                        >
+                          {/* Top Cover Banner */}
+                          <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => {
+                              setSelectedCommunityId(community.id);
+                              setDetailTab(isCompany ? "tasks" : "opportunities");
+                            }}
+                            style={styles.cardBannerWrap}
+                          >
+                            <Image
+                              source={{ uri: visuals.bannerUrl }}
+                              style={styles.cardBannerImg}
+                            />
+                            <LinearGradient
+                              colors={["transparent", "rgba(18, 24, 36, 0.85)"]}
+                              style={styles.cardBannerGrad}
+                            />
+
+                            {/* Category Pill Tag */}
+                            <View style={styles.cardCategoryBadge}>
+                              {isCompany ? (
+                                <View style={styles.companyPill}>
+                                  <Text style={styles.companyPillText}>🏢 CÔNG TY NỘI BỘ</Text>
+                                </View>
+                              ) : (
+                                <View style={styles.b2bPill}>
+                                  <Text style={styles.b2bPillText}>🤝 MẠNG LƯỚI B2B</Text>
+                                </View>
+                              )}
+                            </View>
+
+                            {/* Member Status Badge */}
+                            <View style={styles.cardRoleBadge}>
+                              <Text style={styles.cardRoleText}>
+                                {community.viewerRole === "admin" ? "Quản trị viên" : "Đã tham gia"}
+                              </Text>
+                            </View>
+                          </TouchableOpacity>
+
+                          {/* Main Content Body */}
+                          <View style={styles.cardBody}>
+                            {/* Floating Avatar + Community Name */}
+                            <View style={styles.cardAvatarRow}>
+                              <Image
+                                source={{ uri: visuals.avatarUrl }}
+                                style={styles.cardAvatarImg}
+                              />
+                              <TouchableOpacity
+                                style={styles.cardNameCol}
+                                onPress={() => {
+                                  setSelectedCommunityId(community.id);
+                                  setDetailTab(isCompany ? "tasks" : "opportunities");
+                                }}
+                              >
+                                <View style={styles.nameChevronRow}>
+                                  <Text
+                                    numberOfLines={1}
+                                    style={[
+                                      styles.cardTitle,
+                                      { color: isDark ? "#FFFFFF" : "#0F172A" },
+                                    ]}
+                                  >
+                                    {community.name}
+                                  </Text>
+                                  <ChevronRight size={18} color="#D8B282" />
+                                </View>
+                                <Text
+                                  numberOfLines={2}
+                                  style={[
+                                    styles.cardDesc,
+                                    { color: isDark ? "#94A3B8" : "#64748B" },
+                                  ]}
+                                >
+                                  {community.shortDescription || visuals.descFallback}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+
+                            {/* Overlapping Members Row & Quick Badges */}
+                            <View
+                              style={[
+                                styles.cardMetaRow,
+                                { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                              ]}
+                            >
+                              <View style={styles.attendeesGroup}>
+                                <View style={styles.avatarStack}>
+                                  {visuals.attendees.map((att, idx) => (
+                                    <Image
+                                      key={idx}
+                                      source={{ uri: att }}
+                                      style={[
+                                        styles.stackAvatar,
+                                        { marginLeft: idx === 0 ? 0 : -8 },
+                                      ]}
+                                    />
+                                  ))}
+                                </View>
+                                <Text style={styles.membersCountText}>
+                                  {community.memberCount} thành viên
+                                </Text>
+                              </View>
+
+                              <View style={styles.metricBadgesGroup}>
+                                {community.upcomingEventsCount > 0 && (
+                                  <View style={styles.metricBadgeGold}>
+                                    <Text style={styles.metricBadgeGoldText}>
+                                      {community.upcomingEventsCount} sự kiện
+                                    </Text>
+                                  </View>
+                                )}
+                                {community.openOpportunityCount > 0 && (
+                                  <View style={styles.metricBadgeSlate}>
+                                    <Text style={styles.metricBadgeSlateText}>
+                                      {community.openOpportunityCount} cơ hội
+                                    </Text>
+                                  </View>
+                                )}
+                              </View>
+                            </View>
+
+                            {/* 3 Quick Action Buttons */}
+                            <View
+                              style={[
+                                styles.cardActionsGrid,
+                                {
+                                  backgroundColor: isDark ? "#0B0F17" : "#F8FAFC",
+                                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                                },
+                              ]}
+                            >
+                              <TouchableOpacity
+                                style={styles.actionCol}
+                                onPress={() => {
+                                  setSelectedCommunityId(community.id);
+                                  setDetailTab("members");
+                                }}
+                              >
+                                <Users size={14} color="#D8B282" />
+                                <Text style={[styles.actionColText, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                                  Thành viên
+                                </Text>
+                              </TouchableOpacity>
+
+                              <TouchableOpacity
+                                style={[
+                                  styles.actionCol,
+                                  {
+                                    borderLeftWidth: 1,
+                                    borderRightWidth: 1,
+                                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                                  },
+                                ]}
+                                onPress={() => {
+                                  setSelectedCommunityId(community.id);
+                                  setDetailTab("events");
+                                }}
+                              >
+                                <Calendar size={14} color="#D8B282" />
+                                <Text style={[styles.actionColText, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                                  Sự kiện
+                                </Text>
+                              </TouchableOpacity>
+
+                              <TouchableOpacity
+                                style={styles.actionCol}
+                                onPress={() => {
+                                  setSelectedCommunityId(community.id);
+                                  setDetailTab(isCompany ? "tasks" : "opportunities");
+                                }}
+                              >
+                                <Briefcase size={14} color="#D8B282" />
+                                <Text style={[styles.actionColText, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                                  {isCompany ? "Giao việc" : "Cơ hội"}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+
+                {/* Sắp diễn ra trong cộng đồng (CommunityUpcomingEvents) */}
+                <View style={styles.sectionHeader}>
+                  <Text style={[styles.sectionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    Sắp diễn ra trong cộng đồng
+                  </Text>
+                  <TouchableOpacity onPress={() => Alert.alert("Sự kiện", "Đang mở toàn bộ sự kiện.")}>
+                    <Text style={styles.sectionMoreText}>Xem tất cả</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.upcomingEventsList}>
+                  {events.map((ev) => (
+                    <TouchableOpacity
+                      key={ev.id}
+                      style={[
+                        styles.upcomingEventCard,
+                        {
+                          backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedEvent(ev);
+                        setEventModalVisible(true);
+                      }}
+                    >
+                      <View style={styles.eventDateBox}>
+                        <Text style={styles.eventMonthText}>THÁNG 10</Text>
+                        <Text style={styles.eventDayText}>
+                          {ev.startsAt.split(" ")[0].split("-")[2] || "15"}
+                        </Text>
+                      </View>
+
+                      <View style={styles.eventInfoCol}>
+                        <Text
+                          numberOfLines={1}
+                          style={[styles.eventTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}
+                        >
+                          {ev.title}
+                        </Text>
+                        <View style={styles.eventMetaRow}>
+                          <Clock size={12} color="#D8B282" />
+                          <Text style={styles.eventMetaText}>{ev.startsAt}</Text>
+                        </View>
+                        <View style={styles.eventMetaRow}>
+                          <MapPin size={12} color="#94A3B8" />
+                          <Text numberOfLines={1} style={styles.eventMetaText}>
+                            {ev.location}
+                          </Text>
+                        </View>
+                      </View>
+
+                      <TouchableOpacity
+                        style={[
+                          styles.eventRegisterBtn,
+                          ev.isRegistered && styles.eventRegisteredBtn,
+                        ]}
+                        onPress={() => handleRegisterEvent(ev)}
+                      >
+                        <Text
+                          style={[
+                            styles.eventRegisterBtnText,
+                            ev.isRegistered && styles.eventRegisteredBtnText,
+                          ]}
+                        >
+                          {ev.isRegistered ? "Đã đ.ký" : "Đăng ký"}
+                        </Text>
+                      </TouchableOpacity>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Cơ hội kinh doanh trong cộng đồng (CommunityOpportunitiesSection) */}
+                <View style={styles.sectionHeader}>
+                  <Text style={[styles.sectionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    Cơ hội kinh doanh trong cộng đồng
+                  </Text>
+                  <TouchableOpacity onPress={() => Alert.alert("Cơ hội", "Xem tất cả cơ hội B2B.")}>
+                    <Text style={styles.sectionMoreText}>Xem tất cả</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.opportunitiesList}>
+                  {opportunities.map((opp) => (
+                    <TouchableOpacity
+                      key={opp.id}
+                      style={[
+                        styles.opportunityCard,
+                        {
+                          backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+                        },
+                      ]}
+                      onPress={() => {
+                        setSelectedOpp(opp);
+                        setOppModalVisible(true);
+                      }}
+                    >
+                      <View style={styles.oppTopRow}>
+                        <View style={styles.oppBadge}>
+                          <Text style={styles.oppBadgeText}>{opp.category}</Text>
+                        </View>
+                        <Text style={styles.oppDaysLeft}>{opp.daysLeft}</Text>
+                      </View>
+
+                      <Text
+                        numberOfLines={2}
+                        style={[styles.oppTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}
+                      >
+                        {opp.title}
+                      </Text>
+
+                      <View style={styles.oppOrgRow}>
+                        <Building2 size={13} color="#94A3B8" />
+                        <Text numberOfLines={1} style={styles.oppOrgText}>
+                          {opp.organization}
+                        </Text>
+                      </View>
+
+                      <View
+                        style={[
+                          styles.oppFooterRow,
+                          { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                        ]}
+                      >
+                        <View>
+                          <Text style={styles.oppValueLabel}>Giá trị dự kiến</Text>
+                          <Text style={styles.oppValueText}>{opp.dealValue}</Text>
+                        </View>
+
+                        <TouchableOpacity
+                          style={styles.oppConnectBtn}
+                          onPress={() => {
+                            setSelectedOppForMeeting(opp);
+                            setProposeMeetingVisible(true);
+                          }}
+                        >
+                          <LinearGradient
+                            colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                            style={styles.oppConnectGrad}
+                          >
+                            <Handshake size={13} color="#050C15" />
+                            <Text style={styles.oppConnectText}>Đề xuất gặp mặt</Text>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+
+                {/* Quản trị yêu cầu tham gia (CommunityJoinAdminEntry) */}
+                {hasAdmin && (
+                  <TouchableOpacity
                     style={[
-                      styles.leadCard,
+                      styles.adminEntryCard,
                       {
-                        backgroundColor: isDark ? "#181D2A" : "#FFFFFF",
-                        borderColor: lead.tier === "hot" ? "#EF4444" : lead.tier === "vip" ? "#F59E0B" : isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)",
+                        backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                        borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                      },
+                    ]}
+                    onPress={() => Alert.alert("Yêu cầu tham gia", "Hiện có 2 hồ sơ doanh nghiệp đang chờ bạn xét duyệt.")}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.adminEntryTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                        Quản trị yêu cầu tham gia
+                      </Text>
+                      <Text style={styles.adminEntrySubtitle}>
+                        2 thành viên mới đang chờ phê duyệt
+                      </Text>
+                    </View>
+                    <ChevronRight size={18} color="#D8B282" />
+                  </TouchableOpacity>
+                )}
+              </>
+            )}
+
+            <View style={{ height: 100 }} />
+          </ScrollView>
+        </>
+      )}
+
+      {/* ========================================================================= */}
+      {/* LEVEL 2: COMMUNITY DETAIL (When selectedCommunityId is NOT null)          */}
+      {/* ========================================================================= */}
+      {selectedCommunityId && currentCommunity && (
+        <>
+          {/* Top Bar with Back Button */}
+          <View
+            style={[
+              styles.detailTopBar,
+              {
+                backgroundColor: isDark ? "rgba(11, 15, 23, 0.95)" : "rgba(255, 255, 255, 0.95)",
+                borderBottomColor: isDark ? "rgba(216, 178, 130, 0.18)" : "#E2E8F0",
+              },
+            ]}
+          >
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => setSelectedCommunityId(null)}
+            >
+              <ArrowLeft size={20} color="#D8B282" />
+              <Text style={styles.backButtonText}>Cộng đồng</Text>
+            </TouchableOpacity>
+
+            <Text
+              numberOfLines={1}
+              style={[styles.detailTopTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}
+            >
+              {currentCommunity.name}
+            </Text>
+
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={() => Alert.alert("Chia sẻ", `Liên kết cộng đồng: ${currentCommunity.name}`)}
+            >
+              <Share2 size={18} color="#D8B282" />
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                tintColor="#DFB76C"
+                colors={["#DFB76C"]}
+              />
+            }
+          >
+            {/* Top Cover Banner */}
+            <View style={styles.detailBannerWrap}>
+              <Image
+                source={{
+                  uri:
+                    currentCommunity.bannerUrl ||
+                    "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80",
+                }}
+                style={styles.detailBannerImg}
+              />
+              <LinearGradient
+                colors={["transparent", "rgba(11, 15, 23, 0.85)"]}
+                style={styles.detailBannerGrad}
+              />
+
+              {/* Category Pill Tag on Banner */}
+              <View style={styles.detailCategoryPill}>
+                {currentCommunity.communityType === "company_internal" ? (
+                  <View style={styles.companyPill}>
+                    <Text style={styles.companyPillText}>🏢 DOANH NGHIỆP NỘI BỘ</Text>
+                  </View>
+                ) : (
+                  <View style={styles.b2bPill}>
+                    <Text style={styles.b2bPillText}>🤝 MẠNG LƯỚI DOANH NHÂN B2B</Text>
+                  </View>
+                )}
+              </View>
+            </View>
+
+            {/* Overlapping Floating Avatar & Header Info */}
+            <View style={styles.detailHeaderSection}>
+              <Image
+                source={{
+                  uri:
+                    currentCommunity.logoUrl ||
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
+                }}
+                style={styles.detailAvatarImg}
+              />
+
+              <View style={styles.detailInfoCol}>
+                <Text style={[styles.detailNameText, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                  {currentCommunity.name}
+                </Text>
+                {currentCommunity.shortDescription && (
+                  <Text style={[styles.detailShortDesc, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    {currentCommunity.shortDescription}
+                  </Text>
+                )}
+              </View>
+            </View>
+
+            {/* Quick Badges & Admin Actions */}
+            <View style={styles.badgesActionRow}>
+              <View style={styles.badgesGroup}>
+                <View
+                  style={[
+                    styles.roleBadgePill,
+                    {
+                      backgroundColor: isDark ? "#151D2C" : "#F1F5F9",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "#E2E8F0",
+                    },
+                  ]}
+                >
+                  <Text style={[styles.roleBadgeText, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Vai trò:{" "}
+                    {currentCommunity.viewerRole === "admin"
+                      ? "Quản trị viên"
+                      : currentCommunity.isMember
+                      ? "Thành viên chính thức"
+                      : "Chưa tham gia"}
+                  </Text>
+                </View>
+
+                <View
+                  style={[
+                    styles.roleBadgePill,
+                    {
+                      backgroundColor: isDark ? "#151D2C" : "#F1F5F9",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.1)" : "#E2E8F0",
+                    },
+                  ]}
+                >
+                  <Text style={[styles.roleBadgeText, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    {currentCommunity.memberCount} thành viên
+                  </Text>
+                </View>
+              </View>
+
+              {/* Nút Quản Trị Viên: Chỉnh sửa cộng đồng */}
+              {(currentCommunity.viewerRole === "admin" || currentCommunity.canEdit) && (
+                <TouchableOpacity
+                  style={styles.editCommunityBtn}
+                  onPress={() => setEditCommunityVisible(true)}
+                >
+                  <Settings size={14} color="#DFB76C" />
+                  <Text style={styles.editCommunityText}>⚙️ Chỉnh sửa cộng đồng</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* 3 Nút Hành Động Theo Chuẩn 2 Kiểu Cộng Đồng (PWA 100%) */}
+            {currentCommunity.communityType === "company_internal" ? (
+              <View style={styles.actionButtons3Col}>
+                <TouchableOpacity
+                  style={styles.primaryActionButton}
+                  onPress={() => {
+                    setDetailTab("tasks");
+                    setAssignTaskVisible(true);
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.actionBtnGrad}
+                  >
+                    <Briefcase size={14} color="#050C15" />
+                    <Text style={styles.actionBtnText}>+ Giao việc</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.primaryActionButton}
+                  onPress={() => {
+                    setDetailTab("news");
+                    Alert.alert("Đăng bài", "Tạo bài viết thông báo mới cho nội bộ công ty.");
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.actionBtnGrad}
+                  >
+                    <Newspaper size={14} color="#050C15" />
+                    <Text style={styles.actionBtnText}>+ Đăng bài</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.primaryActionButton}
+                  onPress={() => setShareEventVisible(true)}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.actionBtnGrad}
+                  >
+                    <Calendar size={14} color="#050C15" />
+                    <Text style={styles.actionBtnText}>+ Chia sẻ SK</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.actionButtons3Col}>
+                <TouchableOpacity
+                  style={styles.primaryActionButton}
+                  onPress={() => setCreateOppVisible(true)}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.actionBtnGrad}
+                  >
+                    <Target size={14} color="#050C15" />
+                    <Text style={styles.actionBtnText}>+ Đăng cơ hội</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.primaryActionButton}
+                  onPress={() => {
+                    setDetailTab("news");
+                    Alert.alert("Đăng tin", "Đăng bài viết chia sẻ cơ hội hoặc câu chuyện doanh nhân.");
+                  }}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.actionBtnGrad}
+                  >
+                    <Newspaper size={14} color="#050C15" />
+                    <Text style={styles.actionBtnText}>+ Đăng bài</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.primaryActionButton}
+                  onPress={() => setShareEventVisible(true)}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.actionBtnGrad}
+                  >
+                    <Calendar size={14} color="#050C15" />
+                    <Text style={styles.actionBtnText}>+ Chia sẻ SK</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Gia nhập cộng đồng banner nếu chưa là thành viên */}
+            {!currentCommunity.isMember && (
+              <View style={styles.joinBannerCard}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.joinBannerTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    Gia nhập cộng đồng
+                  </Text>
+                  <Text style={[styles.joinBannerSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Tham gia để kết nối hội viên và cập nhật tin tức, sự kiện mới nhất.
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.joinNowBtn}
+                  onPress={() => handleJoinCommunity(currentCommunity.id)}
+                >
+                  <LinearGradient
+                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                    style={styles.joinNowGrad}
+                  >
+                    <UserPlus size={14} color="#050C15" />
+                    <Text style={styles.joinNowText}>Tham gia ngay</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* 3 Quick Stat Tiles */}
+            <View style={styles.statsRow}>
+              <View
+                style={[
+                  styles.statTile,
+                  {
+                    backgroundColor: isDark ? "#121824" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
+              >
+                <Text style={styles.statValue}>{currentCommunity.memberCount}</Text>
+                <Text style={styles.statLabel}>Thành viên</Text>
+              </View>
+
+              <View
+                style={[
+                  styles.statTile,
+                  {
+                    backgroundColor: isDark ? "#121824" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
+              >
+                <Text style={styles.statValue}>{currentCommunity.upcomingEventsCount}</Text>
+                <Text style={styles.statLabel}>Sự kiện</Text>
+              </View>
+
+              <View
+                style={[
+                  styles.statTile,
+                  {
+                    backgroundColor: isDark ? "#121824" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
+              >
+                <Text style={styles.statValue}>
+                  {currentCommunity.communityType === "company_internal"
+                    ? tasks.length
+                    : currentCommunity.openOpportunityCount}
+                </Text>
+                <Text style={styles.statLabel}>
+                  {currentCommunity.communityType === "company_internal" ? "Việc nội bộ" : "Cơ hội B2B"}
+                </Text>
+              </View>
+            </View>
+
+            {/* Streamlined Navigation Tabs: Phân định rạch ròi 2 kiểu cộng đồng */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.detailTabsScroll}
+              style={styles.detailTabsWrapper}
+            >
+              {(currentCommunity.communityType === "company_internal"
+                ? [
+                    { id: "tasks", label: "⚡ Giao việc & Nhận việc" },
+                    { id: "supervision", label: "👁️ Giám sát CRM & Nhân sự" },
+                    { id: "news", label: "Bài viết nội bộ" },
+                    { id: "events", label: `Lịch họp & Sự kiện (${events.length})` },
+                    { id: "members", label: "Hội viên" },
+                  ]
+                : [
+                    { id: "opportunities", label: `⭐ Cơ hội B2B (${opportunities.length})` },
+                    { id: "news", label: "Bài viết & Tin tức" },
+                    { id: "events", label: `Sự kiện B2B (${events.length})` },
+                    { id: "members", label: "Danh bạ đối tác" },
+                  ]
+              ).map((tab) => {
+                const isSelected = detailTab === tab.id;
+                return (
+                  <TouchableOpacity
+                    key={tab.id}
+                    onPress={() => setDetailTab(tab.id as any)}
+                    style={[
+                      styles.detailTabItem,
+                      isSelected && styles.detailTabItemActive,
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.detailTabLabel,
+                        {
+                          color: isSelected
+                            ? "#DFB76C"
+                            : isDark
+                            ? "#94A3B8"
+                            : "#64748B",
+                          fontWeight: isSelected ? "800" : "500",
+                        },
+                      ]}
+                    >
+                      {tab.label}
+                    </Text>
+                    {isSelected && <View style={styles.detailActiveIndicator} />}
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* ================================================================= */}
+            {/* TAB: TASKS (CompanyTaskManagement with [⚡ TIẾN HÀNH NHẬN VIỆC]) */}
+            {/* ================================================================= */}
+            {detailTab === "tasks" && (
+              <View style={styles.tasksSection}>
+                {/* Top Banner KPI & Nút Giao Việc */}
+                <View
+                  style={[
+                    styles.tasksKpiBanner,
+                    {
+                      backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
+                    },
+                  ]}
+                >
+                  <View style={styles.tasksKpiHeaderRow}>
+                    <View style={styles.tasksIconWrap}>
+                      <Briefcase size={20} color="#D8B282" />
+                    </View>
+                    <View style={{ flex: 1, marginLeft: 10 }}>
+                      <Text style={[styles.tasksBannerTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                        Phân Hệ Giao Việc & Nhận Việc
+                      </Text>
+                      <Text style={styles.tasksBannerSubtitle}>
+                        Cộng đồng nội bộ công ty · Tự động hóa tiến độ 1-chạm
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
+                      style={styles.tasksNewBtn}
+                      onPress={() => setAssignTaskVisible(true)}
+                    >
+                      <LinearGradient
+                        colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                        style={styles.tasksNewGrad}
+                      >
+                        <Plus size={14} color="#050C15" strokeWidth={2.5} />
+                        <Text style={styles.tasksNewBtnText}>Giao việc</Text>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                  </View>
+
+                  {/* 4 Thống kê nhanh */}
+                  <View
+                    style={[
+                      styles.tasks4KpiGrid,
+                      { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                    ]}
+                  >
+                    <View style={[styles.kpiTileBox, { backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F1F5F9" }]}>
+                      <Text style={[styles.kpiTileValue, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                        {totalTasks}
+                      </Text>
+                      <Text style={styles.kpiTileLabel}>Tổng việc</Text>
+                    </View>
+
+                    <View style={[styles.kpiTileBox, styles.kpiGoldBox]}>
+                      <Text style={[styles.kpiTileValue, { color: "#DFB76C" }]}>
+                        {assignedTasksCount}
+                      </Text>
+                      <Text style={[styles.kpiTileLabel, { color: "#DFB76C", fontWeight: "700" }]}>
+                        Chờ nhận
+                      </Text>
+                    </View>
+
+                    <View style={[styles.kpiTileBox, styles.kpiBlueBox]}>
+                      <Text style={[styles.kpiTileValue, { color: "#38BDF8" }]}>
+                        {inProgressTasksCount}
+                      </Text>
+                      <Text style={[styles.kpiTileLabel, { color: "#38BDF8" }]}>Đang làm</Text>
+                    </View>
+
+                    <View style={[styles.kpiTileBox, styles.kpiGreenBox]}>
+                      <Text style={[styles.kpiTileValue, { color: "#10B981" }]}>
+                        {completedTasksCount}
+                      </Text>
+                      <Text style={[styles.kpiTileLabel, { color: "#10B981" }]}>Đã xong</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Filter Tabs Nhiệm Vụ */}
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.taskFilterScroll}
+                >
+                  {[
+                    { id: "all", label: `Tất cả (${totalTasks})` },
+                    { id: "assigned", label: `⚡ Chờ nhận việc (${assignedTasksCount})` },
+                    { id: "in_progress", label: `Đang làm (${inProgressTasksCount})` },
+                    { id: "completed", label: `Đã xong (${completedTasksCount})` },
+                  ].map((filterTab) => {
+                    const isSelected = taskFilter === filterTab.id;
+                    return (
+                      <TouchableOpacity
+                        key={filterTab.id}
+                        onPress={() => setTaskFilter(filterTab.id as any)}
+                        style={[
+                          styles.taskFilterPill,
+                          {
+                            backgroundColor: isSelected
+                              ? "#DFB76C"
+                              : isDark
+                              ? "rgba(255, 255, 255, 0.05)"
+                              : "#F1F5F9",
+                          },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.taskFilterPillText,
+                            {
+                              color: isSelected
+                                ? "#050C15"
+                                : isDark
+                                ? "#94A3B8"
+                                : "#64748B",
+                              fontWeight: isSelected ? "800" : "500",
+                            },
+                          ]}
+                        >
+                          {filterTab.label}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+
+                {/* Danh Sách Task Cards */}
+                {filteredTasks.length === 0 ? (
+                  <View style={styles.emptyContainer}>
+                    <Briefcase size={32} color="#94A3B8" />
+                    <Text style={[styles.emptyTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                      Không có công việc nào trong mục này
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={styles.tasksListContainer}>
+                    {filteredTasks.map((task) => {
+                      const isAssigned = task.status === "assigned";
+                      const isInProgress = task.status === "in_progress";
+                      const isCompleted = task.status === "completed";
+
+                      return (
+                        <View
+                          key={task.id}
+                          style={[
+                            styles.taskCard,
+                            {
+                              backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                              borderColor: isAssigned
+                                ? "#DFB76C"
+                                : isDark
+                                ? "rgba(255, 255, 255, 0.1)"
+                                : "#E2E8F0",
+                            },
+                            isAssigned && styles.taskCardAssignedGlow,
+                          ]}
+                        >
+                          {/* Top Row: Priority Badge + Status Badge */}
+                          <View style={styles.taskCardTopRow}>
+                            <View style={styles.taskPriorityGroup}>
+                              <View
+                                style={[
+                                  styles.priorityBadge,
+                                  task.priority === "urgent"
+                                    ? styles.priorityUrgent
+                                    : task.priority === "high"
+                                    ? styles.priorityHigh
+                                    : styles.priorityMedium,
+                                ]}
+                              >
+                                <Text
+                                  style={[
+                                    styles.priorityText,
+                                    task.priority === "urgent"
+                                      ? styles.priorityUrgentText
+                                      : task.priority === "high"
+                                      ? styles.priorityHighText
+                                      : styles.priorityMediumText,
+                                  ]}
+                                >
+                                  {task.priority === "urgent"
+                                    ? "Khẩn cấp"
+                                    : task.priority === "high"
+                                    ? "Ưu tiên cao"
+                                    : "Thường"}
+                                </Text>
+                              </View>
+
+                              <View style={styles.taskDeadlineRow}>
+                                <Clock size={11} color="#94A3B8" />
+                                <Text style={styles.taskDeadlineText}>Hạn: {task.deadline}</Text>
+                              </View>
+                            </View>
+
+                            {/* Status Indicator */}
+                            <View>
+                              {isAssigned && (
+                                <View style={styles.statusAssignedPill}>
+                                  <AlertTriangle size={11} color="#DFB76C" />
+                                  <Text style={styles.statusAssignedText}>CHỜ NHẬN VIỆC</Text>
+                                </View>
+                              )}
+                              {isInProgress && (
+                                <View style={styles.statusProgressPill}>
+                                  <Clock size={11} color="#38BDF8" />
+                                  <Text style={styles.statusProgressText}>ĐANG THỰC HIỆN</Text>
+                                </View>
+                              )}
+                              {isCompleted && (
+                                <View style={styles.statusCompletedPill}>
+                                  <CheckCircle2 size={11} color="#10B981" />
+                                  <Text style={styles.statusCompletedText}>ĐÃ HOÀN THÀNH</Text>
+                                </View>
+                              )}
+                            </View>
+                          </View>
+
+                          {/* Tiêu đề & Mô tả */}
+                          <Text style={[styles.taskTitleText, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                            {task.title}
+                          </Text>
+                          <Text style={[styles.taskDescText, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                            {task.description}
+                          </Text>
+
+                          {/* Thông tin Nhân viên & Khách hàng */}
+                          <View
+                            style={[
+                              styles.taskMetaRow,
+                              { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                            ]}
+                          >
+                            <View style={styles.taskAssigneeRow}>
+                              <Text style={styles.taskMetaMuted}>Nhân sự:</Text>
+                              <Text style={[styles.taskMetaBold, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                                {task.assigneeName}
+                              </Text>
+                            </View>
+
+                            {task.customerName && (
+                              <View style={styles.taskCustomerRow}>
+                                <Target size={12} color="#DFB76C" />
+                                <Text
+                                  numberOfLines={1}
+                                  style={[styles.taskMetaBold, { color: isDark ? "#FFFFFF" : "#0F172A" }]}
+                                >
+                                  {task.customerName}
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+
+                          {/* Timeline nhận việc nếu có */}
+                          {task.acceptedAt && (
+                            <View style={styles.acceptedAtRow}>
+                              <View style={styles.acceptedDot} />
+                              <Text style={styles.acceptedAtText}>
+                                Đã nhận việc lúc:{" "}
+                                {new Date(task.acceptedAt).toLocaleTimeString("vi-VN", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                                {" · "}
+                                {new Date(task.acceptedAt).toLocaleDateString("vi-VN")}
+                              </Text>
+                            </View>
+                          )}
+
+                          {/* HÀNG NÚT THAO TÁC THEO TRẠNG THÁI: [⚡ TIẾN HÀNH NHẬN VIỆC] */}
+                          <View
+                            style={[
+                              styles.taskActionBottomRow,
+                              { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                            ]}
+                          >
+                            {isAssigned ? (
+                              <>
+                                <Text style={styles.acceptPromptText}>
+                                  Tài khoản nhân sự hãy xác nhận:
+                                </Text>
+                                <TouchableOpacity
+                                  style={styles.acceptTaskBtn}
+                                  disabled={acceptingTaskId === task.id}
+                                  onPress={() => handleAcceptTask(task)}
+                                >
+                                  <LinearGradient
+                                    colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                    style={styles.acceptTaskGrad}
+                                  >
+                                    {acceptingTaskId === task.id ? (
+                                      <ActivityIndicator size="small" color="#050C15" />
+                                    ) : (
+                                      <>
+                                        <Sparkles size={14} color="#050C15" />
+                                        <Text style={styles.acceptTaskBtnText}>
+                                          TIẾN HÀNH NHẬN VIỆC
+                                        </Text>
+                                      </>
+                                    )}
+                                  </LinearGradient>
+                                </TouchableOpacity>
+                              </>
+                            ) : isInProgress ? (
+                              <>
+                                <Text style={styles.inProgressPromptText}>
+                                  Đang xử lý · Cập nhật khi xong:
+                                </Text>
+                                <TouchableOpacity
+                                  style={styles.completeTaskBtn}
+                                  onPress={() => handleCompleteTask(task)}
+                                >
+                                  <Check size={14} color="#050C15" strokeWidth={2.5} />
+                                  <Text style={styles.completeTaskBtnText}>Đánh dấu xong</Text>
+                                </TouchableOpacity>
+                              </>
+                            ) : (
+                              <View style={styles.completedStatusRow}>
+                                <CheckCircle2 size={16} color="#10B981" />
+                                <Text style={styles.completedStatusText}>
+                                  Đã hoàn thành công việc
+                                </Text>
+                              </View>
+                            )}
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            )}
+
+            {/* ================================================================= */}
+            {/* TAB: SUPERVISION (Giám sát CRM & Nhân sự)                         */}
+            {/* ================================================================= */}
+            {detailTab === "supervision" && (
+              <View style={styles.supervisionSection}>
+                <View
+                  style={[
+                    styles.supervisionCard,
+                    {
+                      backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+                    },
+                  ]}
+                >
+                  <Text style={[styles.supervisionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    Tổng Quan Hiệu Suất Vận Hành
+                  </Text>
+                  <View style={styles.supervisionMetricsRow}>
+                    <View style={styles.supervisionMetricCol}>
+                      <Text style={styles.supervisionMetricVal}>18</Text>
+                      <Text style={styles.supervisionMetricLbl}>Nhân sự hoạt động</Text>
+                    </View>
+                    <View style={styles.supervisionMetricCol}>
+                      <Text style={[styles.supervisionMetricVal, { color: "#10B981" }]}>94%</Text>
+                      <Text style={styles.supervisionMetricLbl}>Tỷ lệ nhận việc</Text>
+                    </View>
+                    <View style={styles.supervisionMetricCol}>
+                      <Text style={[styles.supervisionMetricVal, { color: "#DFB76C" }]}>5.5 Tỷ</Text>
+                      <Text style={styles.supervisionMetricLbl}>Doanh số CRM</Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+
+            {/* ================================================================= */}
+            {/* TAB: OPPORTUNITIES (Cơ hội B2B)                                   */}
+            {/* ================================================================= */}
+            {detailTab === "opportunities" && (
+              <View style={styles.opportunitiesDetailSection}>
+                {opportunities.map((opp) => (
+                  <View
+                    key={opp.id}
+                    style={[
+                      styles.opportunityCard,
+                      {
+                        backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                        borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
                       },
                     ]}
                   >
-                    {/* Header Lead Card */}
-                    <View style={styles.leadCardHeader}>
-                      <View style={{ flex: 1 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                          <Text style={[styles.leadName, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>{lead.name}</Text>
-                          <View
-                            style={[
-                              styles.leadTierBadge,
-                              lead.tier === "hot" && { backgroundColor: "rgba(239, 68, 68, 0.15)", borderColor: "#EF4444" },
-                              lead.tier === "vip" && { backgroundColor: "rgba(245, 158, 11, 0.15)", borderColor: "#F59E0B" },
-                              lead.tier === "care24h" && { backgroundColor: "rgba(16, 185, 129, 0.15)", borderColor: "#10B981" },
-                              lead.tier === "featured" && { backgroundColor: "rgba(56, 189, 248, 0.15)", borderColor: "#38BDF8" },
-                            ]}
-                          >
-                            <Text
-                              style={[
-                                styles.leadTierBadgeText,
-                                lead.tier === "hot" && { color: "#EF4444" },
-                                lead.tier === "vip" && { color: "#F59E0B" },
-                                lead.tier === "care24h" && { color: "#10B981" },
-                                lead.tier === "featured" && { color: "#38BDF8" },
-                              ]}
-                            >
-                              {lead.tier === "hot"
-                                ? "⭐ HOT LEAD"
-                                : lead.tier === "vip"
-                                ? "💎 VIP C-LEVEL"
-                                : lead.tier === "care24h"
-                                ? "🎯 CẦN CARE 24H"
-                                : "🌟 NỔI BẬT"}
-                            </Text>
-                          </View>
-                        </View>
-
-                        <Text style={[styles.leadTitleCompany, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-                          {lead.title} · {lead.company}
-                        </Text>
+                    <View style={styles.oppTopRow}>
+                      <View style={styles.oppBadge}>
+                        <Text style={styles.oppBadgeText}>{opp.category}</Text>
                       </View>
+                      <Text style={styles.oppDaysLeft}>{opp.daysLeft}</Text>
                     </View>
 
-                    {/* Metadata Row: Deal Value & PIC */}
-                    <View style={[styles.leadMetaBox, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}>
-                      <View style={styles.leadMetaCol}>
-                        <Text style={[styles.leadMetaLabel, { color: isDark ? "#D8B282" : "#A3703C" }]}>GIÁ TRỊ DEAL DỰ KIẾN</Text>
-                        <Text style={[styles.leadMetaVal, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>{lead.dealValue}</Text>
-                      </View>
-                      <View style={{ width: 1, height: 28, backgroundColor: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.08)" }} />
-                      <View style={styles.leadMetaCol}>
-                        <Text style={[styles.leadMetaLabel, { color: isDark ? "#D8B282" : "#A3703C" }]}>NHÂN SỰ PHỤ TRÁCH (PIC)</Text>
-                        <Text style={[styles.leadMetaVal, { color: isDark ? "#FFFFFF" : "#0F172A" }]} numberOfLines={1}>{lead.assignedStaff}</Text>
-                      </View>
+                    <Text style={[styles.oppTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                      {opp.title}
+                    </Text>
+
+                    <View style={styles.oppOrgRow}>
+                      <Building2 size={13} color="#94A3B8" />
+                      <Text style={styles.oppOrgText}>{opp.organization}</Text>
                     </View>
 
-                    {/* Nhu cầu & Hành động tiếp theo */}
-                    <View style={{ marginTop: 8 }}>
-                      <Text style={[styles.leadNoteText, { color: isDark ? "#E2E8F0" : "#334155" }]}>
-                        💡 Nhu cầu: {lead.notes}
-                      </Text>
-                      <View style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}>
-                        <Clock size={11} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
-                        <Text style={[styles.leadDeadlineText, { color: isDark ? "#D8B282" : "#A3703C" }]}>
-                          Hạn chót: {lead.nextAction}
-                        </Text>
+                    <View
+                      style={[
+                        styles.oppFooterRow,
+                        { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                      ]}
+                    >
+                      <View>
+                        <Text style={styles.oppValueLabel}>Giá trị dự kiến</Text>
+                        <Text style={styles.oppValueText}>{opp.dealValue}</Text>
                       </View>
-                    </View>
-
-                    {/* Hành Động Nhanh 1-Chạm: Gọi điện, Nhắn tin, Hẹn 1-1 */}
-                    <View style={[styles.leadActionsRow, { borderTopColor: isDark ? "rgba(255, 255, 255, 0.06)" : "rgba(15, 23, 42, 0.06)" }]}>
-                      <TouchableOpacity
-                        style={[styles.leadActionBtn, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}
-                        onPress={() => Alert.alert("Gọi điện", `Đang kết nối tới ${lead.name} qua số ${lead.phone}`)}
-                        activeOpacity={0.8}
-                      >
-                        <Phone size={13} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
-                        <Text style={[styles.leadActionBtnText, { color: isDark ? "#D8B282" : "#A3703C" }]}>Gọi điện</Text>
-                      </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={[styles.leadActionBtn, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}
-                        onPress={() => Alert.alert("Nhắn tin", `Mở khung chat ViOne với đối tác ${lead.name}`)}
-                        activeOpacity={0.8}
-                      >
-                        <MessageSquare size={13} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
-                        <Text style={[styles.leadActionBtnText, { color: isDark ? "#D8B282" : "#A3703C" }]}>Nhắn tin</Text>
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={[styles.leadActionBtn, { backgroundColor: isDark ? "#12151F" : "#F8FAFC" }]}
+                        style={styles.oppConnectBtn}
                         onPress={() => {
-                          setSelectedLeadForMeeting(lead);
-                          setScheduleMeetingVisible(true);
+                          setSelectedOppForMeeting(opp);
+                          setProposeMeetingVisible(true);
                         }}
-                        activeOpacity={0.8}
                       >
-                        <Handshake size={13} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 4 }} />
-                        <Text style={[styles.leadActionBtnText, { color: isDark ? "#D8B282" : "#A3703C" }]}>Hẹn 1-1</Text>
+                        <LinearGradient
+                          colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                          style={styles.oppConnectGrad}
+                        >
+                          <Handshake size={13} color="#050C15" />
+                          <Text style={styles.oppConnectText}>Đề xuất gặp mặt</Text>
+                        </LinearGradient>
                       </TouchableOpacity>
                     </View>
                   </View>
                 ))}
-            </View>
-          </View>
-        ) : activeTab !== "events" ? (
-          <View style={styles.communityList}>
-            {filteredCommunities.map((c) => (
-              <View key={c.id} style={styles.communityCard}>
-                <View style={styles.cardHeader}>
-                  <View style={styles.clubIconBadge}>
-                    <Award size={20} color="#D8B282" />
-                  </View>
-                  <View style={styles.clubHeaderMeta}>
-                    <Text style={styles.clubName}>{c.name}</Text>
-                    <View style={styles.memberMetaRow}>
-                      <Users size={12} color="#D8B282" style={{ marginRight: 4 }} />
-                      <Text style={styles.memberCountText}>{c.memberCount} Thành viên C-Level</Text>
-                      {c.role && (
-                        <View style={styles.roleBadge}>
-                          <Text style={styles.roleText}>{c.role}</Text>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                </View>
+              </View>
+            )}
 
-                <Text style={styles.clubDesc}>{c.description}</Text>
-
-                <View style={styles.clubFooter}>
-                  {c.isMember ? (
-                    <View style={styles.memberStatus}>
-                      <CheckCircle size={14} color="#10B981" style={{ marginRight: 6 }} />
-                      <Text style={styles.memberStatusText}>Đã tham gia</Text>
-                    </View>
-                  ) : (
-                    <TouchableOpacity
-                      style={styles.joinBtn}
-                      onPress={() => {
-                        setCommunities((prev) =>
-                          prev.map((item) => (item.id === c.id ? { ...item, isMember: true } : item))
-                        );
-                        Alert.alert("Gia nhập", `Đã gửi yêu cầu gia nhập ${c.name}`);
-                      }}
-                    >
-                      <Text style={styles.joinBtnText}>Gia nhập cộng đồng</Text>
-                    </TouchableOpacity>
-                  )}
-
-                  <TouchableOpacity
-                    style={styles.detailBtn}
-                    onPress={() => Alert.alert(c.name, c.description || "")}
+            {/* ================================================================= */}
+            {/* TAB: NEWS (Tin tức & Bài viết)                                    */}
+            {/* ================================================================= */}
+            {detailTab === "news" && (
+              <View style={styles.newsSection}>
+                {INITIAL_NEWS.map((item) => (
+                  <View
+                    key={item.id}
+                    style={[
+                      styles.newsCard,
+                      {
+                        backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                        borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                      },
+                    ]}
                   >
-                    <Text style={styles.detailBtnText}>Xem ban điều hành</Text>
-                    <ChevronRight size={14} color="#D8B282" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
+                    <View style={styles.newsAuthorRow}>
+                      <Image source={{ uri: item.authorAvatar }} style={styles.newsAuthorAvatar} />
+                      <View style={{ flex: 1, marginLeft: 10 }}>
+                        <Text style={[styles.newsAuthorName, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                          {item.authorName}
+                        </Text>
+                        <Text style={styles.newsAuthorMeta}>
+                          {item.authorTitle} · {item.timeAgo}
+                        </Text>
+                      </View>
+                    </View>
 
-            {/* Cơ Hội Kinh Doanh B2B Trong Cộng Đồng (Khớp 100% CommunityOpportunitiesSection web) */}
-            <View style={styles.opportunitiesSection}>
-              <View style={styles.oppSectionHeader}>
-                <Text style={styles.oppSectionTitle}>CƠ HỘI KINH DOANH TRONG CỘNG ĐỒNG</Text>
-                <TouchableOpacity
-                  style={styles.postOppBtn}
-                  onPress={() => setCreateOppVisible(true)}
-                  activeOpacity={0.8}
-                >
-                  <Plus size={13} color="#D8B282" style={{ marginRight: 3 }} />
-                  <Text style={styles.postOppBtnText}>Đăng cơ hội</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Banner */}
-              <View style={styles.oppBanner}>
-                <View style={styles.oppBannerIcon}>
-                  <Briefcase size={20} color="#D8B282" />
-                </View>
-                <View style={styles.oppBannerTexts}>
-                  <Text style={styles.oppBannerTitle}>
-                    {opportunities.length} cơ hội giao thương đang mở
-                  </Text>
-                  <Text style={styles.oppBannerSubtitle}>
-                    Dành riêng cho doanh nghiệp thành viên kết nối & cung ứng
-                  </Text>
-                </View>
-              </View>
-
-              {/* List of Opportunities */}
-              <View style={styles.oppList}>
-                {opportunities.map((opp) => (
-                  <TouchableOpacity
-                    key={opp.id}
-                    style={styles.oppCard}
-                    onPress={() => {
-                      setSelectedOpp(opp);
-                      setOppModalVisible(true);
-                    }}
-                    activeOpacity={0.85}
-                  >
-                    <Text style={styles.oppTitle}>{opp.title}</Text>
-                    <Text style={styles.oppMeta}>
-                      {opp.category} · {opp.organization} · {opp.communityName}
+                    <Text style={[styles.newsTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                      {item.title}
+                    </Text>
+                    <Text style={[styles.newsContent, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                      {item.content}
                     </Text>
 
-                    <View style={styles.oppBottomRow}>
-                      <View style={styles.oppLeftInfo}>
-                        <View style={styles.dealBadge}>
-                          <Text style={styles.dealBadgeText}>{opp.dealValue}</Text>
-                        </View>
-                        <View style={styles.daysTag}>
-                          <Clock size={12} color="#94A3B8" style={{ marginRight: 4 }} />
-                          <Text style={styles.daysText}>{opp.daysLeft}</Text>
-                        </View>
-                      </View>
+                    {item.imageUrl && (
+                      <Image source={{ uri: item.imageUrl }} style={styles.newsImage} />
+                    )}
 
-                      {opp.interested ? (
-                        <View style={styles.interestedPill}>
-                          <Check size={13} color="#D8B282" strokeWidth={2.5} style={{ marginRight: 4 }} />
-                          <Text style={styles.interestedPillText}>Đã gửi hồ sơ</Text>
-                        </View>
-                      ) : (
-                        <TouchableOpacity
-                          style={styles.interestBtn}
-                          onPress={() => {
-                            setSelectedOpp(opp);
-                            setOppModalVisible(true);
-                          }}
-                          activeOpacity={0.85}
-                        >
-                          <Text style={styles.interestBtnText}>Chi tiết & Nộp</Text>
-                        </TouchableOpacity>
-                      )}
+                    <View
+                      style={[
+                        styles.newsFooterRow,
+                        { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#F1F5F9" },
+                      ]}
+                    >
+                      <TouchableOpacity
+                        style={styles.newsStatBtn}
+                        onPress={() => Alert.alert("Tương tác", "Đã thích bài viết.")}
+                      >
+                        <Star size={14} color="#DFB76C" />
+                        <Text style={styles.newsStatText}>{item.likes} Lượt thích</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.newsStatBtn}
+                        onPress={() => Alert.alert("Bình luận", "Mở khung thảo luận.")}
+                      >
+                        <MessageSquare size={14} color="#94A3B8" />
+                        <Text style={styles.newsStatText}>{item.comments} Bình luận</Text>
+                      </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 ))}
               </View>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.eventsList}>
-            {events.map((e) => (
-              <TouchableOpacity
-                key={e.id}
-                style={styles.eventCard}
-                onPress={() => {
-                  setSelectedEvent(e);
-                  setEventModalVisible(true);
-                }}
-                activeOpacity={0.85}
-              >
-                <View style={styles.eventCategoryRow}>
-                  <View style={styles.categoryBadge}>
-                    <Text style={styles.categoryText}>{e.category}</Text>
-                  </View>
-                  <View style={styles.dateTag}>
-                    <Calendar size={12} color="#D8B282" style={{ marginRight: 4 }} />
-                    <Text style={styles.dateText}>{e.startsAt}</Text>
-                  </View>
-                </View>
+            )}
 
-                <Text style={styles.eventTitle}>{e.title}</Text>
+            {/* ================================================================= */}
+            {/* TAB: EVENTS (Lịch họp & Sự kiện)                                  */}
+            {/* ================================================================= */}
+            {detailTab === "events" && (
+              <View style={styles.eventsSection}>
+                {events.map((ev) => (
+                  <View
+                    key={ev.id}
+                    style={[
+                      styles.upcomingEventCard,
+                      {
+                        backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                        borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                      },
+                    ]}
+                  >
+                    <View style={styles.eventDateBox}>
+                      <Text style={styles.eventMonthText}>THÁNG 10</Text>
+                      <Text style={styles.eventDayText}>
+                        {ev.startsAt.split(" ")[0].split("-")[2] || "15"}
+                      </Text>
+                    </View>
 
-                <View style={styles.eventLocationRow}>
-                  <MapPin size={13} color="#94A3B8" style={{ marginRight: 6 }} />
-                  <Text style={styles.eventLocationText}>{e.location}</Text>
-                </View>
+                    <View style={styles.eventInfoCol}>
+                      <Text
+                        numberOfLines={1}
+                        style={[styles.eventTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}
+                      >
+                        {ev.title}
+                      </Text>
+                      <View style={styles.eventMetaRow}>
+                        <Clock size={12} color="#D8B282" />
+                        <Text style={styles.eventMetaText}>{ev.startsAt}</Text>
+                      </View>
+                      <View style={styles.eventMetaRow}>
+                        <MapPin size={12} color="#94A3B8" />
+                        <Text numberOfLines={1} style={styles.eventMetaText}>
+                          {ev.location}
+                        </Text>
+                      </View>
+                    </View>
 
-                <View style={styles.eventBottomRow}>
-                  <View style={styles.registeredCountBadge}>
-                    <Text style={styles.registeredCountText}>
-                      🔥 {e.registeredCount} Doanh nhân đã đăng ký
-                    </Text>
-                  </View>
-
-                  {e.isRegistered ? (
                     <TouchableOpacity
-                      style={styles.registeredPill}
-                      onPress={() => {
-                        setSelectedEvent(e);
-                        setEventModalVisible(true);
-                      }}
-                      activeOpacity={0.8}
+                      style={[
+                        styles.eventRegisterBtn,
+                        ev.isRegistered && styles.eventRegisteredBtn,
+                      ]}
+                      onPress={() => handleRegisterEvent(ev)}
                     >
-                      <CheckCircle size={13} color="#10B981" style={{ marginRight: 4 }} />
-                      <Text style={styles.registeredPillText}>Xem vé QR</Text>
+                      <Text
+                        style={[
+                          styles.eventRegisterBtnText,
+                          ev.isRegistered && styles.eventRegisteredBtnText,
+                        ]}
+                      >
+                        {ev.isRegistered ? "Đã đ.ký" : "Đăng ký"}
+                      </Text>
                     </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      style={styles.eventActionBtn}
-                      onPress={() => {
-                        setSelectedEvent(e);
-                        setEventModalVisible(true);
-                      }}
-                      activeOpacity={0.8}
-                    >
-                      <Text style={styles.eventActionText}>Đăng ký vé mời</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </ScrollView>
+                  </View>
+                ))}
+              </View>
+            )}
 
-      {/* Modal Khởi Tạo Nhóm / Liên Minh Doanh Nghiệp */}
+            {/* ================================================================= */}
+            {/* TAB: MEMBERS (Danh bạ đối tác / Hội viên)                         */}
+            {/* ================================================================= */}
+            {detailTab === "members" && (
+              <View style={styles.membersSection}>
+                {INITIAL_MEMBERS.map((m) => (
+                  <View
+                    key={m.id}
+                    style={[
+                      styles.memberCard,
+                      {
+                        backgroundColor: isDark ? "#121824" : "#FFFFFF",
+                        borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                      },
+                    ]}
+                  >
+                    <Image source={{ uri: m.avatarUrl }} style={styles.memberAvatar} />
+                    <View style={{ flex: 1, marginLeft: 12 }}>
+                      <View style={styles.memberNameRow}>
+                        <Text style={[styles.memberName, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                          {m.name}
+                        </Text>
+                        {m.role === "admin" && (
+                          <View style={styles.adminRolePill}>
+                            <Text style={styles.adminRoleText}>Admin</Text>
+                          </View>
+                        )}
+                      </View>
+                      <Text style={styles.memberTitle}>{m.title}</Text>
+                      <Text numberOfLines={1} style={styles.memberCompany}>
+                        {m.company}
+                      </Text>
+                    </View>
+
+                    <TouchableOpacity
+                      style={styles.contactBtn}
+                      onPress={() => Alert.alert("Kết nối", `Đã gửi lời chào tới ${m.name}`)}
+                    >
+                      <MessageSquare size={16} color="#D8B282" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            <View style={{ height: 120 }} />
+          </ScrollView>
+        </>
+      )}
+
+      {/* ========================================================================= */}
+      {/* ALL MODALS (Aligned 100% with PWA)                                        */}
+      {/* ========================================================================= */}
+
+      {/* Modal Tạo cộng đồng mới */}
       <CreateCommunityGroupModal
-        visible={createGroupVisible}
-        onClose={() => setCreateGroupVisible(false)}
+        visible={createCommunityVisible}
+        onClose={() => setCreateCommunityVisible(false)}
         onGroupCreated={(newGroup) => {
-          setCommunities((prev) => [newGroup, ...prev]);
+          const mapped: CommunityDetailModel = {
+            id: newGroup.id,
+            name: newGroup.name,
+            shortDescription: newGroup.description,
+            description: newGroup.description,
+            communityType: "b2b_networking",
+            memberCount: 1,
+            viewerRole: "admin",
+            isMember: true,
+            upcomingEventsCount: 0,
+            openOpportunityCount: 0,
+            canEdit: true,
+          };
+          setCommunities((prev) => [mapped, ...prev]);
         }}
       />
 
-      {/* Modal Chi Tiết Sự Kiện & Thẻ Vé QR VIP */}
-      <EventDetailModal
-        visible={eventModalVisible}
-        event={selectedEvent}
-        onClose={() => setEventModalVisible(false)}
-        onRegisterToggle={(eventId) => {
-          setEvents((prev) =>
-            prev.map((e) =>
-              e.id === eventId ? { ...e, isRegistered: !e.isRegistered } : e
-            )
-          );
-        }}
-      />
+      {/* Modal Chỉnh sửa cộng đồng */}
+      {currentCommunity && (
+        <EditCommunityModal
+          visible={editCommunityVisible}
+          onClose={() => setEditCommunityVisible(false)}
+          communityId={currentCommunity.id}
+          currentName={currentCommunity.name}
+          currentTagline={currentCommunity.shortDescription}
+          currentAbout={currentCommunity.description}
+          currentLogoUrl={currentCommunity.logoUrl}
+          currentBannerUrl={currentCommunity.bannerUrl}
+          currentType={currentCommunity.communityType}
+          onSuccess={() => {
+            loadData();
+          }}
+        />
+      )}
 
-      {/* Modal Chi Tiết Cơ Hội B2B & Nộp Báo Giá */}
-      <OpportunityDetailModal
-        visible={oppModalVisible}
-        opportunity={selectedOpp}
-        onClose={() => setOppModalVisible(false)}
-        onApplyOpportunity={(oppId) => {
-          setOpportunities((prev) =>
-            prev.map((op) => (op.id === oppId ? { ...op, interested: true } : op))
-          );
-        }}
-      />
+      {/* Modal Chia sẻ sự kiện */}
+      {currentCommunity && (
+        <ShareEventModal
+          visible={shareEventVisible}
+          onClose={() => setShareEventVisible(false)}
+          communityId={currentCommunity.id}
+          communityName={currentCommunity.name}
+          onSuccess={() => {
+            loadData();
+          }}
+        />
+      )}
 
-      {/* Modal Đăng Cơ Hội Giao Thương B2B */}
+      {/* Modal Giao việc nội bộ */}
+      {currentCommunity && (
+        <AssignTaskModal
+          visible={assignTaskVisible}
+          onClose={() => setAssignTaskVisible(false)}
+          communityId={currentCommunity.id}
+          onTaskCreated={(newTask) => {
+            setTasks((prev) => [newTask, ...prev]);
+          }}
+        />
+      )}
+
+      {/* Modal Tạo cơ hội mới */}
       <CreateOpportunityModal
         visible={createOppVisible}
         onClose={() => setCreateOppVisible(false)}
@@ -993,659 +2325,1342 @@ export const CommunityScreen: React.FC = () => {
         }}
       />
 
-      {/* Modal Quét Danh Thiếp OCR & Chuyển Thành Khách Hàng Tiềm Năng */}
-      <CardScanReviewModal
-        visible={cardScanVisible}
-        onClose={() => setCardScanVisible(false)}
-        onSaveContact={(contact) => {
-          Alert.alert("Danh bạ", `Đã lưu ${contact.name} vào danh bạ.`);
+      {/* Modal Đề xuất gặp mặt 1-1 */}
+      {selectedOppForMeeting && (
+        <ProposeOpportunityMeetingModal
+          visible={proposeMeetingVisible}
+          onClose={() => {
+            setProposeMeetingVisible(false);
+            setSelectedOppForMeeting(null);
+          }}
+          opportunityId={selectedOppForMeeting.id}
+          opportunityTitle={selectedOppForMeeting.title}
+          posterName={selectedOppForMeeting.organization}
+          onProposed={() => {
+            Alert.alert(
+              "Thành công",
+              `Đã gửi đề xuất gặp mặt 1-1 cho dự án "${selectedOppForMeeting.title}"!`
+            );
+          }}
+        />
+      )}
+
+      {/* Modal Chi tiết sự kiện */}
+      <EventDetailModal
+        visible={eventModalVisible}
+        onClose={() => {
+          setEventModalVisible(false);
+          setSelectedEvent(null);
         }}
-        onSaveCustomerLead={(newLead) => {
-          const item: CustomerLeadItem = {
-            id: `lead-${Date.now()}`,
-            name: newLead.name,
-            title: "Tổng Giám Đốc",
-            company: newLead.company || "Doanh nghiệp đối tác",
-            phone: newLead.phone || "—",
-            email: newLead.email || "—",
-            dealValue: newLead.dealValue || "500 Triệu VNĐ",
-            tier: newLead.tier,
-            stage: (newLead.stage as any) || "prospect",
-            assignedStaff: newLead.assignedStaff,
-            notes: newLead.notes || "",
-            nextAction: "Liên hệ tư vấn trong 24h",
-            source: "Card Scan AI OCR",
-          };
-          setLeadsList((prev) => [item, ...prev]);
+        event={selectedEvent}
+        onRegisterToggle={(eventId) => {
+          if (selectedEvent) {
+            handleRegisterEvent(selectedEvent);
+          }
         }}
       />
 
-      {/* Modal Đặt Lịch Hẹn Kinh Doanh 1-1 Cho Khách Hàng Tiềm Năng */}
-      <ScheduleMeetingModal
-        visible={scheduleMeetingVisible}
-        partnerName={selectedLeadForMeeting?.name}
-        partnerCompany={selectedLeadForMeeting?.company}
-        onClose={() => setScheduleMeetingVisible(false)}
+      {/* Modal Chi tiết cơ hội */}
+      <OpportunityDetailModal
+        visible={oppModalVisible}
+        onClose={() => {
+          setOppModalVisible(false);
+          setSelectedOpp(null);
+        }}
+        opportunity={selectedOpp}
+        onApplyOpportunity={(oppId) => {
+          if (selectedOpp) {
+            handleInterestOpp(selectedOpp);
+          }
+        }}
       />
     </SafeAreaView>
   );
 };
 
+// ==========================================
+// Stylesheet (Luxury Obsidian & Gold Palette)
+// ==========================================
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0B0F17",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingTop: 6,
-    paddingBottom: 10,
-    backgroundColor: "#0B0F17",
-  },
-  headerBrand: {
-    justifyContent: "center",
-  },
-  logoWordmark: {
-    width: 140,
-    height: 48,
-  },
-  headerGreeting: {
-    color: "#94A3B8",
-    fontSize: 12,
-    fontWeight: "500",
-    marginTop: -2,
-  },
-  bellBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.22)",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-  },
-  bellBadge: {
-    position: "absolute",
-    top: 5,
-    right: 5,
-    backgroundColor: "#D8B282",
-    minWidth: 16,
-    height: 16,
-    borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 3,
-  },
-  bellBadgeText: {
-    color: "#050C15",
-    fontSize: 9,
-    fontWeight: "800",
-  },
-  headerDivider: {
-    height: 1,
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
-    marginBottom: 8,
+  scrollView: {
+    flex: 1,
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingBottom: 40,
+    paddingTop: 12,
   },
-  titleSection: {
-    marginBottom: 12,
-  },
-  titleRow: {
+  stickyHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
   },
-  createGroupBtn: {
-    borderRadius: 12,
-    overflow: "hidden",
-  },
-  createGroupGradient: {
+  brandRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 7,
+    gap: 8,
   },
-  createGroupBtnText: {
+  logoBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: "#DFB76C",
+  },
+  logoText: {
+    fontSize: 11,
+    fontWeight: "900",
     color: "#050C15",
-    fontSize: 12,
-    fontWeight: "800",
+    letterSpacing: 0.8,
   },
-  screenTitle: {
+  greetingText: {
+    fontSize: 12,
+    fontWeight: "500",
+  },
+  bellButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  unreadBadge: {
+    position: "absolute",
+    top: 2,
+    right: 2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "#EF4444",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  unreadBadgeText: {
+    fontSize: 9.5,
+    fontWeight: "900",
     color: "#FFFFFF",
+  },
+  titleSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  pageTitle: {
     fontSize: 26,
     fontWeight: "800",
     letterSpacing: -0.5,
   },
-  screenSubtitle: {
-    color: "#94A3B8",
+  pageSubtitle: {
     fontSize: 12.5,
     marginTop: 2,
   },
-  searchWrapper: {
+  createCommunityBtn: {
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  createCommunityGrad: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#12151F",
-    borderRadius: 14,
+    gap: 6,
     paddingHorizontal: 14,
-    paddingVertical: 10,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    paddingVertical: 8,
   },
-  searchInput: {
-    flex: 1,
-    fontSize: 13,
-    color: "#FFFFFF",
-    padding: 0,
+  createCommunityText: {
+    fontSize: 12,
+    fontWeight: "900",
+    color: "#050C15",
+  },
+  tabsWrapper: {
+    marginTop: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(216, 178, 130, 0.2)",
   },
   tabsScroll: {
     flexDirection: "row",
-    gap: 8,
-    paddingVertical: 4,
-    marginBottom: 16,
+    gap: 16,
+    paddingBottom: 8,
   },
-  tabPill: {
+  tabItem: {
+    paddingBottom: 4,
+    position: "relative",
+  },
+  tabItemActive: {},
+  tabLabel: {
+    fontSize: 13.5,
+  },
+  activeIndicator: {
+    position: "absolute",
+    bottom: -8,
+    left: 0,
+    right: 0,
+    height: 2.5,
+    borderRadius: 2,
+    backgroundColor: "#DFB76C",
+  },
+  searchBarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
     paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 20,
-    backgroundColor: "#12151F",
+    paddingVertical: 10,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    marginTop: 12,
+    marginBottom: 10,
   },
-  tabPillActive: {
-    backgroundColor: "#D8B282",
-    borderColor: "#D8B282",
+  searchInput: {
+    flex: 1,
+    fontSize: 13.5,
+    padding: 0,
   },
-  tabPillText: {
+  searchResultCount: {
     fontSize: 12,
-    fontWeight: "600",
-    color: "#94A3B8",
+    marginBottom: 8,
   },
-  tabPillTextActive: {
-    color: "#050C15",
-    fontWeight: "800",
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
-  communityList: {
-    gap: 12,
+  emptyTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+    marginTop: 12,
+    textAlign: "center",
+  },
+  emptySubtitle: {
+    fontSize: 12.5,
+    marginTop: 4,
+    textAlign: "center",
+  },
+  communitiesList: {
+    gap: 16,
   },
   communityCard: {
-    backgroundColor: "#12151F",
-    borderRadius: 18,
-    padding: 16,
+    borderRadius: 24,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    marginBottom: 12,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 3,
   },
-  cardHeader: {
+  cardBannerWrap: {
+    height: 110,
+    width: "100%",
+    position: "relative",
+  },
+  cardBannerImg: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  cardBannerGrad: {
+    position: "absolute",
+    inset: 0,
+  },
+  cardCategoryBadge: {
+    position: "absolute",
+    top: 10,
+    left: 12,
+  },
+  companyPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.75)",
+    borderWidth: 1,
+    borderColor: "#DFB76C",
+  },
+  companyPillText: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: "#DFB76C",
+  },
+  b2bPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.65)",
+    borderWidth: 1,
+    borderColor: "#38BDF8",
+  },
+  b2bPillText: {
+    fontSize: 10,
+    fontWeight: "800",
+    color: "#38BDF8",
+  },
+  cardRoleBadge: {
+    position: "absolute",
+    top: 10,
+    right: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
+  cardRoleText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  cardBody: {
+    padding: 14,
+    paddingTop: 0,
+  },
+  cardAvatarRow: {
     flexDirection: "row",
     alignItems: "flex-start",
+    marginTop: -24,
+    gap: 12,
   },
-  clubIconBadge: {
-    width: 44,
-    height: 44,
+  cardAvatarImg: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: "#121824",
+    backgroundColor: "#121824",
+  },
+  cardNameCol: {
+    flex: 1,
+    paddingTop: 28,
+  },
+  nameChevronRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  cardTitle: {
+    fontSize: 15.5,
+    fontWeight: "800",
+    flex: 1,
+    marginRight: 6,
+  },
+  cardDesc: {
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 4,
+  },
+  cardMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 12,
+    paddingTop: 10,
+    borderTopWidth: 1,
+  },
+  attendeesGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  avatarStack: {
+    flexDirection: "row",
+  },
+  stackAvatar: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1,
+    borderColor: "#121824",
+  },
+  membersCountText: {
+    fontSize: 11.5,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  metricBadgesGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  metricBadgeGold: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+  },
+  metricBadgeGoldText: {
+    fontSize: 10.5,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  metricBadgeSlate: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.15)",
+  },
+  metricBadgeSlateText: {
+    fontSize: 10.5,
+    fontWeight: "700",
+    color: "#94A3B8",
+  },
+  cardActionsGrid: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    borderWidth: 1,
+    marginTop: 12,
+    overflow: "hidden",
+  },
+  actionCol: {
+    flex: 1,
+    height: 38,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  actionColText: {
+    fontSize: 11.5,
+    fontWeight: "700",
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+  },
+  sectionMoreText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  upcomingEventsList: {
+    gap: 10,
+  },
+  upcomingEventCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 12,
+  },
+  eventDateBox: {
+    width: 60,
+    height: 60,
     borderRadius: 14,
     backgroundColor: "rgba(216, 178, 130, 0.15)",
     borderWidth: 1,
-    borderColor: "#D8B282",
+    borderColor: "rgba(216, 178, 130, 0.3)",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 12,
   },
-  clubHeaderMeta: {
+  eventMonthText: {
+    fontSize: 9,
+    fontWeight: "800",
+    color: "#DFB76C",
+  },
+  eventDayText: {
+    fontSize: 18,
+    fontWeight: "900",
+    color: "#DFB76C",
+  },
+  eventInfoCol: {
     flex: 1,
-  },
-  clubName: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    fontWeight: "700",
-  },
-  memberMetaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginTop: 4,
-    gap: 6,
-  },
-  memberCountText: {
-    color: "#D8B282",
-    fontSize: 11,
-    fontWeight: "500",
-  },
-  roleBadge: {
-    backgroundColor: "rgba(216, 178, 130, 0.18)",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    borderWidth: 0.5,
-    borderColor: "#D8B282",
-  },
-  roleText: {
-    color: "#D8B282",
-    fontSize: 9.5,
-    fontWeight: "700",
-  },
-  clubDesc: {
-    color: "#94A3B8",
-    fontSize: 12,
-    lineHeight: 18,
-    marginTop: 10,
-  },
-  clubFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: 14,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.06)",
-  },
-  memberStatus: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  memberStatusText: {
-    color: "#10B981",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  joinBtn: {
-    backgroundColor: "#D8B282",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  joinBtnText: {
-    color: "#050C15",
-    fontSize: 11,
-    fontWeight: "700",
-  },
-  detailBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  detailBtnText: {
-    color: "#D8B282",
-    fontSize: 12,
-    fontWeight: "600",
-    marginRight: 2,
-  },
-  eventsList: {
-    gap: 12,
-  },
-  eventCard: {
-    backgroundColor: "#12151F",
-    borderRadius: 18,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-    marginBottom: 12,
-  },
-  eventCategoryRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  categoryBadge: {
-    backgroundColor: "#181D2A",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  categoryText: {
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  dateTag: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  dateText: {
-    color: "#D8B282",
-    fontSize: 11,
-    fontWeight: "600",
   },
   eventTitle: {
-    color: "#FFFFFF",
-    fontSize: 15,
+    fontSize: 13.5,
     fontWeight: "700",
-    lineHeight: 20,
-    marginBottom: 8,
   },
-  eventLocationRow: {
+  eventMetaRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
+    gap: 4,
+    marginTop: 3,
   },
-  eventLocationText: {
-    color: "#94A3B8",
-    fontSize: 12,
-    flex: 1,
-  },
-  eventBottomRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.06)",
-  },
-  registeredCountBadge: {
-    backgroundColor: "#181D2A",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  registeredCountText: {
-    color: "rgba(255, 255, 255, 0.7)",
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  registeredPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(16, 185, 129, 0.15)",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#10B981",
-  },
-  registeredPillText: {
-    color: "#10B981",
+  eventMetaText: {
     fontSize: 11,
-    fontWeight: "700",
+    color: "#94A3B8",
   },
-  eventActionBtn: {
-    backgroundColor: "#D8B282",
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 10,
+  eventRegisterBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    backgroundColor: "#DFB76C",
   },
-  eventActionText: {
+  eventRegisteredBtn: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+  },
+  eventRegisterBtnText: {
+    fontSize: 11,
+    fontWeight: "800",
     color: "#050C15",
-    fontSize: 12,
-    fontWeight: "700",
   },
-  /* Opportunities Section */
-  opportunitiesSection: {
-    marginTop: 20,
-    marginBottom: 16,
+  eventRegisteredBtnText: {
+    color: "#94A3B8",
   },
-  oppSectionHeader: {
+  opportunitiesList: {
+    gap: 12,
+  },
+  opportunityCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 14,
+    gap: 6,
+  },
+  oppTopRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 10,
   },
-  postOppBtn: {
-    flexDirection: "row",
-    alignItems: "center",
+  oppBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
     backgroundColor: "rgba(216, 178, 130, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.35)",
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    borderColor: "rgba(216, 178, 130, 0.3)",
   },
-  postOppBtnText: {
-    fontSize: 11,
+  oppBadgeText: {
+    fontSize: 10,
     fontWeight: "700",
-    color: "#D8B282",
+    color: "#DFB76C",
   },
-  oppSectionTitle: {
-    color: "#D8B282",
+  oppDaysLeft: {
+    fontSize: 11,
+    color: "#94A3B8",
+  },
+  oppTitle: {
+    fontSize: 14,
+    fontWeight: "800",
+    lineHeight: 19,
+  },
+  oppOrgRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  oppOrgText: {
+    fontSize: 12,
+    color: "#94A3B8",
+  },
+  oppFooterRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+  },
+  oppValueLabel: {
+    fontSize: 10,
+    color: "#94A3B8",
+  },
+  oppValueText: {
+    fontSize: 13.5,
+    fontWeight: "800",
+    color: "#DFB76C",
+  },
+  oppConnectBtn: {
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  oppConnectGrad: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  oppConnectText: {
     fontSize: 11.5,
     fontWeight: "800",
-    letterSpacing: 1,
+    color: "#050C15",
   },
-  oppBanner: {
+  adminEntryCard: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(216, 178, 130, 0.1)",
-    borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.35)",
-    borderRadius: 16,
+    justifyContent: "space-between",
     padding: 14,
-    marginBottom: 14,
-  },
-  oppBannerIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.4)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 12,
+    marginTop: 16,
   },
-  oppBannerTexts: {
-    flex: 1,
-  },
-  oppBannerTitle: {
-    color: "#FFFFFF",
+  adminEntryTitle: {
     fontSize: 14,
     fontWeight: "700",
   },
-  oppBannerSubtitle: {
-    color: "#94A3B8",
+  adminEntrySubtitle: {
     fontSize: 11.5,
+    color: "#94A3B8",
     marginTop: 2,
-    lineHeight: 16,
   },
-  oppList: {
-    gap: 12,
-  },
-  oppCard: {
-    backgroundColor: "#12151F",
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
-  },
-  oppTitle: {
-    color: "#FFFFFF",
-    fontSize: 14.5,
-    fontWeight: "700",
-    lineHeight: 20,
-  },
-  oppMeta: {
-    color: "#94A3B8",
-    fontSize: 12,
-    marginTop: 6,
-    marginBottom: 12,
-  },
-  oppBottomRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.06)",
-  },
-  oppLeftInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  dealBadge: {
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 0.5,
-    borderColor: "#D8B282",
-  },
-  dealBadgeText: {
-    color: "#D8B282",
-    fontSize: 11,
-    fontWeight: "700",
-  },
-  daysTag: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  daysText: {
-    color: "#94A3B8",
-    fontSize: 11,
-  },
-  interestedPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#D8B282",
-  },
-  interestedPillText: {
-    color: "#D8B282",
-    fontSize: 11.5,
-    fontWeight: "700",
-  },
-  interestBtn: {
-    backgroundColor: "#D8B282",
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    borderRadius: 8,
-  },
-  interestBtnText: {
-    color: "#050C15",
-    fontSize: 12,
-    fontWeight: "700",
-  },
-  /* Leads Pipeline Styles */
-  leadsSection: {
-    marginTop: 6,
-    marginBottom: 20,
-  },
-  leadHeroBanner: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 14,
-    borderRadius: 16,
-    borderWidth: 1,
-    marginBottom: 14,
-  },
-  leadHeroTitle: {
-    fontSize: 12.5,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-  },
-  leadHeroSubtitle: {
-    fontSize: 11,
-    marginTop: 3,
-  },
-  scanLeadBtn: {
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  scanLeadGradient: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  scanLeadBtnText: {
-    color: "#050C15",
-    fontSize: 11.5,
-    fontWeight: "800",
-  },
-  tierFilterChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  tierFilterChipText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  leadCard: {
-    borderRadius: 16,
-    padding: 14,
-    borderWidth: 1,
-  },
-  leadCardHeader: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  leadName: {
-    fontSize: 14.5,
-    fontWeight: "700",
-  },
-  leadTierBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    borderWidth: 1,
-  },
-  leadTierBadgeText: {
-    fontSize: 9.5,
-    fontWeight: "800",
-  },
-  leadTitleCompany: {
-    fontSize: 11.5,
-    marginTop: 3,
-  },
-  leadMetaBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 10,
-    borderRadius: 10,
+  historyPanel: {
     marginTop: 10,
   },
-  leadMetaCol: {
-    flex: 1,
+  historyCard: {
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
   },
-  leadMetaLabel: {
-    fontSize: 9.5,
-    fontWeight: "700",
-    letterSpacing: 0.4,
+  historyRow: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  leadMetaVal: {
-    fontSize: 12,
+  historyName: {
+    fontSize: 13.5,
     fontWeight: "700",
+  },
+  historyTime: {
+    fontSize: 11,
+    color: "#94A3B8",
     marginTop: 2,
   },
-  leadNoteText: {
-    fontSize: 11.5,
-    lineHeight: 16,
+  pendingPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
   },
-  leadDeadlineText: {
+  pendingPillText: {
     fontSize: 10.5,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+
+  // ==========================================
+  // LEVEL 2 DETAIL STYLES
+  // ==========================================
+  detailTopBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+  },
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  backButtonText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  detailTopTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    maxWidth: SCREEN_WIDTH * 0.5,
+  },
+  shareButton: {
+    padding: 4,
+  },
+  detailBannerWrap: {
+    height: 150,
+    width: "100%",
+    borderRadius: 20,
+    overflow: "hidden",
+    position: "relative",
+  },
+  detailBannerImg: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  detailBannerGrad: {
+    position: "absolute",
+    inset: 0,
+  },
+  detailCategoryPill: {
+    position: "absolute",
+    bottom: 12,
+    right: 12,
+  },
+  detailHeaderSection: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginTop: -30,
+    paddingHorizontal: 4,
+    gap: 12,
+  },
+  detailAvatarImg: {
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderWidth: 3,
+    borderColor: "#DFB76C",
+    backgroundColor: "#121824",
+  },
+  detailInfoCol: {
+    flex: 1,
+    paddingTop: 34,
+  },
+  detailNameText: {
+    fontSize: 18,
+    fontWeight: "800",
+    lineHeight: 23,
+  },
+  detailShortDesc: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginTop: 4,
+  },
+  badgesActionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 12,
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  badgesGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  roleBadgePill: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  roleBadgeText: {
+    fontSize: 11,
     fontWeight: "600",
   },
-  leadActionsRow: {
+  editCommunityBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    backgroundColor: "rgba(223, 183, 108, 0.15)",
+    borderWidth: 1,
+    borderColor: "#DFB76C",
+  },
+  editCommunityText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#DFB76C",
+  },
+  actionButtons3Col: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 14,
+  },
+  primaryActionButton: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  actionBtnGrad: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 10,
+  },
+  actionBtnText: {
+    fontSize: 11.5,
+    fontWeight: "900",
+    color: "#050C15",
+  },
+  joinBannerCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 14,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+    backgroundColor: "rgba(216, 178, 130, 0.08)",
+    marginTop: 12,
+  },
+  joinBannerTitle: {
+    fontSize: 13.5,
+    fontWeight: "800",
+  },
+  joinBannerSubtitle: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  joinNowBtn: {
+    borderRadius: 14,
+    overflow: "hidden",
+  },
+  joinNowGrad: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  joinNowText: {
+    fontSize: 11.5,
+    fontWeight: "900",
+    color: "#050C15",
+  },
+  statsRow: {
+    flexDirection: "row",
+    gap: 8,
+    marginTop: 14,
+  },
+  statTile: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+  },
+  statValue: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#DFB76C",
+  },
+  statLabel: {
+    fontSize: 10.5,
+    color: "#94A3B8",
+    marginTop: 2,
+  },
+  detailTabsWrapper: {
+    marginTop: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(216, 178, 130, 0.2)",
+  },
+  detailTabsScroll: {
+    flexDirection: "row",
+    gap: 14,
+    paddingBottom: 8,
+  },
+  detailTabItem: {
+    paddingBottom: 4,
+    position: "relative",
+  },
+  detailTabItemActive: {},
+  detailTabLabel: {
+    fontSize: 13,
+  },
+  detailActiveIndicator: {
+    position: "absolute",
+    bottom: -8,
+    left: 0,
+    right: 0,
+    height: 2.5,
+    borderRadius: 2,
+    backgroundColor: "#DFB76C",
+  },
+
+  // ==========================================
+  // TASKS SECTION STYLES
+  // ==========================================
+  tasksSection: {
+    marginTop: 14,
+    gap: 12,
+  },
+  tasksKpiBanner: {
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 14,
+  },
+  tasksKpiHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  tasksIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tasksBannerTitle: {
+    fontSize: 13.5,
+    fontWeight: "800",
+  },
+  tasksBannerSubtitle: {
+    fontSize: 10.5,
+    color: "#DFB76C",
+    marginTop: 1,
+  },
+  tasksNewBtn: {
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  tasksNewGrad: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  tasksNewBtnText: {
+    fontSize: 11,
+    fontWeight: "900",
+    color: "#050C15",
+  },
+  tasks4KpiGrid: {
     flexDirection: "row",
     gap: 8,
     marginTop: 12,
     paddingTop: 10,
     borderTopWidth: 1,
   },
-  leadActionBtn: {
+  kpiTileBox: {
     flex: 1,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 7,
-    borderRadius: 8,
+    paddingVertical: 8,
+    borderRadius: 10,
   },
-  leadActionBtnText: {
-    fontSize: 11,
+  kpiGoldBox: {
+    backgroundColor: "rgba(223, 183, 108, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(223, 183, 108, 0.25)",
+  },
+  kpiBlueBox: {
+    backgroundColor: "rgba(56, 189, 248, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(56, 189, 248, 0.25)",
+  },
+  kpiGreenBox: {
+    backgroundColor: "rgba(16, 185, 129, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(16, 185, 129, 0.25)",
+  },
+  kpiTileValue: {
+    fontSize: 15,
+    fontWeight: "900",
+  },
+  kpiTileLabel: {
+    fontSize: 9.5,
+    color: "#94A3B8",
+    marginTop: 2,
+  },
+  taskFilterScroll: {
+    flexDirection: "row",
+    gap: 8,
+    paddingVertical: 4,
+  },
+  taskFilterPill: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  taskFilterPillText: {
+    fontSize: 11.5,
+  },
+  tasksListContainer: {
+    gap: 12,
+  },
+  taskCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 14,
+    gap: 6,
+  },
+  taskCardAssignedGlow: {
+    shadowColor: "#DFB76C",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  taskCardTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  taskPriorityGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  priorityBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  priorityUrgent: {
+    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    borderColor: "rgba(239, 68, 68, 0.3)",
+  },
+  priorityUrgentText: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: "#EF4444",
+  },
+  priorityHigh: {
+    backgroundColor: "rgba(223, 183, 108, 0.15)",
+    borderColor: "rgba(223, 183, 108, 0.3)",
+  },
+  priorityHighText: {
+    fontSize: 10,
+    fontWeight: "900",
+    color: "#DFB76C",
+  },
+  priorityMedium: {
+    backgroundColor: "rgba(148, 163, 184, 0.15)",
+    borderColor: "rgba(148, 163, 184, 0.3)",
+  },
+  priorityMediumText: {
+    fontSize: 10,
     fontWeight: "700",
+    color: "#94A3B8",
+  },
+  priorityText: {},
+  taskDeadlineRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  taskDeadlineText: {
+    fontSize: 11,
+    color: "#94A3B8",
+  },
+  statusAssignedPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    backgroundColor: "rgba(223, 183, 108, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(223, 183, 108, 0.4)",
+  },
+  statusAssignedText: {
+    fontSize: 9.5,
+    fontWeight: "900",
+    color: "#DFB76C",
+  },
+  statusProgressPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    backgroundColor: "rgba(56, 189, 248, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(56, 189, 248, 0.3)",
+  },
+  statusProgressText: {
+    fontSize: 9.5,
+    fontWeight: "800",
+    color: "#38BDF8",
+  },
+  statusCompletedPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    backgroundColor: "rgba(16, 185, 129, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(16, 185, 129, 0.3)",
+  },
+  statusCompletedText: {
+    fontSize: 9.5,
+    fontWeight: "800",
+    color: "#10B981",
+  },
+  taskTitleText: {
+    fontSize: 14.5,
+    fontWeight: "800",
+    lineHeight: 20,
+    marginTop: 2,
+  },
+  taskDescText: {
+    fontSize: 12,
+    lineHeight: 17,
+  },
+  taskMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 6,
+    paddingTop: 8,
+    borderTopWidth: 1,
+  },
+  taskAssigneeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  taskCustomerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    maxWidth: 160,
+  },
+  taskMetaMuted: {
+    fontSize: 11.5,
+    color: "#94A3B8",
+  },
+  taskMetaBold: {
+    fontSize: 11.5,
+    fontWeight: "700",
+  },
+  acceptedAtRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 4,
+  },
+  acceptedDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#10B981",
+  },
+  acceptedAtText: {
+    fontSize: 10.5,
+    color: "#10B981",
+    fontWeight: "600",
+  },
+  taskActionBottomRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+  },
+  acceptPromptText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#DFB76C",
+  },
+  acceptTaskBtn: {
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  acceptTaskGrad: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+  },
+  acceptTaskBtnText: {
+    fontSize: 11,
+    fontWeight: "900",
+    color: "#050C15",
+    letterSpacing: 0.3,
+  },
+  inProgressPromptText: {
+    fontSize: 11,
+    color: "#38BDF8",
+  },
+  completeTaskBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    backgroundColor: "#DFB76C",
+  },
+  completeTaskBtnText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: "#050C15",
+  },
+  completedStatusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  completedStatusText: {
+    fontSize: 11.5,
+    fontWeight: "700",
+    color: "#10B981",
+  },
+
+  // Supervision styles
+  supervisionSection: {
+    marginTop: 14,
+  },
+  supervisionCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 16,
+  },
+  supervisionTitle: {
+    fontSize: 14.5,
+    fontWeight: "800",
+    marginBottom: 12,
+  },
+  supervisionMetricsRow: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  supervisionMetricCol: {
+    flex: 1,
+    alignItems: "center",
+  },
+  supervisionMetricVal: {
+    fontSize: 20,
+    fontWeight: "900",
+    color: "#FFFFFF",
+  },
+  supervisionMetricLbl: {
+    fontSize: 10,
+    color: "#94A3B8",
+    marginTop: 2,
+    textAlign: "center",
+  },
+
+  // Opportunities Detail Styles
+  opportunitiesDetailSection: {
+    marginTop: 14,
+    gap: 12,
+  },
+
+  // News styles
+  newsSection: {
+    marginTop: 14,
+    gap: 12,
+  },
+  newsCard: {
+    borderRadius: 20,
+    borderWidth: 1,
+    padding: 14,
+    gap: 8,
+  },
+  newsAuthorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  newsAuthorAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+  },
+  newsAuthorName: {
+    fontSize: 13.5,
+    fontWeight: "700",
+  },
+  newsAuthorMeta: {
+    fontSize: 11,
+    color: "#94A3B8",
+  },
+  newsTitle: {
+    fontSize: 14,
+    fontWeight: "800",
+  },
+  newsContent: {
+    fontSize: 12.5,
+    lineHeight: 18,
+  },
+  newsImage: {
+    width: "100%",
+    height: 160,
+    borderRadius: 12,
+    resizeMode: "cover",
+  },
+  newsFooterRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 4,
+    paddingTop: 8,
+    borderTopWidth: 1,
+  },
+  newsStatBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  newsStatText: {
+    fontSize: 11.5,
+    color: "#94A3B8",
+  },
+
+  // Events styles
+  eventsSection: {
+    marginTop: 14,
+    gap: 10,
+  },
+
+  // Members styles
+  membersSection: {
+    marginTop: 14,
+    gap: 10,
+  },
+  memberCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    borderRadius: 18,
+    borderWidth: 1,
+  },
+  memberAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+  memberNameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  memberName: {
+    fontSize: 13.5,
+    fontWeight: "700",
+  },
+  adminRolePill: {
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 6,
+    backgroundColor: "rgba(223, 183, 108, 0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(223, 183, 108, 0.4)",
+  },
+  adminRoleText: {
+    fontSize: 9.5,
+    fontWeight: "800",
+    color: "#DFB76C",
+  },
+  memberTitle: {
+    fontSize: 11.5,
+    color: "#DFB76C",
+    marginTop: 1,
+  },
+  memberCompany: {
+    fontSize: 11,
+    color: "#94A3B8",
+  },
+  contactBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
