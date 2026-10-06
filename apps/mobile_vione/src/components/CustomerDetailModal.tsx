@@ -107,7 +107,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           <ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 520 }}>
             {/* Deal Value Card */}
             <LinearGradient
-              colors={["#181D2A", "#12151F"]}
+              colors={["#181D2A", "#0E1522"]}
               style={styles.dealCard}
             >
               <View style={styles.dealIconBox}>
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheetContainer: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 20,

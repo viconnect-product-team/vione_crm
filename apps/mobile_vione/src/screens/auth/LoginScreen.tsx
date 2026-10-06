@@ -35,6 +35,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { useAuth } from "../../context/AuthContext";
+import { ViOneLogo } from "../../components/ViOneLogo";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -217,11 +218,7 @@ export const LoginScreen: React.FC = () => {
 
             {/* Brand Header */}
             <View style={styles.brandHeader}>
-              <Image
-                source={require("../../../assets/vione-wordmark.png")}
-                style={styles.logoWordmark}
-                resizeMode="contain"
-              />
+              <ViOneLogo width={160} height={56} />
               <Text style={styles.brandSubtitle}>BUSINESS CONNECT</Text>
               <Text style={styles.loginHeading}>
                 {isRegister ? "Đăng ký tài khoản mới" : "Đăng nhập ViOne"}

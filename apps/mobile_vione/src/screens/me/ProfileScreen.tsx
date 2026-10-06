@@ -32,6 +32,7 @@ import {
 } from "lucide-react-native";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { StickyBrandHeader } from "../../components/common/StickyBrandHeader";
 import { MyQrModal } from "../quick-connect/MyQrModal";
 import { IdentityPrivacyModal } from "../../components/IdentityPrivacyModal";
 import { CardVaultModal } from "../../components/CardVaultModal";
@@ -46,12 +47,12 @@ export const ProfileScreen: React.FC = () => {
   const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
   const [cardVaultModalVisible, setCardVaultModalVisible] = useState(false);
 
-  const displayName = user?.displayName || user?.name || "Administrator";
-  const userPhone = user?.phone || "0983 000 001";
-  const userEmail = user?.email || "ceo@vione.vn";
-  const userTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
-  const userCompany = user?.company || "Tập đoàn Đầu tư & Công nghệ ViOne";
-  const userCode = user?.code || "VIONE-8888";
+  const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
+  const userPhone = user?.phone || "";
+  const userEmail = user?.email || "";
+  const userTitle = user?.title || "Doanh nhân C-Level";
+  const userCompany = user?.company || "ViOne Business Network";
+  const userCode = user?.code || "";
 
   const handleLogout = () => {
     Alert.alert("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất khỏi ViOne Connect?", [
@@ -106,93 +107,24 @@ export const ProfileScreen: React.FC = () => {
       ]}
       edges={["top"]}
     >
-      {/* 1. Header: Avatar + "Tôi" + Subtitle + Bell / Theme Toggle */}
-      <View
-        style={[
-          styles.header,
-          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
-        ]}
-      >
-        <View style={styles.headerLeft}>
-          <View style={styles.headerAvatarWrap}>
-            {user?.avatarUrl ? (
-              <Image source={{ uri: user.avatarUrl }} style={styles.headerAvatarImg} />
-            ) : (
-              <Image
-                source={require("../../../assets/vba-hero.jpg")}
-                style={styles.headerAvatarImg}
-              />
-            )}
-          </View>
-          <View style={styles.headerTitleCol}>
-            <View style={styles.titleVerifiedRow}>
-              <Text
-                style={[
-                  styles.headerTitleText,
-                  { color: isDark ? "#FFFFFF" : "#0F172A" },
-                ]}
-              >
-                Tôi
-              </Text>
-              <BadgeCheck size={18} color="#D8B282" style={{ marginLeft: 5 }} />
-            </View>
-            <Text
-              style={[
-                styles.headerSubtitleText,
-                { color: isDark ? "#94A3B8" : "#64748B" },
-              ]}
-            >
-              Quản lý danh tính & kết nối của bạn
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.headerRightActions}>
+      {/* 1. Sticky Header Thương Hiệu Khớp 100% PWA */}
+      <StickyBrandHeader
+        rightActions={
           <TouchableOpacity
             style={[
-              styles.headerIconBtn,
+              styles.headerSquareBtn,
               {
-                backgroundColor: isDark
-                  ? "rgba(255, 255, 255, 0.06)"
-                  : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark
-                  ? "rgba(216, 178, 130, 0.25)"
-                  : "rgba(216, 178, 130, 0.3)",
-              },
-            ]}
-            onPress={toggleTheme}
-            activeOpacity={0.7}
-          >
-            {isDark ? (
-              <Sun size={18} color="#D8B282" strokeWidth={1.8} />
-            ) : (
-              <Moon size={18} color="#926227" strokeWidth={1.8} />
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.headerIconBtn,
-              {
-                backgroundColor: isDark
-                  ? "rgba(255, 255, 255, 0.06)"
-                  : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark
-                  ? "rgba(216, 178, 130, 0.25)"
-                  : "rgba(216, 178, 130, 0.3)",
+                backgroundColor: isDark ? "rgba(22, 32, 50, 0.65)" : "#F1F5F9",
+                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
               },
             ]}
             onPress={() => Alert.alert("Thông báo", "Bạn không có cảnh báo mới.")}
             activeOpacity={0.7}
           >
-            <Bell
-              size={18}
-              color={isDark ? "#D8B282" : "#926227"}
-              strokeWidth={1.8}
-            />
+            <Bell size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
           </TouchableOpacity>
-        </View>
-      </View>
+        }
+      />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -203,7 +135,7 @@ export const ProfileScreen: React.FC = () => {
           style={[
             styles.identityCard,
             {
-              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+              backgroundColor: isDark ? "#0E1522" : "#FFFFFF",
               borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
               shadowColor: isDark ? "#000" : "#64748B",
             },
@@ -652,6 +584,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+  },
+  headerSquareBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
   headerIconBtn: {
     width: 36,

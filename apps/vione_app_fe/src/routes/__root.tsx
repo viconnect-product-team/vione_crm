@@ -214,12 +214,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
   })})();`;
 
   return (
-    <html lang="en" className="dark" data-theme="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: redirectScript }} />
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -242,17 +242,7 @@ function AuthenticatedRealtimeNotifications() {
 }
 
 function RootComponent() {
-  const [lang, setLangState] = useState<Lang>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem(LANG_STORAGE_KEY);
-        if (isLang(saved)) return saved;
-      } catch {
-        /* ignore */
-      }
-    }
-    return "vi";
-  });
+  const [lang, setLangState] = useState<Lang>("vi");
   const [queryClient] = useState(makeQueryClient);
 
   // Register service worker for offline support (guarded: prod only).

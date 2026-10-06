@@ -6,10 +6,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Loader2, Mic, Square, Undo2 } from "lucide-react";
+import { toast } from "sonner";
 import { useT, type TKey } from "@/lib/i18n";
 import { bcMobileMomentVoiceNoteFn } from "@/lib/business-connect/mobile/moment.functions";
 
-const MAX_MS = 3 * 60_000;
+const MAX_MS = 15 * 60_000; // Không giới hạn cứng 3 phút, cho phép ghi âm thoải mái tới 15 phút
+const MIN_MS = 10_000; // Tối thiểu 10 giây là lưu được
 
 function fmt(ms: number) {
   const s = Math.floor(ms / 1000);
@@ -186,7 +188,17 @@ export function MomentVoiceNote({
       <div className="mt-3 flex items-center gap-2">
         <button
           type="button"
-          onClick={() => (state === "recording" ? recorderRef.current?.stop() : void start())}
+          onClick={() => {
+            if (state === "recording") {
+              if (elapsed < MIN_MS) {
+                toast.warning("Vui lòng ghi âm tối thiểu 10 giây để lưu trọn vẹn khoảnh khắc.");
+                return;
+              }
+              recorderRef.current?.stop();
+            } else {
+              void start();
+            }
+          }}
           disabled={busy}
           aria-live="polite"
           className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl px-4 text-[14.5px] font-semibold transition-colors active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)] disabled:opacity-60 ${
@@ -209,7 +221,7 @@ export function MomentVoiceNote({
           {state === "processing"
             ? t("bc.mobile.moment.voice.processing")
             : state === "recording"
-              ? t("bc.mobile.moment.voice.stop")
+              ? `Dừng & Lưu ghi âm (${fmt(elapsed)})`
               : applied || errorKey
                 ? t("bc.mobile.moment.voice.retry")
                 : t("bc.mobile.moment.voice.start")}
@@ -230,7 +242,7 @@ export function MomentVoiceNote({
       </div>
 
       <p className="mt-2 text-[12px] text-[var(--bc-mobile-muted)]">
-        {t("bc.mobile.moment.voice.limit")}
+        Ghi âm tối thiểu 10 giây, không giới hạn 3 phút — tự do chia sẻ khoảnh khắc.
       </p>
 
       {applied ? (

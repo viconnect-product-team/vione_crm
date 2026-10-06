@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
   actionRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 18,
@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
   },
   opsColItem: {
     flex: 1,
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",

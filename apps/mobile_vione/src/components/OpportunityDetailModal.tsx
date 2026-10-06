@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
   },
   sectionCard: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   proposalSection: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(216, 178, 130, 0.25)",

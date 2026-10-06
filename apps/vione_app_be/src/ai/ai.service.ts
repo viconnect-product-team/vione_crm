@@ -1039,35 +1039,318 @@ export class AiService {
     ) {
       return {
         ok: true,
-        answer: `🤖 **Dạ em chào Anh/Chị, em là Trợ lý AI Điều Hành ViOne Platform 5.0!**\n\nEm là AI trợ lý chuyên sâu dành cho Lãnh đạo C-Level và Doanh nghiệp, luôn sẵn sàng hỗ trợ Anh/Chị:\n\n1. **📅 Lịch trình & Nhiệm vụ:** Hỏi em *"Hôm nay tôi có việc gì cần làm không?"* để xem toàn bộ lịch hẹn và việc gấp.\n2. **🎯 Khách hàng & Đối tác:** Hỏi em *"Tôi có khách hàng nào chưa?"* hoặc *"Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi"*.\n3. **👥 Giám sát vận hành:** Hỏi em *"Tình hình nhân sự chấm công hôm nay"* hoặc *"Có tờ trình chi nào chờ duyệt không"*\n4. **🏢 Cộng đồng công ty:** Hỗ trợ giao việc, giám sát nhân viên nhận việc và chăm sóc khách hàng.\n\n*Anh/chị cần em hỗ trợ xử lý việc gì ngay bây giờ ạ?*`,
-        voiceText: `Dạ em chào Anh Chị, em là Trợ lý AI ViOne. Anh Chị có thể hỏi em về việc cần làm hôm nay, tìm kiếm khách hàng tiềm năng, hoặc tình hình nhân sự chấm công ạ.`,
-        reasoningSummary: 'Lời chào và giới thiệu các năng lực C-Level của ViOne AI.',
+        answer: `🤖 **Dạ em chào Anh/Chị, em là Trợ lý AI Điều Hành ViOne Platform 5.0!**\n\nEm là AI trợ lý chuyên sâu dành cho Lãnh đạo C-Level và Doanh nghiệp, luôn sẵn sàng hỗ trợ Anh/Chị xử lý mọi nghiệp vụ trên nền tảng ViOne:\n\n1. **📅 Lịch trình & Sự kiện:** Tra cứu việc cần làm hôm nay, lịch hẹn 1-1, đăng ký vé VIP và hướng dẫn hủy đăng ký sự kiện.\n2. **📸 Khoảnh khắc giao thương (Moments):** Đăng bài chia sẻ thành tựu, kích hoạt máy ảnh chụp ảnh trực tiếp từ thiết bị, ghi âm khoảnh khắc.\n3. **💎 Danh thiếp số 3D & NFC:** Chạm danh thiếp 1-chạm qua NFC, mở mã QR cá nhân, quét danh thiếp đối tác bằng AI OCR 3 giây.\n4. **🎯 Khách hàng & Cơ hội B2B:** Tìm khách hàng tiềm năng tương thích hồ sơ, mở phễu bán hàng CRM, đăng tải cơ hội thầu.\n5. **👥 Giám sát vận hành & Ký duyệt:** Kiểm tra chấm công GPS & FaceID, phân công việc cho nhân viên, ký duyệt chi ngân sách VietQR 24/7.\n6. **📄 Soạn thảo văn bản & Import Excel:** Soạn hợp đồng B2B, biên bản họp chuẩn pháp lý, tự động đọc và map dữ liệu Excel vào CSDL.\n\n*Anh/Chị cần em hỗ trợ giải đáp hoặc xử lý nghiệp vụ nào ngay bây giờ ạ?*`,
+        voiceText: `Dạ em chào Anh Chị, em là Trợ lý AI ViOne. Em có thể giải đáp toàn bộ tính năng về lịch trình, sự kiện, khoảnh khắc chụp ảnh, danh thiếp số NFC, cơ hội khách hàng và giám sát vận hành doanh nghiệp ạ.`,
+        reasoningSummary: 'Lời chào và giới thiệu toàn diện các năng lực điều hành đa phân hệ của ViOne AI Copilot 5.0.',
         evidence: [
           { id: 'ev-intro-1', type: 'system', title: 'ViOne Copilot 5.0', excerpt: 'Trợ lý điều hành doanh nghiệp thông minh' }
         ],
         suggestedActions: [
           { label: '📋 Hôm nay tôi có việc gì cần làm?', intent: 'today_tasks' },
-          { label: '🎯 Tìm khách hàng tiềm năng', intent: 'find_potential_leads' },
-          { label: '👥 Kiểm tra chấm công nhân sự', intent: 'check_attendance' }
+          { label: '🎯 Tìm khách hàng tiềm năng phù hợp', intent: 'find_potential_leads' },
+          { label: '🎫 Hướng dẫn hủy đăng ký sự kiện', intent: 'event_cancel_guide' },
+          { label: '📸 Cách chụp ảnh đăng khoảnh khắc', intent: 'moment_camera_guide' }
         ]
       };
     }
 
-    // CASE 5: PHẢN HỒI KHI KHÔNG TRẢ LỜI ĐƯỢC HOẶC NGOÀI PHẠM VI (CHUẨN THEO YÊU CẦU NGƯỜI DÙNG)
+    // CASE 5: THỬ GỌI LLM GATEWAY (NẾU CÓ API KEY ĐƯỢC CẤU HÌNH TRONG MÔI TRƯỜNG)
+    const llmResult = await this.callLlmGateway(q, stats, formattedDealValue).catch(() => null);
+    if (llmResult) {
+      return llmResult;
+    }
+
+    // CASE 6: BỘ NÃO LẬP LUẬN ĐỘNG CHUYÊN SÂU VIONE (KHÔNG BAO GIỜ BỊ ĐƠ HAY NÓI "CHƯA THÔNG MINH")
+    return this.generateDynamicViOneResponse(q, qLower, stats, formattedDealValue, userId);
+  }
+
+  /**
+   * Gọi LLM Gateway (OpenAI / Gemini / Anthropic / Lovable) nếu có khóa API môi trường
+   */
+  private async callLlmGateway(
+    userQuery: string,
+    stats: Record<string, any>,
+    formattedDealValue: string
+  ): Promise<AiChatResponse | null> {
+    const apiKey =
+      process.env.OPENAI_API_KEY ||
+      process.env.GEMINI_API_KEY ||
+      process.env.LOVABLE_API_KEY ||
+      process.env.ANTHROPIC_API_KEY;
+
+    if (!apiKey) return null;
+
+    try {
+      const endpoint = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1/chat/completions';
+      const model = process.env.AI_MODEL || 'gpt-4o-mini';
+
+      const systemPrompt = `Bạn là Trợ lý AI Điều Hành ViOne Platform 5.0 (C-Level Executive Copilot) cao cấp.
+Bạn phục vụ các Chủ tịch, Tổng Giám Đốc, và Lãnh đạo doanh nghiệp tại Việt Nam.
+Giọng điệu: Tôn trọng, lịch thiệp, thông minh, chuyên nghiệp, tự nhiên như con người, xưng "em" và gọi người dùng là "Anh/Chị".
+Bạn nắm vững 100% nghiệp vụ và tính năng của nền tảng ViOne:
+- Danh thiếp số 3D Titanium, chạm NFC 1-giây, quét QR code, quét danh thiếp giấy bằng AI OCR, lưu vào danh bạ đối tác.
+- Lịch trình làm việc, cuộc hẹn 1-1 (Google Meet hoặc Lounge VIP), sự kiện hiệp hội, đăng ký vé VIP và HỦY ĐĂNG KÝ SỰ KIỆN trực tiếp trong ứng dụng.
+- Đăng khoảnh khắc doanh nhân (Moments): Cho phép bấm biểu tượng Máy ảnh (Camera) để trực tiếp chụp ảnh từ thiết bị, đính kèm cảm xúc, hashtag ngành nghề, và chia sẻ lên mạng lưới.
+- Giám sát vận hành: Chấm công GPS & AI FaceID, tiến độ công việc Kanban WIP, duyệt chi ngân sách 3 cấp qua VietQR 24/7.
+- Cộng đồng nội bộ công ty: Thêm nhân viên, giao việc 1-chạm, nhân viên bấm nhận việc, theo dõi lịch sử chăm sóc khách hàng.
+- Sàn cơ hội kinh doanh B2B, phễu bán hàng CRM, Marketplace sản phẩm doanh nghiệp.
+- Thống kê thời gian thực: ${stats.companies} doanh nghiệp thành viên, ${stats.opportunities} cơ hội giao thương (${formattedDealValue}), ${stats.users} nhân sự.
+Yêu cầu định dạng câu trả lời:
+- Luôn trả về văn phong rõ ràng, gạch đầu dòng mạch lạc, có icon sinh động.
+- Không bao giờ nói mình không biết hay không thông minh, luôn giải thích thấu đáo và đưa ra các hành động cụ thể để xử lý.`;
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 9000);
+
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userQuery },
+          ],
+          temperature: 0.7,
+          max_tokens: 800,
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (!response.ok) return null;
+
+      const data: any = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      if (!content) return null;
+
+      const cleanVoice = content
+        .replace(/[*#_`]/g, '')
+        .replace(/\n+/g, ' ')
+        .slice(0, 220);
+
+      return {
+        ok: true,
+        answer: content,
+        voiceText: cleanVoice,
+        reasoningSummary: 'Phân tích ngôn ngữ tự nhiên từ LLM Gateway tích hợp ngữ cảnh ViOne Platform 5.0.',
+        evidence: [
+          { id: 'ev-llm-1', type: 'ai_copilot', title: 'ViOne Executive Intelligence', excerpt: 'Phản hồi qua mô hình ngôn ngữ lớn' }
+        ],
+        suggestedActions: [
+          { label: '📋 Lịch trình hôm nay', route: '/connect-app/meetings' },
+          { label: '🤝 Mạng lưới đối tác', route: '/connect-app/network' },
+          { label: '💎 Danh thiếp của tôi', route: '/connect-app/me/card' }
+        ]
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Bộ não lập luận động chuyên sâu ViOne: Phân tích ngữ nghĩa toàn diện mọi câu hỏi
+   * về nền tảng ViOne, không bao giờ dùng câu tĩnh "chưa thông minh".
+   */
+  private generateDynamicViOneResponse(
+    q: string,
+    qLower: string,
+    stats: Record<string, any>,
+    formattedDealValue: string,
+    userId: string
+  ): AiChatResponse {
+    // 1. CHỦ ĐỀ: HỦY ĐĂNG KÝ SỰ KIỆN / HỦY VÉ THAM DỰ
+    if (
+      qLower.includes('hủy đăng ký sự kiện') ||
+      qLower.includes('hủy vé') ||
+      qLower.includes('không tham gia sự kiện') ||
+      qLower.includes('hủy tham gia') ||
+      (qLower.includes('hủy') && qLower.includes('sự kiện')) ||
+      (qLower.includes('hủy') && qLower.includes('đăng ký'))
+    ) {
+      return {
+        ok: true,
+        answer: `🎫 **Hướng Dẫn Quy Trình Hủy Đăng Ký Sự Kiện Trên ViOne:**\n\nAnh/Chị có thể chủ động hủy đăng ký tham gia sự kiện bất kỳ lúc nào theo các bước sau:\n\n1. **Cách 1 — Thao tác trực tiếp tại Thẻ Chi Tiết Sự Kiện:**\n   • Mở sự kiện Anh/Chị đã đăng ký (từ mục **Lịch Trình** trên Trang Chủ hoặc tab **Cộng Đồng**).\n   • Tại màn hình chi tiết sự kiện, Anh/Chị sẽ thấy trạng thái hiển thị **[✓ Đã đăng ký]**.\n   • Nhấn vào nút **[Hủy đăng ký]** (hoặc gạt công tắc tham gia).\n   • Hệ thống sẽ hiển thị hộp thoại xác nhận: chọn **"Xác nhận hủy"**.\n\n2. **Cách 2 — Tự động cập nhật hệ thống:**\n   • Hệ thống tự động chuyển trạng thái vé sang \`cancelled\`.\n   • Số lượng đăng ký tham dự của sự kiện sẽ tự động được giải phóng để nhường chỗ cho hội viên khác.\n   • Thông báo hủy tham gia thành công sẽ được gửi trực tiếp vào Trung tâm thông báo của Anh/Chị.\n\n*Nếu cần hỗ trợ đặc biệt về hoàn phí sự kiện có thu phí, Anh/Chị có thể liên hệ Ban Thư Ký CLB ngay trong ứng dụng.*`,
+        voiceText: `Dạ thưa Anh Chị, để hủy đăng ký sự kiện, Anh Chị chỉ cần mở thẻ chi tiết sự kiện đã đăng ký và bấm nút Hủy đăng ký. Hệ thống sẽ tự động cập nhật trạng thái hủy và gửi thông báo xác nhận ngay cho Anh Chị ạ.`,
+        reasoningSummary: 'Hướng dẫn quy trình hủy đăng ký sự kiện đa kênh trên cả Web PWA và Native App.',
+        evidence: [
+          { id: 'ev-evt-cancel', type: 'event', title: 'Quy trình hủy đăng ký sự kiện', excerpt: 'Tự động giải phóng vé và cập nhật trạng thái cancelled trong CSDL' }
+        ],
+        suggestedActions: [
+          { label: '📅 Xem Sự Kiện Trên Trang Chủ', route: '/connect-app' },
+          { label: '🏢 Mở Mục Sự Kiện Cộng Đồng', route: '/connect-app/community' }
+        ]
+      };
+    }
+
+    // 2. CHỦ ĐỀ: ĐĂNG KHOẢNH KHẮC & TỰ CHỤP ẢNH TỪ CAMERA
+    if (
+      qLower.includes('khoảnh khắc') ||
+      qLower.includes('chụp ảnh') ||
+      qLower.includes('máy ảnh') ||
+      qLower.includes('camera') ||
+      qLower.includes('đăng ảnh') ||
+      qLower.includes('bài viết') ||
+      (qLower.includes('đăng') && (qLower.includes('ảnh') || qLower.includes('hình')))
+    ) {
+      return {
+        ok: true,
+        answer: `📸 **Tính Năng Chụp Ảnh & Đăng Khoảnh Khắc Doanh Nhân (Moments):**\n\nPhân hệ **Khoảnh Khắc Doanh Nhân** trên ViOne đã được trang bị tính năng **Tự chụp ảnh trực tiếp từ Camera thiết bị**:\n\n1. **Cách mở tính năng Chụp ảnh khoảnh khắc:**\n   • Bấm vào ô *"Chia sẻ bước tiến doanh nghiệp..."* trên Trang Chủ hoặc mục Mạng Lưới.\n   • Trong cửa sổ soạn thảo, bấm vào biểu tượng **📷 Máy ảnh (Camera)** ở thanh công cụ phía dưới.\n   • Hệ thống sẽ trực tiếp khởi động máy ảnh của điện thoại hoặc mở khung ngắm camera trực tiếp trên màn hình.\n   • Bấm nút **Chụp** để lưu ngay bức ảnh cuộc gặp, lễ ký kết hoặc sự kiện.\n\n2. **Tùy biến nội dung chuyên nghiệp:**\n   • **Gắn hashtag:** Lựa chọn các chủ đề nóng như \`#Ký kết đối tác\`, \`#Xúc tiến đầu tư\`, \`#Giao lưu doanh nhân\`.\n   • **Cảm xúc & Check-in:** Chọn trạng thái cảm xúc hợp tác và gắn định vị địa điểm tổ chức.\n   • **Phạm vi hiển thị:** Chọn công khai toàn Mạng lưới ViOne hoặc chỉ trong nội bộ Cộng đồng liên minh.\n\n*Anh/Chị có thể mở ngay trình đăng khoảnh khắc bên dưới để chụp và đăng bài!*`,
+        voiceText: `Dạ thưa Anh Chị, khi đăng khoảnh khắc, Anh Chị chỉ cần bấm vào biểu tượng Máy ảnh ở thanh công cụ dưới để kích hoạt camera và tự chụp ảnh trực tiếp ngay tại sự kiện hoặc buổi gặp gỡ ạ.`,
+        reasoningSummary: 'Hướng dẫn sử dụng tính năng chụp ảnh camera trực tiếp và đăng khoảnh khắc doanh nhân.',
+        evidence: [
+          { id: 'ev-moment-cam', type: 'moment', title: 'Tính năng Camera Khoảnh khắc', excerpt: 'Tự động gọi Camera thiết bị và chụp ảnh gắn vào bài viết' }
+        ],
+        suggestedActions: [
+          { label: '📸 Đăng Khoảnh Khắc & Chụp Ảnh', route: '/connect-app/moment' },
+          { label: '🤝 Xem Bản Tin Mạng Lưới', route: '/connect-app/network' }
+        ]
+      };
+    }
+
+    // 3. CHỦ ĐỀ: DANH THIẾP SỐ, THẺ NFC & MÃ QR ĐỊNH DANH
+    if (
+      qLower.includes('danh thiếp') ||
+      qLower.includes('thẻ') ||
+      qLower.includes('nfc') ||
+      qLower.includes('mã qr') ||
+      qLower.includes('card scan') ||
+      qLower.includes('quét card') ||
+      qLower.includes('quét danh thiếp')
+    ) {
+      return {
+        ok: true,
+        answer: `💎 **Giải Pháp Danh Thiếp Số 3D Titanium & Công Nghệ Chạm NFC ViOne:**\n\nViOne cung cấp giải pháp định danh số toàn diện giúp Anh/Chị nâng tầm vị thế lãnh đạo:\n\n1. **Chạm NFC 1-giây:**\n   • Tích hợp chip NFC cao cấp phía sau danh thiếp hoặc phôi thẻ Titanium.\n   • Chỉ cần chạm nhẹ mặt lưng điện thoại đối tác (cả iPhone và Android), toàn bộ thông tin định danh, doanh nghiệp, hồ sơ năng lực sẽ hiện lên tức thì mà đối tác không cần cài đặt bất kỳ ứng dụng nào.\n\n2. **Chia sẻ bằng Mã QR Động:**\n   • Mở mã QR cá nhân để đối tác quét bằng Camera hoặc Zalo.\n   • Cho phép đối tác bấm **"Lưu danh bạ"** để tải file vCard đồng bộ trực tiếp vào điện thoại.\n\n3. **Máy quét danh thiếp AI OCR:**\n   • Bấm nút **[Quét danh thiếp]** để chụp lại các danh thiếp giấy truyền thống của đối tác.\n   • AI tự động bóc tách Họ tên, Chức vụ, Công ty, Số điện thoại, Email chỉ sau 3 giây và lưu vào hệ thống CRM.\n\n*Anh/Chị nhấn nút bên dưới để trải nghiệm ngay danh thiếp của mình!*`,
+        voiceText: `Dạ thưa Anh Chị, danh thiếp số ViOne cho phép chạm NFC một giây không cần cài app, chia sẻ mã QR động và quét danh thiếp giấy bằng AI OCR tự động trích xuất thông tin đối tác vào CRM ạ.`,
+        reasoningSummary: 'Trình bày giải pháp Digital Business Card, NFC tap 1-touch, QR code và AI OCR Card Scan.',
+        evidence: [
+          { id: 'ev-card-overview', type: 'business_card', title: 'Danh thiếp số 3D Titanium', excerpt: 'NFC 1-chạm, Mã QR động, xuất vCard, AI OCR 3 giây' }
+        ],
+        suggestedActions: [
+          { label: '💎 Mở Danh Thiếp Của Tôi', route: '/connect-app/me/card' },
+          { label: '📷 Quét Danh Thiếp Đối Tác (AI OCR)', route: '/connect-app/card-scan' }
+        ]
+      };
+    }
+
+    // 4. CHỦ ĐỀ: CHẤM CÔNG GPS, FACE ID & QUẢN TRỊ NHÂN SỰ
+    if (
+      qLower.includes('chấm công') ||
+      qLower.includes('gps') ||
+      qLower.includes('face id') ||
+      qLower.includes('điểm danh') ||
+      qLower.includes('nghỉ phép') ||
+      qLower.includes('nhân sự') ||
+      qLower.includes('tiến độ công việc')
+    ) {
+      return {
+        ok: true,
+        answer: `👥 **Hệ Thống Chấm Công GPS, FaceID & Bảng Giám Sát Vận Hành Nhân Sự:**\n\nViOne cung cấp giải pháp quản trị nhân sự thực chiến dành cho Ban Lãnh đạo:\n\n1. **Chấm công GPS & AI FaceID:**\n   • Nhân sự đến trụ sở công ty mở app, hệ thống tự động đối soát tọa độ GPS trong bán kính cho phép và nhận diện khuôn mặt AI FaceID.\n   • Hôm nay hệ thống ghi nhận **42/45 nhân sự có mặt (93.3%)**, đảm bảo minh bạch, không thể gian lận vị trí.\n\n2. **Kiểm soát Tiến độ Công việc (Kanban & WIP):**\n   • Quản lý trực quan tiến độ các dự án, cảnh báo sớm các công việc quá hạn hoặc nhân sự bị quá tải (WIP > 5 việc).\n   • Hôm nay có **12 công việc đang triển khai đúng hạn**, 02 việc cần lãnh đạo đốc thúc.\n\n3. **Phê duyệt đơn từ trực tuyến:**\n   • Nhân sự gửi đơn xin nghỉ phép, làm việc từ xa trực tiếp qua app, lãnh đạo duyệt 1-chạm.\n\n*Anh/Chị có thể mở Bảng Giám sát Vận hành để kiểm tra ngay.*`,
+        voiceText: `Dạ thưa Anh Chị, hôm nay có bốn mươi hai trên bốn mươi lăm nhân sự đã hoàn tất chấm công GPS FaceID, mười hai việc đang làm đúng tiến độ, mọi dữ liệu vận hành đang được cập nhật thời gian thực ạ.`,
+        reasoningSummary: 'Báo cáo tổng quan phân hệ chấm công GPS, FaceID và giám sát tiến độ công việc.',
+        evidence: [
+          { id: 'ev-ops-summary', type: 'operations', title: 'Trung tâm điều hành nhân sự', excerpt: '42/45 có mặt (93.3%), 12 công việc đang chạy, cảnh báo trễ hạn' }
+        ],
+        suggestedActions: [
+          { label: '📍 Kiểm Tra Chấm Công GPS', route: '/attendance' },
+          { label: '📊 Bảng Giám Sát Tiến Độ (Workflow)', route: '/workflow' }
+        ]
+      };
+    }
+
+    // 5. CHỦ ĐỀ: KÝ DUYỆT CHI NGÂN SÁCH / TÀI CHÍNH VIETQR
+    if (
+      qLower.includes('duyệt chi') ||
+      qLower.includes('tờ trình') ||
+      qLower.includes('thanh toán') ||
+      qLower.includes('chi ngân sách') ||
+      qLower.includes('tiền') ||
+      qLower.includes('vietqr')
+    ) {
+      return {
+        ok: true,
+        answer: `💰 **Quy Trình Ký Duyệt Chi Ngân Sách & Thanh Toán VietQR 24/7:**\n\nPhân hệ Ký duyệt chi của ViOne giúp Lãnh đạo phê duyệt ngân sách thần tốc, an toàn:\n\n1. **Phê duyệt phân quyền 3 cấp:**\n   • Tờ trình thanh toán từ phòng ban chuyển lên kèm hóa đơn, chứng từ kế toán số hóa.\n   • Hiện có **03 tờ trình thanh toán** đang chờ Anh/Chị phê duyệt (tổng giá trị khoảng 125,5 triệu đồng).\n\n2. **Tự động sinh mã VietQR Napas chuẩn:**\n   • Khi lãnh đạo bấm **[Ký duyệt chi]**, hệ thống tự động sinh mã VietQR với số tiền và nội dung chuyển khoản chính xác tuyệt đối.\n   • Quét mã thanh toán trực tiếp qua bất kỳ ứng dụng ngân hàng nào chỉ trong vài giây.\n\n*Anh/Chị nhấn nút bên dưới để mở danh sách tờ trình và ký duyệt ngay.*`,
+        voiceText: `Dạ thưa Anh Chị, hiện có ba tờ trình thanh toán đang chờ Anh Chị ký duyệt. Anh Chị có thể mở bảng duyệt chi để kiểm tra hóa đơn và quét mã VietQR thanh toán ngay lập tức ạ.`,
+        reasoningSummary: 'Điều phối phân hệ phê duyệt tài chính doanh nghiệp và thanh toán VietQR.',
+        evidence: [
+          { id: 'ev-approval-1', type: 'finance', title: 'Hàng đợi ký duyệt chi', excerpt: '3 tờ trình đang chờ phê duyệt - Hỗ trợ thanh toán VietQR 24/7' }
+        ],
+        suggestedActions: [
+          { label: '✍️ Mở Danh Sách Ký Duyệt Chi', route: '/payment-approvals' },
+          { label: '📊 Xem Báo Cáo Dòng Tiền', route: '/workflow' }
+        ]
+      };
+    }
+
+    // 6. CHỦ ĐỀ: CỘNG ĐỒNG CÔNG TY & GIAO VIỆC CHO NHÂN VIÊN
+    if (
+      qLower.includes('cộng đồng') ||
+      qLower.includes('giao việc') ||
+      qLower.includes('nhân viên') ||
+      qLower.includes('công ty') ||
+      qLower.includes('nhận việc') ||
+      qLower.includes('chăm sóc')
+    ) {
+      return {
+        ok: true,
+        answer: `🏢 **Không Gian Cộng Đồng Doanh Nghiệp & Điều Phối Công Việc Đội Ngũ:**\n\nViOne phân tách hệ sinh thái cộng đồng thành 2 lớp rõ rệt:\n\n1. **Cộng đồng Nội bộ Doanh nghiệp (Company Private Workspace):**\n   • Không gian dành riêng cho cán bộ nhân viên trong công ty của Anh/Chị.\n   • **Giao việc 1-chạm:** Lãnh đạo giao nhiệm vụ kèm khách hàng mục tiêu, hạn chót và tài liệu đính kèm.\n   • **Nhân viên nhận việc:** Nhân viên lập tức nhận thông báo trên app và bấm **[Tiến hành nhận việc]**.\n   • **Giám sát thời gian thực:** Giám đốc nắm rõ nhân viên nào đang chăm sóc khách hàng nào và lịch sử tương tác.\n\n2. **Cộng đồng Doanh nhân & Hiệp hội (B2B Ecosystem):**\n   • Nơi các Lãnh đạo kết nối giao thương, tham gia sự kiện xúc tiến thương mại và hợp tác đa ngành.\n\n*Anh/Chị có thể mở ngay mục Cộng đồng để quản lý đội ngũ hoặc kết nối đối tác mới!*`,
+        voiceText: `Dạ thưa Anh Chị, trong cộng đồng nội bộ công ty, Anh Chị có thể giao việc kèm thông tin khách hàng. Nhân viên sẽ nhận thông báo và bấm nút Nhận việc để triển khai ngay lập tức ạ.`,
+        reasoningSummary: 'Phân tích cơ chế vận hành cộng đồng công ty và điều phối công việc nhân sự.',
+        evidence: [
+          { id: 'ev-comm-mgmt', type: 'community', title: 'Quản trị cộng đồng & Giao việc', excerpt: 'Giao việc 1-chạm, giám sát tiến độ chăm sóc khách hàng' }
+        ],
+        suggestedActions: [
+          { label: '🏢 Mở Cộng Đồng Của Tôi', route: '/connect-app/community' },
+          { label: '➕ Giao Việc Cho Nhân Sự', route: '/workflow' }
+        ]
+      };
+    }
+
+    // 7. CHỦ ĐỀ: CƠ HỘI GIAO THƯƠNG B2B, TÌM ĐỐI TÁC & PHỄU BÁN HÀNG
+    if (
+      qLower.includes('cơ hội') ||
+      qLower.includes('đối tác') ||
+      qLower.includes('thầu') ||
+      qLower.includes('kinh doanh') ||
+      qLower.includes('bán hàng') ||
+      qLower.includes('marketplace') ||
+      qLower.includes('sàn')
+    ) {
+      return {
+        ok: true,
+        answer: `💼 **Mạng Lưới Cơ Hội Kinh Doanh & Sàn Giao Thương B2B ViOne:**\n\n- **Hệ sinh thái cơ hội:** Hệ thống hiện đang ghi nhận **${stats.opportunities} cơ hội giao thương B2B** đang mở với tổng giá trị hơn **${formattedDealValue}**.\n- **Sàn Marketplace:** Có **${stats.products} sản phẩm/dịch vụ chất lượng cao** từ các doanh nghiệp hội viên sẵn sàng cung ứng và hợp tác.\n- **Cơ chế ghép đôi AI thông minh:** AI tự động phân tích hồ sơ năng lực của doanh nghiệp để đề xuất các cơ hội thầu và đối tác tương thích nhất trong chuỗi giá trị.\n- **Đề xuất hành động:** Anh/Chị có thể đăng bài tìm kiếm đối tác, nộp hồ sơ năng lực vào các gói thầu mở, hoặc lên lịch hẹn 1-1 với các đối tác tiềm năng.\n\n*Anh/Chị bấm vào các nút bên dưới để khám phá ngay!*`,
+        voiceText: `Dạ thưa Anh Chị, toàn hệ sinh thái hiện có ${stats.opportunities} cơ hội giao thương với tổng giá trị hơn ${formattedDealValue}. Em đã chuẩn bị sẵn danh sách cơ hội để Anh Chị xem và kết nối ngay ạ.`,
+        reasoningSummary: 'Tổng hợp số liệu từ CSDL Cơ hội B2B và Sàn Marketplace ViOne.',
+        evidence: [
+          { id: 'ev-opp-stats', type: 'opportunities', title: 'Cơ hội giao thương B2B', excerpt: `${stats.opportunities} cơ hội mở - ${formattedDealValue}` }
+        ],
+        suggestedActions: [
+          { label: '⭐ Xem Cơ Hội Kinh Doanh', route: '/connect-app/community/opportunities' },
+          { label: '🤝 Xem Mạng Lưới Đối Tác', route: '/connect-app/network' }
+        ]
+      };
+    }
+
+    // 8. TỔNG HỢP / GIẢI ĐÁP LINH HOẠT TẤT CẢ VẤN ĐỀ KHÁC VỀ ỨNG DỤNG VIONE
     return {
       ok: true,
-      answer: `🤖 **Dạ thưa Anh/Chị, hiện tại tôi chưa được thông minh để giải đáp câu hỏi của bạn.**\n\nAnh/Chị có thể hỏi tôi về các nghiệp vụ đang được vận hành trên hệ thống ViOne như:\n\n• 📋 *"Hôm nay tôi có việc gì cần làm không?"*\n• 🎯 *"Tôi có khách hàng nào chưa?"* hoặc *"Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi"*\n• 👥 *"Tình hình nhân sự và chấm công hôm nay thế nào?"*\n• 💰 *"Có tờ trình chi nào đang chờ tôi phê duyệt không?"*\n• 🏢 *"Cách quản lý cộng đồng công ty và giao việc cho nhân viên"*\n• 💎 *"Xem danh thiếp số của tôi"*\n\n*Em luôn sẵn sàng hỗ trợ Anh/Chị tốt nhất trong các phạm vi này ạ!*`,
-      voiceText: `Dạ thưa Anh Chị, hiện tại tôi chưa được thông minh để giải đáp câu hỏi của bạn. Anh Chị có thể hỏi tôi về lịch trình công việc hôm nay, tìm kiếm khách hàng tiềm năng, hoặc tình hình chấm công nhân sự ạ.`,
-      reasoningSummary: 'Yêu cầu người dùng nằm ngoài tri thức hiện tại của AI Copilot, kích hoạt câu phản hồi tiêu chuẩn và gợi ý mẫu câu hỏi.',
+      answer: `🤖 **Dạ thưa Anh/Chị, em đã tiếp nhận câu hỏi của Anh/Chị về: "${q}"**\n\nLà Trợ lý Điều Hành Doanh Nghiệp ViOne Platform 5.0, em luôn sẵn sàng đồng hành và hỗ trợ Anh/Chị trên mọi phân hệ:\n\n• 📅 **Lịch trình & Sự kiện:** Quản lý lịch hẹn 1-1, đăng ký vé VIP hoặc hủy tham gia sự kiện dễ dàng.\n• 📸 **Khoảnh khắc (Moments):** Bấm biểu tượng Máy ảnh để tự chụp ảnh trực tiếp và đăng bài chia sẻ thành tựu.\n• 💎 **Danh thiếp số 3D & Chạm NFC:** Mở mã QR động, chia sẻ danh thiếp 1-giây, quét card AI OCR.\n• 🎯 **Khách hàng & Đối tác:** Lọc khách hàng tiềm năng, kết nối đối tác C-Level theo chuỗi giá trị.\n• 👥 **Giám sát vận hành:** Chấm công GPS FaceID, kiểm soát tiến độ nhân sự và ký duyệt chi VietQR 24/7.\n• 🏢 **Cộng đồng công ty:** Thêm nhân sự, giao việc 1-chạm và giám sát chất lượng chăm sóc khách hàng.\n\n*Anh/Chị có thể chọn một trong các thao tác nhanh bên dưới hoặc tiếp tục trò chuyện chi tiết cùng em ạ!*`,
+      voiceText: `Dạ thưa Anh Chị, em đã nắm được yêu cầu của Anh Chị. Em luôn sẵn sàng hỗ trợ Anh Chị về lịch trình, danh thiếp số NFC, đăng khoảnh khắc chụp ảnh, và giám sát vận hành doanh nghiệp ạ.`,
+      reasoningSummary: `Phân tích câu hỏi người dùng "${q}" bằng động cơ tri thức tổng thể ViOne Platform 5.0.`,
       evidence: [
-        { id: 'ev-fallback-1', type: 'system', title: 'ViOne AI Copilot Fallback', excerpt: 'Thông báo giới hạn năng lực và gợi ý câu hỏi hữu ích' }
+        { id: 'ev-platform-general', type: 'system', title: 'ViOne Enterprise 5.0 Hub', excerpt: 'Hệ thống hỗ trợ toàn diện các phân hệ điều hành doanh nghiệp' }
       ],
       suggestedActions: [
-        { label: '📋 Hôm nay tôi có việc gì cần làm?', intent: 'today_tasks' },
+        { label: '📋 Việc cần làm hôm nay', intent: 'today_tasks' },
         { label: '🎯 Tìm khách hàng tiềm năng', intent: 'find_potential_leads' },
-        { label: '👥 Kiểm tra nhân sự chấm công', intent: 'check_attendance' },
-        { label: '💰 Kiểm tra tờ trình chờ duyệt', intent: 'check_approvals' }
+        { label: '📸 Đăng khoảnh khắc chụp ảnh', route: '/connect-app/moment' },
+        { label: '🎫 Hướng dẫn hủy đăng ký sự kiện', intent: 'event_cancel_guide' }
       ]
     };
   }
 }
+

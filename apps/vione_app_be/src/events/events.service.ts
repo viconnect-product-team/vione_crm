@@ -934,20 +934,40 @@ export class EventsService {
       where: { id: userId },
     });
 
+    const memberCodes = memberRows.map((m) => m.code).filter(Boolean);
+    const emails = Array.from(new Set([
+      ...memberRows.map((m) => m.email).filter(Boolean),
+      userRows?.email,
+    ])).filter(Boolean);
+
     const memberCode = memberRows[0]?.code ?? null;
     const email = memberRows[0]?.email ?? userRows?.email ?? null;
 
     // Update registration status to cancelled
-    await this.prisma.$executeRaw`
-      UPDATE public.event_registrations
-      SET status = 'cancelled', updated_at = now()
-      WHERE event_id = ${eventId}
-        AND (
-          (${memberCode}::text IS NOT NULL AND member_code = ${memberCode})
-          OR (${email}::text IS NOT NULL AND email = ${email})
-        )
-        AND status != 'cancelled'
-    `.catch(() => 0);
+    let updateResult = 0;
+    try {
+      updateResult = await this.prisma.$executeRaw`
+        UPDATE public.event_registrations
+        SET status = 'cancelled', updated_at = now()
+        WHERE event_id = ${eventId}
+          AND status != 'cancelled'
+          AND (
+            (array_length(${memberCodes}::text[], 1) IS NOT NULL AND member_code = ANY(${memberCodes}::text[]))
+            OR (array_length(${emails}::text[], 1) IS NOT NULL AND email = ANY(${emails}::text[]))
+          )
+      `;
+    } catch {
+      updateResult = await this.prisma.$executeRaw`
+        UPDATE public.event_registrations
+        SET status = 'cancelled', updated_at = now()
+        WHERE event_id = ${eventId}
+          AND status != 'cancelled'
+          AND (
+            (${memberCode}::text IS NOT NULL AND member_code = ${memberCode})
+            OR (${email}::text IS NOT NULL AND email = ${email})
+          )
+      `.catch(() => 0);
+    }
 
     // Decrement registered count if > 0
     await this.prisma.$executeRaw`

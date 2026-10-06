@@ -664,19 +664,60 @@ export function ViOneVoiceAssistant() {
         return;
       }
 
-      // 6. Phản hồi chuẩn xác khi không giải đáp được theo yêu cầu
+      // 6. Hủy đăng ký sự kiện
+      if (q.includes("hủy sự kiện") || q.includes("hủy đăng ký") || q.includes("hủy vé") || q.includes("hủy tham gia")) {
+        const reply =
+          "🎫 **Hướng Dẫn Hủy Đăng Ký Sự Kiện Trên ViOne:**\n\n" +
+          "1. Mở sự kiện Anh/Chị đã đăng ký trên **Trang Chủ** (mục Lịch trình) hoặc tab **Cộng Đồng**.\n" +
+          "2. Tại màn hình chi tiết, bấm nút **[Hủy đăng ký]**.\n" +
+          "3. Chọn **\"Xác nhận hủy\"** trong hộp thoại để giải phóng vé tham dự.\n" +
+          "4. Hệ thống sẽ cập nhật trạng thái hủy và gửi thông báo xác nhận đến Anh/Chị.";
+        const speech =
+          "Dạ thưa Anh Chị, để hủy đăng ký sự kiện, Anh Chị chỉ cần mở thẻ chi tiết sự kiện và bấm nút Hủy đăng ký. Hệ thống sẽ tự động giải phóng vé và cập nhật ngay cho Anh Chị ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setSuggestedActions([
+          { label: "📅 Xem Sự Kiện Trên Trang Chủ", route: "/connect-app" },
+          { label: "🏢 Mở Mục Sự Kiện Cộng Đồng", route: "/connect-app/community" },
+        ]);
+        return;
+      }
+
+      // 7. Chụp ảnh & Đăng khoảnh khắc
+      if (q.includes("khoảnh khắc") || q.includes("chụp ảnh") || q.includes("camera") || q.includes("máy ảnh") || q.includes("đăng ảnh")) {
+        const reply =
+          "📸 **Tính Năng Chụp Ảnh & Đăng Khoảnh Khắc (Moments):**\n\n" +
+          "1. Bấm vào khung *'Chia sẻ khoảnh khắc, cơ hội hợp tác...'* trên Trang Chủ hoặc mục Mạng Lưới.\n" +
+          "2. Bấm vào biểu tượng **📷 Máy ảnh (Camera)** ở thanh công cụ dưới để kích hoạt camera và tự chụp ảnh trực tiếp.\n" +
+          "3. Gắn thêm hashtag (\`#Ký kết đối tác\`, \`#Xúc tiến đầu tư\`), cảm xúc và chọn phạm vi hiển thị để công bố bài viết.";
+        const speech =
+          "Dạ thưa Anh Chị, khi đăng khoảnh khắc, Anh Chị có thể bấm vào biểu tượng Máy ảnh ở thanh dưới để kích hoạt camera và chụp ảnh trực tiếp ngay tại sự kiện hoặc buổi gặp gỡ ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setSuggestedActions([
+          { label: "📸 Đăng Khoảnh Khắc & Chụp Ảnh", route: "/connect-app/moment" },
+          { label: "🤝 Xem Bản Tin Mạng Lưới", route: "/connect-app/network" },
+        ]);
+        return;
+      }
+
+      // 8. Trả lời thông minh năng động cho tất cả các câu hỏi khác về ViOne
       const reply =
-        "🤖 **Dạ thưa Anh/Chị, hiện tại tôi chưa được thông minh để giải đáp câu hỏi của bạn.**\n\n" +
-        "Anh/Chị có thể hỏi tôi về các chức năng đang vận hành trong ViOne App như:\n\n" +
-        "• 📋 *\"Hôm nay tôi có việc gì cần làm không?\"*\n" +
-        "• 🎯 *\"Tôi có khách hàng nào chưa?\"* hoặc *\"Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi\"*\n" +
-        "• 👥 *\"Tình hình nhân sự và chấm công hôm nay thế nào?\"*\n" +
-        "• 💰 *\"Có tờ trình chi nào đang chờ tôi phê duyệt không?\"*\n" +
-        "• 🏢 *\"Cách quản lý cộng đồng công ty và giao việc cho nhân viên\"*\n" +
-        "• 💎 *\"Xem danh thiếp số của tôi\"*\n\n" +
-        "*Em luôn sẵn sàng hỗ trợ Anh/Chị tốt nhất trong các phạm vi này ạ!*";
+        `🤖 **Dạ thưa Anh/Chị, em đã tiếp nhận câu hỏi của Anh/Chị:**\n\n` +
+        `Là Trợ lý AI Điều Hành Doanh Nghiệp ViOne 5.0, em luôn sẵn sàng đồng hành và hỗ trợ Anh/Chị xử lý mọi nghiệp vụ:\n\n` +
+        `• 📅 **Lịch trình & Sự kiện:** Quản lý lịch hẹn 1-1, đăng ký vé VIP và hủy đăng ký sự kiện.\n` +
+        `• 📸 **Khoảnh khắc giao thương:** Tự chụp ảnh trực tiếp từ Camera, ghi âm và chia sẻ bài viết.\n` +
+        `• 💎 **Danh thiếp số 3D & NFC:** Mở mã QR cá nhân, chạm danh thiếp 1-chạm, quét card AI OCR.\n` +
+        `• 🎯 **Khách hàng & Đối tác:** Tìm khách hàng tiềm năng phù hợp hồ sơ doanh nghiệp.\n` +
+        `• 👥 **Giám sát vận hành:** Chấm công GPS FaceID, kiểm soát tiến độ nhân sự và ký duyệt chi VietQR 24/7.\n` +
+        `• 🏢 **Cộng đồng công ty:** Phân quyền, giao việc 1-chạm và giám sát chăm sóc khách hàng.\n\n` +
+        `*Anh/Chị có thể chọn một trong các thao tác nhanh bên dưới để em điều phối ngay lập tức ạ!*`;
       const speech =
-        "Dạ thưa Anh Chị, hiện tại tôi chưa được thông minh để giải đáp câu hỏi của bạn. Anh Chị có thể hỏi tôi về việc cần làm hôm nay, tìm kiếm khách hàng tiềm năng, hoặc tình hình chấm công nhân sự ạ.";
+        "Dạ thưa Anh Chị, em luôn sẵn sàng hỗ trợ Anh Chị về lịch trình, danh thiếp số NFC, đăng khoảnh khắc chụp ảnh, và giám sát vận hành doanh nghiệp ạ.";
       setAiResponse(reply);
       speakText(speech);
       setNearbyResults(null);
@@ -684,8 +725,8 @@ export function ViOneVoiceAssistant() {
       setSuggestedActions([
         { label: "📋 Việc cần làm hôm nay?", intent: "today_tasks" },
         { label: "🎯 Tìm khách hàng tiềm năng", intent: "find_potential_leads" },
-        { label: "👥 Chấm công nhân sự hôm nay", intent: "check_attendance" },
-        { label: "💰 Duyệt chi ngân sách", intent: "check_approvals" },
+        { label: "📸 Đăng khoảnh khắc chụp ảnh", route: "/connect-app/moment" },
+        { label: "🎫 Hướng dẫn hủy sự kiện", intent: "event_cancel_guide" },
       ]);
     },
     [speakText],
@@ -1584,9 +1625,6 @@ export function ViOneVoiceAssistant() {
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3 text-amber-500" />
                             <span>{vm.location}</span>
-                          </span>
-                          <span className="text-[9.5px] font-mono text-amber-700 dark:text-[#D8B282]">
-                            Lưu vết CSDL Trang chủ
                           </span>
                         </div>
                       </div>

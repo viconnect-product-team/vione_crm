@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   X,
   Image as ImageIcon,
+  Camera,
   Users,
   Smile,
   MapPin,
@@ -81,7 +82,60 @@ export function PostMomentModal({
   const [activeSubView, setActiveSubView] = useState<"none" | "tag" | "feeling" | "location">("none");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [isLiveCameraOpen, setIsLiveCameraOpen] = useState(false);
+
+  // Khởi động Camera trực tiếp từ thiết bị hoặc trình duyệt
+  const startLiveCamera = async () => {
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        cameraInputRef.current?.click();
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      setCameraStream(stream);
+      setIsLiveCameraOpen(true);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch {
+      // Fallback mở trực tiếp app Camera gốc trên điện thoại
+      cameraInputRef.current?.click();
+    }
+  };
+
+  const stopLiveCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach((track) => track.stop());
+      setCameraStream(null);
+    }
+    setIsLiveCameraOpen(false);
+  };
+
+  const capturePhotoFromLive = () => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], `moment-cam-${Date.now()}.jpg`, { type: "image/jpeg" });
+      const previewUrl = URL.createObjectURL(file);
+      setPhotos((prev) => [...prev.slice(0, 5), { file, previewUrl }]);
+      toast.success("Đã chụp ảnh khoảnh khắc thành công!");
+      stopLiveCamera();
+    }, "image/jpeg", 0.92);
+  };
 
   // Initialize initial tagged person if provided
   useEffect(() => {
@@ -93,12 +147,15 @@ export function PostMomentModal({
     }
   }, [initialTaggedPersonId, network.people]);
 
-  // Clean up object URLs on unmount
+  // Clean up object URLs and camera streams on unmount
   useEffect(() => {
     return () => {
       photos.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+      if (cameraStream) {
+        cameraStream.getTracks().forEach((t) => t.stop());
+      }
     };
-  }, [photos]);
+  }, [photos, cameraStream]);
 
   // Auto-resize textarea
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -582,7 +639,69 @@ export function PostMomentModal({
             className="hidden"
             onChange={handlePhotoSelect}
           />
+
+          {/* Hidden direct camera capture input */}
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            className="hidden"
+            onChange={handlePhotoSelect}
+          />
         </div>
+
+        {/* Live Camera Viewfinder Modal Overlay */}
+        {isLiveCameraOpen && (
+          <div className="absolute inset-0 z-50 flex flex-col bg-black/95 p-4 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <span className="text-sm font-bold text-[#E8C986] flex items-center gap-2">
+                <Camera className="h-4 w-4" />
+                <span>Máy ảnh khoảnh khắc doanh nhân</span>
+              </span>
+              <button
+                type="button"
+                onClick={stopLiveCamera}
+                className="grid h-7 w-7 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="relative flex-1 my-3 overflow-hidden rounded-2xl bg-black border border-white/20 flex items-center justify-center min-h-[260px]">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-4 flex items-center justify-center">
+                <button
+                  type="button"
+                  onClick={capturePhotoFromLive}
+                  className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-xs shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                >
+                  <Camera className="h-4 w-4 text-slate-950" />
+                  <span>Chụp ảnh ngay</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center">
+              <button
+                type="button"
+                onClick={() => {
+                  stopLiveCamera();
+                  cameraInputRef.current?.click();
+                }}
+                className="text-xs text-white/60 hover:text-[#D8B282] underline transition cursor-pointer"
+              >
+                Hoặc mở ứng dụng Camera hệ điều hành
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Modal Footer Toolbar & Post Action */}
         <div className="border-t border-white/10 px-5 py-3.5 bg-black/20 space-y-3">
@@ -597,6 +716,14 @@ export function PostMomentModal({
                 className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10 text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
               >
                 <ImageIcon className="h-4.5 w-4.5" />
+              </button>
+              <button
+                type="button"
+                onClick={startLiveCamera}
+                title="Tự chụp ảnh trực tiếp từ Camera"
+                className="grid h-8 w-8 place-items-center rounded-full hover:bg-white/10 text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
+              >
+                <Camera className="h-4.5 w-4.5" />
               </button>
               <button
                 type="button"

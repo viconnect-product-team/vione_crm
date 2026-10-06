@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
   searchWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     marginHorizontal: 16,
     marginTop: 12,
     marginBottom: 6,

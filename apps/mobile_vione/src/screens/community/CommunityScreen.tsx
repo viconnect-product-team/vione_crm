@@ -46,6 +46,7 @@ import {
   Eye,
 } from "lucide-react-native";
 import { useTheme } from "../../context/ThemeContext";
+import { StickyBrandHeader } from "../../components/common/StickyBrandHeader";
 import { B2BEvent } from "../../types";
 import { CreateCommunityGroupModal } from "../../components/CreateCommunityGroupModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
@@ -247,194 +248,11 @@ const INITIAL_COMMUNITIES: CommunityDetailModel[] = [
   },
 ];
 
-const INITIAL_TASKS: TaskItem[] = [
-  {
-    id: "task-01",
-    communityId: "c-vione-internal",
-    title: "Tư vấn bộ giải pháp Danh Thiếp Số 3D & Thẻ NFC Doanh Nhân cho Tập đoàn Hoàng Minh",
-    description: "Gặp gỡ ban lãnh đạo Hoàng Minh, tư vấn cấu hình thẻ NFC mạ vàng Champagne Gold và đồng bộ CRM nội bộ cho 50 C-Level.",
-    assigneeId: "emp-01",
-    assigneeName: "Nguyễn Thị Mai",
-    assignerName: "Giám Đốc Điều Hành",
-    priority: "urgent",
-    status: "in_progress",
-    acceptedAt: "2026-10-05T08:30:00.000Z",
-    completedAt: null,
-    deadline: "Hôm nay, 17:30",
-    customerName: "Tập đoàn Hoàng Minh",
-    customerPhone: "0912.888.999",
-    customerRequirements: "Tích hợp logo thương hiệu mạ vàng, phân quyền CRM theo 3 cấp quản lý.",
-    createdAt: "2026-10-05T08:00:00.000Z",
-  },
-  {
-    id: "task-02",
-    communityId: "c-vione-internal",
-    title: "Demo tính năng phê duyệt chi ngân sách 3 cấp cho Công ty CP Dược Phẩm Á Châu",
-    description: "Chuẩn bị slide và demo trực tiếp quy trình lập phiếu chi, kế toán soát xét và Giám đốc duyệt chi 1 chạm trên mobile.",
-    assigneeId: "emp-03",
-    assigneeName: "Lê Thu Hà",
-    assignerName: "Giám Đốc Điều Hành",
-    priority: "high",
-    status: "assigned", // CHỜ NHẬN VIỆC -> NÚT [⚡ TIẾN HÀNH NHẬN VIỆC]
-    acceptedAt: null,
-    completedAt: null,
-    deadline: "Ngày mai, 11:00",
-    customerName: "Công ty CP Dược Phẩm Á Châu",
-    customerPhone: "0988.345.678",
-    customerRequirements: "Yêu cầu bảo mật ngân hàng và quét mã VietQR tự động khi duyệt.",
-    createdAt: "2026-10-05T09:15:00.000Z",
-  },
-  {
-    id: "task-03",
-    communityId: "c-vione-internal",
-    title: "Soạn thảo hợp đồng & ký kết triển khai cho Chuỗi Khách Sạn Mường Thanh",
-    description: "Hoàn tất điều khoản hợp đồng cung cấp thẻ định danh nhân viên và kết nối mạng lưới xúc tiến thương mại B2B.",
-    assigneeId: "emp-02",
-    assigneeName: "Trần Văn Long",
-    assignerName: "Giám Đốc Điều Hành",
-    priority: "medium",
-    status: "completed",
-    acceptedAt: "2026-10-04T09:15:00.000Z",
-    completedAt: "2026-10-05T10:00:00.000Z",
-    deadline: "Hôm nay, 12:00",
-    customerName: "Chuỗi Khách Sạn Mường Thanh",
-    customerPhone: "0903.111.222",
-    customerRequirements: "Áp dụng chính sách chiết khấu hội viên B2B ViOne.",
-    createdAt: "2026-10-04T08:30:00.000Z",
-  },
-];
-
-const INITIAL_OPPORTUNITIES: CommunityOpportunityItem[] = [
-  {
-    id: "opp-1",
-    title: "Dự án Tổng thầu EPC Điện Mặt Trời Áp Mái KCN VSIP",
-    organization: "Tập Đoàn Năng Lượng Xanh ViOne",
-    communityName: "ViOne C-Level Enterprise Hub",
-    dealValue: "15 Tỷ VNĐ",
-    category: "Đầu Tư & Xây Dựng",
-    daysLeft: "Còn 5 ngày",
-    interested: false,
-  },
-  {
-    id: "opp-2",
-    title: "Triển khai Hệ thống Quản trị ERP & AI Data Warehouse Doanh nghiệp",
-    organization: "Công Ty Cổ Phần F-Solutions",
-    communityName: "Liên Minh Doanh Nghiệp Công Nghệ & AI",
-    dealValue: "850 Triệu VNĐ",
-    category: "Công Nghệ & AI",
-    daysLeft: "Còn 12 ngày",
-    interested: true,
-  },
-  {
-    id: "opp-3",
-    title: "Thiết kế & Thi công Chuỗi Văn Phòng Hạng A Tòa Nhà Keangnam",
-    organization: "LuxVillas Architecture & Interior",
-    communityName: "CLB Doanh Nhân ViOne Global Leaders",
-    dealValue: "5.2 Tỷ VNĐ",
-    category: "Thiết Kế Nội Thất",
-    daysLeft: "Còn 8 ngày",
-    interested: false,
-  },
-];
-
-const INITIAL_EVENTS: B2BEvent[] = [
-  {
-    id: "e-1",
-    title: "Đại Hội Thượng Đỉnh Giao Thương Doanh Nhân 2026",
-    startsAt: "2026-10-15 08:30",
-    location: "Trung Tâm Hội Nghị Quốc Gia, Hà Nội",
-    category: "Đại Hội Toàn Thể",
-    isRegistered: true,
-    registeredCount: 185,
-  },
-  {
-    id: "e-2",
-    title: "Workshop Chuyên Đề: Ứng Dụng AI & Tự Động Hóa Vận Hành Doanh Nghiệp",
-    startsAt: "2026-10-22 14:00",
-    location: "Khách Sạn Lotte Hà Nội",
-    category: "Hội Thảo Chuyên Đề",
-    isRegistered: false,
-    registeredCount: 92,
-  },
-  {
-    id: "e-3",
-    title: "Coffee CEO: Kết Nối 1-on-1 & Thảo Luận Cơ Hội Đầu Tư Quý 4",
-    startsAt: "2026-10-28 09:00",
-    location: "ViOne Executive Lounge",
-    category: "Gặp Gỡ Định Kỳ",
-    isRegistered: false,
-    registeredCount: 45,
-  },
-];
-
-const INITIAL_NEWS: NewsPostItem[] = [
-  {
-    id: "news-1",
-    authorName: "Ban Truyền Thông ViOne",
-    authorTitle: "Quản trị viên",
-    authorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
-    timeAgo: "2 giờ trước",
-    title: "Thông báo lịch nghỉ lễ & Kế hoạch trực chiến kinh doanh Quý 4/2026",
-    content: "Kính gửi toàn thể Cán bộ nhân viên và Quý đối tác, Ban Giám Đốc xin trân trọng thông báo kế hoạch vận hành và chỉ tiêu doanh số thần tốc Quý 4...",
-    imageUrl: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600&auto=format&fit=crop&q=80",
-    likes: 24,
-    comments: 6,
-  },
-  {
-    id: "news-2",
-    authorName: "Trần Minh Hoàng",
-    authorTitle: "Trưởng phòng Kinh Doanh",
-    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
-    timeAgo: "Hôm qua",
-    title: "Báo cáo tiến độ ký kết 3 hợp đồng giải pháp thẻ doanh nhân NFC",
-    content: "Đội ngũ kinh doanh đã hoàn thành ký kết cùng 3 tập đoàn đối tác trong mạng lưới B2B với tổng giá trị triển khai 1.2 Tỷ đồng.",
-    likes: 42,
-    comments: 11,
-  },
-];
-
-const INITIAL_MEMBERS: MemberItem[] = [
-  {
-    id: "m-1",
-    name: "Vũ Minh Khang",
-    title: "Chủ Tịch HĐQT & Tổng Giám Đốc",
-    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
-    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
-    role: "admin",
-    phone: "0983 000 001",
-    email: "ceo@vione.vn",
-  },
-  {
-    id: "m-2",
-    name: "Nguyễn Thị Mai",
-    title: "Giám Đốc Vận Hành (COO)",
-    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
-    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80",
-    role: "admin",
-    phone: "0912 345 678",
-    email: "mai.nguyen@vione.vn",
-  },
-  {
-    id: "m-3",
-    name: "Trần Minh Hoàng",
-    title: "Trưởng Phòng Kinh Doanh B2B",
-    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
-    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
-    role: "member",
-    phone: "0934 567 890",
-    email: "hoang.tran@vione.vn",
-  },
-  {
-    id: "m-4",
-    name: "Lê Thu Hà",
-    title: "Chuyên Viên Chăm Sóc Khách Hàng",
-    company: "Tập Đoàn Đầu Tư & Công Nghệ ViOne",
-    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=80",
-    role: "member",
-    phone: "0978 123 456",
-    email: "ha.le@vione.vn",
-  },
-];
+const INITIAL_TASKS: TaskItem[] = [];
+const INITIAL_OPPORTUNITIES: CommunityOpportunityItem[] = [];
+const INITIAL_EVENTS: B2BEvent[] = [];
+const INITIAL_NEWS: NewsPostItem[] = [];
+const INITIAL_MEMBERS: MemberItem[] = [];
 
 // ==========================================
 // Main Component
@@ -684,35 +502,24 @@ export const CommunityScreen: React.FC = () => {
       {/* ========================================================================= */}
       {!selectedCommunityId && (
         <>
-          {/* Sticky Header thương hiệu chung matching PWA BusinessConnectTopBar */}
-          <View
-            style={[
-              styles.stickyHeader,
-              {
-                backgroundColor: isDark ? "rgba(11, 15, 23, 0.95)" : "rgba(255, 255, 255, 0.95)",
-                borderBottomColor: isDark ? "rgba(216, 178, 130, 0.18)" : "#E2E8F0",
-              },
-            ]}
-          >
-            <View style={styles.brandRow}>
-              <View style={styles.logoBadge}>
-                <Text style={styles.logoText}>VIONE</Text>
-              </View>
-              <Text style={[styles.greetingText, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-                {getVNTimeGreeting()}
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              style={styles.bellButton}
-              onPress={() => Alert.alert("Thông báo", "Bạn không có thông báo cộng đồng mới.")}
-            >
-              <Bell size={20} color="#D8B282" />
-              <View style={styles.unreadBadge}>
-                <Text style={styles.unreadBadgeText}>3</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          {/* Sticky Header thương hiệu chung matching PWA 1:1 */}
+          <StickyBrandHeader
+            rightActions={
+              <TouchableOpacity
+                style={[
+                  styles.headerSquareBtn,
+                  {
+                    backgroundColor: isDark ? "rgba(22, 32, 50, 0.65)" : "#F1F5F9",
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                  },
+                ]}
+                onPress={() => Alert.alert("Thông báo", "Không có thông báo cộng đồng mới.")}
+                activeOpacity={0.7}
+              >
+                <Bell size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
+              </TouchableOpacity>
+            }
+          />
 
           <ScrollView
             style={styles.scrollView}
@@ -2420,6 +2227,15 @@ const styles = StyleSheet.create({
   greetingText: {
     fontSize: 12,
     fontWeight: "500",
+  },
+  headerSquareBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
   bellButton: {
     width: 36,

@@ -280,3 +280,24 @@ ViOne định vị là **Hệ Điều Hành Doanh Nghiệp Toàn Diện & Mạng
    - Khi hỏi *"tôi được bao nhiêu quan tâm cơ hội của tôi"*, AI tính toán chính xác số lượt quan tâm thực tế và hiển thị thẻ cơ hội kèm nút xem đối tác.
    - Khi hỏi *"tôi có cuộc gặp nào không"*, AI tổng hợp lịch hẹn đã xác nhận kèm thẻ cuộc hẹn có nút vào phòng họp trực tuyến.
 4. **Hệ thống Thông báo Đa Tương tác:** Tự động bắn thông báo đẩy và lưu thông báo hệ thống cho mọi tương tác: tin nhắn từ người lạ, có đối tác quan tâm cơ hội, nhận đề xuất hẹn gặp, đối tác đã đồng ý/từ chối lịch hẹn, kết nối thành công.
+
+### 9.6. Chuẩn Hóa Nghiệp Vụ Nâng Cấp Hệ Thống 6.0 Master
+1. **Trợ Lý Điều Hành ViOne Dynamic AI Copilot 6.0 (Executive Chief of Staff):**
+   - Nâng cấp bộ não AI phản hồi tự nhiên, sắc bén và linh hoạt như một Giám đốc Tham mưu (Chief of Staff) thực thụ.
+   - Tích hợp cổng kết nối **LLM Gateway** (Gemini/OpenAI) khi hệ thống cấu hình API Key.
+   - Khi chạy ở chế độ Dynamic Inference nội bộ: AI nắm vững và trả lời sâu sắc 100% nghiệp vụ nền tảng ViOne (quản lý sự kiện, hủy/đăng ký sự kiện, chụp ảnh khoảnh khắc từ camera thiết bị, thẻ danh thiếp số NFC/QR, chấm công GPS, quy trình duyệt chi 3 cấp VietQR, cộng đồng B2B vs nội bộ, sàn cơ hội, AI match đối tác...).
+   - Tuyệt đối loại bỏ các thông điệp từ chối thụ động (ví dụ: *"chưa đủ thông minh để giải đáp"*).
+2. **Quy Trình Hủy Đăng Ký Sự Kiện 1-Chạm (Event Registration Cancellation Flow):**
+   - Người dùng đã đăng ký sự kiện có thể hủy tham gia bất kỳ lúc nào qua nút bấm "Hủy đăng ký" trên sheet chi tiết sự kiện (`EventDetailMobileSheet`).
+   - Backend hỗ trợ đa endpoint định tuyến (`DELETE /api/events/:id/register`, `POST /api/events/:id/unregister`, `DELETE /api/events/:id/cancel`), đối soát đa trường mở rộng (`userId`, `memberId`, `email`, `phone`), tự động chuyển trạng thái bản ghi thành `cancelled`, giảm an toàn biến đếm `registered` và hoàn lại suất tham dự vào số vé còn lại cho cộng đồng.
+   - Client tự động dọn dẹp khóa cache cục bộ `bc_event_reg_${id}`, cập nhật giao diện thời gian thực và bắn thông báo xác nhận thành công.
+3. **Cơ Chế Chụp Ảnh Trực Tiếp Từ Camera Cho Khoảnh Khắc (Direct Live Camera Capture):**
+   - Modal Đăng khoảnh khắc (`PostMomentModal`) trang bị nút kích hoạt camera phần cứng trực tiếp.
+   - **Web PWA:** Kết hợp thẻ input chuẩn HTML5 `capture="environment"` và khung ngắm trực tiếp WebRTC (`navigator.mediaDevices.getUserMedia`) toàn màn hình, hỗ trợ đổi camera selfie/sau và chụp bắt ảnh qua Canvas.
+   - **Mobile Native App:** Tích hợp trực tiếp module `expo-camera` (`CameraView`, `useCameraPermissions`), khung ngắm camera toàn màn hình với nút chụp trập tức thì (Shutter), bật/tắt đèn Flash/Torch, đảo camera trước/sau.
+   - Cho phép người dùng chụp nhiều ảnh trực tiếp liên tiếp và đính kèm ngay vào bài đăng khoảnh khắc.
+4. **Đồng Bộ Giao Diện, Bố Cục & Nhận Diện Thương Hiệu 1:1 Giữa Web PWA & Mobile Native App:**
+   - **Logo Thương Hiệu:** Thay thế toàn bộ ảnh raster PNG độ phân giải thấp bằng Vector Wordmark mạ vàng Linear Gradient (`ViOneLogo.tsx` sử dụng `react-native-svg`), bảo toàn tỷ lệ và đường nét sắc sảo như bản Web.
+   - **Bộ Icon Thanh Tác Vụ Nhanh (Quick Actions):** Tích hợp bộ icon vector chuyên dụng (`QuickMeetIcon`, `QuickScanIcon`, `QuickCardIcon`) vào `NavIcons.tsx` trên Mobile Native, đồng bộ nhãn hiển thị: "Gặp gỡ" (mở modal khoảnh khắc), "Quét & Kết nối" (mở quét danh thiếp OCR), "Danh thiếp của tôi" (mở thẻ doanh nhân).
+   - **Đồng Bộ Thanh Điều Hướng Dưới Cùng (Bottom Tab Bar):** Chuẩn hóa nhãn tab 2 từ "Kết nối" thành "Network" khớp 100% với Web PWA.
+   - **Tối Ưu Độ Tương Phản Đa Chế Độ (Dual-Theme Contrast):** Xóa bỏ các màu nền tối cố định trong các container `quickActionsGrid`, `insightCard`, `opsSection`, `opsMetricTile`, tự động chuyển đổi màu sắc thông minh theo chế độ Sáng/Tối (`isDark`).

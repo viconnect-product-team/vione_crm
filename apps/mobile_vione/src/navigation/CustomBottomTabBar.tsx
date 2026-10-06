@@ -58,7 +58,7 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
       case "Home":
         return "Trang chủ";
       case "Network":
-        return "Kết nối";
+        return "Network";
       case "Community":
         return "Cộng đồng";
       case "Me":

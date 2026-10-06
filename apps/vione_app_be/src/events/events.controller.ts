@@ -87,6 +87,24 @@ export class EventsController {
     return this.eventsService.cancelEventRegistration(req.user.id, id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/cancel')
+  async cancelEventRegistrationDelete(@Request() req: any, @Param('id') id: string) {
+    return this.eventsService.cancelEventRegistration(req.user.id, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/register')
+  async unregisterFromEventDelete(@Request() req: any, @Param('id') id: string) {
+    return this.eventsService.cancelEventRegistration(req.user.id, id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/unregister')
+  async unregisterFromEventPost(@Request() req: any, @Param('id') id: string) {
+    return this.eventsService.cancelEventRegistration(req.user.id, id);
+  }
+
   @Put(':id')
   async updateEvent(
     @Request() req: any,

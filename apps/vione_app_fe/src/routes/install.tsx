@@ -157,14 +157,26 @@ function InstallPage() {
                 <span>Cài Đặt Cấu Hình iOS (.mobileconfig)</span>
               </a>
             ) : (
-              <a
-                href="/vione.apk"
-                download="vione.apk"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/15 active:scale-95"
-              >
-                <Smartphone className="h-4 w-4 text-emerald-400" />
-                <span>Tải File APK Android</span>
-              </a>
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="/ViOne-Connect-latest.apk"
+                  download="ViOne-Connect-latest.apk"
+                  className="inline-flex items-center gap-2 rounded-xl border border-[#D8B282]/50 bg-gradient-to-r from-[#D8B282]/20 to-[#C29B69]/30 px-3.5 py-2 text-xs font-bold text-[#F3E5AB] transition hover:bg-white/15 active:scale-95 shadow-sm"
+                  title="Bản thuần Native React Native (81MB)"
+                >
+                  <Smartphone className="h-4 w-4 text-emerald-400" />
+                  <span>APK Native App (81MB)</span>
+                </a>
+                <a
+                  href="/ViOne-PWA-latest.apk"
+                  download="ViOne-PWA-latest.apk"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 text-xs font-bold text-white transition hover:bg-white/15 active:scale-95"
+                  title="Bản siêu tốc PWA Live Server (4.5MB)"
+                >
+                  <Download className="h-4 w-4 text-cyan-400" />
+                  <span>APK PWA App (4.5MB)</span>
+                </a>
+              </div>
             )}
           </div>
         </div>
@@ -302,13 +314,21 @@ function InstallPage() {
               </li>
             </ol>
 
-            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+            <div className="mt-4 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
               <a
-                href="/vione.apk"
-                download="vione.apk"
-                className="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1"
+                href="/ViOne-Connect-latest.apk"
+                download="ViOne-Connect-latest.apk"
+                className="text-xs font-bold text-[#F3E5AB] hover:underline flex items-center gap-1"
               >
-                <span>Hoặc bấm để tải file APK cài trực tiếp</span>
+                <span>Tải APK Native App (81MB)</span>
+                <Download className="h-3 w-3" />
+              </a>
+              <a
+                href="/ViOne-PWA-latest.apk"
+                download="ViOne-PWA-latest.apk"
+                className="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1"
+              >
+                <span>Tải APK PWA App (4.5MB)</span>
                 <Download className="h-3 w-3" />
               </a>
             </div>

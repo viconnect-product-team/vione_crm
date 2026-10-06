@@ -379,6 +379,20 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Luồng Ngoại Lệ (Exception Handling):** Vé không tồn tại hoặc đã check-in trước đó: Báo lỗi vé không hợp lệ.
 - **RESTful API Endpoint:** `POST /api/events/checkin`
 
+##### FR-13.03 - Hủy Đăng Ký Tham Gia Sự Kiện & Hoàn Lại Suất Tham Dự (Event Registration Cancellation)
+- **Actor:** Hội viên, Doanh nhân, Khách mời đã đăng ký sự kiện
+- **Input:** ID sự kiện (`:id`), lý do hủy (tùy chọn).
+- **Logic Xử Lý:**
+  1. Người dùng bấm nút "Hủy đăng ký" trên giao diện chi tiết sự kiện (`EventDetailMobileSheet` trên Web PWA hoặc Native Mobile App).
+  2. Hệ thống gọi API hủy đăng ký với hỗ trợ đa phương thức định tuyến: `DELETE /api/events/:id/register`, `POST /api/events/:id/unregister` hoặc `DELETE /api/events/:id/cancel`.
+  3. Backend định danh người dùng qua Token JWT và đối soát đa trường mở rộng (`userId`, `memberId`, `email`, `phone`).
+  4. Cập nhật bản ghi đăng ký sang trạng thái `cancelled`, giảm an toàn biến đếm số lượng người tham gia (`registered = Math.max(0, registered - 1)`), hoàn lại 1 suất tham dự khả dụng cho cộng đồng.
+  5. Xóa khóa lưu trữ cục bộ trạng thái đăng ký trên thiết bị khách (`localStorage.removeItem('bc_event_reg_${id}')`).
+  6. Gửi thông báo xác nhận hủy đăng ký thành công qua hệ thống Notification thời gian thực.
+- **Output:** Xác nhận hủy đăng ký thành công, trạng thái nút bấm trên giao diện chuyển về "Đăng ký tham gia ngay", số lượng vé khả dụng được cập nhật tức thì.
+- **Luồng Ngoại Lệ (Exception Handling):** Người dùng chưa từng đăng ký hoặc sự kiện đã diễn ra: Hệ thống trả về thông báo lỗi chi tiết, không trừ số lượng vé.
+- **RESTful API Endpoint:** `DELETE /api/events/:id/register`, `POST /api/events/:id/unregister`, `DELETE /api/events/:id/cancel`
+
 
 #### MODULE 14: QUẢN LÝ CUỘC GẶP KẾT NỐI DOANH NHÂN 1-ON-1
 *Mục tiêu Epic:* Đặt lịch hẹn làm việc, kết nối đối tác chiến lược và biên bản cuộc gặp
@@ -412,20 +426,21 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **RESTful API Endpoint:** `POST /api/connect-app/dm/messages, WebSocket event: message:send`
 
 
-#### MODULE 16: TRÍ TUỆ NHÂN TẠO VIONE AI COPILOT 5.0
-*Mục tiêu Epic:* 6 Năng lực AI chuyên biệt: Đàm thoại điều hành, OCR danh thiếp, nhập liệu Excel, soạn hợp đồng, gợi ý đối tác và giám sát tải
+#### MODULE 16: TRÍ TUỆ NHÂN TẠO VIONE AI COPILOT 6.0 (DYNAMIC CHIEF OF STAFF)
+*Mục tiêu Epic:* Trợ lý ảo C-Level thông minh toàn năng: Đàm thoại điều hành đa ngữ cảnh, trả lời linh hoạt 100% nghiệp vụ hệ thống ViOne như con người, kết nối LLM Gateway (Gemini/OpenAI), OCR danh thiếp, nhập liệu Excel, đối tác thông minh và giám sát tải.
 
-##### FR-16.01 - Trợ Lý AI Copilot Đàm Thoại Điều Hành & Báo Cáo Doanh Nghiệp
-- **Actor:** CEO, Ban Lãnh Đạo C-Level
-- **Input:** Câu lệnh giọng nói hoặc văn bản tự nhiên (Ví dụ: "Tóm tắt doanh thu tháng này và công nợ khách hàng lớn nhất").
+##### FR-16.01 - Trợ Lý AI Copilot Đàm Thoại Điều Hành & Báo Cáo Doanh Nghiệp (Dynamic Chief of Staff)
+- **Actor:** CEO, Ban Lãnh Đạo C-Level, Quản lý, Hội viên doanh nhân
+- **Input:** Câu lệnh giọng nói hoặc văn bản tự nhiên về bất kỳ khía cạnh nào của ViOne (báo cáo doanh thu, hủy/đăng ký sự kiện, chụp ảnh khoảnh khắc camera, danh thiếp số NFC/QR, chấm công GPS, quy trình duyệt chi 3 cấp VietQR, cộng đồng B2B vs nội bộ, ghép nối đối tác...).
 - **Logic Xử Lý:**
-  1. Tiếp nhận câu hỏi và chuyển văn bản qua bộ xử lý ngôn ngữ tự nhiên NLP.
-  2. Xác thực quyền dữ liệu của người hỏi (chỉ truy vấn dữ liệu trong phạm vi tenant được phép).
-  3. Tự động sinh câu lệnh truy vấn CSDL an toàn (Text-to-SQL an toàn) để trích xuất số liệu thực tế.
-  4. Tổng hợp thông tin và định dạng câu trả lời súc tích theo văn phong C-Level.
-  5. Ghi nhật ký vào bảng ai_audit_logs.
-- **Output:** Bản tóm tắt số liệu điều hành kèm biểu đồ và gợi ý hành động tiếp theo.
-- **Luồng Ngoại Lệ (Exception Handling):** Câu hỏi yêu cầu dữ liệu vượt quá quyền hạn: Trả lời "Bạn không có quyền truy cập dữ liệu tài chính này".
+  1. Tiếp nhận câu hỏi và chuyển văn bản qua bộ phân tích ngữ định NLP/NLU.
+  2. Xác thực quyền dữ liệu và phạm vi tenant của người dùng.
+  3. Kiểm tra kết nối **LLM Gateway** (Gemini/OpenAI API): Nếu có API key hợp lệ, truyền Prompt hệ thống cấu hình vai trò Giám đốc Điều hành C-Level (Chief of Staff) cùng dữ liệu KPI trực tiếp để mô hình sinh câu trả lời tự nhiên, sâu sắc và thực tế.
+  4. Nếu chạy chế độ suy luận động nội bộ (Dynamic Inference Engine): Ánh xạ qua bộ ma trận tri thức toàn diện 8+ lĩnh vực nghiệp vụ của ViOne, tổng hợp câu trả lời chi tiết theo định dạng văn phong lãnh đạo C-Level, kèm Thẻ bằng chứng trực quan (Evidence Cards: Metric Cards, Event Cards, Voice Moment Cards...) và các nút điều hướng tắt (Route Actions) 1-chạm.
+  5. Tuyệt đối không trả về thông điệp từ chối thụ động (ví dụ: "chưa đủ thông minh để giải đáp"). Mọi thắc mắc đều được hướng dẫn từng bước rõ ràng, mạch lạc và thấu đáo.
+  6. Ghi nhận toàn bộ tương tác vào bảng nhật ký `ai_audit_logs`.
+- **Output:** Phản hồi thông minh, giải đáp toàn diện mọi vấn đề nghiệp vụ kèm biểu đồ/thẻ bằng chứng và đường dẫn thao tác tức thời.
+- **Luồng Ngoại Lệ (Exception Handling):** Yêu cầu vượt quyền hạn tenant: Phản hồi giải thích quy định bảo mật dữ liệu doanh nghiệp một cách khéo léo và đề xuất người có thẩm quyền liên hệ.
 - **RESTful API Endpoint:** `POST /api/ai/chat`
 
 ##### FR-16.02 - Quét & Nhận Diện Danh Thiếp OCR AI Tự Động Nhập CRM
@@ -591,6 +606,17 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Output:** Story hiển thị trên dải tin 24h và tự động ẩn khi hết hạn.
 - **Luồng Ngoại Lệ (Exception Handling):** Hết hạn 24 giờ: Chuyển story vào kho lưu trữ cá nhân, không hiển thị công khai.
 - **RESTful API Endpoint:** `POST /api/connect-app/moments/story, GET /api/connect-app/moments/stories`
+
+##### FR-25.02 - Chụp Ảnh Trực Tiếp Từ Camera Thiết Bị Đăng Khoảnh Khắc (Direct Live Camera Capture)
+- **Actor:** Doanh nhân, Người dùng ứng dụng ViOne Web PWA & Mobile Native
+- **Input:** Quyền truy cập camera thiết bị, thao tác nhấn nút "Chụp ảnh ngay" trong modal Đăng khoảnh khắc (`PostMomentModal`).
+- **Logic Xử Lý:**
+  1. **Trên Web PWA:** Kích hoạt đồng thời 2 cơ chế: Thẻ `<input type="file" accept="image/*" capture="environment">` gọi máy ảnh hệ điều hành mặc định, và khung ngắm trực tiếp WebRTC (`navigator.mediaDevices.getUserMedia`) toàn màn hình cho phép xem trước góc máy, đổi camera trước/sau, chụp bắt khung hình qua HTML5 Canvas với độ phân giải cao.
+  2. **Trên Mobile Native (Expo/React Native):** Sử dụng phần cứng camera qua module `expo-camera` (`CameraView`, `useCameraPermissions`). Mở khung ngắm Viewfinder trực tiếp toàn màn hình với nút chụp trập tức thì (Shutter), bật/tắt đèn Flash/Torch, đảo camera selfie/sau. Ảnh chụp được lưu vào cache và tự động đính kèm vào danh sách ảnh đính kèm của khoảnh khắc.
+  3. Cho phép người dùng chụp liên tiếp nhiều ảnh hoặc kết hợp chọn thêm ảnh từ thư viện, ghi âm giọng nói đính kèm và gắn vị trí địa lý GPS trước khi đăng tải.
+- **Output:** Ảnh chụp trực tiếp sắc nét được hiển thị trong khu vực xem trước "Mới chụp" và đính kèm vào bài đăng khoảnh khắc thời gian thực.
+- **Luồng Ngoại Lệ (Exception Handling):** Người dùng từ chối cấp quyền camera: Hiển thị hộp thoại giải thích và hướng dẫn mở quyền trong Cài đặt thiết bị, đồng thời kích hoạt fallback chọn ảnh từ Thư viện tệp.
+- **RESTful API Endpoint:** `POST /api/connect-app/moments, In-app Components: PostMomentModal.tsx`
 
 
 #### MODULE 26: HỒ SƠ DANH TÍNH SỐ, DANH THIẾP TITANIUM 3D & CHIA SẺ CHẠM NFC

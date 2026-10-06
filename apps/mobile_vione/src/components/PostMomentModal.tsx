@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Modal,
   View,
@@ -12,6 +12,7 @@ import {
   Alert,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import {
   X,
   Sparkles,
@@ -22,6 +23,8 @@ import {
   Users,
   Check,
   Send,
+  Flashlight,
+  SwitchCamera,
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
@@ -73,12 +76,44 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
   const [content, setContent] = useState("");
   const [selectedTag, setSelectedTag] = useState(MOMENT_TAGS[0]);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(SAMPLE_PHOTOS[0]);
+  const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [audience, setAudience] = useState<"public" | "community">("public");
   const [submitting, setSubmitting] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [cameraActive, setCameraActive] = useState(false);
+  const [facing, setFacing] = useState<"back" | "front">("back");
+  const [torch, setTorch] = useState(false);
+  const cameraRef = useRef<any>(null);
 
   const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
   const userTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
   const userCompany = user?.company || "Tập đoàn ViOne";
+
+  const handleOpenLiveCamera = async () => {
+    if (!permission?.granted) {
+      const res = await requestPermission();
+      if (!res.granted) {
+        Alert.alert("Quyền Camera", "Vui lòng cấp quyền truy cập máy ảnh để chụp ảnh khoảnh khắc.");
+        return;
+      }
+    }
+    setCameraActive(true);
+  };
+
+  const handleCapturePhoto = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePictureAsync({ quality: 0.8 });
+        if (photo?.uri) {
+          setCapturedPhotos((prev) => [photo.uri, ...prev]);
+          setSelectedPhoto(photo.uri);
+          setCameraActive(false);
+        }
+      } catch (err) {
+        Alert.alert("Lỗi chụp ảnh", "Không thể chụp ảnh lúc này. Vui lòng thử lại.");
+      }
+    }
+  };
 
   const handlePost = async () => {
     if (!content.trim()) {
@@ -202,8 +237,52 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
 
             {/* Photo Attachment Picker */}
             <View style={styles.photoSection}>
-              <Text style={styles.sectionLabel}>ĐÍNH KÈM HÌNH ẢNH HOẠT ĐỘNG</Text>
+              <View style={styles.photoHeaderRow}>
+                <Text style={styles.sectionLabel}>ĐÍNH KÈM HÌNH ẢNH HOẠT ĐỘNG</Text>
+                <TouchableOpacity
+                  style={styles.cameraQuickBtn}
+                  onPress={handleOpenLiveCamera}
+                  activeOpacity={0.8}
+                >
+                  <Camera size={14} color="#D8B282" style={{ marginRight: 5 }} />
+                  <Text style={styles.cameraQuickBtnText}>Chụp ảnh trực tiếp</Text>
+                </TouchableOpacity>
+              </View>
+
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoScroll}>
+                {/* Camera Launch Card */}
+                <TouchableOpacity
+                  style={styles.cameraLaunchCard}
+                  onPress={handleOpenLiveCamera}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.cameraLaunchIconWrap}>
+                    <Camera size={22} color="#D8B282" />
+                  </View>
+                  <Text style={styles.cameraLaunchText}>Mở Camera</Text>
+                </TouchableOpacity>
+
+                {/* Captured Photos */}
+                {capturedPhotos.map((imgUri, idx) => (
+                  <TouchableOpacity
+                    key={`captured-${idx}`}
+                    style={[styles.photoThumb, selectedPhoto === imgUri && styles.photoThumbActive]}
+                    onPress={() => setSelectedPhoto(selectedPhoto === imgUri ? null : imgUri)}
+                    activeOpacity={0.8}
+                  >
+                    <Image source={{ uri: imgUri }} style={styles.photoImg} />
+                    <View style={styles.capturedBadge}>
+                      <Text style={styles.capturedBadgeText}>Mới chụp</Text>
+                    </View>
+                    {selectedPhoto === imgUri && (
+                      <View style={styles.photoCheckOverlay}>
+                        <Check size={14} color="#050C15" strokeWidth={3} />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                ))}
+
+                {/* Sample Photos */}
                 {SAMPLE_PHOTOS.map((imgUri, idx) => (
                   <TouchableOpacity
                     key={idx}
@@ -246,6 +325,40 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
           </View>
         </View>
       </View>
+
+      {/* Live Camera Viewfinder Modal */}
+      <Modal visible={cameraActive} animationType="slide" transparent={false} onRequestClose={() => setCameraActive(false)}>
+        <View style={styles.cameraFullContainer}>
+          <CameraView
+            ref={cameraRef}
+            style={StyleSheet.absoluteFillObject}
+            facing={facing}
+            enableTorch={torch}
+          />
+          {/* Camera Header Bar */}
+          <View style={styles.cameraHeaderBar}>
+            <TouchableOpacity onPress={() => setCameraActive(false)} style={styles.cameraActionBtn} activeOpacity={0.8}>
+              <X size={24} color="#FFFFFF" />
+            </TouchableOpacity>
+            <View style={styles.cameraControlsRight}>
+              <TouchableOpacity onPress={() => setTorch((t) => !t)} style={[styles.cameraActionBtn, torch && styles.cameraActionBtnActive]} activeOpacity={0.8}>
+                <Flashlight size={20} color={torch ? "#D8B282" : "#FFFFFF"} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setFacing((f) => (f === "back" ? "front" : "back"))} style={styles.cameraActionBtn} activeOpacity={0.8}>
+                <SwitchCamera size={20} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Camera Bottom Shutter Bar */}
+          <View style={styles.cameraControlsBar}>
+            <Text style={styles.cameraHintText}>Căn góc khoảnh khắc giao thương & hội nghị</Text>
+            <TouchableOpacity onPress={handleCapturePhoto} style={styles.shutterRing} activeOpacity={0.8}>
+              <View style={styles.shutterCore} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 };
@@ -355,7 +468,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   tagPill: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 18,
@@ -377,7 +490,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   inputWrap: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
@@ -414,6 +527,69 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  photoHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+  },
+  cameraQuickBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.35)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  cameraQuickBtnText: {
+    fontSize: 11,
+    color: "#D8B282",
+    fontWeight: "700",
+  },
+  cameraLaunchCard: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderStyle: "dashed",
+    borderColor: "#D8B282",
+    backgroundColor: "rgba(216, 178, 130, 0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  cameraLaunchIconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 4,
+  },
+  cameraLaunchText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#D8B282",
+  },
+  capturedBadge: {
+    position: "absolute",
+    bottom: 4,
+    left: 4,
+    backgroundColor: "rgba(5, 12, 21, 0.85)",
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 4,
+    borderWidth: 0.5,
+    borderColor: "rgba(216, 178, 130, 0.5)",
+  },
+  capturedBadgeText: {
+    fontSize: 8,
+    fontWeight: "700",
+    color: "#D8B282",
+  },
   photoCheckOverlay: {
     position: "absolute",
     top: 4,
@@ -424,6 +600,67 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
+  },
+  cameraFullContainer: {
+    flex: 1,
+    backgroundColor: "#000000",
+    justifyContent: "space-between",
+  },
+  cameraHeaderBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 54,
+    paddingHorizontal: 20,
+  },
+  cameraActionBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cameraActionBtnActive: {
+    borderColor: "#D8B282",
+    backgroundColor: "rgba(216, 178, 130, 0.3)",
+  },
+  cameraControlsRight: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  cameraControlsBar: {
+    paddingBottom: 48,
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  cameraHintText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#E2E8F0",
+    marginBottom: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  shutterRing: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    borderWidth: 4,
+    borderColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  shutterCore: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#D8B282",
   },
   bottomFooter: {
     paddingHorizontal: 16,

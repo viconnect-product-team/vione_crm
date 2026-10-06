@@ -77,9 +77,29 @@
   * Giao diện Cuộc gọi Full Dual-Theme cho cả `DmCallModal` và `GlobalIncomingCallModal`:
     - Theme Sáng: Nền trắng ngọc trai mạ vàng đồng `bg-gradient-to-b from-white via-[#FAF8F5] to-[#F5F0E8] border-[#DFB76C]/60`, tên người gọi/đối phương chữ đen obsidian `!text-slate-950 font-black text-2xl` sắc nét, phụ đề xám slate sẫm `text-slate-600 font-semibold`.
     - Theme Tối: Nền Obsidian Navy `#141A26`, viền vàng champagne, chữ trắng tinh khôi `dark:!text-white`.
-- **ViOne AI Copilot 5.0 Dynamic Agenda & Exact Fallback Rule**:
-  - AI Copilot phải nắm toàn phần mọi chức năng ViOne, phân tích sâu và nhận diện chính xác ngữ cảnh câu hỏi của lãnh đạo C-Level (ví dụ: *"Hôm nay tôi có việc gì cần làm không?"* $\rightarrow$ tra cứu lịch trình, 2 cuộc gặp 1-1, 2 nhiệm vụ điều hành trọng tâm, tình hình chấm công 42/45 nhân sự).
-  - Đối với các câu hỏi nằm ngoài phạm vi hoặc chưa giải đáp được: BẮT BUỘC trả lời chính xác nguyên văn: *"Dạ thưa Anh/Chị, hiện tại tôi chưa được thông minh để giải đáp câu hỏi của bạn. Anh/Chị có thể hỏi tôi về: lịch trình công việc hôm nay, tìm kiếm khách hàng tiềm năng, tình hình chấm công nhân sự, phê duyệt tờ trình ngân sách, hoặc quản lý cộng đồng doanh nghiệp ạ."* Tuyệt đối không bịa đặt, không lặp lại câu hỏi.
+- **ViOne AI Copilot 6.0 Dynamic Human-like Chief of Staff Rule**:
+  - AI Copilot phải có trí tuệ linh hoạt, tự nhiên như một con người thực sự (Executive Chief of Staff). Tuyệt đối KHÔNG trả lời rập khuôn, từ chối cứng nhắc dạng "hiện tại tôi chưa được thông minh để giải đáp".
+  - Phải có khả năng giải đáp tường tận và chính xác toàn bộ mọi vấn đề, nghiệp vụ và thắc mắc liên quan đến hệ sinh thái ViOne: Hủy/đăng ký sự kiện, cách chụp ảnh đăng khoảnh khắc, danh thiếp số NFC/QR, chấm công GPS/FaceID, quy trình phê duyệt ngân sách 3 cấp, phân biệt 2 dạng cộng đồng B2B vs Nội bộ, sàn thương mại B2B, quản lý nhân sự & giao việc, AI gợi ý ghép nối đối tác kinh doanh.
+  - Phản hồi bằng phong cách C-Level thượng lưu: ngôn từ chuẩn mực, cấu trúc Markdown rõ ràng, kèm các Evidence Cards và gợi ý hành động (Suggested Actions) 1-chạm đưa thẳng người dùng đến đúng phân hệ tính năng.
+  - Hỗ trợ kết nối external LLM gateway nếu môi trường có cấu hình API keys.
+
+- **Event Unregistration & Cancellation Rule (Luồng Hủy Đăng Ký Sự Kiện)**:
+  - Mọi sự kiện mà người dùng đã đăng ký phải cho phép hủy đăng ký dễ dàng, nhanh chóng.
+  - Backend cung cấp các endpoint `@Delete(':id/register')`, `@Post(':id/unregister')`, `@Delete(':id/cancel')` phân giải người dùng đa định danh, cập nhật trạng thái `cancelled`, giảm an toàn trường `registered` trên sự kiện, và gửi thông báo xác nhận hủy tham gia.
+  - Frontend cập nhật UI tức thời, xóa cache `bc_event_reg_${eventId}` trong localStorage, chuyển nút bấm về trạng thái "Đăng ký tham gia" và hiển thị thông báo thành công.
+
+- **Moments Direct Camera Capture Rule (Chụp Ảnh Khoảnh Khắc Trực Tiếp Bằng Camera)**:
+  - Phân hệ Đăng khoảnh khắc doanh nhân (`PostMomentModal`) trên cả Web PWA và Mobile Native BẮT BUỘC cung cấp tính năng chụp ảnh trực tiếp từ camera phần cứng của thiết bị (bên cạnh việc đính kèm ảnh có sẵn).
+  - Web PWA: Tích hợp input native `capture="environment"` cùng Live WebRTC camera viewfinder overlay cho phép căn góc, đổi camera trước/sau và chụp ảnh xuất sang canvas blob gắn ngay vào bài đăng.
+  - Mobile Native (`mobile_vione`): Tích hợp `expo-camera` (`CameraView`), có nút bấm "Chụp ảnh trực tiếp" / "Mở Camera", danh sách ảnh "Mới chụp" và Viewfinder modal có nút chuyển camera, bật đèn pin và nút chụp ảnh shutter mạ vàng.
+
+- **Native App vs Web PWA 1:1 Full Parity Rule (`apps/mobile_vione`)**:
+  - **Unified Sticky Brand Header (`StickyBrandHeader.tsx`)**: Toàn bộ 4 màn hình chính (`HomeScreen`, `NetworkScreen`, `CommunityScreen`, `ProfileScreen`) BẮT BUỘC sử dụng chung component `StickyBrandHeader.tsx`. Không được code header riêng lẻ gây lệch kích thước, vị trí hay thiếu nút. Header có logo vector mạ vàng `ViOneLogo.tsx` 53x20, lời chào thời gian thực (`getVNTimeGreeting()`), nút chuyển theme vuông bo góc 32x32 mạ vàng (`rgba(255,255,255,0.08)`), nền mờ `rgba(11, 15, 23, 0.95)`, viền dưới `rgba(255, 255, 255, 0.08)` và ghim dính trên đỉnh màn hình (`stickyHeader`).
+  - **Triệt Tiêu Màu Tím Lệch Chuẩn (`#12151F`)**: Toàn bộ màn hình, modals và action sheets trên Native App BẮT BUỘC sử dụng nền Luxury Dark Slate `#0E1522` / Obsidian Navy `#0B0F17` và `rgba(14, 21, 34, 0.85)`. TUYỆT ĐỐI CẤM sử dụng mã màu tím `#12151F` làm lệch bảng màu thượng lưu của ViOne.
+  - **Triệt Tiêu Dữ Liệu Rác & Số Điện Thoại Ảo (Zero Mock / Fake Data Rule)**: Tuyệt đối không để dữ liệu mock (mock stories, fake partners, dummy threads, fake tasks, dummy events) trong code. Mọi số điện thoại giả lập như `"0983 000 001"`, `"0988 123 456"`, email `"ceo@vione.vn"`, mã `"VIONE-8888"` bắt buộc xóa bỏ hoàn toàn.
+  - Quick Action Icons & Labels: BẮT BUỘC sử dụng 3 icon vector chuẩn `NavIcons.tsx` (`QuickMeetIcon`, `QuickScanIcon`, `QuickCardIcon`) với 3 nhãn chuẩn: "Gặp gỡ" (mở đăng khoảnh khắc), "Quét & Kết nối" (mở card review/quét QR), "Danh thiếp của tôi" (mở thẻ danh thiếp số).
+  - Dual-Theme Parity: Toàn bộ thẻ Quick Actions, InsightCard, Enterprise Operations Card và các metric tiles BẮT BUỘC hỗ trợ linh hoạt 2 chế độ Sáng (Light) và Tối (Dark), không hardcode màu tối làm chìm chữ trên nền sáng.
+  - Bottom Tab Bar: Nhãn tab số 2 phải là "Network" để đồng nhất với Web PWA.
 
 - **ViOne Executive 3-Color Standard (Chuẩn 3 Màu Trắng, Đen Obsidian, Vàng Đồng Champagne Gold)**:
   - Toàn bộ khối Giám sát Vận hành Nhân sự (`EnterpriseOperationsCard` tại `ExecutiveHome.tsx`) và 3 Bottom Sheet điều hành (`WorkflowMobileSheet.tsx`, `ApprovalsMobileSheet.tsx`, `AttendanceMobileSheet.tsx`) BẮT BUỘC tuân thủ chuẩn 3 màu chủ đạo của ViOne: **Trắng (`#FFFFFF`)**, **Đen Obsidian Navy (`#0B0F17`)**, và **Vàng Đồng Champagne Gold (`#DFB76C`, `#D4AF37`)**.

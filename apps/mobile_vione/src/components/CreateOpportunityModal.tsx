@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   textInput: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     borderRadius: 12,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tagPill: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 20,
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
   communityOption: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 10,
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
   },
   durBtn: {
     flex: 1,
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 10,

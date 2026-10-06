@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   sectionCard: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",

@@ -159,9 +159,13 @@ export function EventDetailMobileSheet({
   const handleCancelRegistration = async () => {
     setIsSubmitting(true);
     try {
-      await fetchNestApi(`/events/${encodeURIComponent(eventId)}/register`, {
-        method: "DELETE",
-      }).catch(() => {});
+      await fetchNestApi(`/events/${encodeURIComponent(eventId)}/cancel`, {
+        method: "POST",
+      }).catch(async () => {
+        await fetchNestApi(`/events/${encodeURIComponent(eventId)}/register`, {
+          method: "DELETE",
+        }).catch(() => {});
+      });
 
       try {
         localStorage.removeItem(`bc_event_reg_${eventId}`);
@@ -169,7 +173,7 @@ export function EventDetailMobileSheet({
 
       setIsRegistered(false);
       setShowCancelConfirm(false);
-      toast.info("Đã hủy đăng ký tham gia sự kiện.");
+      toast.success("Đã hủy đăng ký tham gia sự kiện thành công!");
       onRegisteredChange?.(eventId, false);
     } catch {
       try {
@@ -177,7 +181,7 @@ export function EventDetailMobileSheet({
       } catch {}
       setIsRegistered(false);
       setShowCancelConfirm(false);
-      toast.info("Đã hủy đăng ký sự kiện.");
+      toast.info("Đã hủy đăng ký tham gia sự kiện.");
       onRegisteredChange?.(eventId, false);
     } finally {
       setIsSubmitting(false);

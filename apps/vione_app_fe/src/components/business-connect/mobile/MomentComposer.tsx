@@ -33,6 +33,9 @@ import {
   UserRound,
   Users,
   X,
+  FolderOpen,
+  Trash2,
+  Plus,
 } from "lucide-react";
 
 import { useLang, useT, type TKey } from "@/lib/i18n";
@@ -40,10 +43,21 @@ import { safeRandomUUID } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import {
   clearMomentDraft,
+  deleteMomentDraft,
   isDraftEmpty,
+  listMomentDrafts,
   readMomentDraft,
+  saveAsNewMomentDraft,
   writeMomentDraft,
+  type MomentDraft,
 } from "@/lib/business-connect/moment-draft";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useBusinessConnectPerson } from "@/hooks/use-business-connect-person";
 import {
   MOMENT_MAX_EVENT_NAME_LEN,
@@ -153,7 +167,10 @@ export function MomentComposer({ personId }: { personId: string }) {
   const [uploading, setUploading] = useState<{ done: number; total: number } | null>(null);
   const [saving, setSaving] = useState(false);
   const [errorKey, setErrorKey] = useState<TKey | null>(null);
-  // Nháp tự động: khôi phục sau khi hydrate, lưu lại khi nội dung thay đổi.
+  // Nháp riêng biệt độc lập: danh sách bản nháp và bản nháp đang chỉnh sửa
+  const [drafts, setDrafts] = useState<MomentDraft[]>([]);
+  const [draftsModalOpen, setDraftsModalOpen] = useState(false);
+  const [activeDraftId, setActiveDraftId] = useState<string | null>(null);
   const [draftRestored, setDraftRestored] = useState(false);
   const [draftSavedAt, setDraftSavedAt] = useState<number | null>(null);
   /** true trong lúc thay đổi chưa kịp ghi xuống nháp (debounce). */
@@ -161,21 +178,26 @@ export function MomentComposer({ personId }: { personId: string }) {
   const draftLoadedRef = useRef(false);
   /** true sau khi đã lưu thật lên máy chủ → không ghi lại nháp khi rời màn. */
   const savedRef = useRef(false);
+
   useEffect(() => {
-    const d = readMomentDraft(personId);
+    const list = listMomentDrafts(personId);
+    setDrafts(list);
     draftLoadedRef.current = true;
-    if (!d) return;
-    if (d.occurredLocal) setOccurredLocal(d.occurredLocal);
-    setEventName(d.eventName);
-    setPlaceLabel(d.placeLabel);
-    setNote(d.note);
-    setReminder({
-      enabled: d.reminderEnabled,
-      atLocal: d.reminderAtLocal || defaultReminderAt(7),
-      label: d.reminderLabel,
-    });
-    setDraftRestored(true);
-    setDraftSavedAt(d.updatedAt);
+    if (list.length > 0) {
+      const d = list[0];
+      setActiveDraftId(d.id);
+      if (d.occurredLocal) setOccurredLocal(d.occurredLocal);
+      setEventName(d.eventName);
+      setPlaceLabel(d.placeLabel);
+      setNote(d.note);
+      setReminder({
+        enabled: d.reminderEnabled,
+        atLocal: d.reminderAtLocal || defaultReminderAt(7),
+        label: d.reminderLabel,
+      });
+      setDraftRestored(true);
+      setDraftSavedAt(d.updatedAt);
+    }
   }, [personId]);
 
   const currentDraft = useMemo(
@@ -197,53 +219,85 @@ export function MomentComposer({ personId }: { personId: string }) {
     if (!draftLoadedRef.current) return;
     if (!isDraftEmpty(currentDraft)) setDraftSaving(true);
     const id = window.setTimeout(() => {
-      writeMomentDraft(personId, currentDraft);
+      if (activeDraftId) {
+        writeMomentDraft(personId, { ...currentDraft, id: activeDraftId });
+      }
       setDraftSavedAt(isDraftEmpty(currentDraft) ? null : Date.now());
-      // Nội dung đã đổi so với lúc khôi phục → banner nói "đã lưu", không còn "đã khôi phục".
       setDraftRestored(false);
       setDraftSaving(false);
+      setDrafts(listMomentDrafts(personId));
     }, 600);
     return () => window.clearTimeout(id);
-  }, [personId, currentDraft]);
+  }, [personId, currentDraft, activeDraftId]);
 
   // Rời màn hình (đóng tab / chuyển trang) vẫn giữ nguyên nội dung đang gõ.
   useEffect(() => {
     return () => {
       if (!draftLoadedRef.current || savedRef.current) return;
-      writeMomentDraft(personId, draftRef.current);
+      if (activeDraftId) {
+        writeMomentDraft(personId, { ...draftRef.current, id: activeDraftId });
+      }
     };
-  }, [personId]);
+  }, [personId, activeDraftId]);
 
   function discardDraft() {
-    clearMomentDraft(personId);
     setEventName("");
     setPlaceLabel("");
     setNote("");
     setOccurredLocal(toLocalInputValue(new Date()));
     setReminder({ enabled: false, atLocal: defaultReminderAt(7), label: "" });
+    setActiveDraftId(null);
     setDraftRestored(false);
     setDraftSavedAt(null);
     setDraftSaving(false);
-    toast.success(t("bc.mobile.moment.draft.discarded"));
+    toast.success("Đã làm mới nội dung soạn thảo");
   }
 
-  /** Lưu nháp ngay lập tức trên máy (không gửi lên máy chủ). */
+  /** Lưu thành MỘT BẢN NHÁP MỚI RIÊNG BIỆT (không ghi đè lên các bản nháp khác). */
   function saveDraftNow() {
     if (isDraftEmpty(currentDraft)) {
-      // Không có gì để lưu — nói thật thay vì báo thành công giả.
-      clearMomentDraft(personId);
-      setDraftSavedAt(null);
-      setDraftRestored(false);
       toast.error(t("bc.mobile.moment.draft.empty"));
       return;
     }
-    writeMomentDraft(personId, currentDraft);
-    setDraftSavedAt(Date.now());
-    setDraftRestored(false);
-    setDraftSaving(false);
-    toast.success(t("bc.mobile.moment.draft.savedManual"), {
-      description: photos.length > 0 ? t("bc.mobile.moment.draft.photosNotKept") : undefined,
+    const created = saveAsNewMomentDraft(personId, currentDraft);
+    if (created) {
+      setActiveDraftId(created.id);
+      const updated = listMomentDrafts(personId);
+      setDrafts(updated);
+      setDraftSavedAt(created.updatedAt);
+      setDraftRestored(false);
+      setDraftSaving(false);
+      toast.success("Đã lưu thành bản nháp riêng biệt!", {
+        description: `Bản nháp mới #${updated.length} lúc ${new Date(created.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`,
+      });
+    }
+  }
+
+  function loadSelectedDraft(d: MomentDraft) {
+    setActiveDraftId(d.id);
+    if (d.occurredLocal) setOccurredLocal(d.occurredLocal);
+    setEventName(d.eventName);
+    setPlaceLabel(d.placeLabel);
+    setNote(d.note);
+    setReminder({
+      enabled: d.reminderEnabled,
+      atLocal: d.reminderAtLocal || defaultReminderAt(7),
+      label: d.reminderLabel,
     });
+    setDraftRestored(true);
+    setDraftSavedAt(d.updatedAt);
+    setDraftsModalOpen(false);
+    toast.success(`Đã mở bản nháp "${d.eventName || 'Bản nháp'}"`);
+  }
+
+  function removeSingleDraft(draftId: string) {
+    deleteMomentDraft(personId, draftId);
+    const updated = listMomentDrafts(personId);
+    setDrafts(updated);
+    if (activeDraftId === draftId) {
+      setActiveDraftId(null);
+    }
+    toast.success("Đã xóa bản nháp");
   }
 
   // Preview lightbox + per-photo replacement target (local UI state only).
@@ -440,8 +494,11 @@ export function MomentComposer({ personId }: { personId: string }) {
         toast.error(t("bc.mobile.moment.reminder.error.unavailable"));
       }
     }
-    // Đã lưu thật lên máy chủ → nháp không còn cần thiết.
-    clearMomentDraft(personId);
+    // Đã lưu thật lên máy chủ → nháp này không còn cần thiết.
+    if (activeDraftId) {
+      deleteMomentDraft(personId, activeDraftId);
+      setDrafts(listMomentDrafts(personId));
+    }
     setDraftSavedAt(null);
     setDraftRestored(false);
     const savedPhotoCount = photos.filter((p) => p.blob != null).length;
@@ -633,40 +690,40 @@ export function MomentComposer({ personId }: { personId: string }) {
         </button>
       </header>
 
-      {draftSavedAt != null || draftSaving ? (
+      {draftSavedAt != null || draftSaving || drafts.length > 0 ? (
         <div
           aria-live="polite"
-          className="mt-3 flex items-center justify-between gap-3 rounded-xl bg-[var(--bc-mobile-surface-2)] px-3 py-2 ring-1 ring-[var(--bc-mobile-border-gold)]"
+          className="mt-3 flex items-center justify-between gap-2.5 rounded-xl bg-[var(--bc-mobile-surface-2)] px-3 py-2 ring-1 ring-[var(--bc-mobile-border-gold)]"
         >
-          <div className="min-w-0">
-            <p className="text-[12.5px] text-[var(--bc-mobile-muted)]">
+          <div className="min-w-0 flex-1">
+            <p className="text-[12.5px] text-[var(--bc-mobile-muted)] truncate">
               {draftSaving
-                ? t("bc.mobile.moment.draft.saving")
-                : draftSavedAt == null
-                  ? t("bc.mobile.moment.draft.keptOnLeave")
-                  : draftRestored
-                ? t("bc.mobile.moment.draft.restored")
-                : t("bc.mobile.moment.draft.savedAt", {
-                    time: new Date(draftSavedAt).toLocaleTimeString(lang === "en" ? "en-US" : "vi-VN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }),
-                  })}
+                ? "Đang lưu nháp..."
+                : draftSavedAt != null
+                ? `Đã lưu nháp lúc ${new Date(draftSavedAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}`
+                : "Bản nháp tự động"}
             </p>
-            {draftRestored && !draftSaving ? (
-              <p className="mt-0.5 text-[11.5px] text-[var(--bc-mobile-muted)]">
-                {t("bc.mobile.moment.draft.photosNotKept")}
-              </p>
-            ) : null}
           </div>
-          <button
-            type="button"
-            onClick={discardDraft}
-            disabled={saving}
-            className="shrink-0 rounded-full px-3 py-1.5 text-[12.5px] font-semibold text-[var(--bc-mobile-accent)] transition-colors hover:bg-[var(--bc-mobile-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)] disabled:opacity-50"
-          >
-            {t("bc.mobile.moment.draft.discard")}
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {drafts.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => setDraftsModalOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-[var(--bc-mobile-surface)] px-2.5 py-1 text-[12px] font-semibold text-[var(--bc-mobile-accent)] border border-[var(--bc-mobile-border-gold)] hover:bg-[var(--bc-mobile-surface-2)] transition-colors"
+              >
+                <FolderOpen className="h-3.5 w-3.5" />
+                <span>Bản nháp ({drafts.length})</span>
+              </button>
+            ) : null}
+            <button
+              type="button"
+              onClick={discardDraft}
+              disabled={saving}
+              className="rounded-full px-2 py-1 text-[12px] font-medium text-[var(--bc-mobile-muted)] transition-colors hover:text-red-400"
+            >
+              Làm mới
+            </button>
+          </div>
         </div>
       ) : null}
       {personId !== "general" && person.status === "loading" ? (
@@ -783,51 +840,6 @@ export function MomentComposer({ personId }: { personId: string }) {
               />
             </button>
           )}
-
-          {/* Privacy Selector — 3 chế độ: Công khai, Bạn bè, Chỉ mình tôi */}
-          <div className="mt-3 flex items-center justify-between gap-2 rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-2">
-            <span className="text-[12px] font-semibold text-[var(--bc-mobile-text-2)] pl-1">Quyền xem:</span>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <button
-                type="button"
-                onClick={() => setVisibility("public")}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
-                  visibility === "public"
-                    ? "bg-[#D8B282]/20 border border-[#D8B282] text-[#F6E1C3]"
-                    : "bg-[var(--bc-mobile-surface)] border border-transparent text-[var(--bc-mobile-muted)]"
-                }`}
-              >
-                <Globe className="h-3 w-3 text-amber-400" />
-                <span>Công khai</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setVisibility("friends")}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
-                  visibility === "friends"
-                    ? "bg-[#D8B282]/20 border border-[#D8B282] text-[#F6E1C3]"
-                    : "bg-[var(--bc-mobile-surface)] border border-transparent text-[var(--bc-mobile-muted)]"
-                }`}
-              >
-                <Users className="h-3 w-3 text-amber-400" />
-                <span>Bạn bè</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setVisibility("private")}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
-                  visibility === "private"
-                    ? "bg-[#D8B282]/20 border border-[#D8B282] text-[#F6E1C3]"
-                    : "bg-[var(--bc-mobile-surface)] border border-transparent text-[var(--bc-mobile-muted)]"
-                }`}
-              >
-                <Lock className="h-3 w-3 text-rose-400" />
-                <span>Chỉ mình tôi</span>
-              </button>
-            </div>
-          </div>
 
           <form
             id="bc-mobile-moment-form"
@@ -1297,10 +1309,10 @@ export function MomentComposer({ personId }: { personId: string }) {
                 type="button"
                 onClick={saveDraftNow}
                 disabled={saving}
-                className="flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[var(--bc-mobile-border-gold)] bg-[var(--bc-mobile-surface)] text-[15px] font-semibold text-[var(--bc-mobile-accent)] transition-colors active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)] disabled:opacity-60"
+                className="flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[var(--bc-mobile-border-gold)] bg-[var(--bc-mobile-surface)] text-[14.5px] font-semibold text-[var(--bc-mobile-accent)] transition-colors active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--bc-mobile-accent)] disabled:opacity-60"
               >
                 <BookmarkIcon aria-hidden="true" className="h-4 w-4" strokeWidth={1.8} />
-                {t("bc.mobile.moment.draft.saveNow")}
+                Lưu bản nháp mới
               </button>
               <button
                 type="submit"
@@ -1463,6 +1475,113 @@ export function MomentComposer({ personId }: { personId: string }) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      {/* Modal Quản lý danh sách các bản nháp riêng biệt */}
+      <Dialog open={draftsModalOpen} onOpenChange={setDraftsModalOpen}>
+        <DialogContent className="max-w-md w-[92vw] rounded-2xl bg-[var(--bc-mobile-surface)] p-5 border border-[var(--bc-mobile-border-gold)] max-h-[85vh] flex flex-col">
+          <DialogHeader className="text-left pb-2 border-b border-[var(--bc-mobile-border)]">
+            <DialogTitle className="text-[17px] font-bold text-[var(--bc-mobile-text)] flex items-center justify-between">
+              <span>Bản nháp đã lưu ({drafts.length})</span>
+            </DialogTitle>
+            <DialogDescription className="text-[12.5px] text-[var(--bc-mobile-muted)]">
+              Mỗi bản nháp được lưu riêng biệt độc lập. Chọn bản để mở lại hoặc xóa từng bản.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto py-3 space-y-2.5 min-h-[160px]">
+            {drafts.length === 0 ? (
+              <div className="py-8 text-center text-[var(--bc-mobile-muted)]">
+                <FolderOpen className="mx-auto h-8 w-8 opacity-40 mb-2" />
+                <p className="text-sm">Chưa có bản nháp nào được lưu</p>
+              </div>
+            ) : (
+              drafts.map((d, index) => {
+                const isCurrentActive = activeDraftId === d.id;
+                const dateStr = new Date(d.createdAt || d.updatedAt).toLocaleString("vi-VN", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                });
+                return (
+                  <div
+                    key={d.id}
+                    className={`rounded-xl border p-3 transition-colors ${
+                      isCurrentActive
+                        ? "border-[var(--bc-mobile-accent)] bg-[var(--bc-mobile-surface-2)]"
+                        : "border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] hover:border-[var(--bc-mobile-border-gold)]"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-[var(--bc-mobile-accent)]">
+                            #{drafts.length - index}
+                          </span>
+                          <h4 className="text-[14px] font-bold text-[var(--bc-mobile-text)] truncate">
+                            {d.eventName?.trim() || "(Khoảnh khắc chưa đặt tên)"}
+                          </h4>
+                        </div>
+                        <p className="mt-0.5 text-[11px] text-[var(--bc-mobile-muted)]">
+                          {dateStr} {d.placeLabel ? `• ${d.placeLabel}` : ""}
+                        </p>
+                        {d.note?.trim() && (
+                          <p className="mt-1 text-[12px] text-[var(--bc-mobile-muted)] line-clamp-2 italic">
+                            "{d.note}"
+                          </p>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeSingleDraft(d.id)}
+                        title="Xóa bản nháp này"
+                        className="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <div className="mt-2.5 pt-2 border-t border-[var(--bc-mobile-border)] flex items-center justify-between">
+                      {isCurrentActive ? (
+                        <span className="text-[11px] font-semibold text-emerald-500 flex items-center gap-1">
+                          <CheckCircle2 className="h-3.5 w-3.5" /> Đang soạn bản này
+                        </span>
+                      ) : (
+                        <span />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => loadSelectedDraft(d)}
+                        className="px-3 py-1 rounded-lg bc-cta-gold text-slate-950 font-bold text-xs active:scale-95 transition"
+                      >
+                        Mở bản này
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="pt-2 border-t border-[var(--bc-mobile-border)] flex items-center justify-between gap-2">
+            <button
+              type="button"
+              onClick={saveDraftNow}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--bc-mobile-accent)] hover:underline"
+            >
+              <BookmarkIcon className="h-3.5 w-3.5" />
+              Lưu bản hiện tại thành nháp mới
+            </button>
+            <button
+              type="button"
+              onClick={() => setDraftsModalOpen(false)}
+              className="px-3.5 py-1.5 rounded-xl border border-[var(--bc-mobile-border)] text-xs font-medium text-[var(--bc-mobile-text)] hover:bg-[var(--bc-mobile-surface-2)]"
+            >
+              Đóng
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </MobilePage>
   );
 }

@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
   commentBubble: {
     flex: 1,
     marginLeft: 10,
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.08)",
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   },
   commentInput: {
     flex: 1,
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     borderRadius: 20,

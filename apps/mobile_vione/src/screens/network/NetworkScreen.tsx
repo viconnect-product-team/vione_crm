@@ -44,6 +44,7 @@ import { Avatar } from "../../components/common/Avatar";
 import { ConnectionPerson, DmThreadSummary } from "../../types";
 import { apiRequest } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
+import { StickyBrandHeader } from "../../components/common/StickyBrandHeader";
 import { ChatThreadModal } from "./ChatThreadModal";
 import { CreateGroupModal } from "./CreateGroupModal";
 import { StoryViewerModal, StoryItemData } from "../../components/StoryViewerModal";
@@ -53,228 +54,13 @@ import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
 import { PostMomentModal } from "../../components/PostMomentModal";
 import { MomentCommentModal } from "../../components/MomentCommentModal";
 
-// Dữ liệu khoảnh khắc 24h doanh nhân mặc định (Khớp 100% NetworkStoriesStrip PWA)
-const INITIAL_STORIES: StoryItemData[] = [
-  {
-    id: "story-1",
-    authorName: "Nguyễn Tuấn Hải",
-    authorTitle: "Chủ tịch HĐQT",
-    authorCompany: "Alphanam Group",
-    authorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80",
-    storyImage: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=900&auto=format&fit=crop&q=80",
-    storyCaption: "Khai mạc Diễn đàn Xúc tiến Đầu tư Quốc tế 2026 cùng hơn 500 tập đoàn hàng đầu. Cơ hội bứt phá chuỗi cung ứng toàn cầu!",
-    tag: "Xúc tiến đầu tư",
-    timeAgo: "1 giờ trước",
-    viewsCount: 342,
-  },
-  {
-    id: "story-2",
-    authorName: "Trần Mai Phương",
-    authorTitle: "Tổng Giám Đốc",
-    authorCompany: "VinTech Innovation",
-    authorAvatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=80",
-    storyImage: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=900&auto=format&fit=crop&q=80",
-    storyCaption: "Chính thức ký kết hợp tác công nghệ AI Agent tự động hóa doanh nghiệp cùng đối tác Singapore. Bước chuyển mình quan trọng!",
-    tag: "Ký kết đối tác",
-    timeAgo: "3 giờ trước",
-    viewsCount: 489,
-  },
-  {
-    id: "story-3",
-    authorName: "Lê Hoàng Long",
-    authorTitle: "Sáng Lập & CEO",
-    authorCompany: "GreenE Solar",
-    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80",
-    storyImage: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&auto=format&fit=crop&q=80",
-    storyCaption: "Gặp gỡ bàn tròn doanh nhân ViOne tại JW Marriott. Tinh thần chia sẻ giá trị và liên kết kinh tế tư nhân!",
-    tag: "Bàn tròn CEO",
-    timeAgo: "5 giờ trước",
-    viewsCount: 620,
-  },
-  {
-    id: "story-4",
-    authorName: "Phạm Thùy Linh",
-    authorTitle: "Giám Đốc Chiến Lược",
-    authorCompany: "LuxVillas Property",
-    authorAvatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80",
-    storyImage: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=900&auto=format&fit=crop&q=80",
-    storyCaption: "Khảo sát thực địa tổ hợp bất động sản nghỉ dưỡng sinh thái chuẩn ESG. Chuẩn bị ra mắt quý 3!",
-    tag: "Khảo sát dự án",
-    timeAgo: "7 giờ trước",
-    viewsCount: 275,
-  },
-];
+// Dữ liệu khoảnh khắc, đối tác, khách hàng và tin nhắn mặc định (Rỗng - Nạp từ live API)
+const INITIAL_STORIES: StoryItemData[] = [];
+const NURTURE_PARTNERS: any[] = [];
+const INITIAL_PARTNERS: ConnectionPerson[] = [];
+const B2B_CUSTOMERS: any[] = [];
+const INITIAL_THREADS: DmThreadSummary[] = [];
 
-// Danh sách đối tác & khách hàng cần chăm sóc (Khớp 100% Nurture List)
-const NURTURE_PARTNERS = [
-  {
-    id: "nur-1",
-    name: "Lê Thị Thu Hằng",
-    title: "CFO",
-    company: "Quỹ Đầu Tư V-Capital",
-    reason: "14 ngày chưa tương tác · Cần trao đổi tiến độ giải ngân quỹ đầu tư",
-    phone: "0977 654 321",
-    tag: "Quỹ đầu tư",
-  },
-  {
-    id: "nur-2",
-    name: "Trần Anh Tuấn",
-    title: "Chủ Tịch HĐQT",
-    company: "Tập Đoàn Bất Động Sản An Phát",
-    reason: "Gặp tuần trước · Cần gửi hồ sơ liên danh đấu thầu MEP",
-    phone: "0912 345 678",
-    tag: "Đối tác chiến lược",
-  },
-  {
-    id: "nur-3",
-    name: "Nguyễn Thu Trang",
-    title: "Giám Đốc Tài Chính",
-    company: "Tập Đoàn Dược Phẩm V-Pharma",
-    reason: "Khách hàng B2B tiềm năng · Đang chờ duyệt dự thảo hợp đồng 1.2 tỷ",
-    phone: "0903 123 456",
-    tag: "Khách hàng B2B",
-  },
-];
-
-// Dữ liệu đối tác kết nối mặc định
-const INITIAL_PARTNERS: ConnectionPerson[] = [
-  {
-    id: "p-1",
-    name: "Trần Anh Tuấn",
-    title: "Chủ Tịch HĐQT",
-    company: "Tập Đoàn Bất Động Sản An Phát",
-    industry: "Bất Động Sản & Xây Dựng",
-    phone: "0912 345 678",
-    email: "tuan.ta@anphatgroup.vn",
-    status: "connected",
-  },
-  {
-    id: "p-2",
-    name: "Phạm Minh Hoàng",
-    title: "Tổng Giám Đốc",
-    company: "Công Ty Cổ Phần Công Nghệ F-Solutions",
-    industry: "Công Nghệ & Chuyển Đổi Số",
-    phone: "0903 888 999",
-    email: "hoangpm@fsolutions.com.vn",
-    status: "connected",
-  },
-  {
-    id: "p-3",
-    name: "Lê Thị Thu Hằng",
-    title: "Giám Đốc Tài Chính (CFO)",
-    company: "Quỹ Đầu Tư Khởi Nghiệp V-Capital",
-    industry: "Tài Chính & Quỹ Đầu Tư",
-    phone: "0977 654 321",
-    email: "hang.le@vcapital.vn",
-    status: "pending",
-  },
-  {
-    id: "p-4",
-    name: "Hoàng Gia Bảo",
-    title: "Phó Tổng Giám Đốc",
-    company: "Chuỗi Bán Lẻ & Logistics Toàn Quốc",
-    industry: "Bán Lẻ & Chuỗi Cung Ứng",
-    phone: "0989 112 233",
-    email: "bao.hoang@retail-logistics.vn",
-    status: "suggested",
-    matchScore: 94,
-  },
-  {
-    id: "p-5",
-    name: "Đặng Quang Huy",
-    title: "Nhà Sáng Lập & CEO",
-    company: "Huy Đặng Media & Digital Marketing",
-    industry: "Truyền Thông Doanh Nghiệp",
-    phone: "0934 556 778",
-    email: "huy@dangmedia.vn",
-    status: "suggested",
-    matchScore: 88,
-  },
-];
-
-// Dữ liệu khách hàng B2B mẫu
-const B2B_CUSTOMERS = [
-  {
-    id: "c-1",
-    name: "Tập Đoàn Dược Phẩm V-Pharma",
-    contactPerson: "Nguyễn Thu Trang (CFO)",
-    dealValue: "1.200.000.000 đ",
-    stage: "Đàm phán hợp đồng",
-    priority: "Cao",
-  },
-  {
-    id: "c-2",
-    name: "Tổng Công Ty Cơ Khí Chính Xác Alpha",
-    contactPerson: "Lê Hải Nam (Giám Đốc Mua Hàng)",
-    dealValue: "850.000.000 đ",
-    stage: "Trình duyệt CEO",
-    priority: "Trung bình",
-  },
-  {
-    id: "c-3",
-    name: "Chuỗi Nhà Hàng Khách Sạn Sài Gòn Star",
-    contactPerson: "Trịnh Khắc Huy (Phó TGĐ)",
-    dealValue: "2.500.000.000 đ",
-    stage: "Ký kết thỏa thuận",
-    priority: "Rất cao",
-  },
-];
-
-// Dữ liệu hội thoại mẫu mặc định
-const INITIAL_THREADS: DmThreadSummary[] = [
-  {
-    threadId: "th-1",
-    counterpartUserId: "p-1",
-    displayName: "Trần Anh Tuấn",
-    headline: "Chủ Tịch HĐQT • Tập Đoàn Bất Động Sản An Phát",
-    companyName: "Tập Đoàn Bất Động Sản An Phát",
-    lastMessagePreview: "Chào anh, thứ 6 này mình gặp trao đổi về dự án nhé.",
-    lastMessageAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-    lastMessageFromMe: false,
-    unreadCount: 1,
-    isConnected: true,
-    isOnline: true,
-  },
-  {
-    threadId: "th-2",
-    counterpartUserId: "p-2",
-    displayName: "Phạm Minh Hoàng",
-    headline: "Tổng Giám Đốc • F-Solutions",
-    companyName: "F-Solutions",
-    lastMessagePreview: "Tôi đã gửi tài liệu giải pháp qua email cho anh rồi.",
-    lastMessageAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString(),
-    lastMessageFromMe: true,
-    unreadCount: 0,
-    isConnected: true,
-    isOnline: false,
-  },
-  {
-    threadId: "th-group-1",
-    counterpartUserId: "group_lead",
-    displayName: "Ban Điều Hành ViOne C-Level",
-    companyName: "5 thành viên",
-    lastMessagePreview: "Lịch họp quý 4 sẽ chốt vào 14:00 chiều mai.",
-    lastMessageAt: new Date(Date.now() - 5 * 3600 * 1000).toISOString(),
-    lastMessageFromMe: false,
-    unreadCount: 2,
-    isConnected: true,
-    isGroup: true,
-    membersCount: 5,
-  },
-  {
-    threadId: "th-pending-1",
-    counterpartUserId: "p-9",
-    displayName: "Vũ Hải Đăng",
-    headline: "Giám Đốc Phát Triển • Tech Logistics",
-    companyName: "Tech Logistics",
-    lastMessagePreview: "Chào anh, tôi muốn kết nối để tìm hiểu giải pháp doanh nghiệp.",
-    lastMessageAt: new Date(Date.now() - 24 * 3600 * 1000).toISOString(),
-    lastMessageFromMe: false,
-    unreadCount: 0,
-    isConnected: false,
-    isOnline: false,
-  },
-];
 
 type NetworkTab = "network" | "customers" | "suggestions" | "messages" | "requests";
 type MessageCategory = "all" | "unread" | "groups" | "requests";
@@ -479,80 +265,45 @@ export const NetworkScreen: React.FC = () => {
       ]}
       edges={["top"]}
     >
-      {/* 1. Sticky Header Thương Hiệu: Wordmark + Greeting + Theme Toggle + Inbox & Notification Menu */}
-      <View
-        style={[
-          styles.header,
-          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
-        ]}
-      >
-        <View style={styles.headerBrand}>
-          <Image
-            source={require("../../../assets/vione-wordmark.png")}
-            style={styles.logoWordmark}
-            resizeMode="contain"
-          />
-          <Text style={[styles.headerGreeting, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-            {getGreeting()}
-          </Text>
-        </View>
+      {/* 1. Sticky Header Thương Hiệu Khớp 100% PWA */}
+      <StickyBrandHeader
+        rightActions={
+          <>
+            <TouchableOpacity
+              style={[
+                styles.headerSquareBtn,
+                {
+                  backgroundColor: isDark ? "rgba(22, 32, 50, 0.65)" : "#F1F5F9",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
+              onPress={() => setActiveTab("messages")}
+              activeOpacity={0.7}
+            >
+              <MessageSquare size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
+              {totalUnreadCount > 0 && (
+                <View style={styles.bellBadge}>
+                  <Text style={styles.bellBadgeText}>{totalUnreadCount}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
 
-        <View style={styles.headerRightActions}>
-          <TouchableOpacity
-            style={[
-              styles.headerIconBtn,
-              {
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-              },
-            ]}
-            onPress={toggleTheme}
-            activeOpacity={0.7}
-          >
-            {isDark ? (
-              <Sun size={19} color="#D8B282" strokeWidth={1.8} />
-            ) : (
-              <Moon size={19} color="#A3703C" strokeWidth={1.8} />
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.headerIconBtn,
-              {
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-              },
-            ]}
-            onPress={() => setActiveTab("messages")}
-            activeOpacity={0.7}
-          >
-            <MessageSquare size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
-            {totalUnreadCount > 0 && (
-              <View style={styles.bellBadge}>
-                <Text style={styles.bellBadgeText}>{totalUnreadCount}</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.headerIconBtn,
-              {
-                backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-              },
-            ]}
-            onPress={() => Alert.alert("Thông báo", "Bạn có 2 thông báo kết nối doanh nghiệp mới.")}
-            activeOpacity={0.7}
-          >
-            <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
-            <View style={styles.bellBadge}>
-              <Text style={styles.bellBadgeText}>2</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+            <TouchableOpacity
+              style={[
+                styles.headerSquareBtn,
+                {
+                  backgroundColor: isDark ? "rgba(22, 32, 50, 0.65)" : "#F1F5F9",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
+              onPress={() => Alert.alert("Thông báo", "Không có thông báo kết nối mới.")}
+              activeOpacity={0.7}
+            >
+              <Bell size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
+            </TouchableOpacity>
+          </>
+        }
+      />
 
       <View
         style={[
@@ -1363,6 +1114,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
+  },
+  headerSquareBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
   headerIconBtn: {
     width: 38,

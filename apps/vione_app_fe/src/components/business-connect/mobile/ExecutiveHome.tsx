@@ -321,41 +321,29 @@ export function ExecutiveHome() {
     }
   }, [scheduledMeetingsVersion]);
 
-  // Danh mục ghi âm khoảnh khắc (lưu vết tại mục Lịch sử để người dùng & AI tra cứu)
+  // Danh mục ghi âm khoảnh khắc (lưu vết tại mục Lịch sử khi người dùng ghi âm)
   const voiceMomentsList = useMemo(() => {
     try {
       const stored = localStorage.getItem("vba_voice_moments_history");
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      }
-      // Dữ liệu mẫu chuẩn bị sẵn để AI và người dùng có thể tra cứu và nghe lại ngay lập tức
-      const sampleList = [
-        {
-          id: "vm-seed-01",
-          title: "Cuộc gặp ký kết đối tác chiến lược",
-          author: "Tổng Giám Đốc",
-          date: "10:15 Hôm nay",
-          duration: "01:45",
-          location: "Hà Nội, Việt Nam",
-          transcript: "Thảo luận về cơ chế phân phối sản phẩm ViOne Connect và ký kết biên bản ghi nhớ hợp tác thương mại 2026.",
-          audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          id: "vm-seed-02",
-          title: "Thảo luận nhanh chuyển đổi số & CRM",
-          author: "Giám Đốc Vận Hành",
-          date: "14:20 Hôm qua",
-          duration: "00:58",
-          location: "Bình Dương, Việt Nam",
-          transcript: "Ghi chú nhanh các yêu cầu kỹ thuật tích hợp API CRM và danh thiếp thông minh cho đoàn doanh nghiệp.",
-          audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_background.ogg",
-          createdAt: new Date(Date.now() - 86400000).toISOString(),
+        if (Array.isArray(parsed)) {
+          // Lọc bỏ triệt để các bản ghi seed/mock mẫu cũ nếu còn tồn đọng trong localStorage
+          const realOnly = parsed.filter(
+            (item: any) =>
+              item &&
+              item.id &&
+              !String(item.id).startsWith("vm-seed-") &&
+              !String(item.title).includes("Cuộc gặp ký kết đối tác") &&
+              !String(item.title).includes("Thảo luận nhanh chuyển đổi số"),
+          );
+          if (realOnly.length !== parsed.length) {
+            localStorage.setItem("vba_voice_moments_history", JSON.stringify(realOnly));
+          }
+          return realOnly;
         }
-      ];
-      localStorage.setItem("vba_voice_moments_history", JSON.stringify(sampleList));
-      return sampleList;
+      }
+      return [];
     } catch {
       return [];
     }
@@ -883,9 +871,6 @@ export function ExecutiveHome() {
                               <span className="flex items-center gap-1">
                                 <MapPin className="h-3 w-3 text-amber-500" />
                                 <span>{vm.location || "Việt Nam"}</span>
-                              </span>
-                              <span className="text-[10px] font-mono text-[var(--bc-mobile-accent)]">
-                                Đã lưu vết CSDL • AI có thể tìm thấy
                               </span>
                             </div>
                           </li>

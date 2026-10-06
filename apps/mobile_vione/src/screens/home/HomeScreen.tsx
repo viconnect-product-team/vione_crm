@@ -49,6 +49,8 @@ import { Colors } from "../../theme/colors";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { VIconMark } from "../../components/VIconMark";
+import { StickyBrandHeader } from "../../components/common/StickyBrandHeader";
+import { QuickMeetIcon, QuickScanIcon, QuickCardIcon } from "../../components/NavIcons";
 import { MyQrModal } from "../quick-connect/MyQrModal";
 import { ScanQrModal } from "../quick-connect/ScanQrModal";
 import { AttendanceModal } from "../../components/AttendanceModal";
@@ -132,30 +134,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
 
   // Voice moments audio player simulation
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
-  const [voiceMomentsList, setVoiceMomentsList] = useState<VoiceMomentItem[]>([
-    {
-      id: "vm-seed-01",
-      title: "Cuộc gặp ký kết đối tác chiến lược",
-      author: "Tổng Giám Đốc",
-      date: "10:15 Hôm nay",
-      duration: "01:45",
-      location: "Hà Nội, Việt Nam",
-      transcript:
-        "Thảo luận về cơ chế phân phối sản phẩm ViOne Connect và ký kết biên bản ghi nhớ hợp tác thương mại 2026.",
-      audioUrl: "https://actions.google.com/sounds/v1/ambiences/coffee_shop.ogg",
-    },
-    {
-      id: "vm-seed-02",
-      title: "Thảo luận nhanh chuyển đổi số & CRM",
-      author: "Giám Đốc Vận Hành",
-      date: "14:20 Hôm qua",
-      duration: "00:58",
-      location: "Bình Dương, Việt Nam",
-      transcript:
-        "Ghi chú nhanh các yêu cầu kỹ thuật tích hợp API CRM và danh thiếp thông minh cho đoàn doanh nghiệp.",
-      audioUrl: "https://actions.google.com/sounds/v1/ambiences/office_background.ogg",
-    },
-  ]);
+  const [voiceMomentsList, setVoiceMomentsList] = useState<VoiceMomentItem[]>([]);
 
   const togglePlayVoice = (id: string) => {
     if (playingVoiceId === id) {
@@ -260,18 +239,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           })
         );
       } else {
-        // Fallback default scheduled meeting for display
-        setRemindersList([
-          {
-            id: "rem-1",
-            title: "Cuộc gặp 1-1: Đối tác Đầu tư Công nghệ",
-            date: "Hôm nay",
-            time: "14:30",
-            location: "Trụ sở ViOne Connect",
-            format: "offline",
-            type: "meeting",
-          },
-        ]);
+        setRemindersList([]);
       }
     } catch {}
 
@@ -296,47 +264,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           }))
         );
       } else {
-        setAiSuggestedPartners([
-          {
-            id: "ai-1",
-            name: "Hoàng Gia Bảo",
-            title: "Phó Tổng Giám Đốc",
-            company: "Chuỗi Bán Lẻ & Logistics Toàn Quốc",
-            industry: "Bán Lẻ & Chuỗi Cung Ứng",
-            industryKey: "logistics",
-            location: "Hà Nội",
-            distanceTier: "near",
-            suggestion: "Tìm thấy cơ hội liên kết chuỗi logistics và hệ sinh thái phân phối bán lẻ",
-            matchScore: "94% tương đồng chuỗi cung ứng",
-            initial: "B",
-          },
-          {
-            id: "ai-2",
-            name: "Đặng Quang Huy",
-            title: "Nhà Sáng Lập & CEO",
-            company: "Huy Đặng Media & Digital Marketing",
-            industry: "Truyền Thông Doanh Nghiệp",
-            industryKey: "media",
-            location: "TP. Hồ Chí Minh",
-            distanceTier: "city",
-            suggestion: "Đối tác tiềm năng hỗ trợ mở rộng nhận diện thương hiệu doanh nghiệp đa kênh",
-            matchScore: "88% khớp hồ sơ hợp tác B2B",
-            initial: "H",
-          },
-          {
-            id: "ai-3",
-            name: "Trần Nhật Long",
-            title: "Giám Đốc Quỹ Đầu Tư",
-            company: "ViOne Capital Ventures",
-            industry: "Đầu Tư & Tài Chính",
-            industryKey: "investment",
-            location: "Hà Nội",
-            distanceTier: "near",
-            suggestion: "Đang tìm kiếm doanh nghiệp tăng trưởng nhanh để rót vốn chiến lược giai đoạn 2026",
-            matchScore: "96% tương thích danh mục đầu tư",
-            initial: "L",
-          },
-        ]);
+        setAiSuggestedPartners([]);
       }
     } catch {}
   };
@@ -349,16 +277,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
     setRefreshing(true);
     await loadData();
     setRefreshing(false);
-  };
-
-  // Real-time greeting with live hour and minute matching PWA
-  const getGreeting = () => {
-    const now = new Date();
-    const h = now.getHours();
-    const timeStr = `${String(h).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-    if (h >= 5 && h < 12) return `Chào buổi sáng · ${timeStr}`;
-    if (h >= 12 && h < 18) return `Chào buổi chiều · ${timeStr}`;
-    return `Chào buổi tối · ${timeStr}`;
   };
 
   // Formatted date in Vietnamese
@@ -387,7 +305,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   };
 
   const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
-  const userPhone = user?.phone || "0912 345 678";
+  const userPhone = user?.phone || "";
   const avatarInitial = getInitial(displayName);
 
   // Filter AI partners by distance and industry
@@ -413,7 +331,39 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
       ]}
       edges={["top"]}
     >
+      {/* Top Sticky Header — Khớp 100% PWA ExecutiveHome */}
+      <StickyBrandHeader
+        rightActions={
+          <TouchableOpacity
+            style={[
+              styles.headerSquareBtn,
+              {
+                backgroundColor: isDark ? "rgba(22, 32, 50, 0.65)" : "#F1F5F9",
+                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+              },
+            ]}
+            onPress={() =>
+              Alert.alert(
+                "Thông báo",
+                unreadNotificationsCount > 0
+                  ? `Bạn có ${unreadNotificationsCount} thông báo kết nối mới.`
+                  : "Không có thông báo mới.",
+              )
+            }
+            activeOpacity={0.7}
+          >
+            <Bell size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
+            {unreadNotificationsCount > 0 && (
+              <View style={styles.bellBadge}>
+                <Text style={styles.bellBadgeText}>{unreadNotificationsCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        }
+      />
+
       <ScrollView
+        style={styles.container}
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -425,75 +375,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           />
         }
       >
-        {/* Top Header: Logo ViOne + Realtime Greeting + Bell Notification + Theme Switch */}
-        <View style={styles.header}>
-          <View style={styles.headerBrand}>
-            <Image
-              source={require("../../../assets/vione-wordmark.png")}
-              style={styles.logoWordmark}
-              resizeMode="contain"
-            />
-            <Text style={[styles.headerGreeting, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-              {getGreeting()}
-            </Text>
-          </View>
-
-          <View style={styles.headerRightActions}>
-            <TouchableOpacity
-              style={[
-                styles.headerIconBtn,
-                {
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                  borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-                },
-              ]}
-              onPress={toggleTheme}
-              activeOpacity={0.7}
-            >
-              {isDark ? (
-                <Sun size={19} color="#D8B282" strokeWidth={1.8} />
-              ) : (
-                <Moon size={19} color="#A3703C" strokeWidth={1.8} />
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.bellBtn,
-                {
-                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.04)",
-                  borderColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.3)",
-                },
-              ]}
-              onPress={() =>
-                Alert.alert("Thông báo", `Bạn có ${unreadNotificationsCount} thông báo kết nối doanh nghiệp mới.`)
-              }
-              activeOpacity={0.7}
-            >
-              <Bell size={20} color={isDark ? "#D8B282" : "#A3703C"} strokeWidth={1.8} />
-              {unreadNotificationsCount > 0 && (
-                <View style={styles.bellBadge}>
-                  <Text style={styles.bellBadgeText}>{unreadNotificationsCount}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View
-          style={[
-            styles.headerDivider,
-            { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0" },
-          ]}
-        />
-
         {/* 1. Thẻ Doanh Nhân ViOne (Identity Card with Cover Banner & Avatar) */}
         <TouchableOpacity
           style={[
             styles.identityCard,
             {
-              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
-              borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+              backgroundColor: isDark ? "rgba(14, 21, 34, 0.85)" : "#FFFFFF",
+              borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
             },
           ]}
           onPress={() => setMemberCardModalVisible(true)}
@@ -928,95 +816,115 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 </TouchableOpacity>
               </View>
 
-              {voiceMomentsList.map((vm) => {
-                const isPlaying = playingVoiceId === vm.id;
-                return (
-                  <View key={vm.id} style={styles.voiceCard}>
-                    <View style={styles.voiceCardTop}>
-                      <View style={styles.voiceMetaLeft}>
-                        <View style={styles.voiceMicIcon}>
-                          <Mic size={16} color="#EF4444" />
+              {voiceMomentsList.length === 0 ? (
+                <View style={{ paddingVertical: 24, alignItems: "center" }}>
+                  <Mic size={24} color={isDark ? "rgba(255, 255, 255, 0.25)" : "#94A3B8"} />
+                  <Text
+                    style={{
+                      marginTop: 8,
+                      fontSize: 12.5,
+                      color: isDark ? "rgba(255, 255, 255, 0.45)" : "#64748B",
+                    }}
+                  >
+                    Chưa có khoảnh khắc ghi âm nào
+                  </Text>
+                </View>
+              ) : (
+                voiceMomentsList.map((vm) => {
+                  const isPlaying = playingVoiceId === vm.id;
+                  return (
+                    <View key={vm.id} style={styles.voiceCard}>
+                      <View style={styles.voiceCardTop}>
+                        <View style={styles.voiceMetaLeft}>
+                          <View style={styles.voiceMicIcon}>
+                            <Mic size={16} color="#EF4444" />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={styles.voiceCardTitle}>{vm.title}</Text>
+                            <Text style={styles.voiceCardAuthor}>
+                              {vm.author} · {vm.date} · {vm.duration}
+                            </Text>
+                          </View>
                         </View>
-                        <View style={{ flex: 1 }}>
-                          <Text style={styles.voiceCardTitle}>{vm.title}</Text>
-                          <Text style={styles.voiceCardAuthor}>
-                            {vm.author} · {vm.date} · {vm.duration}
-                          </Text>
+
+                        <TouchableOpacity
+                          style={[
+                            styles.playVoiceBtn,
+                            isPlaying ? styles.playVoiceBtnActive : styles.playVoiceBtnNormal,
+                          ]}
+                          onPress={() => togglePlayVoice(vm.id)}
+                          activeOpacity={0.85}
+                        >
+                          {isPlaying ? (
+                            <>
+                              <Pause size={12} color="#FFFFFF" style={{ marginRight: 4 }} />
+                              <Text style={styles.playVoiceBtnActiveText}>Tạm dừng</Text>
+                            </>
+                          ) : (
+                            <>
+                              <Play size={12} color="#050C15" style={{ marginRight: 4 }} />
+                              <Text style={styles.playVoiceBtnText}>Phát lại</Text>
+                            </>
+                          )}
+                        </TouchableOpacity>
+                      </View>
+
+                      {/* AI Transcript */}
+                      {vm.transcript ? (
+                        <View style={styles.voiceTranscriptBox}>
+                          <Text style={styles.voiceTranscriptLabel}>Nội dung ghi âm AI: </Text>
+                          <Text style={styles.voiceTranscriptText}>"{vm.transcript}"</Text>
+                        </View>
+                      ) : null}
+
+                      {/* Waveform indicator when playing */}
+                      {isPlaying && (
+                        <View style={styles.waveformWrap}>
+                          {[10, 16, 8, 20, 12, 18, 14, 8, 22, 10, 15, 6].map((h, i) => (
+                            <View
+                              key={i}
+                              style={[styles.waveformBar, { height: h, backgroundColor: "#EF4444" }]}
+                            />
+                          ))}
+                          <Text style={styles.waveformText}>Đang phát âm thanh gốc...</Text>
+                        </View>
+                      )}
+
+                      {/* Footer */}
+                      <View style={styles.voiceCardFooter}>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                          <MapPin size={11} color="#F59E0B" style={{ marginRight: 4 }} />
+                          <Text style={styles.voiceLocationText}>{vm.location}</Text>
                         </View>
                       </View>
-
-                      <TouchableOpacity
-                        style={[
-                          styles.playVoiceBtn,
-                          isPlaying ? styles.playVoiceBtnActive : styles.playVoiceBtnNormal,
-                        ]}
-                        onPress={() => togglePlayVoice(vm.id)}
-                        activeOpacity={0.85}
-                      >
-                        {isPlaying ? (
-                          <>
-                            <Pause size={12} color="#FFFFFF" style={{ marginRight: 4 }} />
-                            <Text style={styles.playVoiceBtnActiveText}>Tạm dừng</Text>
-                          </>
-                        ) : (
-                          <>
-                            <Play size={12} color="#050C15" style={{ marginRight: 4 }} />
-                            <Text style={styles.playVoiceBtnText}>Phát lại</Text>
-                          </>
-                        )}
-                      </TouchableOpacity>
                     </View>
-
-                    {/* AI Transcript */}
-                    {vm.transcript ? (
-                      <View style={styles.voiceTranscriptBox}>
-                        <Text style={styles.voiceTranscriptLabel}>Nội dung ghi âm AI: </Text>
-                        <Text style={styles.voiceTranscriptText}>"{vm.transcript}"</Text>
-                      </View>
-                    ) : null}
-
-                    {/* Waveform indicator when playing */}
-                    {isPlaying && (
-                      <View style={styles.waveformWrap}>
-                        {[10, 16, 8, 20, 12, 18, 14, 8, 22, 10, 15, 6].map((h, i) => (
-                          <View
-                            key={i}
-                            style={[styles.waveformBar, { height: h, backgroundColor: "#EF4444" }]}
-                          />
-                        ))}
-                        <Text style={styles.waveformText}>Đang phát âm thanh gốc...</Text>
-                      </View>
-                    )}
-
-                    {/* Footer */}
-                    <View style={styles.voiceCardFooter}>
-                      <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <MapPin size={11} color="#F59E0B" style={{ marginRight: 4 }} />
-                        <Text style={styles.voiceLocationText}>{vm.location}</Text>
-                      </View>
-                      <Text style={styles.voiceCrmBadge}>
-                        Đã lưu vết CSDL • AI có thể tìm thấy
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })}
+                  );
+                })
+              )}
             </View>
           )}
         </View>
 
         {/* 3. Khối INSIGHT DÀNH CHO BẠN (Matching 100% PWA) */}
-        <View style={styles.insightCard}>
+        <View
+          style={[
+            styles.insightCard,
+            {
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "rgba(216, 178, 130, 0.35)",
+            },
+          ]}
+        >
           <View style={styles.insightHeaderRow}>
             <Sparkles size={16} color="#D8B282" style={{ marginRight: 6 }} />
             <Text style={styles.insightSmallLabel}>SỐ CƠ HỘI KẾT NỐI TIỀM NĂNG</Text>
           </View>
 
-          <Text style={styles.insightHeadline}>
+          <Text style={[styles.insightHeadline, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
             BẠN CÓ <Text style={styles.insightGoldNumber}>15</Text> CƠ HỘI KẾT NỐI TIỀM NĂNG CAO
           </Text>
 
-          <Text style={styles.insightSubtitle}>
+          <Text style={[styles.insightSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
             Hệ thống trí tuệ nhân tạo đã phân tích hồ sơ và tìm thấy 15 doanh nhân C-Level cùng hệ sinh thái sẵn sàng giao thương.
           </Text>
 
@@ -1032,51 +940,77 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
 
         {/* 4. Bộ 3 Phím Tắt Nhanh (QUICK ACTIONS - Matching 100% PWA) */}
         <View style={styles.quickActionsGrid}>
-          {/* Quick Action 1: Cuộc gặp 1-1 */}
+          {/* Quick Action 1: Gặp gỡ */}
           <TouchableOpacity
-            style={styles.quickActionCard}
-            onPress={() => {
-              setSelectedPartnerForMeeting({
-                name: "Trần Anh Tuấn",
-                company: "Tập Đoàn Bất Động Sản An Phát",
-              });
-              setScheduleMeetingVisible(true);
-            }}
+            style={[
+              styles.quickActionCard,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#FFFFFF",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
+            onPress={() => setPostMomentVisible(true)}
             activeOpacity={0.8}
           >
             <View style={styles.quickActionIconWrap}>
-              <Users size={19} color="#D8B282" />
+              <QuickMeetIcon size={16} color="#D8B282" />
             </View>
-            <Text style={styles.quickActionLabel}>Cuộc gặp 1-1</Text>
+            <Text style={[styles.quickActionLabel, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+              Gặp gỡ
+            </Text>
           </TouchableOpacity>
 
-          {/* Quick Action 2: Quét danh thiếp */}
+          {/* Quick Action 2: Quét & Kết nối */}
           <TouchableOpacity
-            style={styles.quickActionCard}
+            style={[
+              styles.quickActionCard,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#FFFFFF",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
             onPress={() => setCardScanReviewVisible(true)}
             activeOpacity={0.8}
           >
             <View style={styles.quickActionIconWrap}>
-              <QrCode size={19} color="#D8B282" />
+              <QuickScanIcon size={18} color="#D8B282" />
             </View>
-            <Text style={styles.quickActionLabel}>Quét thẻ</Text>
+            <Text style={[styles.quickActionLabel, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+              Quét & Kết nối
+            </Text>
           </TouchableOpacity>
 
           {/* Quick Action 3: Danh thiếp của tôi */}
           <TouchableOpacity
-            style={styles.quickActionCard}
+            style={[
+              styles.quickActionCard,
+              {
+                backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#FFFFFF",
+                borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "rgba(216, 178, 130, 0.3)",
+              },
+            ]}
             onPress={() => setMemberCardModalVisible(true)}
             activeOpacity={0.8}
           >
             <View style={styles.quickActionIconWrap}>
-              <CreditCard size={19} color="#D8B282" />
+              <QuickCardIcon size={17} color="#D8B282" />
             </View>
-            <Text style={styles.quickActionLabel}>Thẻ của tôi</Text>
+            <Text style={[styles.quickActionLabel, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+              Danh thiếp của tôi
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* 5. Khối ĐIỀU HÀNH & GIÁM SÁT DOANH NGHIỆP (Trung Tâm Điều Hành C-Level) */}
-        <View style={styles.opsSection}>
+        <View
+          style={[
+            styles.opsSection,
+            {
+              backgroundColor: isDark ? "rgba(255, 255, 255, 0.03)" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "rgba(216, 178, 130, 0.35)",
+            },
+          ]}
+        >
           <View style={styles.opsHeaderRow}>
             <View style={styles.opsHeaderLeft}>
               <Activity size={16} color="#D8B282" style={{ marginRight: 6 }} />
@@ -1088,8 +1022,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </View>
           </View>
 
-          <Text style={styles.opsHeadline}>Trung Tâm Điều Hành C-Level</Text>
-          <Text style={styles.opsSubtitle}>
+          <Text style={[styles.opsHeadline, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+            Trung Tâm Điều Hành C-Level
+          </Text>
+          <Text style={[styles.opsSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
             Tổng quan điều hành, chấm công GPS và phê duyệt ngân sách 3 cấp.
           </Text>
 
@@ -1097,7 +1033,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           <View style={styles.opsMetricsGrid}>
             {/* KPI 1: Chấm công */}
             <TouchableOpacity
-              style={styles.opsMetricTile}
+              style={[
+                styles.opsMetricTile,
+                {
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
               onPress={() => setAttendanceVisible(true)}
               activeOpacity={0.8}
             >
@@ -1107,16 +1049,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 </View>
                 <ChevronRight size={13} color="#94A3B8" />
               </View>
-              <Text style={styles.metricValue}>
+              <Text style={[styles.metricValue, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                 42<Text style={styles.metricSub}>/45</Text>
               </Text>
               <Text style={styles.metricBadgeGreen}>93.3% có mặt</Text>
-              <Text style={styles.metricLabel}>Chấm công GPS</Text>
+              <Text style={[styles.metricLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                Chấm công GPS
+              </Text>
             </TouchableOpacity>
 
             {/* KPI 2: Quy trình */}
             <TouchableOpacity
-              style={styles.opsMetricTile}
+              style={[
+                styles.opsMetricTile,
+                {
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
               onPress={() => setWorkflowVisible(true)}
               activeOpacity={0.8}
             >
@@ -1126,14 +1076,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 </View>
                 <ChevronRight size={13} color="#94A3B8" />
               </View>
-              <Text style={styles.metricValue}>12</Text>
+              <Text style={[styles.metricValue, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>12</Text>
               <Text style={styles.metricBadgeRed}>2 việc trễ</Text>
-              <Text style={styles.metricLabel}>Tiến độ nhân sự</Text>
+              <Text style={[styles.metricLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                Tiến độ nhân sự
+              </Text>
             </TouchableOpacity>
 
             {/* KPI 3: Duyệt chi */}
             <TouchableOpacity
-              style={styles.opsMetricTile}
+              style={[
+                styles.opsMetricTile,
+                {
+                  backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
               onPress={() => setApprovalsVisible(true)}
               activeOpacity={0.8}
             >
@@ -1143,9 +1101,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 </View>
                 <ChevronRight size={13} color="#94A3B8" />
               </View>
-              <Text style={styles.metricValue}>3</Text>
+              <Text style={[styles.metricValue, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>3</Text>
               <Text style={styles.metricBadgeGold}>41.5 Tr chờ</Text>
-              <Text style={styles.metricLabel}>Ký duyệt chi</Text>
+              <Text style={[styles.metricLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                Ký duyệt chi
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -1153,7 +1113,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           <View style={styles.opsActionBanner}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flex: 1 }}>
               <Sparkles size={14} color="#D8B282" />
-              <Text style={styles.opsBannerText} numberOfLines={1}>
+              <Text
+                style={[styles.opsBannerText, { color: isDark ? "#F8FAFC" : "#0F172A" }]}
+                numberOfLines={1}
+              >
                 Hôm nay: 3 việc ưu tiên & 1 tờ trình cần ký
               </Text>
             </View>
@@ -1386,52 +1349,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0B0F17",
   },
+  container: {
+    flex: 1,
+  },
   scrollContainer: {
     paddingHorizontal: 16,
+    paddingTop: 8,
     paddingBottom: 36,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingTop: 6,
-    paddingBottom: 10,
-  },
-  headerBrand: {
-    justifyContent: "center",
-  },
-  logoWordmark: {
-    width: 140,
-    height: 44,
-  },
-  headerGreeting: {
-    color: "#94A3B8",
-    fontSize: 12,
-    fontWeight: "500",
-    marginTop: -2,
-  },
-  headerRightActions: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  headerIconBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+  headerSquareBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.22)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  bellBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.22)",
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -1453,17 +1383,12 @@ const styles = StyleSheet.create({
     fontSize: 9.5,
     fontWeight: "800",
   },
-  headerDivider: {
-    height: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
-    marginBottom: 12,
-  },
   identityCard: {
     borderRadius: 22,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "rgba(216, 178, 130, 0.25)",
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.35,

@@ -87,7 +87,7 @@ export function AttendanceMobileSheet({ open, onClose }: AttendanceMobileSheetPr
 
       setCheckingIn(false);
       setCheckinSuccess(true);
-      toast.success("✓ Điểm danh thành công! Hệ thống đã ghi nhận vào CSDL.");
+      toast.success("✓ Điểm danh thành công!");
     } catch {
       setCheckingIn(false);
       setCheckinSuccess(true);
@@ -298,7 +298,7 @@ export function AttendanceMobileSheet({ open, onClose }: AttendanceMobileSheetPr
                     {checkingIn ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin text-slate-950" />
-                        Đang ghi nhận vào CSDL...
+                        Đang ghi nhận...
                       </>
                     ) : (
                       <>

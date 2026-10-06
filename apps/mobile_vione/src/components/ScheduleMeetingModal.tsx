@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   partnerBanner: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderRadius: 14,
     borderWidth: 1,
     borderColor: "rgba(216, 178, 130, 0.3)",
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 12,
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   },
   dateBtn: {
     flex: 1,
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 10,
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
   timeBtn: {
     paddingHorizontal: 16,
     paddingVertical: 9,
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 10,
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   textInput: {
-    backgroundColor: "#12151F",
+    backgroundColor: "#0E1522",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
     borderRadius: 12,
