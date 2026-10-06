@@ -618,6 +618,18 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Luồng Ngoại Lệ (Exception Handling):** Người dùng từ chối cấp quyền camera: Hiển thị hộp thoại giải thích và hướng dẫn mở quyền trong Cài đặt thiết bị, đồng thời kích hoạt fallback chọn ảnh từ Thư viện tệp.
 - **RESTful API Endpoint:** `POST /api/connect-app/moments, In-app Components: PostMomentModal.tsx`
 
+##### FR-25.03 - Hệ Thống Bình Luận Khoảnh Khắc Thông Minh Chuẩn Mạng Xã Hội (Facebook-Style Smart Moment Comments)
+- **Actor:** Doanh nhân, Hội viên mạng lưới trên Mobile Native & PWA
+- **Input:** Chạm vào biểu tượng bình luận trên thẻ khoảnh khắc hoặc bài viết mạng lưới.
+- **Logic Xử Lý:**
+  1. **Khung nhập bình luận chuẩn Facebook:** Hiển thị ảnh đại diện thật của người dùng hiện tại, ô nhập dạng viên nang (pill-shape) tự co giãn, khay icon emoji cảm xúc (10 biểu tượng chọn nhanh), nút đính kèm ảnh (Camera/Thư viện) kèm chip xem trước và nút xóa, phím tắt `@` gắn thẻ đối tác nhanh.
+  2. **Thanh ngữ cảnh trả lời (Reply Banner):** Khi người dùng chọn "Trả lời" một bình luận, hiển thị thanh ngữ cảnh "Đang trả lời @[Tên đối tác]" kèm nút [✕ Hủy] và tự động focus ô nhập.
+  3. **Cấu trúc luồng phản hồi đa tầng (Nested Replies):** Hiển thị danh sách phản hồi thụt lề chuẩn Facebook kèm đường chỉ rẽ nhánh cong kết nối bình luận gốc với các câu trả lời con.
+  4. **Nút gửi chuẩn nhận diện:** Nút gửi màu vàng Champagne Gold ánh kim (`#DFB76C`), tự động kích hoạt khi có nội dung hoặc ảnh đính kèm.
+  5. **Hỗ trợ giao diện kép (Dual-Theme):** Tối ưu hoàn hảo cả Chế độ Sáng (nền trắng `#FFFFFF`, bubble xám nhạt `#F0F2F5`) và Chế độ Tối (nền `#0B0F17`, bubble `#1E2638`).
+- **Output:** Trải nghiệm bình luận tương tác mượt mà, chuyên nghiệp như Facebook trên cả hai nền tảng Native và PWA.
+- **RESTful API Endpoint:** `POST /api/connect-app/moments/:id/comments, GET /api/connect-app/moments/:id/comments`
+
 
 #### MODULE 26: HỒ SƠ DANH TÍNH SỐ, DANH THIẾP TITANIUM 3D & CHIA SẺ CHẠM NFC
 *Mục tiêu Epic:* Danh thiếp số 3D lật mặt sang trọng, chạm NFC một chạm và bảo vệ quyền riêng tư C-Level
@@ -780,19 +792,19 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 #### MODULE 32: BẢNG ĐIỀU HÀNH LỊCH TRÌNH TÁC NGHIỆP HÔM NAY & DUYỆT HỒ SƠ C-LEVEL MOBILE (EXECUTIVE HOME & APPROVALS)
 *Mục tiêu Epic:* Trung tâm điều hành di động hợp nhất toàn bộ lịch trình công việc, các cuộc hẹn đối tác B2B và phê duyệt hồ sơ giấy tờ mọi lúc mọi nơi cho lãnh đạo bận rộn
 
-##### FR-32.01 - Lịch Trình Tác Nghiệp Hôm Nay (Today's Executive Agenda)
+##### FR-32.01 - Lịch Trình Tác Nghiệp & Cơ Hội Hôm Nay (Today's Executive Agenda & Opportunities)
 - **Actor:** CEO, Lãnh đạo doanh nghiệp
-- **Input:** Mở màn hình chính ExecutiveHome trên App ViOne Connect.
+- **Input:** Mở màn hình chính ExecutiveHome trên App ViOne Connect (Native & PWA), chọn Tab "Hôm nay".
 - **Logic Xử Lý:**
-  1. Hệ thống tự động truy vấn và tổng hợp 3 nguồn lịch trình trong ngày hôm nay:
-     - Lịch họp nội bộ và công việc được giao từ module Quản lý công việc CRM.
-     - Lịch hẹn gặp đối tác giao thương B2B đã được cả hai bên xác nhận (từ Module 29).
-     - Sự kiện hội thảo, gala doanh nhân mà người dùng đã đăng ký vé QR.
-  2. Hiển thị dạng dòng thời gian (Timeline) rõ ràng theo từng khung giờ: Sáng, Chiều, Tối.
-  3. Nhấp vào mỗi thẻ lịch trình mở ngay chi tiết cuộc họp, phòng họp trực tuyến hoặc vị trí trên Google Maps.
-- **Output:** Lịch trình hôm nay toàn diện, cập nhật theo thời gian thực không bỏ sót sự kiện.
-- **Luồng Ngoại Lệ (Exception Handling):** Không có lịch trình trong ngày: Hiển thị thông điệp "Hôm nay bạn không có lịch trình nào, tận hưởng một ngày làm việc hiệu quả!".
-- **RESTful API Endpoint:** `GET /api/connect-app/executive/today-agenda`
+  1. Hệ thống tự động truy vấn và tổng hợp 3 nguồn lịch trình và tương tác trong ngày hôm nay:
+     - **Lịch gặp 1-1 / họp đối tác B2B:** Hiển thị thời gian hẹn, đối tác, chức danh, nút "Google Meet" (họp online) hoặc "Gọi điện" (gặp offline), nút Đổi lịch.
+     - **Cơ hội mới từ cộng đồng doanh nhân:** Hiển thị thẻ cơ hội mới phát sinh trong ngày kèm tag cộng đồng, huy hiệu "CƠ HỘI MỚI", tổ chức, giá trị deal ước tính, nút "Xem chi tiết cơ hội" (mở modal) và "Vào Cộng đồng" (chuyển tiếp thẳng đến trang Cộng đồng).
+     - **Sự kiện hội thảo hôm nay:** Hiển thị sự kiện, thời gian bắt đầu, vị trí tổ chức, trạng thái vé QR hoặc đăng ký.
+  2. Hiển thị tổng số lượng hợp nhất trên nhãn Tab `Hôm nay ({totalCount})`.
+  3. Khi bấm "Xem chi tiết" cơ hội hoặc sự kiện, mở modal chi tiết tương ứng và cho phép chuyển tiếp liền mạch vào phân hệ Cộng đồng B2B.
+- **Output:** Bảng điều hành Hôm nay đa chiều, không chỉ giới hạn ở sự kiện mà còn cập nhật lịch gặp thực tế và cơ hội kinh doanh mới nhất.
+- **Luồng Ngoại Lệ (Exception Handling):** Không có lịch trình hoặc cơ hội nào trong ngày: Hiển thị giao diện "Hôm nay thật yên tĩnh" với gợi ý kết nối thêm đối tác.
+- **RESTful API Endpoint:** `GET /api/connect-app/executive/today-agenda, GET /api/opportunities, GET /api/vba-scheduled-meetings`
 
 ##### FR-32.02 - Trung Tâm Duyệt Hồ Sơ Nhanh Di Động (Approvals Mobile Sheet)
 - **Actor:** Ban Giám Đốc, Kế toán trưởng, Trưởng bộ phận

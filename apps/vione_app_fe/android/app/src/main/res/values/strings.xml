@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ViOne</string>
+    <string name="title_activity_main">ViOne</string>
+    <string name="package_name">connect.vn.vione_app</string>
+    <string name="custom_url_scheme">connect.vn.vione_app</string>
+</resources>

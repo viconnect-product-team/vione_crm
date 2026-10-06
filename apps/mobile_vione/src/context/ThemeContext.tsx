@@ -9,6 +9,8 @@ interface ThemeContextType {
   isDark: boolean;
   colors: ColorTheme;
   themeMode: ThemeMode;
+  theme: ThemeMode;
+  setTheme: (mode: ThemeMode) => void;
   toggleTheme: () => void;
   setThemeMode: (mode: ThemeMode) => void;
 }
@@ -19,7 +21,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const systemColorScheme = useColorScheme();
-  const [themeMode, setThemeModeState] = useState<ThemeMode>("dark");
+  const [themeMode, setThemeModeState] = useState<ThemeMode>("light");
 
   useEffect(() => {
     const loadSavedTheme = async () => {
@@ -27,6 +29,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const saved = await AsyncStorage.getItem(THEME_STORAGE_KEY);
         if (saved === "light" || saved === "dark" || saved === "system") {
           setThemeModeState(saved as ThemeMode);
+        } else {
+          setThemeModeState("light");
         }
       } catch (e) {
         console.warn("Lỗi đọc theme từ storage:", e);
@@ -62,6 +66,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         isDark,
         colors,
         themeMode,
+        theme: themeMode,
+        setTheme: setThemeMode,
         toggleTheme,
         setThemeMode,
       }}

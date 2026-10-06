@@ -275,7 +275,13 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
 
             <View style={styles.actionGrid}>
               <TouchableOpacity
-                style={styles.actionCard}
+                style={[
+                  styles.actionCard,
+                  {
+                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
                 onPress={() => {
                   onClose();
                   onOpenMyQr?.();
@@ -288,11 +294,24 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
                 <Text style={[styles.actionCardTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                   Mã QR của tôi
                 </Text>
-                <Text style={styles.actionCardSub}>Quét kết nối 1-chạm</Text>
+                <Text
+                  style={[
+                    styles.actionCardSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Quét kết nối 1-chạm
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.actionCard}
+                style={[
+                  styles.actionCard,
+                  {
+                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
                 onPress={() => {
                   onClose();
                   onOpenNfc?.();
@@ -305,13 +324,26 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
                 <Text style={[styles.actionCardTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                   Chạm thẻ NFC
                 </Text>
-                <Text style={styles.actionCardSub}>Truyền danh thiếp</Text>
+                <Text
+                  style={[
+                    styles.actionCardSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Truyền danh thiếp
+                </Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.actionGrid}>
               <TouchableOpacity
-                style={styles.actionCard}
+                style={[
+                  styles.actionCard,
+                  {
+                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
                 onPress={handleShare}
                 activeOpacity={0.8}
               >
@@ -321,11 +353,24 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
                 <Text style={[styles.actionCardTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                   Chia sẻ hồ sơ
                 </Text>
-                <Text style={styles.actionCardSub}>Gửi link đối tác</Text>
+                <Text
+                  style={[
+                    styles.actionCardSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Gửi link đối tác
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={styles.actionCard}
+                style={[
+                  styles.actionCard,
+                  {
+                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.04)" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+                  },
+                ]}
                 onPress={() => {
                   onClose();
                   onOpenProfile?.();
@@ -338,7 +383,14 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
                 <Text style={[styles.actionCardTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                   Hồ sơ đầy đủ
                 </Text>
-                <Text style={styles.actionCardSub}>Xem & chỉnh sửa</Text>
+                <Text
+                  style={[
+                    styles.actionCardSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Xem & chỉnh sửa
+                </Text>
               </TouchableOpacity>
             </View>
 
@@ -358,7 +410,12 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
                   <Text style={[styles.privilegeTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                     Mạng lưới 5.000+ Lãnh đạo Doanh nghiệp
                   </Text>
-                  <Text style={styles.privilegeDesc}>
+                  <Text
+                    style={[
+                      styles.privilegeDesc,
+                      { color: isDark ? "#94A3B8" : "#64748B" },
+                    ]}
+                  >
                     Kết nối 1-1, trao đổi cơ hội kinh doanh và tìm kiếm đối tác chiến lược.
                   </Text>
                 </View>
@@ -370,7 +427,12 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
                   <Text style={[styles.privilegeTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                     AI Copilot Gợi Ý Đối Tác Tự Động
                   </Text>
-                  <Text style={styles.privilegeDesc}>
+                  <Text
+                    style={[
+                      styles.privilegeDesc,
+                      { color: isDark ? "#94A3B8" : "#64748B" },
+                    ]}
+                  >
                     Thuật toán phân tích ngành nghề và ghép cặp cơ hội B2B theo thời gian thực.
                   </Text>
                 </View>

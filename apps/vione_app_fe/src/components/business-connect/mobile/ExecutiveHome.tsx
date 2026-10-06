@@ -16,6 +16,8 @@ import {
   Activity,
   ArrowRight,
   Bell,
+  Briefcase,
+  Building2,
   CalendarDays,
   Camera,
   ChevronRight,
@@ -215,6 +217,7 @@ export function ExecutiveHome() {
   // Kéo cả CRM events để đảm bảo dual-source cho sự kiện hôm nay & sắp tới
   const [crmEventsData, setCrmEventsData] = useState<any>(null);
   const [meetingsData, setMeetingsData] = useState<any[]>([]);
+  const [opportunitiesData, setOpportunitiesData] = useState<any[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -229,6 +232,14 @@ export function ExecutiveHome() {
         if (!active) return;
         const list = Array.isArray(res) ? res : res?.data || res?.items || [];
         setMeetingsData(list);
+      })
+      .catch(() => {});
+
+    fetchNestApi("/opportunities?limit=20")
+      .then((res: any) => {
+        if (!active) return;
+        const list = Array.isArray(res) ? res : res?.data || res?.items || [];
+        setOpportunitiesData(list);
       })
       .catch(() => {});
 
@@ -390,6 +401,72 @@ export function ExecutiveHome() {
     return list;
   }, [meetingsData, localScheduledMeetings, upcomingEvents]);
 
+  const todayMeetings = useMemo(() => {
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+    const allMeetings = [...meetingsData, ...localScheduledMeetings];
+    const res: any[] = [];
+    for (const m of allMeetings) {
+      if (!m.id) continue;
+      const rawDate = m.date || m.scheduledDate || m.meetingDate || m.scheduled_start_at;
+      const dt = rawDate ? new Date(rawDate) : null;
+      const isToday = !dt || (dt >= todayStart && dt <= todayEnd);
+      if (isToday) {
+        res.push({
+          id: `today-meet-${m.id}`,
+          title: m.title || `Cuộc gặp 1-1: ${m.partnerName || m.counterpart || "Doanh nhân Đối tác"}`,
+          counterpart: m.partnerName || m.counterpart || "Doanh nhân đối tác",
+          phone: m.phone || m.partnerPhone || "0988 888 888",
+          time: dt ? dt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : (m.time || "14:30"),
+          format: m.format || (m.location?.toLowerCase().includes("meet") ? "online" : "offline"),
+          location: m.location || (m.format === "online" ? "Google Meet Trực Tuyến" : "Văn phòng Doanh nghiệp"),
+          status: m.status || "confirmed",
+        });
+      }
+    }
+    return res;
+  }, [meetingsData, localScheduledMeetings]);
+
+  const INITIAL_TODAY_OPPORTUNITIES = [
+    {
+      id: "opp-pwa-1",
+      title: "Gói thầu thiết kế thi công nội thất & cơ điện trụ sở tập đoàn",
+      organization: "Tổng Công Ty Đầu Tư Xây Dựng & Địa Ốc Việt Nam",
+      communityName: "Liên minh Doanh Nhân B2B",
+      dealValue: "1.2 Tỷ VNĐ",
+      category: "Xây dựng & Kiến trúc",
+      daysLeft: "Còn 5 ngày",
+    },
+    {
+      id: "opp-pwa-2",
+      title: "Tìm đối tác chiến lược cung ứng giải pháp AI & Phần mềm CRM",
+      organization: "Tập đoàn Công Nghệ TechVibe",
+      communityName: "Gia đình ViOne",
+      dealValue: "850 Triệu VNĐ",
+      category: "Công nghệ & AI",
+      daysLeft: "Còn 14 ngày",
+    },
+  ];
+
+  const todayOpportunities = useMemo(() => {
+    if (opportunitiesData.length > 0) {
+      return opportunitiesData.map((op: any, idx: number) => ({
+        id: String(op.id || `opp-${idx}`),
+        title: op.title || "Cơ hội hợp tác chiến lược & giao thương",
+        organization: op.organization || op.companyName || op.creatorName || "Cộng đồng Doanh nghiệp ViOne",
+        communityName: op.communityName || op.groupName || "Liên minh Doanh Nhân B2B",
+        dealValue: op.dealValue || (op.budget ? `${op.budget.toLocaleString("vi-VN")} VNĐ` : "Thỏa thuận"),
+        category: op.category || op.field || "Hợp tác & Đầu tư",
+        daysLeft: op.daysLeft || op.duration || "Còn 14 ngày",
+      }));
+    }
+    return INITIAL_TODAY_OPPORTUNITIES;
+  }, [opportunitiesData]);
+
+  const todayTotalCount = todayItems.length + todayMeetings.length + todayOpportunities.length;
+
   const unread = data?.unreadNotificationCount ?? null;
 
   return (
@@ -459,7 +536,7 @@ export function ExecutiveHome() {
                   type="button"
                   onClick={handleRequestLocation}
                   disabled={requestingLocation}
-                  className="shrink-0 px-3 py-1.5 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-[11px] hover:opacity-90 active:scale-95 transition shadow-xs cursor-pointer"
+                  className="shrink-0 px-3 py-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#D4AF37] border border-[#DFB76C]/60 text-slate-950 font-bold text-[11px] hover:opacity-90 active:scale-95 transition shadow-xs cursor-pointer"
                 >
                   {requestingLocation ? "Đang bật..." : "Bật vị trí"}
                 </button>
@@ -537,7 +614,7 @@ export function ExecutiveHome() {
                       : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                   }`}
                 >
-                  Hôm nay {todayItems.length > 0 ? `(${todayItems.length})` : ""}
+                  Hôm nay {todayTotalCount > 0 ? `(${todayTotalCount})` : ""}
                 </button>
                 <button
                   type="button"
@@ -623,7 +700,7 @@ export function ExecutiveHome() {
                 </button>
               </div>
 
-              {/* Nội dung Tab HÔM NAY */}
+              {/* Nội dung Tab HÔM NAY (Đầy đủ: Lịch gặp hôm nay + Cơ hội mới cộng đồng + Sự kiện hôm nay) */}
               {scheduleTab === "today" && (
                 <>
                   {customized ? (
@@ -634,17 +711,168 @@ export function ExecutiveHome() {
 
                   {data.today.status === "error" ? (
                     <TodayError onRetry={() => home.refetch()} />
-                  ) : todayPool.length === 0 || todayItems.length === 0 ? (
+                  ) : todayTotalCount === 0 ? (
                     <TodayEmpty onOpenV={openV} />
                   ) : (
-                    <>
-                      <ul className="mt-1 divide-y divide-[var(--bc-mobile-border)]">
-                        {todayItems.map((item) => (
-                          <TodayItem key={item.id} item={item} onSelect={handleOpenTodayItem} />
-                        ))}
-                      </ul>
-                      <TodayPrimaryAction items={todayItems} onOpenV={openV} />
-                    </>
+                    <div className="mt-3 space-y-4">
+                      {/* 1. LỊCH GẶP HÔM NAY */}
+                      {todayMeetings.length > 0 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between px-1">
+                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-[#DFB76C]">
+                              <Handshake className="h-3.5 w-3.5" /> Lịch gặp hôm nay
+                            </span>
+                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-[#DFB76C] border border-amber-500/20">
+                              {todayMeetings.length} cuộc hẹn
+                            </span>
+                          </div>
+
+                          <div className="space-y-2.5">
+                            {todayMeetings.map((m: any) => (
+                              <div
+                                key={m.id}
+                                className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-[var(--bc-mobile-accent)] border border-[var(--bc-mobile-border)]">
+                                    <Handshake className="h-3 w-3 text-amber-500" /> Cuộc gặp 1-1 hôm nay
+                                  </span>
+                                  <span className="text-[11px] font-semibold text-[var(--bc-mobile-muted)]">
+                                    {m.time} · Hôm nay
+                                  </span>
+                                </div>
+
+                                <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
+                                  {m.title}
+                                </h4>
+
+                                <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--bc-mobile-muted)]">
+                                  <Users className="h-3.5 w-3.5 text-[var(--bc-mobile-muted)] shrink-0" />
+                                  <span className="font-medium text-slate-700 dark:text-slate-300">{m.counterpart}</span>
+                                </div>
+
+                                <div className="mt-2 flex items-center justify-between gap-2 text-xs text-[var(--bc-mobile-muted)]">
+                                  <span className="flex items-center gap-1.5 truncate max-w-[200px]">
+                                    {m.format === "online" ? (
+                                      <Video className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                                    ) : (
+                                      <MapPin className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                                    )}
+                                    <span className="truncate">{m.location}</span>
+                                  </span>
+
+                                  {m.format === "online" ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => toast.info("Đang mở phòng họp trực tuyến Google Meet")}
+                                      className="inline-flex items-center gap-1 rounded-lg bg-[#DFB76C] hover:bg-[#D4AF37] px-2.5 py-1 text-[11px] font-bold text-slate-950 transition cursor-pointer shadow-xs"
+                                    >
+                                      <Video className="h-3 w-3" />
+                                      <span>Vào họp Meet</span>
+                                    </button>
+                                  ) : (
+                                    <a
+                                      href={`tel:${m.phone || "0988888888"}`}
+                                      className="inline-flex items-center gap-1 rounded-lg bg-[#DFB76C] hover:bg-[#D4AF37] px-2.5 py-1 text-[11px] font-bold text-slate-950 transition shadow-xs"
+                                    >
+                                      <Phone className="h-3 w-3" />
+                                      <span>Gọi đối tác</span>
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 2. CƠ HỘI MỚI TỪ CỘNG ĐỒNG */}
+                      {todayOpportunities.length > 0 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between px-1">
+                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-[#DFB76C]">
+                              <Briefcase className="h-3.5 w-3.5" /> Cơ hội mới từ cộng đồng
+                            </span>
+                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-[#DFB76C] border border-amber-500/20">
+                              {todayOpportunities.length} cơ hội mới
+                            </span>
+                          </div>
+
+                          <div className="space-y-2.5">
+                            {todayOpportunities.map((opp: any) => (
+                              <div
+                                key={opp.id}
+                                className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-[var(--bc-mobile-accent)] border border-[var(--bc-mobile-border)]">
+                                    <Users className="h-3 w-3 text-amber-500" /> {opp.communityName}
+                                  </span>
+                                  <span className="inline-flex items-center gap-1 rounded-md bg-[#DFB76C] px-1.5 py-0.5 text-[9.5px] font-extrabold text-slate-950">
+                                    <Sparkles className="h-2.5 w-2.5" /> CƠ HỘI MỚI
+                                  </span>
+                                </div>
+
+                                <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
+                                  {opp.title}
+                                </h4>
+
+                                <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[var(--bc-mobile-muted)]">
+                                  <Building2 className="h-3.5 w-3.5 text-[var(--bc-mobile-muted)] shrink-0" />
+                                  <span className="font-medium text-slate-700 dark:text-slate-300">{opp.organization}</span>
+                                </div>
+
+                                <div className="mt-2 flex items-center gap-2 flex-wrap">
+                                  <span className="rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                                    {opp.dealValue}
+                                  </span>
+                                  <span className="text-[11.5px] font-medium text-[var(--bc-mobile-muted)]">
+                                    {opp.category} · {opp.daysLeft}
+                                  </span>
+                                </div>
+
+                                <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)] flex items-center gap-2">
+                                  <Link
+                                    to="/connect-app/community"
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#D4AF37] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs"
+                                  >
+                                    <span>Xem chi tiết cơ hội</span>
+                                    <ArrowRight className="h-3.5 w-3.5" />
+                                  </Link>
+                                  <Link
+                                    to="/connect-app/community"
+                                    className="inline-flex items-center justify-center gap-1 rounded-xl bg-[var(--bc-mobile-accent-soft)] hover:bg-[var(--bc-mobile-accent-soft)]/80 border border-[var(--bc-mobile-border-gold)] px-3 py-2 text-[11.5px] font-bold text-[var(--bc-mobile-accent)] transition cursor-pointer"
+                                  >
+                                    <Users className="h-3.5 w-3.5" />
+                                    <span>Vào Cộng đồng</span>
+                                  </Link>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* 3. SỰ KIỆN HÔM NAY */}
+                      {todayItems.length > 0 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between px-1">
+                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-[#DFB76C]">
+                              <CalendarDays className="h-3.5 w-3.5" /> Sự kiện hôm nay
+                            </span>
+                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-[#DFB76C] border border-amber-500/20">
+                              {todayItems.length} sự kiện
+                            </span>
+                          </div>
+                          <ul className="divide-y divide-[var(--bc-mobile-border)]">
+                            {todayItems.map((item) => (
+                              <TodayItem key={item.id} item={item} onSelect={handleOpenTodayItem} />
+                            ))}
+                          </ul>
+                          <TodayPrimaryAction items={todayItems} onOpenV={openV} />
+                        </div>
+                      )}
+                    </div>
                   )}
                 </>
               )}

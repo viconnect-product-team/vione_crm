@@ -53,13 +53,247 @@ import { CustomerDetailModal } from "../../components/CustomerDetailModal";
 import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
 import { PostMomentModal } from "../../components/PostMomentModal";
 import { MomentCommentModal } from "../../components/MomentCommentModal";
+import { BusinessNotificationsModal } from "../../components/BusinessNotificationsModal";
+import { ViOneVoiceAssistantModal } from "../../components/ai/ViOneVoiceAssistantModal";
 
-// Dữ liệu khoảnh khắc, đối tác, khách hàng và tin nhắn mặc định (Rỗng - Nạp từ live API)
-const INITIAL_STORIES: StoryItemData[] = [];
-const NURTURE_PARTNERS: any[] = [];
-const INITIAL_PARTNERS: ConnectionPerson[] = [];
-const B2B_CUSTOMERS: any[] = [];
-const INITIAL_THREADS: DmThreadSummary[] = [];
+// Dữ liệu khoảnh khắc 24h doanh nhân
+const INITIAL_STORIES: StoryItemData[] = [
+  {
+    id: "story-1",
+    authorName: "Vũ Minh Tuấn",
+    authorTitle: "Chủ tịch HĐQT",
+    authorCompany: "VTech Group",
+    authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    storyImage: "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600",
+    storyCaption: "Ký kết thỏa thuận hợp tác chuyển đổi số & bảo mật thông tin 2026.",
+    tag: "Ký kết đối tác",
+    timeAgo: "2h trước",
+    viewsCount: 24,
+  },
+  {
+    id: "story-2",
+    authorName: "Hoàng Mai Anh",
+    authorTitle: "Giám đốc Tài chính",
+    authorCompany: "VNPay FinTech",
+    authorAvatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
+    storyImage: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=600",
+    storyCaption: "Hội thảo chuyên đề giải pháp thanh toán số doanh nghiệp B2B.",
+    tag: "FinTech B2B",
+    timeAgo: "4h trước",
+    viewsCount: 38,
+  },
+  {
+    id: "story-3",
+    authorName: "Trần Đức Nam",
+    authorTitle: "Tổng Giám đốc",
+    authorCompany: "Logistics Nam Phát",
+    authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+    storyImage: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600",
+    storyCaption: "Khánh thành trung tâm phân phối kho bãi thông minh tại Hải Phòng.",
+    tag: "Mở rộng kho",
+    timeAgo: "6h trước",
+    viewsCount: 52,
+  },
+  {
+    id: "story-4",
+    authorName: "Lê Thu Hương",
+    authorTitle: "Nhà sáng lập",
+    authorCompany: "EcoWear Global",
+    authorAvatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
+    storyImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600",
+    storyCaption: "Bộ sưu tập trang phục doanh nhân cao cấp từ vật liệu tái chế.",
+    tag: "Thời trang B2B",
+    timeAgo: "8h trước",
+    viewsCount: 19,
+  },
+];
+
+// Danh sách đối tác cần giữ kết nối & chăm sóc
+const NURTURE_PARTNERS = [
+  {
+    id: "nur-1",
+    name: "Ông Trần Đức Nam",
+    title: "Tổng Giám đốc",
+    role: "CEO · Logistics Nam Phát",
+    tag: "CẦN GẶP LẠI",
+    reason: "Đã 30 ngày chưa gặp gỡ trực tiếp sau lễ ký biên bản ghi nhớ hợp tác.",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+    company: "Logistics Nam Phát",
+    phone: "0903 888 999",
+  },
+  {
+    id: "nur-2",
+    name: "Bà Hoàng Mai Anh",
+    title: "Giám đốc Tài chính",
+    role: "CFO · VNPay FinTech",
+    tag: "CƠ HỘI MỚI",
+    reason: "Có dự án tích hợp cổng thanh toán trực tuyến cần kết nối thẩm định.",
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
+    company: "VNPay FinTech",
+    phone: "0912 345 678",
+  },
+  {
+    id: "nur-3",
+    name: "Ông Đặng Quang Vinh",
+    title: "Giám đốc Điều hành",
+    role: "CEO · BĐS Vinh An",
+    tag: "GIỮ KẾT NỐI",
+    reason: "Quan tâm đến giải pháp thẻ NFC nhận diện hội viên và quản lý khách VIP.",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+    company: "Tập đoàn BĐS Vinh An",
+    phone: "0988 123 456",
+  },
+];
+
+// Danh bạ đối tác doanh nghiệp thực tế
+const INITIAL_PARTNERS: ConnectionPerson[] = [
+  {
+    id: "p-1",
+    name: "Vũ Minh Tuấn",
+    title: "Chủ tịch HĐQT",
+    company: "Tập đoàn Công nghệ VTech",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    phone: "0988 888 999",
+    email: "tuan.vm@vtechgroup.vn",
+    industry: "Công nghệ & Phần mềm",
+    status: "connected",
+    matchScore: 99,
+  },
+  {
+    id: "p-2",
+    name: "Hoàng Mai Anh",
+    title: "Giám đốc Tài chính",
+    company: "VNPay FinTech Solution",
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
+    phone: "0912 345 678",
+    email: "maianh.h@vnpay.vn",
+    industry: "Tài chính & FinTech",
+    status: "connected",
+    matchScore: 96,
+  },
+  {
+    id: "p-3",
+    name: "Trần Đức Nam",
+    title: "Tổng Giám đốc",
+    company: "Logistics Nam Phát Toàn Cầu",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
+    phone: "0903 888 999",
+    email: "nam.td@namphatlogistics.com",
+    industry: "Vận tải & Logistics",
+    status: "connected",
+    matchScore: 94,
+  },
+  {
+    id: "p-4",
+    name: "Lê Thu Hương",
+    title: "Nhà sáng lập & CEO",
+    company: "EcoWear Global Fashion",
+    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
+    phone: "0988 765 432",
+    email: "huong.le@ecowear.vn",
+    industry: "Bán lẻ & Thời trang",
+    status: "pending",
+    matchScore: 91,
+  },
+  {
+    id: "p-5",
+    name: "Phạm Quốc Huy",
+    title: "Viện trưởng",
+    company: "Viện Đổi mới Sáng tạo B2B",
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150",
+    phone: "0934 567 890",
+    email: "huy.pq@innovateb2b.edu.vn",
+    industry: "Khoa học & Đào tạo",
+    status: "suggested",
+    matchScore: 98,
+  },
+  {
+    id: "p-6",
+    name: "Đặng Quang Vinh",
+    title: "Giám đốc Điều hành",
+    company: "Tập đoàn BĐS Vinh An",
+    avatarUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
+    phone: "0912 345 678",
+    email: "vinh.dq@vinhanland.vn",
+    industry: "Bất động sản & Xây dựng",
+    status: "suggested",
+    matchScore: 95,
+  },
+];
+
+// Khách hàng B2B pipeline
+const B2B_CUSTOMERS = [
+  {
+    id: "cust-1",
+    name: "Tập đoàn Công nghệ VTech",
+    contactPerson: "Ông Vũ Minh Tuấn",
+    role: "Chủ tịch",
+    stage: "Đang triển khai hợp đồng",
+    dealValue: "1.200.000.000 đ",
+    priority: "Ưu tiên cao",
+    lastContact: "Hôm nay",
+  },
+  {
+    id: "cust-2",
+    name: "VNPay FinTech Solution",
+    contactPerson: "Bà Hoàng Mai Anh",
+    role: "CFO",
+    stage: "Thương thảo điều khoản",
+    dealValue: "650.000.000 đ",
+    priority: "Chiến lược",
+    lastContact: "Hôm qua",
+  },
+  {
+    id: "cust-3",
+    name: "Logistics Nam Phát Toàn Cầu",
+    contactPerson: "Ông Trần Đức Nam",
+    role: "CEO",
+    stage: "Đề xuất giải pháp",
+    dealValue: "450.000.000 đ",
+    priority: "Tiềm năng",
+    lastContact: "3 ngày trước",
+  },
+];
+
+// Danh sách hội thoại tin nhắn
+const INITIAL_THREADS: DmThreadSummary[] = [
+  {
+    threadId: "th-1",
+    counterpartUserId: "p-1",
+    displayName: "Vũ Minh Tuấn",
+    companyName: "Tập đoàn Công nghệ VTech",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+    lastMessagePreview: "Chào anh, thỏa thuận bảo mật WebRTC đã ký điện tử xong nhé.",
+    lastMessageAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+    lastMessageFromMe: false,
+    unreadCount: 1,
+    isOnline: true,
+  },
+  {
+    threadId: "th-2",
+    counterpartUserId: "p-2",
+    displayName: "Hoàng Mai Anh",
+    companyName: "VNPay FinTech Solution",
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
+    lastMessagePreview: "Chiều nay 15:00 gặp nhau tại phòng VIP 3 ViOne nhé anh.",
+    lastMessageAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+    lastMessageFromMe: false,
+    unreadCount: 0,
+    isOnline: true,
+  },
+  {
+    threadId: "th-3",
+    counterpartUserId: "group-1",
+    displayName: "Ban Điều Hành Hiệp Hội CEO",
+    companyName: "Liên minh Doanh nghiệp Toàn cầu",
+    avatarUrl: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150",
+    lastMessagePreview: "Đã cập nhật chương trình Hội nghị Xúc tiến Đầu tư Quý 4.",
+    lastMessageAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    lastMessageFromMe: true,
+    unreadCount: 0,
+    isGroup: true,
+  },
+];
 
 
 type NetworkTab = "network" | "customers" | "suggestions" | "messages" | "requests";
@@ -101,6 +335,8 @@ export const NetworkScreen: React.FC = () => {
   const [postMomentVisible, setPostMomentVisible] = useState(false);
   const [selectedMomentForComment, setSelectedMomentForComment] = useState<any | null>(null);
   const [momentCommentVisible, setMomentCommentVisible] = useState(false);
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
+  const [aiAssistantVisible, setAiAssistantVisible] = useState(false);
 
   // Greeting
   const getGreeting = () => {
@@ -296,7 +532,7 @@ export const NetworkScreen: React.FC = () => {
                   borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
                 },
               ]}
-              onPress={() => Alert.alert("Thông báo", "Không có thông báo kết nối mới.")}
+              onPress={() => setNotificationsVisible(true)}
               activeOpacity={0.7}
             >
               <Bell size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
@@ -341,13 +577,22 @@ export const NetworkScreen: React.FC = () => {
           contentContainerStyle={styles.categoryTabsScroll}
         >
           <TouchableOpacity
-            style={[styles.categoryTabPill, activeTab === "network" && styles.categoryTabPillActive]}
+            style={[
+              styles.categoryTabPill,
+              {
+                backgroundColor: activeTab === "network" ? "#D8B282" : isDark ? "#12151F" : "#F1F5F9",
+                borderColor: activeTab === "network" ? "#D8B282" : isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+              },
+            ]}
             onPress={() => setActiveTab("network")}
           >
             <Text
               style={[
                 styles.categoryTabPillText,
-                activeTab === "network" && styles.categoryTabPillTextActive,
+                {
+                  color: activeTab === "network" ? "#050C15" : isDark ? "#94A3B8" : "#475569",
+                  fontWeight: activeTab === "network" ? "800" : "600",
+                },
               ]}
             >
               Mạng lưới
@@ -355,13 +600,22 @@ export const NetworkScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.categoryTabPill, activeTab === "customers" && styles.categoryTabPillActive]}
+            style={[
+              styles.categoryTabPill,
+              {
+                backgroundColor: activeTab === "customers" ? "#D8B282" : isDark ? "#12151F" : "#F1F5F9",
+                borderColor: activeTab === "customers" ? "#D8B282" : isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+              },
+            ]}
             onPress={() => setActiveTab("customers")}
           >
             <Text
               style={[
                 styles.categoryTabPillText,
-                activeTab === "customers" && styles.categoryTabPillTextActive,
+                {
+                  color: activeTab === "customers" ? "#050C15" : isDark ? "#94A3B8" : "#475569",
+                  fontWeight: activeTab === "customers" ? "800" : "600",
+                },
               ]}
             >
               Khách hàng
@@ -369,14 +623,23 @@ export const NetworkScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.categoryTabPill, activeTab === "suggestions" && styles.categoryTabPillActive]}
+            style={[
+              styles.categoryTabPill,
+              {
+                backgroundColor: activeTab === "suggestions" ? "#D8B282" : isDark ? "#12151F" : "#F1F5F9",
+                borderColor: activeTab === "suggestions" ? "#D8B282" : isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+              },
+            ]}
             onPress={() => setActiveTab("suggestions")}
           >
             <Sparkles size={13} color={activeTab === "suggestions" ? "#050C15" : "#D8B282"} style={{ marginRight: 4 }} />
             <Text
               style={[
                 styles.categoryTabPillText,
-                activeTab === "suggestions" && styles.categoryTabPillTextActive,
+                {
+                  color: activeTab === "suggestions" ? "#050C15" : isDark ? "#94A3B8" : "#475569",
+                  fontWeight: activeTab === "suggestions" ? "800" : "600",
+                },
               ]}
             >
               Gợi ý (AI)
@@ -384,13 +647,22 @@ export const NetworkScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.categoryTabPill, activeTab === "messages" && styles.categoryTabPillActive]}
+            style={[
+              styles.categoryTabPill,
+              {
+                backgroundColor: activeTab === "messages" ? "#D8B282" : isDark ? "#12151F" : "#F1F5F9",
+                borderColor: activeTab === "messages" ? "#D8B282" : isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+              },
+            ]}
             onPress={() => setActiveTab("messages")}
           >
             <Text
               style={[
                 styles.categoryTabPillText,
-                activeTab === "messages" && styles.categoryTabPillTextActive,
+                {
+                  color: activeTab === "messages" ? "#050C15" : isDark ? "#94A3B8" : "#475569",
+                  fontWeight: activeTab === "messages" ? "800" : "600",
+                },
               ]}
             >
               Tin nhắn {totalUnreadCount > 0 ? `(${totalUnreadCount})` : ""}
@@ -398,13 +670,22 @@ export const NetworkScreen: React.FC = () => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.categoryTabPill, activeTab === "requests" && styles.categoryTabPillActive]}
+            style={[
+              styles.categoryTabPill,
+              {
+                backgroundColor: activeTab === "requests" ? "#D8B282" : isDark ? "#12151F" : "#F1F5F9",
+                borderColor: activeTab === "requests" ? "#D8B282" : isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+              },
+            ]}
             onPress={() => setActiveTab("requests")}
           >
             <Text
               style={[
                 styles.categoryTabPillText,
-                activeTab === "requests" && styles.categoryTabPillTextActive,
+                {
+                  color: activeTab === "requests" ? "#050C15" : isDark ? "#94A3B8" : "#475569",
+                  fontWeight: activeTab === "requests" ? "800" : "600",
+                },
               ]}
             >
               Lời mời (1)
@@ -416,18 +697,29 @@ export const NetworkScreen: React.FC = () => {
         {activeTab === "network" && (
           <View style={styles.tabContent}>
             {/* Search Bar with Filter */}
-            <View style={styles.searchWrapper}>
-              <Search size={18} color="#D8B282" style={styles.searchIcon} />
+            <View
+              style={[
+                styles.searchWrapper,
+                {
+                  backgroundColor: isDark ? "#12151F" : "#F1F5F9",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
+            >
+              <Search size={18} color={isDark ? "#D8B282" : "#A3703C"} style={styles.searchIcon} />
               <TextInput
-                style={styles.searchInput}
+                style={[
+                  styles.searchInput,
+                  { color: isDark ? "#FFFFFF" : "#0F172A" },
+                ]}
                 placeholder="Tìm kiếm đối tác, công ty, ngành nghề..."
-                placeholderTextColor="#94A3B8"
+                placeholderTextColor={isDark ? "#94A3B8" : "#94A3B8"}
                 value={partnerSearchQuery}
                 onChangeText={setPartnerSearchQuery}
               />
               {partnerSearchQuery !== "" && (
                 <TouchableOpacity onPress={() => setPartnerSearchQuery("")}>
-                  <X size={16} color="#94A3B8" />
+                  <X size={16} color={isDark ? "#94A3B8" : "#64748B"} />
                 </TouchableOpacity>
               )}
             </View>
@@ -439,25 +731,40 @@ export const NetworkScreen: React.FC = () => {
                 { id: "connected", label: "Đã kết nối" },
                 { id: "pending", label: "Đang chờ" },
                 { id: "suggested", label: "Gợi ý" },
-              ].map((f) => (
-                <TouchableOpacity
-                  key={f.id}
-                  style={[
-                    styles.filterPill,
-                    filterPartnerKind === f.id && styles.filterPillActive,
-                  ]}
-                  onPress={() => setFilterPartnerKind(f.id as any)}
-                >
-                  <Text
+              ].map((f) => {
+                const isActive = filterPartnerKind === f.id;
+                return (
+                  <TouchableOpacity
+                    key={f.id}
                     style={[
-                      styles.filterPillText,
-                      filterPartnerKind === f.id && styles.filterPillTextActive,
+                      styles.filterPill,
+                      {
+                        backgroundColor: isActive
+                          ? isDark ? "rgba(216, 178, 130, 0.18)" : "#F6E1C3"
+                          : isDark ? "#181D2A" : "#F8FAFC",
+                        borderColor: isActive
+                          ? "#D8B282"
+                          : isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
+                      },
                     ]}
+                    onPress={() => setFilterPartnerKind(f.id as any)}
                   >
-                    {f.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      style={[
+                        styles.filterPillText,
+                        {
+                          color: isActive
+                            ? isDark ? "#D8B282" : "#8C653B"
+                            : isDark ? "#94A3B8" : "#64748B",
+                          fontWeight: isActive ? "700" : "500",
+                        },
+                      ]}
+                    >
+                      {f.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
 
             {/* Khoảnh khắc 24h Doanh nhân (Facebook/Instagram-grade Stories Strip) */}
@@ -535,7 +842,20 @@ export const NetworkScreen: React.FC = () => {
             </View>
 
             {/* Khối CẦN GIỮ KẾT NỐI & CHĂM SÓC (Khớp 100% Nurture List) */}
-            <View style={styles.nurtureSection}>
+            <View
+              style={[
+                styles.nurtureSection,
+                {
+                  backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "rgba(216, 178, 130, 0.4)",
+                  shadowColor: isDark ? "#000000" : "#64748B",
+                  shadowOpacity: isDark ? 0.4 : 0.06,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowRadius: 8,
+                  elevation: 2,
+                },
+              ]}
+            >
               <View style={styles.nurtureHeaderRow}>
                 <View style={styles.nurtureHeaderLeft}>
                   <Sparkles size={15} color="#D8B282" style={{ marginRight: 6 }} />
@@ -548,17 +868,47 @@ export const NetworkScreen: React.FC = () => {
 
               <View style={styles.nurtureListCol}>
                 {nurtureList.map((item) => (
-                  <View key={item.id} style={styles.nurtureCard}>
+                  <View
+                    key={item.id}
+                    style={[
+                      styles.nurtureCard,
+                      {
+                        backgroundColor: isDark ? "#181D2A" : "#F8FAFC",
+                        borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
+                      },
+                    ]}
+                  >
                     <View style={styles.nurtureCardMain}>
                       <View style={styles.nurtureInfo}>
                         <View style={styles.nurtureNameRow}>
-                          <Text style={styles.nurtureName}>{item.name}</Text>
+                          <Text
+                            style={[
+                              styles.nurtureName,
+                              { color: isDark ? "#FFFFFF" : "#0F172A" },
+                            ]}
+                          >
+                            {item.name}
+                          </Text>
                           <View style={styles.nurtureTagBadge}>
                             <Text style={styles.nurtureTagText}>{item.tag}</Text>
                           </View>
                         </View>
-                        <Text style={styles.nurtureRole}>{item.title} · {item.company}</Text>
-                        <Text style={styles.nurtureReasonText}>💡 {item.reason}</Text>
+                        <Text
+                          style={[
+                            styles.nurtureRole,
+                            { color: isDark ? "#94A3B8" : "#64748B" },
+                          ]}
+                        >
+                          {item.role || `${item.title} · ${item.company}`}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.nurtureReasonText,
+                            { color: isDark ? "#F6E1C3" : "#8C653B" },
+                          ]}
+                        >
+                          💡 {item.reason}
+                        </Text>
                       </View>
                     </View>
 
@@ -566,7 +916,10 @@ export const NetworkScreen: React.FC = () => {
                       <TouchableOpacity
                         style={styles.nurtureMeetBtn}
                         onPress={() => {
-                          setSelectedPartnerForMeeting({ name: item.name, company: item.company });
+                          setSelectedPartnerForMeeting({
+                            name: item.name,
+                            company: item.company,
+                          });
                           setScheduleMeetingVisible(true);
                         }}
                         activeOpacity={0.8}
@@ -606,16 +959,88 @@ export const NetworkScreen: React.FC = () => {
               </View>
             </View>
 
+            {/* ViOne AI Copilot Matcher Banner (Khớp 100% PWA) */}
+            <View
+              style={[
+                styles.aiBanner,
+                {
+                  backgroundColor: isDark ? "rgba(216, 178, 130, 0.12)" : "#FFFDF8",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "rgba(216, 178, 130, 0.45)",
+                },
+              ]}
+            >
+              <View style={styles.aiBannerIconWrap}>
+                <Sparkles size={20} color={isDark ? "#D8B282" : "#A3703C"} />
+              </View>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text
+                  style={[
+                    styles.aiBannerTitle,
+                    { color: isDark ? "#D8B282" : "#8C653B" },
+                  ]}
+                >
+                  ViOne AI Matchmaking 5.0
+                </Text>
+                <Text
+                  style={[
+                    styles.aiBannerSubtitle,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Trợ lý AI tự động phân tích ngành nghề & đề xuất đối tác B2B tương thích cao.
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={[
+                  styles.aiExploreBtn,
+                  { backgroundColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3" },
+                ]}
+                onPress={() => setAiAssistantVisible(true)}
+                activeOpacity={0.8}
+              >
+                <Text
+                  style={[
+                    styles.aiExploreText,
+                    { color: isDark ? "#D8B282" : "#8C653B" },
+                  ]}
+                >
+                  Khám phá AI
+                </Text>
+                <ChevronRight size={13} color={isDark ? "#D8B282" : "#8C653B"} />
+              </TouchableOpacity>
+            </View>
+
             {/* Partners List */}
             <View style={styles.listSection}>
               <Text style={styles.sectionHeaderSmall}>DANH BẠ ĐỐI TÁC DOANH NGHIỆP</Text>
               {filteredPartners.map((item) => (
-                <View key={item.id} style={styles.partnerCard}>
+                <View
+                  key={item.id}
+                  style={[
+                    styles.partnerCard,
+                    {
+                      backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      shadowColor: isDark ? "#000000" : "#64748B",
+                      shadowOpacity: isDark ? 0.3 : 0.04,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 6,
+                      elevation: 2,
+                    },
+                  ]}
+                >
                   <View style={styles.cardMain}>
                     <Avatar url={item.avatarUrl} name={item.name} size={50} showGoldBorder />
                     <View style={styles.partnerInfo}>
                       <View style={styles.nameRow}>
-                        <Text style={styles.partnerName}>{item.name}</Text>
+                        <Text
+                          style={[
+                            styles.partnerName,
+                            { color: isDark ? "#FFFFFF" : "#0F172A" },
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
                         {item.matchScore && (
                           <View style={styles.matchBadge}>
                             <Text style={styles.matchText}>{item.matchScore}% Phù hợp</Text>
@@ -626,15 +1051,33 @@ export const NetworkScreen: React.FC = () => {
                       <Text style={styles.partnerTitle}>{item.title}</Text>
 
                       <View style={styles.companyRow}>
-                        <Building2 size={12} color="#94A3B8" style={{ marginRight: 4 }} />
-                        <Text style={styles.partnerCompany} numberOfLines={1}>
+                        <Building2 size={12} color={isDark ? "#94A3B8" : "#64748B"} style={{ marginRight: 4 }} />
+                        <Text
+                          style={[
+                            styles.partnerCompany,
+                            { color: isDark ? "#94A3B8" : "#64748B" },
+                          ]}
+                          numberOfLines={1}
+                        >
                           {item.company}
                         </Text>
                       </View>
 
                       {item.industry && (
-                        <View style={styles.industryTag}>
-                          <Text style={styles.industryText}>{item.industry}</Text>
+                        <View
+                          style={[
+                            styles.industryTag,
+                            { backgroundColor: isDark ? "#181D2A" : "#F1F5F9" },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.industryText,
+                              { color: isDark ? "rgba(255, 255, 255, 0.7)" : "#475569" },
+                            ]}
+                          >
+                            {item.industry}
+                          </Text>
                         </View>
                       )}
                     </View>
@@ -653,16 +1096,28 @@ export const NetworkScreen: React.FC = () => {
                     {item.status === "connected" && (
                       <>
                         <TouchableOpacity
-                          style={styles.iconActionBtn}
+                          style={[
+                            styles.iconActionBtn,
+                            {
+                              backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                              borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
+                            },
+                          ]}
                           onPress={() => Alert.alert("Gọi điện", `Gọi tới số: ${item.phone}`)}
                         >
-                          <Phone size={15} color="#D8B282" />
+                          <Phone size={15} color={isDark ? "#D8B282" : "#A3703C"} />
                         </TouchableOpacity>
                         <TouchableOpacity
-                          style={styles.iconActionBtn}
+                          style={[
+                            styles.iconActionBtn,
+                            {
+                              backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                              borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
+                            },
+                          ]}
                           onPress={() => Alert.alert("Gửi email", `Gửi tới: ${item.email}`)}
                         >
-                          <Mail size={15} color="#D8B282" />
+                          <Mail size={15} color={isDark ? "#D8B282" : "#A3703C"} />
                         </TouchableOpacity>
                       </>
                     )}
@@ -698,15 +1153,69 @@ export const NetworkScreen: React.FC = () => {
           <View style={styles.tabContent}>
             {/* Summary Pipeline Cards */}
             <View style={styles.pipelineSummaryRow}>
-              <View style={styles.pipelineCard}>
-                <DollarSign size={20} color="#D8B282" />
-                <Text style={styles.pipelineNumber}>4.55 Tỷ</Text>
-                <Text style={styles.pipelineLabel}>Quy mô cơ hội</Text>
+              <View
+                style={[
+                  styles.pipelineCard,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                    shadowColor: isDark ? "#000000" : "#64748B",
+                    shadowOpacity: isDark ? 0.3 : 0.04,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowRadius: 6,
+                    elevation: 2,
+                  },
+                ]}
+              >
+                <DollarSign size={20} color={isDark ? "#D8B282" : "#A3703C"} />
+                <Text
+                  style={[
+                    styles.pipelineNumber,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  4.55 Tỷ
+                </Text>
+                <Text
+                  style={[
+                    styles.pipelineLabel,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Quy mô cơ hội
+                </Text>
               </View>
-              <View style={styles.pipelineCard}>
+              <View
+                style={[
+                  styles.pipelineCard,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                    shadowColor: isDark ? "#000000" : "#64748B",
+                    shadowOpacity: isDark ? 0.3 : 0.04,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowRadius: 6,
+                    elevation: 2,
+                  },
+                ]}
+              >
                 <TrendingUp size={20} color="#38BDF8" />
-                <Text style={styles.pipelineNumber}>3 B2B</Text>
-                <Text style={styles.pipelineLabel}>Đang đàm phán</Text>
+                <Text
+                  style={[
+                    styles.pipelineNumber,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  3 B2B
+                </Text>
+                <Text
+                  style={[
+                    styles.pipelineLabel,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Đang đàm phán
+                </Text>
               </View>
             </View>
 
@@ -715,7 +1224,18 @@ export const NetworkScreen: React.FC = () => {
             {B2B_CUSTOMERS.map((cust) => (
               <TouchableOpacity
                 key={cust.id}
-                style={styles.customerCard}
+                style={[
+                  styles.customerCard,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                    shadowColor: isDark ? "#000000" : "#64748B",
+                    shadowOpacity: isDark ? 0.3 : 0.04,
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowRadius: 6,
+                    elevation: 2,
+                  },
+                ]}
                 onPress={() => {
                   setSelectedCustomer({
                     id: cust.id,
@@ -734,19 +1254,57 @@ export const NetworkScreen: React.FC = () => {
                 activeOpacity={0.85}
               >
                 <View style={styles.customerTop}>
-                  <Text style={styles.customerName}>{cust.name}</Text>
-                  <View style={styles.priorityPill}>
-                    <Text style={styles.priorityText}>{cust.priority}</Text>
+                  <Text
+                    style={[
+                      styles.customerName,
+                      { color: isDark ? "#FFFFFF" : "#0F172A" },
+                    ]}
+                  >
+                    {cust.name}
+                  </Text>
+                  <View
+                    style={[
+                      styles.priorityPill,
+                      { backgroundColor: isDark ? "rgba(216, 178, 130, 0.18)" : "#F6E1C3" },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.priorityText,
+                        { color: isDark ? "#D8B282" : "#8C653B" },
+                      ]}
+                    >
+                      {cust.priority}
+                    </Text>
                   </View>
                 </View>
 
-                <Text style={styles.customerContact}>Người liên hệ: {cust.contactPerson}</Text>
+                <Text
+                  style={[
+                    styles.customerContact,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Người liên hệ: {cust.contactPerson}
+                </Text>
 
-                <View style={styles.customerFooter}>
+                <View
+                  style={[
+                    styles.customerFooter,
+                    { borderTopColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0" },
+                  ]}
+                >
                   <View style={styles.dealPill}>
                     <Text style={styles.dealText}>{cust.dealValue}</Text>
                   </View>
-                  <Text style={styles.customerStage}>{cust.stage}</Text>
+                  <Text
+                    style={[
+                      styles.customerStage,
+                      { color: isDark ? "#D8B282" : "#8C653B" },
+                    ]}
+                  >
+                    {cust.stage}
+                  </Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -756,11 +1314,31 @@ export const NetworkScreen: React.FC = () => {
         {/* ─── TAB 3: GỢI Ý (AI SUGGESTIONS) ─── */}
         {activeTab === "suggestions" && (
           <View style={styles.tabContent}>
-            <View style={styles.aiBanner}>
-              <Sparkles size={20} color="#D8B282" />
+            <View
+              style={[
+                styles.aiBanner,
+                {
+                  backgroundColor: isDark ? "rgba(216, 178, 130, 0.12)" : "#FFFDF8",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "rgba(216, 178, 130, 0.45)",
+                },
+              ]}
+            >
+              <Sparkles size={20} color={isDark ? "#D8B282" : "#A3703C"} />
               <View style={{ flex: 1, marginLeft: 10 }}>
-                <Text style={styles.aiBannerTitle}>AI Đề Xuất Đối Tác Phù Hợp</Text>
-                <Text style={styles.aiBannerSubtitle}>
+                <Text
+                  style={[
+                    styles.aiBannerTitle,
+                    { color: isDark ? "#D8B282" : "#8C653B" },
+                  ]}
+                >
+                  AI Đề Xuất Đối Tác Phù Hợp
+                </Text>
+                <Text
+                  style={[
+                    styles.aiBannerSubtitle,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
                   Dựa trên hồ sơ năng lực doanh nghiệp, ngành nghề và cơ hội cung ứng chéo.
                 </Text>
               </View>
@@ -769,22 +1347,55 @@ export const NetworkScreen: React.FC = () => {
             {partners
               .filter((p) => p.status === "suggested")
               .map((item) => (
-                <View key={item.id} style={styles.partnerCard}>
+                <View
+                  key={item.id}
+                  style={[
+                    styles.partnerCard,
+                    {
+                      backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      shadowColor: isDark ? "#000000" : "#64748B",
+                      shadowOpacity: isDark ? 0.3 : 0.04,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 6,
+                      elevation: 2,
+                    },
+                  ]}
+                >
                   <View style={styles.cardMain}>
                     <Avatar url={item.avatarUrl} name={item.name} size={50} showGoldBorder />
                     <View style={styles.partnerInfo}>
                       <View style={styles.nameRow}>
-                        <Text style={styles.partnerName}>{item.name}</Text>
+                        <Text
+                          style={[
+                            styles.partnerName,
+                            { color: isDark ? "#FFFFFF" : "#0F172A" },
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
                         <View style={styles.matchBadge}>
                           <Text style={styles.matchText}>{item.matchScore}% Phù hợp</Text>
                         </View>
                       </View>
                       <Text style={styles.partnerTitle}>{item.title}</Text>
-                      <Text style={styles.partnerCompany}>{item.company}</Text>
+                      <Text
+                        style={[
+                          styles.partnerCompany,
+                          { color: isDark ? "#94A3B8" : "#64748B" },
+                        ]}
+                      >
+                        {item.company}
+                      </Text>
                     </View>
                   </View>
 
-                  <View style={styles.cardActions}>
+                  <View
+                    style={[
+                      styles.cardActions,
+                      { borderTopColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0" },
+                    ]}
+                  >
                     <TouchableOpacity
                       style={styles.connectBtnFull}
                       onPress={() => {
@@ -808,18 +1419,29 @@ export const NetworkScreen: React.FC = () => {
           <View style={styles.tabContent}>
             {/* Search & Create Group Header Row */}
             <View style={styles.inboxActionRow}>
-              <View style={styles.inboxSearchWrap}>
-                <Search size={16} color="#94A3B8" style={{ marginRight: 8 }} />
+              <View
+                style={[
+                  styles.inboxSearchWrap,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F1F5F9",
+                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                  },
+                ]}
+              >
+                <Search size={16} color={isDark ? "#D8B282" : "#A3703C"} style={{ marginRight: 8 }} />
                 <TextInput
-                  style={styles.inboxSearchInput}
+                  style={[
+                    styles.inboxSearchInput,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
                   placeholder="Tìm người liên hệ, nhóm phòng ban..."
-                  placeholderTextColor="#94A3B8"
+                  placeholderTextColor={isDark ? "#94A3B8" : "#94A3B8"}
                   value={messageSearchQuery}
                   onChangeText={setMessageSearchQuery}
                 />
                 {messageSearchQuery !== "" && (
                   <TouchableOpacity onPress={() => setMessageSearchQuery("")}>
-                    <X size={15} color="#94A3B8" />
+                    <X size={15} color={isDark ? "#94A3B8" : "#64748B"} />
                   </TouchableOpacity>
                 )}
               </View>
@@ -843,13 +1465,29 @@ export const NetworkScreen: React.FC = () => {
               ].map((c) => (
                 <TouchableOpacity
                   key={c.id}
-                  style={[styles.categoryTab, activeMessageCategory === c.id && styles.categoryTabActive]}
+                  style={[
+                    styles.categoryTab,
+                    {
+                      backgroundColor: activeMessageCategory === c.id
+                        ? isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3"
+                        : isDark ? "#181D2A" : "#F1F5F9",
+                      borderColor: activeMessageCategory === c.id
+                        ? "#D8B282"
+                        : isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
+                      borderWidth: 1,
+                    },
+                  ]}
                   onPress={() => setActiveMessageCategory(c.id as any)}
                 >
                   <Text
                     style={[
                       styles.categoryTabText,
-                      activeMessageCategory === c.id && styles.categoryTabTextActive,
+                      {
+                        color: activeMessageCategory === c.id
+                          ? isDark ? "#D8B282" : "#8C653B"
+                          : isDark ? "#94A3B8" : "#64748B",
+                        fontWeight: activeMessageCategory === c.id ? "700" : "500",
+                      },
                     ]}
                   >
                     {c.label}
@@ -866,9 +1504,21 @@ export const NetworkScreen: React.FC = () => {
               </View>
             ) : filteredThreads.length === 0 ? (
               <View style={styles.emptyInboxBox}>
-                <MessageSquare size={36} color="#94A3B8" style={{ marginBottom: 10 }} />
-                <Text style={styles.emptyTitle}>Chưa có cuộc trò chuyện nào</Text>
-                <Text style={styles.emptySubtitle}>
+                <MessageSquare size={36} color={isDark ? "#94A3B8" : "#CBD5E1"} style={{ marginBottom: 10 }} />
+                <Text
+                  style={[
+                    styles.emptyTitle,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  Chưa có cuộc trò chuyện nào
+                </Text>
+                <Text
+                  style={[
+                    styles.emptySubtitle,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
                   {activeMessageCategory === "unread"
                     ? "Bạn đã đọc hết mọi tin nhắn."
                     : activeMessageCategory === "groups"
@@ -882,7 +1532,22 @@ export const NetworkScreen: React.FC = () => {
                 return (
                   <TouchableOpacity
                     key={item.threadId}
-                    style={[styles.threadItem, hasUnread && styles.threadItemUnread]}
+                    style={[
+                      styles.threadItem,
+                      {
+                        backgroundColor: isDark
+                          ? (hasUnread ? "#161B29" : "#12151F")
+                          : (hasUnread ? "#FDF8F0" : "#FFFFFF"),
+                        borderColor: hasUnread
+                          ? "rgba(216, 178, 130, 0.45)"
+                          : isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
+                        shadowColor: isDark ? "#000000" : "#64748B",
+                        shadowOpacity: isDark ? 0.3 : 0.03,
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowRadius: 5,
+                        elevation: 1,
+                      },
+                    ]}
                     onPress={() => {
                       setSelectedThread(item);
                       setChatModalVisible(true);
@@ -904,6 +1569,7 @@ export const NetworkScreen: React.FC = () => {
                           <Text
                             style={[
                               styles.threadName,
+                              { color: isDark ? "#FFFFFF" : "#0F172A" },
                               hasUnread && styles.threadNameBold,
                             ]}
                             numberOfLines={1}
@@ -917,7 +1583,12 @@ export const NetworkScreen: React.FC = () => {
                             </View>
                           )}
                         </View>
-                        <Text style={styles.threadTime}>
+                        <Text
+                          style={[
+                            styles.threadTime,
+                            { color: isDark ? "#94A3B8" : "#64748B" },
+                          ]}
+                        >
                           {formatThreadTime(item.lastMessageAt)}
                         </Text>
                       </View>
@@ -926,7 +1597,8 @@ export const NetworkScreen: React.FC = () => {
                         <Text
                           style={[
                             styles.threadPreviewText,
-                            hasUnread && styles.threadPreviewTextUnread,
+                            { color: isDark ? "#94A3B8" : "#64748B" },
+                            hasUnread && { color: isDark ? "#FFFFFF" : "#0F172A", fontWeight: "600" },
                           ]}
                           numberOfLines={1}
                         >
@@ -955,17 +1627,49 @@ export const NetworkScreen: React.FC = () => {
         {/* ─── TAB 5: LỜI MỜI (REQUESTS) ─── */}
         {activeTab === "requests" && (
           <View style={styles.tabContent}>
-            <View style={styles.requestCard}>
+            <View
+              style={[
+                styles.requestCard,
+                {
+                  backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                  shadowColor: isDark ? "#000000" : "#64748B",
+                  shadowOpacity: isDark ? 0.3 : 0.04,
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowRadius: 6,
+                  elevation: 2,
+                },
+              ]}
+            >
               <View style={styles.cardMain}>
                 <Avatar name="Lê Thị Thu Hằng" size={50} showGoldBorder />
                 <View style={styles.partnerInfo}>
-                  <Text style={styles.partnerName}>Lê Thị Thu Hằng</Text>
+                  <Text
+                    style={[
+                      styles.partnerName,
+                      { color: isDark ? "#FFFFFF" : "#0F172A" },
+                    ]}
+                  >
+                    Lê Thị Thu Hằng
+                  </Text>
                   <Text style={styles.partnerTitle}>Giám Đốc Tài Chính (CFO)</Text>
-                  <Text style={styles.partnerCompany}>Quỹ Đầu Tư Khởi Nghiệp V-Capital</Text>
+                  <Text
+                    style={[
+                      styles.partnerCompany,
+                      { color: isDark ? "#94A3B8" : "#64748B" },
+                    ]}
+                  >
+                    Quỹ Đầu Tư Khởi Nghiệp V-Capital
+                  </Text>
                 </View>
               </View>
 
-              <View style={styles.requestActionRow}>
+              <View
+                style={[
+                  styles.requestActionRow,
+                  { borderTopColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0" },
+                ]}
+              >
                 <TouchableOpacity
                   style={styles.acceptBtn}
                   onPress={() => Alert.alert("Thành công", "Đã chấp nhận lời mời kết nối.")}
@@ -975,17 +1679,53 @@ export const NetworkScreen: React.FC = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={styles.declineBtn}
+                  style={[
+                    styles.declineBtn,
+                    {
+                      backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      borderWidth: 1,
+                    },
+                  ]}
                   onPress={() => Alert.alert("Thông báo", "Đã từ chối lời mời.")}
                 >
-                  <X size={14} color="#94A3B8" style={{ marginRight: 4 }} />
-                  <Text style={styles.declineBtnText}>Bỏ qua</Text>
+                  <X size={14} color={isDark ? "#94A3B8" : "#64748B"} style={{ marginRight: 4 }} />
+                  <Text
+                    style={[
+                      styles.declineBtnText,
+                      { color: isDark ? "#94A3B8" : "#64748B" },
+                    ]}
+                  >
+                    Bỏ qua
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         )}
       </ScrollView>
+
+      {/* Floating AI Copilot Assistant Button */}
+      <TouchableOpacity
+        style={styles.floatingAiBtn}
+        onPress={() => setAiAssistantVisible(true)}
+        activeOpacity={0.85}
+      >
+        <Sparkles size={18} color="#050C15" />
+        <Text style={styles.floatingAiText}>ViOne AI</Text>
+      </TouchableOpacity>
+
+      {/* Realtime Business Notifications Modal */}
+      <BusinessNotificationsModal
+        visible={notificationsVisible}
+        onClose={() => setNotificationsVisible(false)}
+      />
+
+      {/* ViOne AI Voice & Copilot Assistant Modal */}
+      <ViOneVoiceAssistantModal
+        visible={aiAssistantVisible}
+        onClose={() => setAiAssistantVisible(false)}
+      />
 
       {/* Global Modals */}
       <ChatThreadModal
@@ -1760,6 +2500,26 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
     marginTop: 2,
   },
+  aiBannerIconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  aiExploreBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    gap: 2,
+  },
+  aiExploreText: {
+    fontSize: 11.5,
+    fontWeight: "700",
+  },
   connectBtnFull: {
     flex: 1,
     flexDirection: "row",
@@ -1997,4 +2757,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
+  floatingAiBtn: {
+    position: "absolute",
+    bottom: 24,
+    right: 18,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#D8B282",
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 24,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+    gap: 6,
+  },
+  floatingAiText: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#050C15",
+  },
 });
+

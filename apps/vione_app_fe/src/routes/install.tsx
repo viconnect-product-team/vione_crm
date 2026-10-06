@@ -171,10 +171,10 @@ function InstallPage() {
                   href="/ViOne-PWA-latest.apk"
                   download="ViOne-PWA-latest.apk"
                   className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 text-xs font-bold text-white transition hover:bg-white/15 active:scale-95"
-                  title="Bản siêu tốc PWA Live Server (4.5MB)"
+                  title="Bản siêu tốc PWA Live Server (3.2MB)"
                 >
                   <Download className="h-4 w-4 text-cyan-400" />
-                  <span>APK PWA App (4.5MB)</span>
+                  <span>APK PWA App (3.2MB)</span>
                 </a>
               </div>
             )}
@@ -328,7 +328,7 @@ function InstallPage() {
                 download="ViOne-PWA-latest.apk"
                 className="text-xs font-bold text-cyan-400 hover:underline flex items-center gap-1"
               >
-                <span>Tải APK PWA App (4.5MB)</span>
+                <span>Tải APK PWA App (3.2MB)</span>
                 <Download className="h-3 w-3" />
               </a>
             </div>

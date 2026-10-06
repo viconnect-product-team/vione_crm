@@ -49,6 +49,7 @@ interface OpportunityDetailModalProps {
   opportunity: CommunityOpportunityItem | null;
   onClose: () => void;
   onApplyOpportunity?: (oppId: string) => void;
+  onGoToCommunity?: () => void;
 }
 
 export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
@@ -56,6 +57,7 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
   opportunity,
   onClose,
   onApplyOpportunity,
+  onGoToCommunity,
 }) => {
   const [hasApplied, setHasApplied] = useState(opportunity?.interested ?? false);
   const [proposalPrice, setProposalPrice] = useState("");
@@ -257,9 +259,23 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
               </View>
             )}
 
+            {/* Go to Community Link */}
+            {onGoToCommunity && (
+              <TouchableOpacity
+                style={styles.communityJumpBtn}
+                onPress={onGoToCommunity}
+                activeOpacity={0.8}
+              >
+                <Users size={16} color="#DFB76C" style={{ marginRight: 8 }} />
+                <Text style={styles.communityJumpText}>
+                  Vào phân hệ Cộng đồng {opportunity.communityName ? `"${opportunity.communityName}"` : ""}
+                </Text>
+              </TouchableOpacity>
+            )}
+
             {/* Share */}
             <TouchableOpacity style={styles.shareBtn} onPress={handleShare} activeOpacity={0.8}>
-              <Share2 size={16} color="#D8B282" style={{ marginRight: 8 }} />
+              <Share2 size={16} color="#DFB76C" style={{ marginRight: 8 }} />
               <Text style={styles.shareText}>Chia sẻ cơ hội này với liên danh đối tác</Text>
             </TouchableOpacity>
           </ScrollView>
@@ -268,27 +284,20 @@ export const OpportunityDetailModal: React.FC<OpportunityDetailModalProps> = ({
           <View style={styles.bottomFooter}>
             {hasApplied ? (
               <View style={styles.appliedPillFull}>
-                <Check size={16} color="#D8B282" strokeWidth={2.5} style={{ marginRight: 6 }} />
+                <Check size={16} color="#DFB76C" strokeWidth={2.5} style={{ marginRight: 6 }} />
                 <Text style={styles.appliedPillFullText}>Hồ sơ đã được gửi tới chủ đầu tư</Text>
               </View>
             ) : (
               <TouchableOpacity
-                style={styles.submitBtn}
+                style={styles.submitSolidBtn}
                 onPress={handleApply}
                 disabled={submitting}
                 activeOpacity={0.88}
               >
-                <LinearGradient
-                  colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.submitGradient}
-                >
-                  <Send size={16} color="#050C15" style={{ marginRight: 8 }} />
-                  <Text style={styles.submitBtnText}>
-                    {submitting ? "Đang gửi hồ sơ..." : "Nộp hồ sơ năng lực & Báo giá B2B"}
-                  </Text>
-                </LinearGradient>
+                <Send size={16} color="#050C15" style={{ marginRight: 8 }} />
+                <Text style={styles.submitBtnText}>
+                  {submitting ? "Đang gửi hồ sơ..." : "Nộp hồ sơ năng lực & Báo giá B2B"}
+                </Text>
               </TouchableOpacity>
             )}
           </View>
@@ -570,6 +579,30 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderTopWidth: 1,
     borderTopColor: "rgba(255, 255, 255, 0.08)",
+  },
+  communityJumpBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(223, 183, 108, 0.12)",
+    borderWidth: 1,
+    borderColor: "rgba(223, 183, 108, 0.4)",
+    borderRadius: 12,
+    paddingVertical: 13,
+    marginBottom: 10,
+  },
+  communityJumpText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  submitSolidBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#DFB76C",
+    borderRadius: 12,
+    paddingVertical: 15,
   },
   submitBtn: {
     borderRadius: 12,

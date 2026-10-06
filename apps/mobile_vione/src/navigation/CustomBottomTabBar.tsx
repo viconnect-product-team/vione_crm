@@ -149,16 +149,7 @@ export const CustomBottomTabBar: React.FC<CustomBottomTabBarProps> = ({
                   />
                 )}
 
-                <View
-                  style={[
-                    styles.iconWrap,
-                    isFocused && {
-                      backgroundColor: isDark
-                        ? "rgba(216, 178, 130, 0.22)"
-                        : "rgba(163, 112, 60, 0.15)",
-                    },
-                  ]}
-                >
+                <View style={styles.iconWrap}>
                   {getTabIcon(route.name, isFocused)}
                 </View>
 

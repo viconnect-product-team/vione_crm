@@ -281,16 +281,20 @@
 - **Lưu ý:** QUY TRÌNH LIỀN MẠCH: Toàn bộ quá trình tạo tài khoản nằm trọn vẹn trong trải nghiệm in-app, tuyệt đối không mở các trang web tiếp thị bên ngoài.
 - **Mẹo C-Level:** MẸO HỒ SƠ: Sau khi đăng ký, hãy vào mục Hồ sơ cá nhân để cập nhật ảnh đại diện và chức danh giúp đối tác dễ nhận diện.
 
-#### 25. [APP · TRANG CHỦ] Trang Chủ Doanh Nhân ViOne Connect & Lịch Trình Điều Hành 4 Danh Mục
-- **Mục tiêu:** Cung cấp cho doanh nhân bảng tin điều hành, lịch làm việc và kết nối đối tác nhanh chóng trên di động.
-- **Đường dẫn:** `Thanh điều hướng đáy -> Chạm vào Tab: Trang Chủ (Home)`
+#### 25. [APP · TRANG CHỦ] Trang Chủ Doanh Nhân ViOne Connect & Lịch Trình Điều Hành Đa Nguồn Hôm Nay
+- **Mục tiêu:** Cung cấp cho doanh nhân bảng tin điều hành toàn diện, tích hợp Lịch gặp 1-1, Cơ hội kinh doanh mới từ cộng đồng và Sự kiện hội thảo trong ngày.
+- **Đường dẫn:** `Thanh điều hướng đáy -> Chạm vào Tab: Trang Chủ (Home) -> Chọn Tab [Hôm nay]`
 - **Các bước:**
   * Bước 1: Header trên cùng hiển thị Lời chào cá nhân hóa theo thời gian thực và Avatar mạ vàng bấm mở Profile Drawer.
   * Bước 2: Quan sát Thẻ Hội Viên Doanh Nhân mạ vàng nổi bật ở vị trí trung tâm hiển thị: Họ tên, Chức vụ, Tên công ty và Mã số thẻ.
-  * Bước 3: Sử dụng 4 Tab lịch trình điều hành: [Hôm nay] [Sắp tới] [Lời nhắc] và [🎙️ Ghi âm] để quản lý mọi hoạt động và nghe lại giọng nói khoảnh khắc.
-  * Bước 4: Xem khối Giám sát Vận hành C-Level: Điểm danh nhân sự, phê duyệt tài chính và tiến độ công việc Kanban.
-  * Bước 5: Thanh định vị AI: Tích hợp nút [📍 Bật vị trí] để sẵn sàng quét người dùng ViOne quanh đây.
-- **Lưu ý:** ĐỒNG BỘ THỜI GIAN THỰC: Mọi lịch hẹn cơ hội được chấp nhận qua tin nhắn chat sẽ tự động xuất hiện ngay trong Tab [Hôm nay].
+  * Bước 3: Sử dụng 4 Tab lịch trình điều hành: [Hôm nay ({tổng số})], [Sắp tới], [Lời nhắc] và [🎙️ Ghi âm].
+  * Bước 4: Tại Tab [Hôm nay], hệ thống tự động phân loại và hiển thị 3 khối nội dung trọng tâm:
+    - **1. LỊCH GẶP HÔM NAY:** Toàn bộ cuộc gặp 1-1 và họp đối tác đã chốt lịch, kèm thông tin đối tác, thời gian, phím gọi trực tiếp Google Meet (online) hoặc Gọi điện thoại (offline), và nút Đổi lịch hẹn.
+    - **2. CƠ HỘI MỚI TỪ CỘNG ĐỒNG:** Hiển thị thẻ cơ hội kinh doanh mới nhất trong ngày kèm tag cộng đồng, huy hiệu "CƠ HỘI MỚI", tổ chức, giá trị deal ước tính, nút [Xem chi tiết cơ hội] và nút [Vào Cộng đồng] để kết nối nhanh chóng.
+    - **3. SỰ KIỆN HÔM NAY:** Danh sách hội thảo, diễn đàn doanh nhân trong ngày kèm đếm ngược giờ và thông tin phòng họp.
+  * Bước 5: Xem khối Giám sát Vận hành C-Level: Điểm danh nhân sự, phê duyệt tài chính và tiến độ công việc Kanban.
+  * Bước 6: Thanh định vị AI: Tích hợp nút [📍 Bật vị trí] màu vàng Champagne Gold để quét người dùng ViOne quanh đây.
+- **Lưu ý:** ĐỒNG BỘ THỜI GIAN THỰC & ĐIỀU HƯỚNG LIỀN MẠCH: Bấm "Xem chi tiết" cơ hội sẽ mở bảng chi tiết kèm nút chuyển thẳng vào trang Cộng đồng. Tab bình luận khoảnh khắc (Moments) hỗ trợ nhập thông minh chuẩn Facebook (Avatar thật, khay icon emoji, đính kèm ảnh, trả lời đa tầng).
 - **Mẹo C-Level:** MẸO LÃNH ĐẠO: Chạm vào tab [🎙️ Ghi âm] để nghe lại các đoạn ghi âm khoảnh khắc với sóng âm và trình phát inline tiện lợi.
 
 #### 26. [APP · THẺ DOANH NHÂN] Bottom Sheet Thẻ Doanh Nhân Bo Tròn 36px Tích Hợp Vuốt Tay Xuống

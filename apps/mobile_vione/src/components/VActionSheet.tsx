@@ -28,6 +28,7 @@ import {
 } from "lucide-react-native";
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { VIconMark } from "./VIconMark";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -56,6 +57,7 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
   onOpenApprovals,
 }) => {
   const { user } = useAuth();
+  const { isDark } = useTheme();
 
   const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
   const jobTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
@@ -74,22 +76,32 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.backdrop}>
           <TouchableWithoutFeedback>
-            <View style={styles.sheetContainer}>
+            <View
+              style={[
+                styles.sheetContainer,
+                {
+                  backgroundColor: isDark ? "#0B0F17" : "#FFFFFF",
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "rgba(216, 178, 130, 0.45)",
+                },
+              ]}
+            >
               <ScrollView
                 style={{ maxHeight: SCREEN_HEIGHT * 0.85 }}
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
               >
                 {/* Header */}
-                <Text style={styles.sheetHeaderLabel}>DANH TÍNH DOANH NGHIỆP</Text>
-                <Text style={styles.sheetHeaderSubtitle}>
+                <Text style={[styles.sheetHeaderLabel, { color: isDark ? "#D8B282" : "#A3703C" }]}>
+                  DANH TÍNH DOANH NGHIỆP
+                </Text>
+                <Text style={[styles.sheetHeaderSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                   Chạm hoặc quét để trao đổi danh thiếp với đối tác trong 1 giây
                 </Text>
 
                 {/* Identity Card with Gold V Watermark */}
                 <View style={styles.identityCardWrapper}>
                   <LinearGradient
-                    colors={["#151D2C", "#0E1522", "#070B12"]}
+                    colors={isDark ? ["#151D2C", "#0E1522", "#070B12"] : ["#FFFFFF", "#FAF8F5", "#F5F0E8"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={styles.identityCardGradient}
@@ -114,13 +126,13 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                         )}
 
                         <View style={styles.identityInfo}>
-                          <Text style={styles.userName} numberOfLines={1}>
+                          <Text style={[styles.userName, { color: isDark ? "#FFFFFF" : "#0F172A" }]} numberOfLines={1}>
                             {displayName}
                           </Text>
-                          <Text style={styles.userTitle} numberOfLines={1}>
+                          <Text style={[styles.userTitle, { color: isDark ? "#D8B282" : "#A3703C" }]} numberOfLines={1}>
                             {jobTitle}
                           </Text>
-                          <Text style={styles.userCompany} numberOfLines={1}>
+                          <Text style={[styles.userCompany, { color: isDark ? "rgba(255, 255, 255, 0.8)" : "#475569" }]} numberOfLines={1}>
                             {companyName}
                           </Text>
                           <View style={styles.memberBadge}>
@@ -136,14 +148,14 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <View style={styles.metaRow}>
                         <View style={styles.metaItem}>
                           <MapPin size={12} color="#D8B282" style={{ marginRight: 4 }} />
-                          <Text style={styles.metaText} numberOfLines={1}>
+                          <Text style={[styles.metaText, { color: isDark ? "rgba(255, 255, 255, 0.8)" : "#64748B" }]} numberOfLines={1}>
                             {location}
                           </Text>
                         </View>
                         <View style={styles.metaDot} />
                         <View style={styles.metaItem}>
                           <Globe size={12} color="#D8B282" style={{ marginRight: 4 }} />
-                          <Text style={styles.metaText} numberOfLines={1}>
+                          <Text style={[styles.metaText, { color: isDark ? "rgba(255, 255, 255, 0.8)" : "#64748B" }]} numberOfLines={1}>
                             {website}
                           </Text>
                         </View>
@@ -154,37 +166,45 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
 
                 {/* Core 5 Capabilities */}
                 <View style={styles.actionsContainer}>
-                  {/* Action 1: Đưa mã QR - HERO GOLD CTA */}
+                  {/* Action 1: Đưa mã QR - ELEGANT CHAMPAGNE GOLD */}
                   <TouchableOpacity
-                    style={styles.heroGoldBtn}
+                    style={[
+                      styles.heroGoldBtn,
+                      {
+                        backgroundColor: isDark ? "rgba(216, 178, 130, 0.16)" : "#FDFBF7",
+                        borderColor: "#D8B282",
+                        borderWidth: 1.5,
+                      },
+                    ]}
                     onPress={() => {
                       onClose();
                       onOpenMyQr();
                     }}
                     activeOpacity={0.88}
                   >
-                    <LinearGradient
-                      colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.heroGoldGradient}
-                    >
-                      <View style={styles.heroIconBox}>
-                        <QrCode size={24} color="#050C15" />
+                    <View style={styles.heroGoldGradient}>
+                      <View style={[styles.heroIconBox, { backgroundColor: isDark ? "rgba(216, 178, 130, 0.22)" : "rgba(216, 178, 130, 0.25)" }]}>
+                        <QrCode size={22} color={isDark ? "#D8B282" : "#8A5C1E"} />
                       </View>
                       <View style={styles.heroTexts}>
-                        <Text style={styles.heroTitle}>Đưa mã QR của bạn</Text>
-                        <Text style={styles.heroSubtitle}>
+                        <Text style={[styles.heroTitle, { color: isDark ? "#FFFFFF" : "#8A5C1E" }]}>Đưa mã QR của bạn</Text>
+                        <Text style={[styles.heroSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                           Mở danh thiếp cá nhân để đối tác quét kết nối
                         </Text>
                       </View>
-                      <ChevronRight size={18} color="#050C15" />
-                    </LinearGradient>
+                      <ChevronRight size={18} color={isDark ? "#D8B282" : "#8A5C1E"} />
+                    </View>
                   </TouchableOpacity>
 
                   {/* Action 2: Chạm thẻ NFC */}
                   <TouchableOpacity
-                    style={styles.actionRow}
+                    style={[
+                      styles.actionRow,
+                      {
+                        backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      },
+                    ]}
                     onPress={() => {
                       onClose();
                       onOpenMyQr();
@@ -195,17 +215,23 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <Nfc size={22} color="#D8B282" />
                     </View>
                     <View style={styles.actionTexts}>
-                      <Text style={styles.actionTitle}>Chạm thẻ NFC</Text>
-                      <Text style={styles.actionSubtitle}>
+                      <Text style={[styles.actionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Chạm thẻ NFC</Text>
+                      <Text style={[styles.actionSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                         Chạm mặt sau điện thoại vào thẻ thông minh
                       </Text>
                     </View>
-                    <ChevronRight size={16} color="#94A3B8" />
+                    <ChevronRight size={16} color={isDark ? "#94A3B8" : "#94A3B8"} />
                   </TouchableOpacity>
 
                   {/* Action 3: Quét mã QR */}
                   <TouchableOpacity
-                    style={styles.actionRow}
+                    style={[
+                      styles.actionRow,
+                      {
+                        backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      },
+                    ]}
                     onPress={() => {
                       onClose();
                       onOpenScanQr();
@@ -216,17 +242,23 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <ScanLine size={22} color="#D8B282" />
                     </View>
                     <View style={styles.actionTexts}>
-                      <Text style={styles.actionTitle}>Quét mã QR</Text>
-                      <Text style={styles.actionSubtitle}>
+                      <Text style={[styles.actionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Quét mã QR</Text>
+                      <Text style={[styles.actionSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                         Mở máy ảnh quét mã kết nối của đối tác
                       </Text>
                     </View>
-                    <ChevronRight size={16} color="#94A3B8" />
+                    <ChevronRight size={16} color={isDark ? "#94A3B8" : "#94A3B8"} />
                   </TouchableOpacity>
 
                   {/* Action 4: Quét danh thiếp */}
                   <TouchableOpacity
-                    style={styles.actionRow}
+                    style={[
+                      styles.actionRow,
+                      {
+                        backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      },
+                    ]}
                     onPress={() => {
                       onClose();
                       if (onOpenCardScan) {
@@ -241,17 +273,23 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <IdCard size={22} color="#D8B282" />
                     </View>
                     <View style={styles.actionTexts}>
-                      <Text style={styles.actionTitle}>Quét danh thiếp</Text>
-                      <Text style={styles.actionSubtitle}>
+                      <Text style={[styles.actionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Quét danh thiếp</Text>
+                      <Text style={[styles.actionSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                         Chụp danh thiếp giấy để AI nhận diện
                       </Text>
                     </View>
-                    <ChevronRight size={16} color="#94A3B8" />
+                    <ChevronRight size={16} color={isDark ? "#94A3B8" : "#94A3B8"} />
                   </TouchableOpacity>
 
                   {/* Action 5: Ghi chú cuộc gặp */}
                   <TouchableOpacity
-                    style={styles.actionRow}
+                    style={[
+                      styles.actionRow,
+                      {
+                        backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                        borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      },
+                    ]}
                     onPress={() => {
                       onClose();
                       if (onPostMoment) onPostMoment();
@@ -262,17 +300,25 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <NotebookPen size={22} color="#D8B282" />
                     </View>
                     <View style={styles.actionTexts}>
-                      <Text style={styles.actionTitle}>Ghi chú cuộc gặp</Text>
-                      <Text style={styles.actionSubtitle}>
+                      <Text style={[styles.actionTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Ghi chú cuộc gặp</Text>
+                      <Text style={[styles.actionSubtitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                         Lưu ảnh & thỏa thuận hợp tác sau buổi gặp
                       </Text>
                     </View>
-                    <ChevronRight size={16} color="#94A3B8" />
+                    <ChevronRight size={16} color={isDark ? "#94A3B8" : "#94A3B8"} />
                   </TouchableOpacity>
                 </View>
 
                 {/* Section Quick Tiles (3 cols) */}
-                <View style={styles.quickTilesRow}>
+                <View
+                  style={[
+                    styles.quickTilesRow,
+                    {
+                      borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      borderBottomColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                    },
+                  ]}
+                >
                   <TouchableOpacity
                     style={styles.quickTile}
                     onPress={() => {
@@ -280,11 +326,19 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       onOpenMyQr();
                     }}
                   >
-                    <View style={styles.quickTileCircle}>
+                    <View
+                      style={[
+                        styles.quickTileCircle,
+                        {
+                          backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#E2E8F0",
+                        },
+                      ]}
+                    >
                       <Contact size={18} color="#D8B282" />
                     </View>
-                    <Text style={styles.quickTileTitle}>Danh thiếp số</Text>
-                    <Text style={styles.quickTileDesc}>Xem thẻ của tôi</Text>
+                    <Text style={[styles.quickTileTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Danh thiếp số</Text>
+                    <Text style={[styles.quickTileDesc, { color: isDark ? "#94A3B8" : "#64748B" }]}>Xem thẻ của tôi</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -294,11 +348,19 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       onOpenMyQr();
                     }}
                   >
-                    <View style={styles.quickTileCircle}>
+                    <View
+                      style={[
+                        styles.quickTileCircle,
+                        {
+                          backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#E2E8F0",
+                        },
+                      ]}
+                    >
                       <Wallet size={18} color="#D8B282" />
                     </View>
-                    <Text style={styles.quickTileTitle}>Ví thẻ</Text>
-                    <Text style={styles.quickTileDesc}>Danh bạ thẻ lưu</Text>
+                    <Text style={[styles.quickTileTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Ví thẻ</Text>
+                    <Text style={[styles.quickTileDesc, { color: isDark ? "#94A3B8" : "#64748B" }]}>Danh bạ thẻ lưu</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -307,20 +369,36 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       onClose();
                     }}
                   >
-                    <View style={styles.quickTileCircle}>
+                    <View
+                      style={[
+                        styles.quickTileCircle,
+                        {
+                          backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#E2E8F0",
+                        },
+                      ]}
+                    >
                       <ShieldCheck size={18} color="#D8B282" />
                     </View>
-                    <Text style={styles.quickTileTitle}>Bảo mật</Text>
-                    <Text style={styles.quickTileDesc}>Quyền riêng tư</Text>
+                    <Text style={[styles.quickTileTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Bảo mật</Text>
+                    <Text style={[styles.quickTileDesc, { color: isDark ? "#94A3B8" : "#64748B" }]}>Quyền riêng tư</Text>
                   </TouchableOpacity>
                 </View>
 
                 {/* Group 2: VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP */}
                 <View style={styles.opsGroup}>
-                  <Text style={styles.opsGroupTitle}>VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP</Text>
+                  <Text style={[styles.opsGroupTitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP
+                  </Text>
                   <View style={styles.opsRow}>
                     <TouchableOpacity
-                      style={styles.opsColItem}
+                      style={[
+                        styles.opsColItem,
+                        {
+                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                        },
+                      ]}
                       onPress={() => {
                         onClose();
                         if (onOpenAttendance) onOpenAttendance();
@@ -330,12 +408,18 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.18)" }]}>
                         <MapPin size={18} color="#D8B282" />
                       </View>
-                      <Text style={styles.opsColTitle}>Chấm công</Text>
-                      <Text style={styles.opsColSub}>GPS & FaceID</Text>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Chấm công</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>GPS & FaceID</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      style={styles.opsColItem}
+                      style={[
+                        styles.opsColItem,
+                        {
+                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                        },
+                      ]}
                       onPress={() => {
                         onClose();
                         if (onOpenWorkflow) onOpenWorkflow();
@@ -345,12 +429,18 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <View style={[styles.opsIconWrap, { backgroundColor: "rgba(56, 189, 248, 0.15)" }]}>
                         <Layers size={18} color="#38BDF8" />
                       </View>
-                      <Text style={styles.opsColTitle}>Quy trình</Text>
-                      <Text style={styles.opsColSub}>BPMN Kanban</Text>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Quy trình</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>BPMN Kanban</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      style={styles.opsColItem}
+                      style={[
+                        styles.opsColItem,
+                        {
+                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                        },
+                      ]}
                       onPress={() => {
                         onClose();
                         if (onOpenApprovals) onOpenApprovals();
@@ -360,16 +450,26 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <View style={[styles.opsIconWrap, { backgroundColor: "rgba(168, 85, 247, 0.15)" }]}>
                         <ShieldCheck size={18} color="#C084FC" />
                       </View>
-                      <Text style={styles.opsColTitle}>Phê duyệt</Text>
-                      <Text style={styles.opsColSub}>3 cấp chuẩn</Text>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Phê duyệt</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>3 cấp chuẩn</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
 
                 {/* Circular Close Button at bottom */}
                 <View style={styles.closeRow}>
-                  <TouchableOpacity style={styles.circularCloseBtn} onPress={onClose} activeOpacity={0.8}>
-                    <X size={20} color="#D8B282" strokeWidth={2} />
+                  <TouchableOpacity
+                    style={[
+                      styles.circularCloseBtn,
+                      {
+                        backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                        borderColor: isDark ? "rgba(216, 178, 130, 0.5)" : "#E2E8F0",
+                      },
+                    ]}
+                    onPress={onClose}
+                    activeOpacity={0.8}
+                  >
+                    <X size={20} color={isDark ? "#D8B282" : "#475569"} strokeWidth={2} />
                   </TouchableOpacity>
                 </View>
               </ScrollView>

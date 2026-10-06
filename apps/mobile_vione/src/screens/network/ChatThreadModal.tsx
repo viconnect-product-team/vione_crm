@@ -17,11 +17,13 @@ import {
   ArrowLeft,
   Send,
   Phone,
+  Video,
   Users,
   ShieldCheck,
   CheckCheck,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
+import { useTheme } from "../../context/ThemeContext";
 import { Avatar } from "../../components/common/Avatar";
 import { DmThreadSummary, DmMessage } from "../../types";
 import { apiRequest } from "../../api/client";
@@ -30,6 +32,7 @@ import {
   OpportunityMeetingProposalCard,
   OpportunityMeetingData,
 } from "../../components/OpportunityMeetingProposalCard";
+import { InAppCallModal } from "../../components/InAppCallModal";
 
 interface ChatThreadModalProps {
   visible: boolean;
@@ -45,11 +48,41 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
   onMessageSent,
 }) => {
   const { user } = useAuth();
+  const { isDark } = useTheme();
   const [messages, setMessages] = useState<DmMessage[]>([]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [callVisible, setCallVisible] = useState(false);
+  const [isVideoCall, setIsVideoCall] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+
+  const startCall = (video: boolean) => {
+    setIsVideoCall(video);
+    setCallVisible(true);
+  };
+
+  const handleEndCall = (durationSec: number) => {
+    setCallVisible(false);
+    if (!thread) return;
+
+    const mins = Math.floor(durationSec / 60);
+    const secs = durationSec % 60;
+    const durStr = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    const callNotice = isVideoCall
+      ? `Cuộc gọi video bảo mật đã kết thúc (${durStr})`
+      : `Cuộc gọi thoại bảo mật đã kết thúc (${durStr})`;
+
+    const endMsg: DmMessage = {
+      id: "call-" + Date.now(),
+      threadId: thread.threadId,
+      senderUserId: "system",
+      body: callNotice,
+      createdAt: new Date().toISOString(),
+      isSystem: true,
+    };
+    setMessages((prev) => [...prev, endMsg]);
+  };
 
   useEffect(() => {
     if (!visible || !thread) return;
@@ -184,11 +217,24 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView
+        style={[
+          styles.safeArea,
+          { backgroundColor: isDark ? "#0B0F17" : "#FFFFFF" },
+        ]}
+      >
         {/* Header */}
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            {
+              backgroundColor: isDark ? "#0B0F17" : "#FFFFFF",
+              borderBottomColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+            },
+          ]}
+        >
           <TouchableOpacity style={styles.backBtn} onPress={onClose}>
-            <ArrowLeft size={22} color="#FFFFFF" />
+            <ArrowLeft size={22} color={isDark ? "#FFFFFF" : "#0F172A"} />
           </TouchableOpacity>
 
           <View style={styles.headerInfo}>
@@ -200,7 +246,13 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
             />
             <View style={styles.headerTextCol}>
               <View style={styles.nameRow}>
-                <Text style={styles.headerName} numberOfLines={1}>
+                <Text
+                  style={[
+                    styles.headerName,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                  numberOfLines={1}
+                >
                   {thread.displayName}
                 </Text>
                 {thread.isGroup && (
@@ -220,23 +272,44 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
             </View>
           </View>
 
-          <TouchableOpacity
-            style={styles.actionBtn}
-            onPress={() =>
-              Alert.alert(
-                "Thông tin đối tác",
-                `${thread.displayName}\n${thread.companyName || "ViOne Business Connect"}`
-              )
-            }
-          >
-            <ShieldCheck size={20} color={Colors.gold} />
-          </TouchableOpacity>
+          <View style={styles.headerRightActions}>
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={() => startCall(false)}
+              activeOpacity={0.7}
+            >
+              <Phone size={19} color={isDark ? "#D8B282" : "#A3703C"} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={() => startCall(true)}
+              activeOpacity={0.7}
+            >
+              <Video size={19} color={isDark ? "#D8B282" : "#A3703C"} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionBtn}
+              onPress={() =>
+                Alert.alert(
+                  "Thông tin đối tác",
+                  `${thread.displayName}\n${thread.companyName || "ViOne Business Connect"}`
+                )
+              }
+            >
+              <ShieldCheck size={20} color={isDark ? "#D8B282" : "#A3703C"} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Message Thread List */}
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={styles.chatArea}
+          style={[
+            styles.chatArea,
+            { backgroundColor: isDark ? "#0B0F17" : "#F8FAFC" },
+          ]}
         >
           {isLoading ? (
             <View style={styles.centerLoading}>
@@ -300,13 +373,23 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
                     <View
                       style={[
                         styles.bubble,
-                        isMe ? styles.bubbleRight : styles.bubbleLeft,
+                        isMe
+                          ? styles.bubbleRight
+                          : [
+                              styles.bubbleLeft,
+                              {
+                                backgroundColor: isDark ? "#181D2A" : "#FFFFFF",
+                                borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                              },
+                            ],
                       ]}
                     >
                       <Text
                         style={[
                           styles.bubbleText,
-                          isMe ? styles.bubbleTextRight : styles.bubbleTextLeft,
+                          isMe
+                            ? styles.bubbleTextRight
+                            : { color: isDark ? "#FFFFFF" : "#0F172A" },
                         ]}
                       >
                         {item.body}
@@ -321,7 +404,7 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
                           {formatTime(item.createdAt)}
                         </Text>
                         {isMe && (
-                          <CheckCheck size={12} color="rgba(255,255,255,0.7)" style={{ marginLeft: 4 }} />
+                          <CheckCheck size={12} color="rgba(5, 12, 21, 0.7)" style={{ marginLeft: 4 }} />
                         )}
                       </View>
                     </View>
@@ -332,11 +415,26 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
           )}
 
           {/* Input Bar */}
-          <View style={styles.inputBar}>
+          <View
+            style={[
+              styles.inputBar,
+              {
+                backgroundColor: isDark ? "#0B0F17" : "#FFFFFF",
+                borderTopColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+              },
+            ]}
+          >
             <TextInput
-              style={styles.textInput}
+              style={[
+                styles.textInput,
+                {
+                  backgroundColor: isDark ? "#181D2A" : "#F1F5F9",
+                  color: isDark ? "#FFFFFF" : "#0F172A",
+                  borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                },
+              ]}
               placeholder="Nhập tin nhắn..."
-              placeholderTextColor="#94A3B8"
+              placeholderTextColor={isDark ? "#94A3B8" : "#94A3B8"}
               value={inputText}
               onChangeText={setInputText}
               multiline
@@ -353,12 +451,22 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
               {isSending ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
-                <Send size={18} color="#FFFFFF" />
+                <Send size={18} color="#050C15" />
               )}
             </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
+
+      {/* In-App Calling Interface */}
+      <InAppCallModal
+        visible={callVisible}
+        isVideo={isVideoCall}
+        partnerName={thread.displayName}
+        partnerAvatar={thread.avatarUrl || undefined}
+        partnerCompany={thread.companyName || undefined}
+        onEndCall={handleEndCall}
+      />
     </Modal>
   );
 };
@@ -418,6 +526,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#94A3B8",
     marginTop: 1,
+  },
+  headerRightActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   actionBtn: {
     padding: 8,

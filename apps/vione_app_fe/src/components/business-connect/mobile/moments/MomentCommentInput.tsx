@@ -1,11 +1,12 @@
 // BC-Mobile — Khung nhập bình luận kèm gợi ý Tag tên (@mention), gửi kèm ảnh và chế độ Phản hồi.
 
 import { useEffect, useRef, useState } from "react";
-import { Send, X, AtSign, Loader2, Image as ImageIcon } from "lucide-react";
+import { Send, X, AtSign, Loader2, Image as ImageIcon, Smile } from "lucide-react";
 import type { MentionableUser, MomentComment } from "@/lib/business-connect/mobile/moment-comments.types";
 import { searchMentionableUsers } from "@/lib/business-connect/mobile/moment-comments.functions";
 import { uploadFileToNest } from "@/lib/api-client";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 export type MomentCommentInputProps = {
   replyingTo?: MomentComment | null;
@@ -31,6 +32,7 @@ export function MomentCommentInput({
   isSubmitting,
 }: MomentCommentInputProps) {
   const activeReply = replyingTo ?? replyTo ?? null;
+  const { user } = useAuth();
   const [text, setText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
@@ -39,6 +41,8 @@ export function MomentCommentInput({
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [attachedPhoto, setAttachedPhoto] = useState<{ file: File; previewUrl: string } | null>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const EMOJI_PALETTE = ["👍", "❤️", "👏", "🎉", "💡", "🔥", "😂", "🙏", "🚀", "🤝"];
 
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -326,6 +330,25 @@ export function MomentCommentInput({
         </div>
       )}
 
+      {/* Emoji tray popover */}
+      {showEmojiPicker && (
+        <div className="mb-2 flex items-center gap-1.5 p-2 rounded-xl bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] shadow-lg overflow-x-auto">
+          {EMOJI_PALETTE.map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              onClick={() => {
+                setText((prev) => prev + emoji);
+                inputRef.current?.focus();
+              }}
+              className="text-lg p-1 hover:scale-125 transition-transform cursor-pointer"
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Hidden image input */}
       <input
         ref={fileInputRef}
@@ -337,9 +360,17 @@ export function MomentCommentInput({
 
       {/* Ô nhập bình luận */}
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] font-bold text-xs flex items-center justify-center shrink-0">
-          HV
-        </div>
+        {user?.avatar_url || user?.user_metadata?.avatar_url ? (
+          <img
+            src={user.avatar_url || user.user_metadata?.avatar_url}
+            alt={user.name || user.user_metadata?.full_name || "User"}
+            className="w-8 h-8 rounded-full object-cover border border-[var(--bc-mobile-border-gold,#D8B282)]/40 shrink-0 shadow-xs"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] font-bold text-xs flex items-center justify-center shrink-0">
+            {user?.name?.[0] || user?.user_metadata?.full_name?.[0] || "V"}
+          </div>
+        )}
 
         <div className="relative flex-1 flex items-center">
           <input
@@ -349,11 +380,22 @@ export function MomentCommentInput({
             onChange={handleTextChange}
             onKeyDown={handleKeyDown}
             disabled={disabled || submitting || isSubmitting || uploadingPhoto}
-            placeholder={activeReply ? `Phản hồi @${activeReply.author.displayName}…` : "Viết bình luận… (gõ @ hoặc đính kèm ảnh)"}
-            className="w-full bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] rounded-full px-4 py-2 pr-16 text-[13px] text-[var(--bc-mobile-text)] placeholder:text-[var(--bc-mobile-muted)] outline-none transition-colors focus:border-[var(--bc-mobile-accent)]"
+            placeholder={activeReply ? `Phản hồi @${activeReply.author.displayName}…` : "Viết bình luận công khai…"}
+            className="w-full bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] rounded-full px-4 py-2 pr-22 text-[13px] text-[var(--bc-mobile-text)] placeholder:text-[var(--bc-mobile-muted)] outline-none transition-colors focus:border-[var(--bc-mobile-accent)]"
           />
 
-          <div className="absolute right-2 flex items-center gap-1.5 text-[var(--bc-mobile-muted)]">
+          <div className="absolute right-2 flex items-center gap-1 text-[var(--bc-mobile-muted)]">
+            <button
+              type="button"
+              onClick={() => setShowEmojiPicker((v) => !v)}
+              className={`p-1 hover:text-[var(--bc-mobile-accent)] transition-colors cursor-pointer ${
+                showEmojiPicker ? "text-[var(--bc-mobile-accent)]" : ""
+              }`}
+              title="Biểu tượng cảm xúc"
+            >
+              <Smile className="h-4 w-4" />
+            </button>
+
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -382,7 +424,7 @@ export function MomentCommentInput({
           type="button"
           onClick={handleSend}
           disabled={(!text.trim() && !attachedPhoto) || submitting || disabled || uploadingPhoto}
-          className="h-9 w-9 shrink-0 grid place-items-center rounded-full bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-semibold transition-all hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+          className="h-9 w-9 shrink-0 grid place-items-center rounded-full bg-[#DFB76C] hover:bg-[#D4AF37] border border-[#DFB76C]/60 text-slate-950 font-semibold transition-all hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-[0_2px_10px_rgba(223,183,108,0.3)]"
           aria-label="Gửi bình luận"
         >
           {submitting || uploadingPhoto ? (
