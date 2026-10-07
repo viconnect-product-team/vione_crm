@@ -310,7 +310,7 @@ export function EditCommunityModal({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="VD: Gia đình ViOne, CLB Doanh Nhân..."
+              placeholder="VD: Gia Đình ViOne, CLB Doanh Nhân..."
               className="w-full h-11 px-3.5 rounded-xl border border-white/15 bg-slate-900/90 text-white placeholder-slate-500 focus:border-[#DFB76C] focus:outline-hidden text-[13px] font-semibold"
             />
           </div>

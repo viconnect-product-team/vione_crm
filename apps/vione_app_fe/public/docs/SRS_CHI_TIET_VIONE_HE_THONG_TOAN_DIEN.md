@@ -781,6 +781,47 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **RESTful API Endpoint:** `GET /api/connect-app/approvals/pending, POST /api/connect-app/approvals/:id/decide`
 
 
+#### MODULE 33: BẮT TAY KẾT NỐI SONG PHƯƠNG QR THỜI GIAN THỰC & TRÌNH CHỈNH SỬA HỒ SƠ NATIVE PARITY
+*Mục tiêu Epic:* Cơ chế kết nối song phương qua WebSocket khi quét QR, bộ công cụ cập nhật danh tính số C-Level thuần Native và Trợ lý AI Copilot đa năng
+
+##### FR-33.01 - Bắt Tay Kết Nối Song Phương Thời Gian Thực (Bilateral QR Handshake Flow)
+- **Actor:** Hai doanh nhân quét mã QR của nhau (Web PWA và Native Mobile)
+- **Input:** Doanh nhân A quét mã QR của Doanh nhân B, gửi sự kiện WebSocket qr:connect.
+- **Logic Xử Lý:**
+  1. Doanh nhân A mở ScanQrModal quét mã QR của Doanh nhân B.
+  2. Ứng dụng phát sự kiện WebSocket "qr:connect" tới ConnectAppGateway.
+  3. Gateway nhận diện socket của Doanh nhân B và emit sự kiện "connection:incoming".
+  4. Màn hình Doanh nhân B tự động hiển thị IncomingQrConnectionModal (Mobile) hoặc IncomingConnectionModal (Web) với thông tin hồ sơ của A.
+  5. Doanh nhân B bấm [Đồng ý kết nối] -> phát "connection:respond" (accepted). Gateway cập nhật kết nối hai chiều trong CSDL, bắn thông báo xác nhận cho A và mở luồng chat 1-1.
+- **Output:** Kết nối song phương xác lập thành công tức thì trên cả 2 thiết bị.
+- **Luồng Ngoại Lệ (Exception Handling):** Doanh nhân B từ chối: Phát "connection:respond" (declined), đóng modal và không lưu kết nối.
+- **RESTful API Endpoint:** `WS qr:connect, WS connection:incoming, WS connection:respond, WS connection:accepted`
+
+##### FR-33.02 - Trình Chỉnh Sửa Hồ Sơ Cá Nhân Doanh Nhân Thuần Native (Native Edit Profile Parity)
+- **Actor:** Doanh nhân thành viên C-Level
+- **Input:** Bấm nút [Chỉnh sửa] trên màn hình ProfileScreen Native.
+- **Logic Xử Lý:**
+  1. Mở EditProfileModal thuần Native với đầy đủ 8 trường thông tin chuẩn Web: Họ tên hiển thị, Chức danh, Tên doanh nghiệp, Ngành nghề, Số điện thoại, Email, Website, Tiểu sử.
+  2. Người dùng chỉnh sửa và bấm [Lưu thay đổi].
+  3. Ứng dụng gọi API PATCH /users/profile (hoặc lưu offline cache AsyncStorage).
+  4. Cập nhật hồ sơ trong AuthContext, đồng bộ danh thiếp số 3D Titanium và làm mới giao diện Profile tức thì.
+- **Output:** Thông tin cá nhân và danh thiếp doanh nhân được cập nhật chuẩn xác 100%.
+- **Luồng Ngoại Lệ (Exception Handling):** Dữ liệu không hợp lệ (email sai định dạng): Báo lỗi tại trường nhập liệu tương ứng.
+- **RESTful API Endpoint:** `PATCH /api/users/profile, GET /api/users/me`
+
+##### FR-33.03 - Trợ Lý AI Copilot Đa Năng Dynamic Nắm Trọn Vẹn Dữ Liệu Nền Tảng
+- **Actor:** Toàn bộ người dùng hệ thống
+- **Input:** Câu hỏi của người dùng về sự kiện, cộng đồng, tài khoản, cơ hội kinh doanh (Text hoặc Voice).
+- **Logic Xử Lý:**
+  1. Tiếp nhận câu hỏi tại ViOneVoiceAssistantModal (Mobile) hoặc ViOneVoiceAssistant (Web).
+  2. Backend AiService phân tích ý định động, truy xuất CSDL thời gian thực: sự kiện đang diễn ra, danh sách cộng đồng đã tham gia, chỉ số kết nối tài khoản, cơ hội kinh doanh mới.
+  3. Tổng hợp câu trả lời tự nhiên như Chief of Staff, kèm Evidence Cards và Suggested Actions 1-chạm.
+  4. Giao diện modal tối ưu: Header không đè lấn sóng micro, Footer nhập liệu luôn cố định ở đáy.
+- **Output:** Phản hồi thông thái, chính xác 100% dữ liệu nền tảng, không rập khuôn.
+- **Luồng Ngoại Lệ (Exception Handling):** Mất kết nối mạng: Chuyển sang bộ dữ liệu fallback nội bộ thông minh.
+- **RESTful API Endpoint:** `POST /api/ai/chat`
+
+
 ---
 
 ### PHẦN 4: YÊU CẦU PHI CHỨC NĂNG (NON-FUNCTIONAL REQUIREMENTS - NFR)

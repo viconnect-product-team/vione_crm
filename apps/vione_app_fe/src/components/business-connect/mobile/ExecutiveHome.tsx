@@ -33,6 +33,7 @@ import {
   Pencil,
   Phone,
   Play,
+  Plus,
   RefreshCw,
   ShieldCheck,
   SlidersHorizontal,
@@ -47,6 +48,8 @@ import {
 import { toast } from "sonner";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { useTheme } from "@/lib/theme";
+import { CreateMeetingModal } from "./ScheduleCalendar";
+import { getSavedCalendarEvents } from "@/lib/business-connect/mobile/calendar-storage";
 import { HomeNotificationsMenu } from "./HomeNotificationsMenu";
 import { hasTKey, useFmt, useLang, useT, type TKey } from "@/lib/i18n";
 import { getVNTimeGreeting } from "@/lib/utils";
@@ -123,13 +126,14 @@ export function ExecutiveHome() {
   // Tuỳ chỉnh thẻ HÔM NAY — chỉ lọc/sắp xếp dữ liệu đã được cấp quyền.
   const { prefs, update, reset } = useTodayPreferences();
   const [customizeOpen, setCustomizeOpen] = useState(false);
-  const [scheduleTab, setScheduleTab] = useState<"today" | "upcoming" | "reminders" | "voice_moments">("today");
+  const [scheduleTab, setScheduleTab] = useState<"today" | "all" | "upcoming" | "reminders" | "voice_moments">("today");
   const [selectedEvent, setSelectedEvent] = useState<CrmEvent | null>(null);
   const [eventSheetOpen, setEventSheetOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
   const [attendanceSheetOpen, setAttendanceSheetOpen] = useState(false);
   const [workflowSheetOpen, setWorkflowSheetOpen] = useState(false);
   const [approvalsSheetOpen, setApprovalsSheetOpen] = useState(false);
+  const [createMeetingOpen, setCreateMeetingOpen] = useState(false);
 
   // Quyền chia sẻ vị trí phục vụ AI định vị người dùng ViOne quanh đây
   const [hasLocationPermission, setHasLocationPermission] = useState<boolean>(() => {
@@ -218,6 +222,17 @@ export function ExecutiveHome() {
   const [crmEventsData, setCrmEventsData] = useState<any>(null);
   const [meetingsData, setMeetingsData] = useState<any[]>([]);
   const [opportunitiesData, setOpportunitiesData] = useState<any[]>([]);
+  const [scheduledMeetingsVersion, setScheduledMeetingsVersion] = useState(0);
+
+  useEffect(() => {
+    const handleUpdate = () => setScheduledMeetingsVersion((v) => v + 1);
+    window.addEventListener("vione-scheduled-meeting-updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      window.removeEventListener("vione-scheduled-meeting-updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -252,13 +267,46 @@ export function ExecutiveHome() {
     ? crmEventsData
     : ((crmEventsData as any)?.data ?? (crmEventsData as any)?.items ?? []);
 
+  // Lấy các sự kiện đã lưu trong lịch cá nhân (calendar-storage)
+  const savedCalendarEvents = useMemo(() => {
+    return getSavedCalendarEvents();
+  }, [scheduledMeetingsVersion]);
+
+  const savedTodayItems: BcMobileTodayItem[] = useMemo(() => {
+    const todayStr = new Date().toDateString();
+    return savedCalendarEvents
+      .filter((ev) => {
+        if (!ev.startsAt) return false;
+        const d = new Date(ev.startsAt);
+        return !isNaN(d.getTime()) && d.toDateString() === todayStr;
+      })
+      .map((ev) => ({
+        id: `saved-event:${ev.id}`,
+        kind: "calendar" as const,
+        category: "upcoming" as const,
+        urgency: "high" as const,
+        titleKey: ev.title || "Sự kiện cá nhân",
+        descriptionKey: ev.location || "Đã lưu vào lịch",
+        counterpartDisplayName: ev.organizer || "Lịch cá nhân",
+        startsAt: ev.startsAt,
+        dueAt: null,
+        action: {
+          labelKey: "bc.workHub.action.view",
+          targetRoute: "/connect-app/calendar",
+          targetParams: null,
+          targetSearch: null,
+          canRoute: true,
+        },
+      }));
+  }, [savedCalendarEvents]);
+
   const crmTodayItems: BcMobileTodayItem[] = crmList
     .filter((ev) => isEventToday(ev))
     .map((ev) => {
       const dt = getEventDate(ev);
       return {
         id: `event:${ev.id}`,
-        kind: "meeting" as const,
+        kind: "calendar" as const,
         category: "upcoming" as const,
         urgency: "high" as const,
         titleKey: ev.title || ev.name || "Sự kiện hôm nay",
@@ -278,7 +326,7 @@ export function ExecutiveHome() {
 
   const rawPool = data?.today.pool ?? data?.today.items ?? [];
   const mergedTodayPool = [...rawPool];
-  for (const crmItem of crmTodayItems) {
+  for (const crmItem of [...crmTodayItems, ...savedTodayItems]) {
     if (
       !mergedTodayPool.some(
         (p) => p.id === crmItem.id || (p.titleKey && p.titleKey === crmItem.titleKey),
@@ -308,7 +356,6 @@ export function ExecutiveHome() {
     });
 
   // Lắng nghe sự kiện lên lịch cuộc gặp mới & khoảnh khắc ghi âm mới
-  const [scheduledMeetingsVersion, setScheduledMeetingsVersion] = useState(0);
   const [voiceMomentsVersion, setVoiceMomentsVersion] = useState(0);
 
   useEffect(() => {
@@ -443,7 +490,7 @@ export function ExecutiveHome() {
       id: "opp-pwa-2",
       title: "Tìm đối tác chiến lược cung ứng giải pháp AI & Phần mềm CRM",
       organization: "Tập đoàn Công Nghệ TechVibe",
-      communityName: "Gia đình ViOne",
+      communityName: "Gia Đình ViOne",
       dealValue: "850 Triệu VNĐ",
       category: "Công nghệ & AI",
       daysLeft: "Còn 14 ngày",
@@ -451,21 +498,97 @@ export function ExecutiveHome() {
   ];
 
   const todayOpportunities = useMemo(() => {
-    if (opportunitiesData.length > 0) {
-      return opportunitiesData.map((op: any, idx: number) => ({
+    const todayStr = new Date().toDateString();
+    const filtered = opportunitiesData.filter((op: any) => {
+      if (!op) return false;
+      const created = op.createdAt || op.created_at || op.date;
+      if (!created) return false;
+      const d = new Date(created);
+      return !isNaN(d.getTime()) && d.toDateString() === todayStr;
+    });
+
+    if (filtered.length > 0) {
+      return filtered.map((op: any, idx: number) => ({
         id: String(op.id || `opp-${idx}`),
+        communityId: op.communityId || op.community_id || "vione-b2b",
         title: op.title || "Cơ hội hợp tác chiến lược & giao thương",
         organization: op.organization || op.companyName || op.creatorName || "Cộng đồng Doanh nghiệp ViOne",
-        communityName: op.communityName || op.groupName || "Liên minh Doanh Nhân B2B",
-        dealValue: op.dealValue || (op.budget ? `${op.budget.toLocaleString("vi-VN")} VNĐ` : "Thỏa thuận"),
+        communityName: op.communityName || op.groupName || "Gia Đình ViOne",
+        dealValue: op.dealValue || (op.budget ? `${Number(op.budget).toLocaleString("vi-VN")} VNĐ` : "Thỏa thuận"),
         category: op.category || op.field || "Hợp tác & Đầu tư",
-        daysLeft: op.daysLeft || op.duration || "Còn 14 ngày",
+        daysLeft: "Hôm nay",
+      }));
+    }
+
+    // Kiểm tra cơ hội người dùng vừa tạo mới cục bộ trong hôm nay
+    try {
+      const localOpps = JSON.parse(localStorage.getItem("vione_local_opportunities") || "[]");
+      const localToday = localOpps.filter((op: any) => {
+        const created = op.createdAt || op.created_at;
+        return created && new Date(created).toDateString() === todayStr;
+      });
+      if (localToday.length > 0) {
+        return localToday.map((op: any, idx: number) => ({
+          id: String(op.id || `opp-local-${idx}`),
+          communityId: op.communityId || "vione-b2b",
+          title: op.title,
+          organization: op.organization || "Doanh nghiệp thành viên",
+          communityName: op.communityName || "Gia Đình ViOne",
+          dealValue: op.dealValue || "Thỏa thuận",
+          category: op.category || "Hợp tác & Đầu tư",
+          daysLeft: "Hôm nay",
+        }));
+      }
+    } catch {}
+
+    return [];
+  }, [opportunitiesData]);
+
+  const todayTotalCount = todayItems.length + todayMeetings.length + todayOpportunities.length;
+
+  const allOpportunitiesList = useMemo(() => {
+    if (opportunitiesData && opportunitiesData.length > 0) {
+      return opportunitiesData.map((op: any, idx: number) => ({
+        id: String(op.id || `opp-all-${idx}`),
+        communityId: op.communityId || op.community_id || "vione-b2b",
+        title: op.title || "Cơ hội hợp tác chiến lược & giao thương",
+        organization: op.organization || op.companyName || op.creatorName || "Cộng đồng Doanh nghiệp ViOne",
+        communityName: op.communityName || op.groupName || "Gia Đình ViOne",
+        dealValue: op.dealValue || (op.budget ? `${Number(op.budget).toLocaleString("vi-VN")} VNĐ` : "Thỏa thuận"),
+        category: op.category || op.field || "Hợp tác & Đầu tư",
+        daysLeft: op.daysLeft || "Đang mở",
       }));
     }
     return INITIAL_TODAY_OPPORTUNITIES;
   }, [opportunitiesData]);
 
-  const todayTotalCount = todayItems.length + todayMeetings.length + todayOpportunities.length;
+  const allUpcomingList = useMemo(() => {
+    if (upcomingEvents && upcomingEvents.length > 0) {
+      return upcomingEvents;
+    }
+    return crmList.length > 0
+      ? crmList
+      : [
+          {
+            id: "ev-demo-1",
+            title: "Diễn đàn Xúc tiến Thương mại Toàn cầu ViOne 2026",
+            communityName: "Hiệp hội Doanh nhân ViOne",
+            location: "Trung tâm Hội nghị Quốc gia Hà Nội",
+            formattedDate: "Sắp tới",
+            time: "08:30 - 17:30",
+          },
+          {
+            id: "ev-demo-2",
+            title: "Gala Kết nối Doanh nhân Khát vọng Việt",
+            communityName: "Gia Đình ViOne",
+            location: "Grand Ballroom, Khách sạn JW Marriott",
+            formattedDate: "Thứ Sáu tuần này",
+            time: "18:00 - 21:30",
+          },
+        ];
+  }, [upcomingEvents, crmList]);
+
+  const allTotalCount = todayMeetings.length + allOpportunitiesList.length + allUpcomingList.length;
 
   const unread = data?.unreadNotificationCount ?? null;
 
@@ -536,7 +659,7 @@ export function ExecutiveHome() {
                   type="button"
                   onClick={handleRequestLocation}
                   disabled={requestingLocation}
-                  className="shrink-0 px-3 py-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#D4AF37] border border-[#DFB76C]/60 text-slate-950 font-bold text-[11px] hover:opacity-90 active:scale-95 transition shadow-xs cursor-pointer"
+                  className="shrink-0 px-3 py-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 font-bold text-[11px] hover:opacity-90 active:scale-95 transition shadow-xs cursor-pointer border border-[#f0d499]/80"
                 >
                   {requestingLocation ? "Đang bật..." : "Bật vị trí"}
                 </button>
@@ -598,8 +721,8 @@ export function ExecutiveHome() {
                 </div>
               </div>
 
-              {/* Segmented Tab Bar: Hôm nay | Sắp tới | Nhắc lịch | Ghi âm khoảnh khắc */}
-              <div className="mt-3 grid grid-cols-4 gap-1 rounded-xl bg-[var(--bc-mobile-surface-2)] p-1 border border-[var(--bc-mobile-border)]">
+              {/* Segmented Tab Bar: Hôm nay | Tất cả | Sắp tới | Nhắc lịch | Ghi âm khoảnh khắc */}
+              <div className="mt-3 grid grid-cols-5 gap-1 rounded-xl bg-[var(--bc-mobile-surface-2)] p-1 border border-[var(--bc-mobile-border)]">
                 <button
                   type="button"
                   onClick={() => setScheduleTab("today")}
@@ -608,13 +731,40 @@ export function ExecutiveHome() {
                       ? { background: "var(--bc-mobile-accent-grad)" }
                       : undefined
                   }
-                  className={`py-1.5 text-[11px] rounded-lg transition-all text-center cursor-pointer truncate ${
+                  className={`py-1.5 text-[10.5px] rounded-lg transition-all text-center cursor-pointer truncate ${
                     scheduleTab === "today"
                       ? "text-[#050c15] font-bold shadow-xs"
                       : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
                   }`}
                 >
                   Hôm nay {todayTotalCount > 0 ? `(${todayTotalCount})` : ""}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScheduleTab("all")}
+                  style={
+                    scheduleTab === "all"
+                      ? { background: "var(--bc-mobile-accent-grad)" }
+                      : undefined
+                  }
+                  className={`py-1.5 text-[10.5px] rounded-lg transition-all flex items-center justify-center gap-0.5 cursor-pointer truncate ${
+                    scheduleTab === "all"
+                      ? "text-[#050c15] font-bold shadow-xs"
+                      : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
+                  }`}
+                >
+                  <span>Tất cả</span>
+                  {allTotalCount > 0 && (
+                    <span
+                      className={`px-1 py-0.2 rounded-full text-[8.5px] leading-none ${
+                        scheduleTab === "all"
+                          ? "bg-[#050c15]/20 text-[#050c15] font-bold"
+                          : "bg-[var(--bc-mobile-accent-soft)] text-[var(--bc-mobile-accent)] font-semibold"
+                      }`}
+                    >
+                      {allTotalCount}
+                    </span>
+                  )}
                 </button>
                 <button
                   type="button"
@@ -719,10 +869,10 @@ export function ExecutiveHome() {
                       {todayMeetings.length > 0 && (
                         <div className="space-y-2">
                           <div className="flex items-center justify-between px-1">
-                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-[#DFB76C]">
+                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-[#F6E1C3]">
                               <Handshake className="h-3.5 w-3.5" /> Lịch gặp hôm nay
                             </span>
-                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-[#DFB76C] border border-amber-500/20">
+                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:text-[#F6E1C3] border border-amber-500/20">
                               {todayMeetings.length} cuộc hẹn
                             </span>
                           </div>
@@ -765,7 +915,7 @@ export function ExecutiveHome() {
                                     <button
                                       type="button"
                                       onClick={() => toast.info("Đang mở phòng họp trực tuyến Google Meet")}
-                                      className="inline-flex items-center gap-1 rounded-lg bg-[#DFB76C] hover:bg-[#D4AF37] px-2.5 py-1 text-[11px] font-bold text-slate-950 transition cursor-pointer shadow-xs"
+                                      className="inline-flex items-center gap-1 rounded-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] px-2.5 py-1 text-[11px] font-bold text-slate-950 transition cursor-pointer shadow-xs hover:opacity-90"
                                     >
                                       <Video className="h-3 w-3" />
                                       <span>Vào họp Meet</span>
@@ -773,7 +923,7 @@ export function ExecutiveHome() {
                                   ) : (
                                     <a
                                       href={`tel:${m.phone || "0988888888"}`}
-                                      className="inline-flex items-center gap-1 rounded-lg bg-[#DFB76C] hover:bg-[#D4AF37] px-2.5 py-1 text-[11px] font-bold text-slate-950 transition shadow-xs"
+                                      className="inline-flex items-center gap-1 rounded-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] px-2.5 py-1 text-[11px] font-bold text-slate-950 transition shadow-xs hover:opacity-90"
                                     >
                                       <Phone className="h-3 w-3" />
                                       <span>Gọi đối tác</span>
@@ -790,10 +940,10 @@ export function ExecutiveHome() {
                       {todayOpportunities.length > 0 && (
                         <div className="space-y-2">
                           <div className="flex items-center justify-between px-1">
-                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-[#DFB76C]">
+                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-[#F6E1C3]">
                               <Briefcase className="h-3.5 w-3.5" /> Cơ hội mới từ cộng đồng
                             </span>
-                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-[#DFB76C] border border-amber-500/20">
+                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:text-[#F6E1C3] border border-amber-500/20">
                               {todayOpportunities.length} cơ hội mới
                             </span>
                           </div>
@@ -808,7 +958,7 @@ export function ExecutiveHome() {
                                   <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-[var(--bc-mobile-accent)] border border-[var(--bc-mobile-border)]">
                                     <Users className="h-3 w-3 text-amber-500" /> {opp.communityName}
                                   </span>
-                                  <span className="inline-flex items-center gap-1 rounded-md bg-[#DFB76C] px-1.5 py-0.5 text-[9.5px] font-extrabold text-slate-950">
+                                  <span className="inline-flex items-center gap-1 rounded-md bg-[#DFB76C] px-1.5 py-0.5 text-[9.5px] font-extrabold text-slate-950 border border-[#f0d499]/80">
                                     <Sparkles className="h-2.5 w-2.5" /> CƠ HỘI MỚI
                                   </span>
                                 </div>
@@ -833,18 +983,11 @@ export function ExecutiveHome() {
 
                                 <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)] flex items-center gap-2">
                                   <Link
-                                    to="/connect-app/community"
-                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#D4AF37] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs"
+                                    to={opp.communityId ? (`/connect-app/community/${opp.communityId}/opportunities` as any) : ("/connect-app/community" as any)}
+                                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
                                   >
                                     <span>Xem chi tiết cơ hội</span>
                                     <ArrowRight className="h-3.5 w-3.5" />
-                                  </Link>
-                                  <Link
-                                    to="/connect-app/community"
-                                    className="inline-flex items-center justify-center gap-1 rounded-xl bg-[var(--bc-mobile-accent-soft)] hover:bg-[var(--bc-mobile-accent-soft)]/80 border border-[var(--bc-mobile-border-gold)] px-3 py-2 text-[11.5px] font-bold text-[var(--bc-mobile-accent)] transition cursor-pointer"
-                                  >
-                                    <Users className="h-3.5 w-3.5" />
-                                    <span>Vào Cộng đồng</span>
                                   </Link>
                                 </div>
                               </div>
@@ -853,28 +996,235 @@ export function ExecutiveHome() {
                         </div>
                       )}
 
-                      {/* 3. SỰ KIỆN HÔM NAY */}
-                      {todayItems.length > 0 && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between px-1">
-                            <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-[#DFB76C]">
-                              <CalendarDays className="h-3.5 w-3.5" /> Sự kiện hôm nay
-                            </span>
-                            <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:text-[#DFB76C] border border-amber-500/20">
-                              {todayItems.length} sự kiện
-                            </span>
-                          </div>
-                          <ul className="divide-y divide-[var(--bc-mobile-border)]">
-                            {todayItems.map((item) => (
-                              <TodayItem key={item.id} item={item} onSelect={handleOpenTodayItem} />
-                            ))}
-                          </ul>
-                          <TodayPrimaryAction items={todayItems} onOpenV={openV} />
+                      {/* 3. SỰ KIỆN HÔM NAY - Không bao giờ bị ẩn/nuốt chửng */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between px-1">
+                          <span className="flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-[#F6E1C3]">
+                            <CalendarDays className="h-3.5 w-3.5" /> Sự kiện hôm nay
+                          </span>
+                          <span className="rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:text-[#F6E1C3] border border-amber-500/20">
+                            {todayItems.length} sự kiện
+                          </span>
                         </div>
-                      )}
+                        {todayItems.length > 0 ? (
+                          <>
+                            <ul className="divide-y divide-[var(--bc-mobile-border)]">
+                              {todayItems.map((item) => (
+                                <TodayItem key={item.id} item={item} onSelect={handleOpenTodayItem} />
+                              ))}
+                            </ul>
+                            <TodayPrimaryAction items={todayItems} onOpenV={openV} />
+                          </>
+                        ) : (
+                          <div className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-4 text-center">
+                            <CalendarDays className="mx-auto h-7 w-7 text-amber-500/70 mb-2" />
+                            <p className="text-xs font-semibold text-[var(--bc-mobile-text)]">
+                              Hôm nay bạn chưa có lịch sự kiện nào diễn ra
+                            </p>
+                            <p className="mt-1 text-[11px] text-[var(--bc-mobile-muted)]">
+                              Khám phá các sự kiện giao thương B2B và kết nối doanh nhân sắp tới
+                            </p>
+                            <div className="mt-3 flex items-center justify-center gap-2">
+                              <Link
+                                to="/connect-app/calendar"
+                                className="inline-flex items-center gap-1 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3 py-1.5 text-xs font-bold text-slate-950 shadow-xs hover:opacity-90 transition cursor-pointer border border-[#f0d499]/80"
+                              >
+                                <CalendarDays className="h-3.5 w-3.5" />
+                                <span>Xem lịch sự kiện</span>
+                              </Link>
+                              <button
+                                type="button"
+                                onClick={() => setCreateMeetingOpen(true)}
+                                className="inline-flex items-center gap-1 rounded-xl bg-[var(--bc-mobile-surface-2)] border border-[var(--bc-mobile-border)] px-3 py-1.5 text-xs font-semibold text-[var(--bc-mobile-text)] hover:border-[#D8B282]/50 transition cursor-pointer"
+                              >
+                                <Plus className="h-3.5 w-3.5 text-amber-500" />
+                                <span>Thêm cuộc gặp mới</span>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </>
+              )}
+
+              {/* Nội dung Tab TẤT CẢ (Show đủ: Cuộc gặp của tài khoản nếu có, Cơ hội tại cộng đồng tham gia, Sự kiện sắp tới) */}
+              {scheduleTab === "all" && (
+                <div className="mt-3 space-y-4">
+                  {/* 1. CUỘC GẶP CỦA TÀI KHOẢN (NẾU CÓ) */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-[#8C653B] dark:text-[#D8B282]">
+                        CUỘC GẶP CỦA TÀI KHOẢN
+                      </span>
+                      <span className="rounded-md border border-[#8C653B]/30 bg-[#F6E1C3]/30 px-2 py-0.5 text-[10px] font-bold text-[#050c15]">
+                        {todayMeetings.length} cuộc hẹn
+                      </span>
+                    </div>
+
+                    {todayMeetings.length > 0 ? (
+                      <div className="space-y-2.5">
+                        {todayMeetings.map((m: any) => (
+                          <div
+                            key={m.id}
+                            className="rounded-2xl border border-[#8C653B]/30 bg-[#FFFDF9] dark:bg-[#1A1510] p-3.5 shadow-xs"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[#F6E1C3] text-[#050c15] border border-[#8C653B]/30">
+                                [Cuộc gặp 1-1]
+                              </span>
+                              <span className="text-[11px] font-semibold text-[#050c15]">
+                                {m.time} · {m.date || "Hôm nay"}
+                              </span>
+                            </div>
+
+                            <h4 className="mt-2 text-[14px] font-bold text-[#050c15] dark:text-[#F6E1C3] leading-snug">
+                              {m.title}
+                            </h4>
+
+                            <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
+                              Đối tác: <span className="font-semibold">{m.counterpart}</span>
+                            </div>
+
+                            <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
+                              Địa điểm: <span className="font-semibold">{m.location}</span>
+                            </div>
+
+                            <div className="mt-2.5 pt-2 border-t border-[#8C653B]/20 flex items-center justify-end">
+                              {m.format === "online" ? (
+                                <button
+                                  type="button"
+                                  onClick={() => toast.info("Đang mở phòng họp Google Meet")}
+                                  className="rounded-lg bg-[#8C653B] hover:bg-[#724e2c] px-3 py-1.5 text-[11.5px] font-bold text-white transition cursor-pointer"
+                                >
+                                  Vào phòng họp Meet
+                                </button>
+                              ) : (
+                                <a
+                                  href={`tel:${m.phone || "0988888888"}`}
+                                  className="rounded-lg bg-[#8C653B] hover:bg-[#724e2c] px-3 py-1.5 text-[11.5px] font-bold text-white transition"
+                                >
+                                  Gọi đối tác
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-[#8C653B]/20 bg-[#FAF6F0] dark:bg-[#1A1510] p-3 text-center">
+                        <p className="text-xs font-semibold text-[#050c15] dark:text-[#E2D3B3]">
+                          Tài khoản hiện chưa có cuộc gặp nào
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 2. CƠ HỘI ĐANG CÓ TẠI CỘNG ĐỒNG THAM GIA */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-[#8C653B] dark:text-[#D8B282]">
+                        CƠ HỘI ĐANG CÓ TẠI CỘNG ĐỒNG THAM GIA
+                      </span>
+                      <span className="rounded-md border border-[#8C653B]/30 bg-[#F6E1C3]/30 px-2 py-0.5 text-[10px] font-bold text-[#050c15]">
+                        {allOpportunitiesList.length} cơ hội
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {allOpportunitiesList.map((opp: any) => (
+                        <div
+                          key={opp.id}
+                          className="rounded-2xl border border-[#8C653B]/30 bg-[#FFFDF9] dark:bg-[#1A1510] p-3.5 shadow-xs"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[#F6E1C3] text-[#050c15] border border-[#8C653B]/30">
+                              {opp.communityName || "Cộng đồng ViOne"}
+                            </span>
+                            <span className="inline-flex items-center rounded-md bg-[#8C653B] px-2 py-0.5 text-[9.5px] font-extrabold text-white">
+                              CƠ HỘI ĐANG CÓ
+                            </span>
+                          </div>
+
+                          <h4 className="mt-2 text-[14px] font-bold text-[#050c15] dark:text-[#F6E1C3] leading-snug">
+                            {opp.title}
+                          </h4>
+
+                          <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
+                            Đơn vị: <span className="font-semibold">{opp.organization}</span>
+                          </div>
+
+                          <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs text-[#050c15] dark:text-[#E2D3B3]">
+                            <span className="rounded-md border border-[#8C653B]/40 bg-[#F6E1C3]/30 px-2 py-0.5 font-bold text-[#050c15]">
+                              {opp.dealValue}
+                            </span>
+                            <span>
+                              {opp.category} · {opp.daysLeft}
+                            </span>
+                          </div>
+
+                          <div className="mt-3 pt-2.5 border-t border-[#8C653B]/20">
+                            <Link
+                              to={opp.communityId ? (`/connect-app/community/${opp.communityId}/opportunities` as any) : ("/connect-app/community" as any)}
+                              className="w-full inline-flex items-center justify-center rounded-xl bg-[#8C653B] hover:bg-[#724e2c] px-3 py-2 text-[11.5px] font-extrabold text-white transition cursor-pointer"
+                            >
+                              Xem chi tiết cơ hội
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 3. SỰ KIỆN SẮP TỚI */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-[#8C653B] dark:text-[#D8B282]">
+                        SỰ KIỆN SẮP TỚI
+                      </span>
+                      <span className="rounded-md border border-[#8C653B]/30 bg-[#F6E1C3]/30 px-2 py-0.5 text-[10px] font-bold text-[#050c15]">
+                        {allUpcomingList.length} sự kiện
+                      </span>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      {allUpcomingList.map((ev: any) => (
+                        <div
+                          key={ev.id}
+                          className="rounded-2xl border border-[#8C653B]/30 bg-[#FFFDF9] dark:bg-[#1A1510] p-3.5 shadow-xs"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[#F6E1C3] text-[#050c15] border border-[#8C653B]/30">
+                              {ev.communityName || ev.community || "Hiệp hội ViOne"}
+                            </span>
+                            <span className="text-[11px] font-semibold text-[#050c15]">
+                              {ev.formattedDate || ev.date || "Sắp diễn ra"} · {ev.time || ""}
+                            </span>
+                          </div>
+
+                          <h4 className="mt-2 text-[14px] font-bold text-[#050c15] dark:text-[#F6E1C3] leading-snug">
+                            {ev.title}
+                          </h4>
+
+                          <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
+                            Địa điểm: <span className="font-semibold">{ev.location}</span>
+                          </div>
+
+                          <div className="mt-3 pt-2.5 border-t border-[#8C653B]/20">
+                            <button
+                              type="button"
+                              onClick={() => handleOpenEvent(ev)}
+                              className="w-full inline-flex items-center justify-center rounded-xl bg-[#8C653B] hover:bg-[#724e2c] px-3 py-2 text-[11.5px] font-extrabold text-white transition cursor-pointer"
+                            >
+                              Xem chi tiết sự kiện
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               )}
 
               {/* Nội dung Tab SẮP TỚI */}
@@ -1112,7 +1462,19 @@ export function ExecutiveHome() {
 
             <InsightCard />
 
-            <QuickActions />
+            <QuickActions onOpenScheduleModal={() => setCreateMeetingOpen(true)} />
+
+            {/* Modal Lên lịch cuộc gặp cá nhân */}
+            {createMeetingOpen && (
+              <CreateMeetingModal
+                onClose={() => setCreateMeetingOpen(false)}
+                onSuccess={() => {
+                  setCreateMeetingOpen(false);
+                  setScheduledMeetingsVersion((v) => v + 1);
+                  toast.success("✓ Đã lên lịch cuộc gặp và thiết lập báo thức thành công!");
+                }}
+              />
+            )}
 
             <EnterpriseOperationsCard
               onOpenAttendance={() => setAttendanceSheetOpen(true)}
@@ -1174,42 +1536,50 @@ function NotificationsLink({ unreadCount }: { unreadCount: number | null }) {
   return <HomeNotificationsMenu unreadCount={unreadCount} />;
 }
 
-function QuickActions() {
+function QuickActions({ onOpenScheduleModal }: { onOpenScheduleModal: () => void }) {
   const t = useT();
-  const items = [
-    {
-      to: "/connect-app/moment",
-      Icon: QuickMeetIcon,
-      label: t("bc.mobile.home.quick.meet"),
-    },
-    {
-      to: "/connect-app/card-scan",
-      Icon: QuickScanIcon,
-      label: t("bc.mobile.home.quick.scan"),
-    },
-    {
-      to: "/connect-app/me/card",
-      Icon: QuickCardIcon,
-      label: t("bc.mobile.home.quick.card"),
-    },
-  ];
 
   return (
     <nav id="tour-vione-quick-actions" aria-label={t("bc.mobile.home.quick.title")} className="mt-5 grid grid-cols-3 gap-2">
-      {items.map(({ to, Icon, label }) => (
-        <Link
-          key={to}
-          to={to as any}
-          className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] py-3.5 px-1 text-center shadow-xs transition-all hover:border-[var(--bc-mobile-border-gold)] active:scale-[0.98]"
-        >
-          <span className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--bc-mobile-accent-soft)] border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] group-hover:border-[var(--bc-mobile-border-gold)] group-hover:scale-105 transition-all">
-            <Icon className="h-5 w-5 text-[var(--bc-mobile-accent)]" />
-          </span>
-          <span className="text-[12.5px] font-semibold text-[var(--bc-mobile-text)] truncate max-w-full group-hover:text-[var(--bc-mobile-accent)] transition-colors">
-            {label}
-          </span>
-        </Link>
-      ))}
+      {/* 1. Lên lịch cuộc gặp cá nhân -> Mở modal đặt lịch */}
+      <button
+        type="button"
+        onClick={onOpenScheduleModal}
+        className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] py-3.5 px-1 text-center shadow-xs transition-all hover:border-[var(--bc-mobile-border-gold)] active:scale-[0.98] cursor-pointer"
+      >
+        <span className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--bc-mobile-accent-soft)] border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] group-hover:border-[var(--bc-mobile-border-gold)] group-hover:scale-105 transition-all">
+          <QuickMeetIcon className="h-5 w-5 text-[var(--bc-mobile-accent)]" />
+        </span>
+        <span className="text-[12.5px] font-semibold text-[var(--bc-mobile-text)] truncate max-w-full group-hover:text-[var(--bc-mobile-accent)] transition-colors">
+          {t("bc.mobile.home.quick.meet")}
+        </span>
+      </button>
+
+      {/* 2. Quét danh thiếp */}
+      <Link
+        to="/connect-app/card-scan"
+        className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] py-3.5 px-1 text-center shadow-xs transition-all hover:border-[var(--bc-mobile-border-gold)] active:scale-[0.98]"
+      >
+        <span className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--bc-mobile-accent-soft)] border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] group-hover:border-[var(--bc-mobile-border-gold)] group-hover:scale-105 transition-all">
+          <QuickScanIcon className="h-5 w-5 text-[var(--bc-mobile-accent)]" />
+        </span>
+        <span className="text-[12.5px] font-semibold text-[var(--bc-mobile-text)] truncate max-w-full group-hover:text-[var(--bc-mobile-accent)] transition-colors">
+          {t("bc.mobile.home.quick.scan")}
+        </span>
+      </Link>
+
+      {/* 3. Danh thiếp */}
+      <Link
+        to="/connect-app/me/card"
+        className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] py-3.5 px-1 text-center shadow-xs transition-all hover:border-[var(--bc-mobile-border-gold)] active:scale-[0.98]"
+      >
+        <span className="grid h-11 w-11 place-items-center rounded-xl bg-[var(--bc-mobile-accent-soft)] border border-[var(--bc-mobile-border)] text-[var(--bc-mobile-accent)] group-hover:border-[var(--bc-mobile-border-gold)] group-hover:scale-105 transition-all">
+          <QuickCardIcon className="h-5 w-5 text-[var(--bc-mobile-accent)]" />
+        </span>
+        <span className="text-[12.5px] font-semibold text-[var(--bc-mobile-text)] truncate max-w-full group-hover:text-[var(--bc-mobile-accent)] transition-colors">
+          {t("bc.mobile.home.quick.card")}
+        </span>
+      </Link>
     </nav>
   );
 }
@@ -1380,18 +1750,18 @@ function EnterpriseOperationsCard({
   return (
     <section
       aria-labelledby="bc-home-ops"
-      className="relative mt-5 overflow-hidden rounded-3xl border border-[#DFB76C]/30 bg-gradient-to-b from-white via-white to-zinc-50 dark:from-[#0B0F17] dark:via-[#101622] dark:to-[#0B0F17] p-5 shadow-xl transition-all"
+      className="relative mt-5 overflow-hidden rounded-3xl border border-amber-400/30 bg-gradient-to-b from-white via-white to-zinc-50 dark:from-[#0B0F17] dark:via-[#101622] dark:to-[#0B0F17] p-5 shadow-xl transition-all"
     >
       {/* Header bar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-[#DFB76C]/20 to-[#8C653B]/20 text-[#D4AF37] border border-[#DFB76C]/30">
+          <div className="grid h-8 w-8 place-items-center rounded-xl bg-gradient-to-br from-amber-400/20 to-amber-600/20 text-amber-600 dark:text-amber-400 border border-amber-400/30">
             <Activity className="h-4 w-4" strokeWidth={2.2} />
           </div>
           <div>
             <h2
               id="bc-home-ops"
-              className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#8C653B] dark:text-[#DFB76C]"
+              className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-400"
             >
               GIÁM SÁT VẬN HÀNH & NHÂN SỰ
             </h2>
@@ -1400,8 +1770,8 @@ function EnterpriseOperationsCard({
             </p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#DFB76C]/10 border border-[#DFB76C]/30 px-2.5 py-1 text-[10px] font-bold text-[#D4AF37]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-400/10 border border-amber-400/30 px-2.5 py-1 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
           TRỰC TUYẾN
         </span>
       </div>
@@ -1412,13 +1782,13 @@ function EnterpriseOperationsCard({
         <button
           type="button"
           onClick={onOpenAttendance}
-          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-[#DFB76C] cursor-pointer hover:shadow-md active:scale-95"
+          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
         >
           <div className="flex items-center justify-between">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#DFB76C]/15 text-[#D4AF37] border border-[#DFB76C]/20">
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
               <MapPin className="h-3.5 w-3.5" />
             </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
           </div>
           <div className="mt-2.5">
             <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
@@ -1437,13 +1807,13 @@ function EnterpriseOperationsCard({
         <button
           type="button"
           onClick={onOpenWorkflow}
-          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-[#DFB76C] cursor-pointer hover:shadow-md active:scale-95"
+          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
         >
           <div className="flex items-center justify-between">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#DFB76C]/15 text-[#D4AF37] border border-[#DFB76C]/20">
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
               <Layers className="h-3.5 w-3.5" />
             </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
           </div>
           <div className="mt-2.5">
             <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
@@ -1462,19 +1832,19 @@ function EnterpriseOperationsCard({
         <button
           type="button"
           onClick={onOpenApprovals}
-          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-[#DFB76C] cursor-pointer hover:shadow-md active:scale-95"
+          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
         >
           <div className="flex items-center justify-between">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#DFB76C]/15 text-[#D4AF37] border border-[#DFB76C]/20">
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
               <ShieldCheck className="h-3.5 w-3.5" />
             </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-[#D4AF37] group-hover:translate-x-0.5 transition-all" />
+            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
           </div>
           <div className="mt-2.5">
             <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
               3
             </p>
-            <p className="mt-1 text-[11px] font-semibold text-[#8C653B] dark:text-[#DFB76C] leading-tight">
+            <p className="mt-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 leading-tight">
               41.5 Tr chờ
             </p>
             <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
@@ -1487,7 +1857,7 @@ function EnterpriseOperationsCard({
       {/* Action Banner mạ vàng sang trọng — 1 chạm điểm danh / giám sát */}
       <div className="mt-4 pt-3.5 border-t border-zinc-200 dark:border-white/10 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="grid h-6 w-6 place-items-center rounded-full bg-[#DFB76C]/20 text-[#D4AF37]">
+          <span className="grid h-6 w-6 place-items-center rounded-full bg-amber-400/20 text-amber-500">
             <Sparkles className="h-3 w-3" />
           </span>
           <span className="text-[12px] font-bold text-zinc-800 dark:text-zinc-200">
@@ -1598,19 +1968,6 @@ function Greeting({ identity }: { identity: BcMobileHomeIdentity }) {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
 
-          {/* Nút Chỉnh sửa nhanh trên ảnh bìa - chỉ để icon */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setQuickEditOpen(true);
-            }}
-            title="Chỉnh sửa thông tin"
-            aria-label="Chỉnh sửa thông tin"
-            className="absolute top-2.5 right-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/80 dark:bg-black/60 backdrop-blur-md text-slate-700 dark:text-amber-400 border border-slate-200/60 dark:border-white/20 hover:border-amber-400 shadow-md cursor-pointer active:scale-90 transition-all"
-          >
-            <Pencil className="h-4 w-4" />
-          </button>
         </div>
 
         {/* Khối thông tin: Thông tin bên TRÁI, Avatar tròn bên PHẢI */}

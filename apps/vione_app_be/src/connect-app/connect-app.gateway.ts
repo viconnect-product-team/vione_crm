@@ -219,6 +219,48 @@ export class ConnectAppGateway implements OnGatewayConnection, OnGatewayDisconne
     });
   }
 
+  emitConnectionDeclined(targetUserId: string, declinerProfile: any, connectionId: string) {
+    if (!this.server) return;
+    this.server.to(`user:${targetUserId}`).emit('connection:declined', {
+      declinerProfile,
+      connectionId,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  @SubscribeMessage('qr:connect')
+  handleQrConnect(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { targetUserId: string; requesterProfile: any; connectionId?: string },
+  ) {
+    if (!payload?.targetUserId || !this.server) return { ok: false };
+    const connectionId = payload.connectionId || `conn-${Date.now()}`;
+    this.logger.log(`QR connect from ${payload.requesterProfile?.displayName || 'User'} -> user:${payload.targetUserId}`);
+    this.server.to(`user:${payload.targetUserId}`).emit('connection:requested', {
+      requesterProfile: payload.requesterProfile,
+      connectionId,
+      timestamp: new Date().toISOString(),
+    });
+    return { ok: true, connectionId };
+  }
+
+  @SubscribeMessage('connection:respond')
+  handleConnectionRespond(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { targetUserId: string; accepted: boolean; responderProfile: any; connectionId: string },
+  ) {
+    if (!payload?.targetUserId || !this.server) return { ok: false };
+    this.logger.log(`Connection respond [${payload.accepted ? 'ACCEPTED' : 'DECLINED'}] -> user:${payload.targetUserId}`);
+    const eventName = payload.accepted ? 'connection:accepted' : 'connection:declined';
+    this.server.to(`user:${payload.targetUserId}`).emit(eventName, {
+      responderProfile: payload.responderProfile,
+      connectionId: payload.connectionId,
+      accepted: payload.accepted,
+      timestamp: new Date().toISOString(),
+    });
+    return { ok: true };
+  }
+
   emitNotification(userId: string, notification: any) {
     if (!this.server) return;
     this.server.to(`user:${userId}`).emit('notification:new', notification);

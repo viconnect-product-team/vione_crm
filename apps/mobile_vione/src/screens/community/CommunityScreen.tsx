@@ -156,13 +156,13 @@ export function getCommunityVisuals(name: string, logoUrl?: string | null, banne
   if (lower.includes("vione") || lower.includes("gia đình") || lower.includes("ceo") || lower.includes("1983")) {
     defaultBanner = "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
-    category = "Gia đình ViOne • C-Level";
+    category = "Gia Đình ViOne • C-Level";
     attendees = [
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80",
     ];
-    descFallback = "Mạng lưới kết nối Chủ tịch, CEO & Lãnh đạo doanh nghiệp thuộc Gia đình ViOne.";
+    descFallback = "Mạng lưới kết nối Chủ tịch, CEO & Lãnh đạo doanh nghiệp thuộc Gia Đình ViOne.";
   } else if (lower.includes("ai") || lower.includes("vietnam") || lower.includes("tech")) {
     defaultBanner = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80";
@@ -254,14 +254,27 @@ const INITIAL_EVENTS: B2BEvent[] = [];
 const INITIAL_NEWS: NewsPostItem[] = [];
 const INITIAL_MEMBERS: MemberItem[] = [];
 
+interface CommunityScreenProps {
+  route?: {
+    params?: {
+      communityId?: string;
+      tab?: DetailTab;
+      opportunityId?: string;
+    };
+  };
+  navigation?: any;
+}
+
 // ==========================================
 // Main Component
 // ==========================================
-export const CommunityScreen: React.FC = () => {
+export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigation }) => {
   const { colors, isDark } = useTheme();
 
   // Navigation State: null = CommunityHome (Level 1); string = CommunityDetail (Level 2)
-  const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(null);
+  const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(
+    route?.params?.communityId || null
+  );
 
   // Home Level 1 States
   const [activeTab, setActiveTab] = useState<CommunityTab>("all");
@@ -272,10 +285,26 @@ export const CommunityScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   // Detail Level 2 States
-  const [detailTab, setDetailTab] = useState<DetailTab>("tasks");
+  const [detailTab, setDetailTab] = useState<DetailTab>(route?.params?.tab || "tasks");
   const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
   const [taskFilter, setTaskFilter] = useState<"all" | "assigned" | "in_progress" | "completed">("all");
   const [acceptingTaskId, setAcceptingTaskId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (route?.params?.communityId) {
+      setSelectedCommunityId(route.params.communityId);
+      if (route.params.tab) {
+        setDetailTab(route.params.tab);
+      }
+      if (route.params.opportunityId) {
+        const found = opportunities.find((o) => o.id === route.params?.opportunityId);
+        if (found) {
+          setSelectedOpp(found);
+          setOppModalVisible(true);
+        }
+      }
+    }
+  }, [route?.params, opportunities]);
 
   // Modals
   const [createCommunityVisible, setCreateCommunityVisible] = useState(false);

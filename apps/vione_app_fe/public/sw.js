@@ -89,3 +89,47 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
+// 4. Background Push & Notification Click handling for Phone Lockscreen & Status Bar
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { title: "Thông báo ViOne", body: event.data ? event.data.text() : "" };
+  }
+
+  const title = data.title || "ViOne Connect";
+  const options = {
+    body: data.body || "Bạn có thông báo mới từ hệ sinh thái ViOne",
+    icon: data.icon || "/app-icon.png",
+    badge: data.badge || "/app-icon.png",
+    tag: data.tag || `vione-notif-${Date.now()}`,
+    data: { url: data.url || "/connect-app" },
+    vibrate: data.vibrate || [200, 100, 200],
+    requireInteraction: data.requireInteraction || false,
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data?.url || "/connect-app";
+
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if ("focus" in client) {
+          if (client.url && client.url.includes(self.location.origin)) {
+            client.navigate(targetUrl);
+            return client.focus();
+          }
+        }
+      }
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(targetUrl);
+      }
+    })
+  );
+});

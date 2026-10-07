@@ -577,7 +577,7 @@ function MembersPage() {
             onClick={() => setHubTab("smart_crm")}
             className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               hubTab === "smart_crm"
-                ? "bg-gradient-to-r from-[#DFB76C] via-[#E8C98E] to-[#C99E55] text-slate-950 shadow-md shadow-[#DFB76C]/25"
+                ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-md shadow-amber-500/20"
                 : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
           >
@@ -597,7 +597,7 @@ function MembersPage() {
             onClick={() => setHubTab("members_list")}
             className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all cursor-pointer ${
               hubTab === "members_list"
-                ? "bg-gradient-to-r from-[#DFB76C] via-[#E8C98E] to-[#C99E55] text-slate-950 shadow-md shadow-[#DFB76C]/25"
+                ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-md shadow-amber-500/20"
                 : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
             }`}
           >

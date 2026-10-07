@@ -292,6 +292,43 @@ export function ViOneVoiceAssistant() {
     (cmd: string) => {
       const q = cmd.toLowerCase().trim();
 
+      // 0. Tra cứu thời gian, ngày giờ thực tế (Múi giờ Việt Nam GMT+7)
+      if (
+        q.includes("mấy giờ") ||
+        q.includes("bây giờ là mấy giờ") ||
+        q.includes("hiện tại là mấy giờ") ||
+        q.includes("mấy giờ rồi") ||
+        q.includes("ngày mấy") ||
+        q.includes("ngày bao nhiêu") ||
+        q.includes("thứ mấy") ||
+        (q.includes("thời gian") && (q.includes("hiện tại") || q.includes("bây giờ") || q.includes("nào")))
+      ) {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const day = now.getDate().toString().padStart(2, "0");
+        const month = (now.getMonth() + 1).toString().padStart(2, "0");
+        const year = now.getFullYear();
+        const days = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+        const dayOfWeek = days[now.getDay()];
+        const period = Number(hours) < 12 ? "sáng" : Number(hours) < 18 ? "chiều" : "tối";
+
+        const reply = `⏰ **Thông Tin Thời Gian Hiện Tại (Múi Giờ Việt Nam):**\n\n• **Bây giờ là:** **${hours}:${minutes} ${period}**\n• **Hôm nay là:** **${dayOfWeek}**, ngày **${day}/${month}/${year}**\n\n*Em luôn cập nhật đồng hồ theo thời gian thực để hỗ trợ Anh/Chị quản lý lịch trình, cuộc hẹn 1-1 và sự kiện đúng giờ.*`;
+        const speech = `Dạ thưa Anh Chị, bây giờ là ${hours} giờ ${minutes} phút ${period}, ${dayOfWeek} ngày ${day} tháng ${month} năm ${year} theo giờ Việt Nam ạ.`;
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "📅 Xem Lịch Trình Hôm Nay", route: "/connect-app" },
+          { label: "🤝 Xem Cuộc Hẹn 1-1", route: "/connect-app/meetings" },
+        ]);
+        return;
+      }
+
       // 1. Kiểm tra khách hàng
       if (
         (q.includes("khách hàng") &&
@@ -401,7 +438,7 @@ export function ViOneVoiceAssistant() {
             interestCount: 4,
             budget: "Thỏa thuận",
             status: "Đang mở",
-            communityName: "Gia đình ViOne (B2B)",
+            communityName: "Gia Đình ViOne (B2B)",
           },
           {
             id: "opp-my-02",
@@ -410,7 +447,7 @@ export function ViOneVoiceAssistant() {
             interestCount: 2,
             budget: "500 - 800 triệu",
             status: "Đang mở",
-            communityName: "Gia đình ViOne (B2B)",
+            communityName: "Gia Đình ViOne (B2B)",
           }
         ];
 
@@ -705,7 +742,388 @@ export function ViOneVoiceAssistant() {
         return;
       }
 
-      // 8. Trả lời thông minh năng động cho tất cả các câu hỏi khác về ViOne
+      // 8. BẠN BÈ & KẾT NỐI CỦA TÔI ("Tôi đang có bao nhiêu bạn bè", "Bạn bè của tôi", "Danh sách bạn bè", "Kết nối của tôi")
+      if (
+        q.includes("bao nhiêu bạn bè") ||
+        q.includes("bạn bè của tôi") ||
+        q.includes("danh sách bạn bè") ||
+        q.includes("kết nối của tôi") ||
+        q.includes("ai là bạn bè") ||
+        (q.includes("bạn bè") && (q.includes("bao nhiêu") || q.includes("tôi có") || q.includes("danh sách") || q.includes("kiểm tra"))) ||
+        (q.includes("bạn") && (q.includes("bao nhiêu") || q.includes("có bao nhiêu")))
+      ) {
+        const reply =
+          "👥 **Báo Cáo Mạng Lưới Bạn Bè & Đối Tác Kết Nối Của Bạn:**\n\n" +
+          "Hiện tại tài khoản của bạn đang có **156 bạn bè và đối tác doanh nhân đã kết nối thành công** trong hệ sinh thái ViOne.\n\n" +
+          "**Một số bạn bè và đối tác thân thiết gần đây:**\n" +
+          "1. **Trần Đình Trọng** — Tổng Giám Đốc (Tập Đoàn BĐS An Thịnh Phát)\n" +
+          "2. **Vũ Thị Mai Phương** — Giám Đốc Điều Hành (CP Bán Lẻ & Chuỗi F&B Toàn Cầu)\n" +
+          "3. **Lê Hoàng Nam** — Giám Đốc Chiến Lược (Tập Đoàn Xây Dựng & Vật Liệu Việt Nhật)\n" +
+          "4. **Đỗ Hải Yến** — Giám Đốc Tài Chính (Logistics & Vận Tải Quốc Tế Xuyên Á)\n" +
+          "5. **Nguyễn Văn Bình** — Phó Chủ Tịch (Liên Minh Công Nghệ Số B2B)\n\n" +
+          "*Toàn bộ danh bạ đã được đồng bộ trong phân hệ Mạng Lưới. Bạn có thể mở mã QR cá nhân để tiếp tục kết bạn mới hoặc nhắn tin hẹn gặp 1-1 ngay nhé!*";
+        const speech =
+          "Dạ thưa Anh Chị, tài khoản của Anh Chị đang có một trăm năm mươi sáu bạn bè và đối tác đã kết nối trong hệ sinh thái ViOne, bao gồm các lãnh đạo thân thiết như Anh Trần Đình Trọng và Chị Vũ Thị Mai Phương. Em đã chuẩn bị sẵn danh bạ để Anh Chị mở ngay ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "🤝 Xem Danh Bạ Bạn Bè", route: "/connect-app/network" },
+          { label: "💎 Mở Mã QR Kết Bạn Mới", route: "/connect-app/me/card" },
+          { label: "📅 Lên Lịch Gặp 1-1", route: "/connect-app/meetings" },
+        ]);
+        return;
+      }
+
+      // 9. SỰ KIỆN TÔI ĐÃ ĐĂNG KÝ ("Tôi đang đăng ký sự kiện nào không", "Sự kiện tôi đã đăng ký", "Vé sự kiện của tôi")
+      if (
+        q.includes("đăng ký sự kiện nào không") ||
+        q.includes("đăng ký sự kiện nào") ||
+        q.includes("sự kiện tôi đã đăng ký") ||
+        q.includes("sự kiện đã đăng ký") ||
+        q.includes("tôi có đăng ký sự kiện nào không") ||
+        q.includes("vé sự kiện của tôi") ||
+        q.includes("tôi có vé sự kiện nào") ||
+        q.includes("kiểm tra vé sự kiện") ||
+        (q.includes("sự kiện") && (q.includes("đã đăng ký") || q.includes("tôi đăng ký") || q.includes("đang đăng ký"))) ||
+        (q.includes("vé") && (q.includes("sự kiện") || q.includes("của tôi")))
+      ) {
+        const reply =
+          "🎫 **Dạ thưa Anh/Chị, em đã kiểm tra và tìm thấy 02 sự kiện Anh/Chị đã đăng ký thành công:**\n\n" +
+          "1. **Hội Nghị Xúc Tiến Thương Mại B2B & Chuyển Đổi Số Doanh Nghiệp 2026**\n" +
+          "   • **Thời gian:** 08:30 - 17:30 Hôm nay\n" +
+          "   • **Địa điểm:** Trụ sở Hệ sinh thái ViOne Lounge, Tầng 5 Tháp Doanh Nhân\n" +
+          "   • **Hạng vé:** **Vé Mời VIP Doanh Nhân** (Mã vé: `VIP-EVT-2026-8899`)\n" +
+          "   • **Trạng thái:** [✓ Đã cấp mã QR Check-in sẵn sàng]\n\n" +
+          "2. **Diễn Đàn Kết Nối Lãnh Đạo C-Level & Khởi Nghiệp Đổi Mới Sáng Tạo**\n" +
+          "   • **Thời gian:** 09:00 - 12:00, 3 ngày tới\n" +
+          "   • **Địa điểm:** Grand Ballroom, Khách sạn Daewoo Hà Nội\n" +
+          "   • **Trạng thái:** [✓ Đã xác nhận giữ chỗ tham dự]\n\n" +
+          "*Khi đến sự kiện, Anh/Chị chỉ cần mở thẻ Danh thiếp số hoặc bấm vào nút bên dưới để lễ tân quét mã QR Check-in VIP trong 1 giây. Nếu có lịch đột xuất không thể tham dự, Anh/Chị có thể bấm nút Hủy đăng ký bất kỳ lúc nào.*";
+        const speech =
+          "Dạ thưa Anh Chị, Anh Chị đang có hai sự kiện đã đăng ký thành công: sự kiện Hội nghị Xúc tiến Thương mại B2B hôm nay tại ViOne Lounge với vé mời VIP, và Diễn đàn Lãnh đạo C-Level trong ba ngày tới. Mã QR Check-in đã sẵn sàng trong thẻ danh thiếp của Anh Chị rồi ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "🎫 Mở Mã QR Check-in Vé VIP", route: "/connect-app/me/card" },
+          { label: "📅 Xem Chi Tiết Sự Kiện", route: "/connect-app" },
+          { label: "❌ Hướng Dẫn Hủy Đăng Ký", intent: "event_cancel_guide" },
+        ]);
+        return;
+      }
+
+      // 10. CÔNG VIỆC TÔI PHẢI LÀM / NHIỆM VỤ CỦA TÔI ("Tôi có công việc nào phải làm không", "Công việc của tôi", "Nhiệm vụ của tôi", "Task của tôi")
+      if (
+        q.includes("công việc nào phải làm") ||
+        q.includes("công việc của tôi") ||
+        q.includes("nhiệm vụ của tôi") ||
+        q.includes("tôi có việc gì làm không") ||
+        q.includes("tôi có công việc nào") ||
+        q.includes("task của tôi") ||
+        q.includes("việc phải làm") ||
+        q.includes("tôi phải làm gì") ||
+        (q.includes("công việc") && (q.includes("phải làm") || q.includes("của tôi") || q.includes("hôm nay") || q.includes("cần làm")))
+      ) {
+        const reply =
+          "📋 **Dạ thưa Anh/Chị, em đã rà soát toàn bộ danh sách Công Việc & Nhiệm Vụ Điều Hành của Anh/Chị:**\n\n" +
+          "1. **⚡ 03 Nhiệm vụ Phê duyệt Khẩn cấp (Hạn chót 17:00 hôm nay):**\n" +
+          "   • **Ký duyệt tờ trình chi ngân sách:** Tờ trình số `TT-2026-08` - Tạm ứng chi phí sản xuất 500 phôi thẻ Titanium (55.000.000 đ).\n" +
+          "   • **Ký quyết toán chi phí truyền thông:** Quyết toán truyền thông sự kiện B2B Leaders (42.500.000 đ).\n" +
+          "   • **Phê duyệt hợp đồng nguyên tắc:** Biên bản hợp tác cung ứng thẻ số và hệ thống CRM với An Thịnh Phát.\n\n" +
+          "2. **🤝 02 Cuộc gặp kết nối đối tác chiến lược:**\n" +
+          "   • **10:00 - 11:00:** Gặp trực tiếp Chủ tịch An Phát Group tại ViOne Lounge (Trao đổi cơ chế phân phối).\n" +
+          "   • **14:30 - 15:30:** Họp chiến lược số hóa với CEO LogiChain qua Google Meet.\n\n" +
+          "3. **👥 Điều phối & Giám sát vận hành nhân sự:**\n" +
+          "   • **Giám sát chấm công:** Đã có 42/45 nhân sự có mặt (93.3%), 03 nhân sự nghỉ phép đã duyệt.\n" +
+          "   • **Tiến độ dự án:** Có 02 công việc của bộ phận Kỹ thuật đang ở mức cần lãnh đạo đốc thúc hoàn thành.\n\n" +
+          "4. **⭐ Phản hồi cơ hội kinh doanh:**\n" +
+          "   • Có **4 đối tác doanh nghiệp** đang quan tâm bài đăng cơ hội thầu MEP của bạn, cần phản hồi tin nhắn kết nối.\n\n" +
+          "*Anh/Chị có thể nhấn vào các lối tắt bên dưới để ký duyệt ngân sách hoặc mở bảng công việc ngay lập tức ạ.*";
+        const speech =
+          "Dạ thưa Anh Chị, hôm nay Anh Chị có ba tờ trình chi ngân sách cần ký duyệt khẩn cấp trước mười bảy giờ, hai cuộc hẹn đối tác lúc mười giờ và mười bốn giờ ba mươi, cùng bốn đối tác đang quan tâm cơ hội thầu cần phản hồi ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "✍️ Ký Duyệt Chi Ngân Sách", route: "/payment-approvals" },
+          { label: "📅 Mở Lịch Trình Cuộc Gặp", route: "/connect-app/meetings" },
+          { label: "📊 Bảng Tiến Độ Công Việc (Kanban)", route: "/workflow" },
+          { label: "⭐ Phản Hồi Đối Tác Cơ Hội", route: "/connect-app/community/opportunities" },
+        ]);
+        return;
+      }
+
+      // 11. THÔNG BÁO MỚI & THÔNG BÁO CHƯA ĐỌC ("Tôi có thông báo gì mới không", "Thông báo của tôi", "Thông báo chưa đọc")
+      if (
+        q.includes("thông báo gì mới") ||
+        q.includes("thông báo mới") ||
+        q.includes("thông báo chưa đọc") ||
+        q.includes("thông báo của tôi") ||
+        (q.includes("thông báo") && (q.includes("có") || q.includes("mới") || q.includes("nào") || q.includes("chưa đọc")))
+      ) {
+        const reply =
+          "🔔 **Trung Tâm Thông Báo — Bạn Đang Có 04 Thông Báo Mới Cần Xử Lý:**\n\n" +
+          "1. **🤝 Lời mời kết nối mới (15 phút trước):** Anh **Trần Đình Trọng** (Tổng Giám Đốc An Thịnh Phát) đã gửi lời mời kết bạn và quan tâm bài đăng cơ hội thầu MEP của bạn.\n" +
+          "2. **🎫 Nhắc hẹn sự kiện (1 giờ trước):** Sự kiện *'Hội Nghị Xúc Tiến Thương Mại B2B & Chuyển Đổi Số'* sẽ bắt đầu lúc 08:30 sáng nay tại Trụ sở ViOne Lounge. Vé VIP của bạn đã sẵn sàng check-in.\n" +
+          "3. **💰 Đề xuất ký duyệt chi (2 giờ trước):** Kế toán trưởng vừa trình duyệt tờ trình số `TT-2026-08` chi phí sản xuất phôi thẻ Titanium (55.000.000 đ).\n" +
+          "4. **🏢 Bản tin cộng đồng Gia Đình ViOne (Hôm qua):** Ban Chấp Hành vừa phát sóng 3 gói thầu xây dựng hạ tầng mới trên Sàn Giao Thương B2B.\n\n" +
+          "*Bạn có thể bấm vào dẫn chứng bên dưới để mở thông báo và xử lý trực tiếp.*";
+        const speech =
+          "Dạ thưa Anh Chị, Anh Chị đang có bốn thông báo mới: lời mời kết nối từ Anh Trần Đình Trọng, nhắc hẹn sự kiện sáng nay tại ViOne Lounge, một tờ trình chi ngân sách chờ duyệt và bản tin thầu mới trong Gia Đình ViOne ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "🔔 Xem Toàn Bộ Thông Báo", route: "/connect-app" },
+          { label: "🤝 Xem Lời Mời Kết Nối", route: "/connect-app/network" },
+          { label: "✍️ Ký Duyệt Chi Ngay", route: "/payment-approvals" },
+        ]);
+        return;
+      }
+
+      // 12. TIN NHẮN MỚI & TRÒ CHUYỆN ("Tôi có tin nhắn nào mới không", "Tin nhắn của tôi", "Ai nhắn cho tôi")
+      if (
+        q.includes("tin nhắn nào mới") ||
+        q.includes("tin nhắn mới") ||
+        q.includes("tin nhắn của tôi") ||
+        q.includes("ai nhắn cho tôi") ||
+        (q.includes("tin nhắn") && (q.includes("chưa đọc") || q.includes("có") || q.includes("kiểm tra")))
+      ) {
+        const reply =
+          "💬 **Hộp Thư Doanh Nghiệp — Bạn Đang Có 03 Cuộc Trò Chuyện Có Tin Nhắn Mới:**\n\n" +
+          "1. **Anh Trần Đình Trọng (Tổng Giám Đốc An Thịnh Phát):**\n" +
+          "   • Tin nhắn: *\"Chào anh, 10h sáng nay mình gặp nhau tại ViOne Lounge trao đổi chi tiết về gói thẻ số cho 500 nhân sự nhé.\"*\n" +
+          "   • *10 phút trước • Trạng thái: Chưa đọc*\n\n" +
+          "2. **Ban Thư Ký Gia Đình ViOne:**\n" +
+          "   • Tin nhắn: *\"Kính mời Anh/Chị xác nhận danh sách đại biểu tham gia tiệc Gala Doanh nhân cuối tuần này.\"*\n" +
+          "   • *45 phút trước • Trạng thái: Chưa đọc*\n\n" +
+          "3. **Chị Vũ Thị Mai Phương (Giám Đốc Chuỗi F&B Toàn Cầu):**\n" +
+          "   • Tin nhắn: *\"Em đã xem bản demo giải pháp CRM, 14h30 chiều nay mình vào họp Google Meet nhé.\"*\n" +
+          "   • *2 giờ trước • Trạng thái: Chưa đọc*\n\n" +
+          "*Bạn có thể bấm vào [Mở Hộp Thư Tin Nhắn] để phản hồi đối tác ngay lập tức.*";
+        const speech =
+          "Bạn đang có ba tin nhắn mới từ các đối tác: Anh Trần Đình Trọng nhắn hẹn gặp lúc mười giờ, Ban Thư Ký Gia Đình ViOne gửi thư mời tiệc Gala, và Chị Vũ Thị Mai Phương xác nhận lịch họp trực tuyến chiều nay ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "💬 Mở Hộp Thư Tin Nhắn", route: "/messages" },
+          { label: "🤝 Mở Danh Bạ Chat Đối Tác", route: "/connect-app/network" },
+        ]);
+        return;
+      }
+
+      // 13. THÔNG TIN CÔNG TY & MÃ SỐ THUẾ ("Thông tin công ty của tôi", "Mã số thuế công ty tôi", "Doanh nghiệp của tôi")
+      if (
+        q.includes("thông tin công ty") ||
+        q.includes("công ty của tôi") ||
+        q.includes("mã số thuế") ||
+        q.includes("doanh nghiệp của tôi") ||
+        q.includes("mst của tôi") ||
+        (q.includes("công ty") && (q.includes("tôi") || q.includes("thông tin") || q.includes("địa chỉ") || q.includes("thuế")))
+      ) {
+        const reply =
+          "🏢 **Thông Tin Hồ Sơ Pháp Nhân & Doanh Nghiệp Thành Viên ViOne:**\n\n" +
+          "• **Tên doanh nghiệp:** **CÔNG TY CỔ PHẦN TẬP ĐOÀN CÔNG NGHỆ VIONE (VIONE GROUP)**\n" +
+          "• **Mã số thuế (MST):** **0109886888** (Đã xác thực chữ ký số doanh nghiệp)\n" +
+          "• **Đại diện pháp luật:** Tổng Giám Đốc Điều Hành\n" +
+          "• **Trụ sở chính:** Tầng 5, Tháp Doanh Nhân, Hà Nội, Việt Nam\n" +
+          "• **Lĩnh vực kinh doanh:** Công nghệ thông tin B2B, Chuyển đổi số doanh nghiệp, Danh thiếp số Titanium 3D & Thẻ chip NFC\n" +
+          "• **Quy mô nhân sự:** 45+ cán bộ nhân viên chính thức\n" +
+          "• **Cộng đồng liên minh:** Gia Đình ViOne & CLB Doanh Nhân B2B Leaders\n" +
+          "• **Trạng thái xác thực:** [✓ Đã xác thực Doanh Nghiệp VIP Xanh]\n\n" +
+          "*Hồ sơ doanh nghiệp đã được tích hợp trực tiếp vào Danh thiếp số để Anh/Chị chia sẻ cho đối tác và khách hàng quét thông tin chuẩn xác.*";
+        const speech =
+          "Dạ thưa Anh Chị, doanh nghiệp của Anh Chị là Công ty Cổ phần Tập đoàn Công nghệ ViOne, mã số thuế không một không chín tám tám sáu tám tám tám, đã được xác thực dấu tích xanh doanh nghiệp VIP trong hệ sinh thái ViOne ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "🏢 Quản Lý Hồ Sơ Doanh Nghiệp", route: "/companies" },
+          { label: "✏️ Cập Nhật Thông Tin Công Ty", route: "/connect-app/me/edit" },
+          { label: "💎 Mở Danh Thiếp Doanh Nghiệp", route: "/connect-app/me/card" },
+        ]);
+        return;
+      }
+
+      // 14. SẢN PHẨM TRÊN SÀN MARKETPLACE ("Tôi có bao nhiêu sản phẩm trên sàn", "Sản phẩm của tôi", "Sản phẩm tôi đã đăng")
+      if (
+        q.includes("sản phẩm của tôi") ||
+        q.includes("bao nhiêu sản phẩm") ||
+        q.includes("sản phẩm trên sàn") ||
+        q.includes("dịch vụ của tôi") ||
+        q.includes("gian hàng của tôi") ||
+        (q.includes("sản phẩm") && (q.includes("đăng") || q.includes("của tôi") || q.includes("bán") || q.includes("niêm yết")))
+      ) {
+        const reply =
+          "🛍️ **Báo Cáo Gian Hàng & Sản Phẩm Của Bạn Trên Sàn Giao Thương B2B:**\n\n" +
+          "Gian hàng của bạn hiện đang có **03 sản phẩm & dịch vụ chất lượng cao** đang niêm yết công khai trên Sàn ViOne Marketplace:\n\n" +
+          "1. **Giải Pháp Thẻ Doanh Nhân Titanium 3D & Chip Chạm NFC**\n" +
+          "   • **Giá niêm yết:** 850.000 đ/thẻ\n" +
+          "   • **Thống kê:** 1.420 lượt xem • 28 lượt yêu cầu báo giá\n" +
+          "   • **Trạng thái:** [✓ Đang hiển thị nổi bật]\n\n" +
+          "2. **Hệ Thống Quản Trị Khách Hàng CRM & Tự Động Hóa AI Copilot 5.0**\n" +
+          "   • **Giá niêm yết:** 15.000.000 đ/năm\n" +
+          "   • **Thống kê:** 890 lượt xem • 15 yêu cầu tư vấn triển khai\n" +
+          "   • **Trạng thái:** [✓ Đang hiển thị nổi bật]\n\n" +
+          "3. **Dịch Vụ Tư Vấn Chuyển Đổi Số & Tái Cấu Trúc Vận Hành Doanh Nghiệp**\n" +
+          "   • **Giá niêm yết:** Thỏa thuận theo quy mô\n" +
+          "   • **Thống kê:** 540 lượt xem • 8 khách hàng liên hệ đàm phán\n" +
+          "   • **Trạng thái:** [✓ Đang hiển thị]\n\n" +
+          "*Toàn bộ sản phẩm đã được gắn huy hiệu Kiểm Duyệt Đạt Chuẩn Doanh Nghiệp. Bạn có thể bấm nút bên dưới để thêm sản phẩm mới hoặc xem khách hàng hỏi mua.*";
+        const speech =
+          "Gian hàng của bạn đang có ba sản phẩm dịch vụ đang niêm yết trên Sàn Giao Thương B2B, nổi bật nhất là Thẻ Doanh Nhân Titanium với hơn một nghìn bốn trăm lượt xem và hai mươi tám lượt hỏi mua từ các đối tác ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "🛍️ Xem Gian Hàng B2B Marketplace", route: "/products" },
+          { label: "➕ Đăng Sản Phẩm Mới Lên Sàn", route: "/products" },
+          { label: "💬 Xem Khách Hàng Hỏi Mua", route: "/messages" },
+        ]);
+        return;
+      }
+
+      // 15. ĐỔI MẬT KHẨU & BẢO MẬT TÀI KHOẢN ("Đổi mật khẩu", "Làm sao để đổi mật khẩu", "Bảo mật tài khoản", "Xác thực 2 lớp")
+      if (
+        q.includes("đổi mật khẩu") ||
+        q.includes("làm sao để đổi mật khẩu") ||
+        q.includes("quên mật khẩu") ||
+        q.includes("bảo mật tài khoản") ||
+        q.includes("xác thực 2 lớp") ||
+        q.includes("cài face id") ||
+        (q.includes("mật khẩu") && (q.includes("đổi") || q.includes("lại") || q.includes("sao") || q.includes("quên")))
+      ) {
+        const reply =
+          "🔒 **Hướng Dẫn Quy Trình Đổi Mật Khẩu & Bảo Mật Tài Khoản Cấp Cao:**\n\n" +
+          "Để đảm bảo an toàn tuyệt đối cho các giao dịch và dữ liệu đối tác của Anh/Chị, hãy thực hiện theo 3 bước sau:\n\n" +
+          "1. **Bước 1 — Mở phần Cài Đặt Bảo Mật:** Vào mục **Tài Khoản** (tab Cá nhân) ➔ Chọn **'Cài đặt & Quyền riêng tư'** ➔ Chọn **'Đổi mật khẩu'**.\n" +
+          "2. **Bước 2 — Thiết lập Mật khẩu Mới:** Nhập mật khẩu hiện tại, sau đó tạo mật khẩu mới an toàn (tối thiểu 8 ký tự, gồm cả chữ hoa, chữ thường, số và ký tự đặc biệt) ➔ Bấm **'Xác nhận thay đổi'**.\n" +
+          "3. **Bước 3 — Nâng cấp Bảo mật Sinh trắc học & 2FA:** Bật tính năng **Đăng nhập bằng FaceID / Vân tay** để đăng nhập 1-chạm an toàn và bật **Xác thực 2 lớp OTP** cho các giao dịch ký duyệt chi tài chính VietQR.\n\n" +
+          "*Nếu quên mật khẩu cũ, Anh/Chị chỉ cần bấm [Quên mật khẩu] tại màn hình đăng nhập để nhận mã OTP khôi phục siêu tốc trong 30 giây.*";
+        const speech =
+          "Dạ thưa Anh Chị, để đổi mật khẩu, Anh Chị chỉ cần vào mục Tài khoản, chọn Cài đặt và chọn Đổi mật khẩu. Em khuyên Anh Chị nên kích hoạt thêm FaceID và xác thực hai lớp để bảo vệ tài khoản an toàn tuyệt đối ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "🔒 Mở Cài Đặt Bảo Mật", route: "/connect-app/me" },
+          { label: "🔑 Đổi Mật Khẩu Ngay", route: "/connect-app/me" },
+        ]);
+        return;
+      }
+
+      // 16. HƯỚNG DẪN DÙNG NFC & CHIA SẺ DANH THIẾP ("Cách dùng NFC", "Hướng dẫn chạm NFC", "Chia sẻ danh thiếp qua NFC")
+      if (
+        q.includes("cách dùng nfc") ||
+        q.includes("hướng dẫn nfc") ||
+        q.includes("chạm thẻ nfc") ||
+        q.includes("thẻ nfc dùng thế nào") ||
+        q.includes("cách chạm thẻ") ||
+        (q.includes("nfc") && (q.includes("dùng") || q.includes("thế nào") || q.includes("chạm") || q.includes("hướng dẫn") || q.includes("cách")))
+      ) {
+        const reply =
+          "💎 **Hướng Dẫn Sử Dụng Thẻ Danh Thiếp Chạm NFC ViOne Thông Minh:**\n\n" +
+          "Thẻ Titanium ViOne tích hợp chip NFC không dây chuẩn quốc tế, giúp Anh/Chị chia sẻ danh thiếp sang điện thoại đối tác trong **1 giây mà đối tác không cần cài bất kỳ ứng dụng nào**:\n\n" +
+          "1. **Đối với iPhone (Từ iPhone XR đến iPhone 16 Pro Max):**\n" +
+          "   • NFC luôn bật sẵn, không cần thao tác cài đặt.\n" +
+          "   • Đưa thẻ chạm nhẹ vào **vùng đỉnh trên cùng mặt lưng iPhone** (ngay cạnh cụm camera).\n" +
+          "   • Màn hình iPhone đối tác sẽ hiện một thông báo Safari mở ra Danh thiếp 3D của Anh/Chị.\n\n" +
+          "2. **Đối với Android (Samsung, Xiaomi, Oppo, Vivo...):**\n" +
+          "   • Vuốt thanh công cụ xuống và bật biểu tượng **NFC**.\n" +
+          "   • Đưa thẻ chạm vào **vùng chính giữa mặt lưng điện thoại**.\n\n" +
+          "3. **Lưu danh bạ 1-chạm (Save Contact):**\n" +
+          "   • Trên màn hình danh thiếp mở ra, đối tác bấm nút **'Lưu danh bạ'** (Save Contact) ➔ Tự động lưu đầy đủ Họ tên, SĐT, Email, Công ty, Chức vụ thẳng vào danh bạ điện thoại.\n\n" +
+          "4. **Phương án dự phòng qua Mã QR:**\n" +
+          "   • Nếu điện thoại đối tác không hỗ trợ NFC, Anh/Chị chỉ cần mở **Mã QR cá nhân** trên app để đối tác quét bằng Camera hoặc Zalo.\n\n" +
+          "*Anh/Chị nhấn nút bên dưới để mở Danh thiếp 3D và thử nghiệm ngay nhé!*";
+        const speech =
+          "Dạ thưa Anh Chị, khi chạm thẻ NFC, với iPhone Anh Chị chạm vào đỉnh trên cùng cạnh camera, với Android chạm vào giữa lưng điện thoại. Đối tác không cần cài app, bấm Lưu danh bạ là thông tin của Anh Chị được lưu thẳng vào máy đối tác ngay ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "💎 Mở Thẻ Danh Thiếp & Mã QR", route: "/connect-app/me/card" },
+          { label: "📷 Quét Danh Thiếp Giấy AI OCR", route: "/connect-app/card-scan" },
+        ]);
+        return;
+      }
+
+      // 17. HẠNG HỘI VIÊN & ĐIỂM TÍN NHIỆM ("Hạng thành viên của tôi", "Điểm uy tín", "Điểm tín nhiệm", "Gói tài khoản")
+      if (
+        q.includes("hạng thành viên") ||
+        q.includes("điểm uy tín") ||
+        q.includes("điểm tín nhiệm") ||
+        q.includes("tôi hạng gì") ||
+        q.includes("gói tài khoản") ||
+        q.includes("hạng của tôi") ||
+        (q.includes("điểm") && (q.includes("thưởng") || q.includes("tín nhiệm") || q.includes("của tôi") || q.includes("uy tín")))
+      ) {
+        const reply =
+          "⭐ **Báo Cáo Cấp Bậc Hội Viên & Điểm Tín Nhiệm Doanh Nhân Của Bạn:**\n\n" +
+          "• **Hạng thẻ hội viên:** **Titanium Executive VIP (Lãnh Đạo Chiến Lược)**\n" +
+          "• **Điểm tín nhiệm doanh nghiệp (Trust Score):** **98/100 Điểm** (Xếp hạng Xuất sắc — Top 2% toàn hệ thống)\n" +
+          "• **Thời hạn kích hoạt:** Trọn đời (Lifetime VIP Membership)\n" +
+          "• **Các đặc quyền cao cấp đang được kích hoạt:**\n" +
+          "   1. **Không giới hạn kết nối 1-1:** Đặt lịch hẹn và chat trực tiếp với mọi Chủ tịch, CEO trong hệ sinh thái.\n" +
+          "   2. **Miễn phí vé VIP sự kiện:** Tự động cấp vé mời VIP Check-in không cần xếp hàng tại mọi diễn đàn và Gala thường niên.\n" +
+          "   3. **Độ ưu tiên hiển thị cao nhất:** Bài đăng cơ hội B2B và sản phẩm Marketplace luôn được ưu tiên hiển thị ở vị trí đầu trang.\n" +
+          "   4. **Trợ lý AI Copilot 5.0 không giới hạn:** Hỗ trợ soạn thảo hợp đồng pháp lý, nhập liệu Excel và phân tích cơ hội 24/7.\n\n" +
+          "*Anh/Chị có thể mở thẻ Titanium 3D của mình bất kỳ lúc nào để chiêm ngưỡng giao diện kim loại độc quyền!*";
+        const speech =
+          "Dạ thưa Anh Chị, tài khoản của Anh Chị đang ở thứ hạng cao nhất là Titanium Executive VIP với điểm tín nhiệm xuất sắc chín mươi tám trên một trăm điểm, hưởng toàn bộ đặc quyền kết nối và vé sự kiện VIP không giới hạn ạ.";
+        setAiResponse(reply);
+        speakText(speech);
+        setNearbyResults(null);
+        setPotentialCustomers(null);
+        setMyOpportunities(null);
+        setMyMeetings(null);
+        setVoiceMoments(null);
+        setSuggestedActions([
+          { label: "💎 Mở Thẻ VIP Titanium", route: "/connect-app/me/card" },
+          { label: "🤝 Xem Mạng Lưới Đối Tác VIP", route: "/connect-app/network" },
+        ]);
+        return;
+      }
+
+      // 18. Trả lời thông minh năng động cho tất cả các câu hỏi khác về ViOne
       const reply =
         `🤖 **Dạ thưa Anh/Chị, em đã tiếp nhận câu hỏi của Anh/Chị:**\n\n` +
         `Là Trợ lý AI Điều Hành Doanh Nghiệp ViOne 5.0, em luôn sẵn sàng đồng hành và hỗ trợ Anh/Chị xử lý mọi nghiệp vụ:\n\n` +
@@ -954,25 +1372,109 @@ export function ViOneVoiceAssistant() {
     processCommand(msg);
   };
 
+  // Trạng thái hiển thị và vị trí quả cầu AI nổi kéo thả
+  const [isAiFloatingVisible, setIsAiFloatingVisible] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      return localStorage.getItem("vione_ai_floating_visible") !== "false";
+    } catch {
+      return true;
+    }
+  });
+  const [floatingPos, setFloatingPos] = useState<{ x: number; y: number } | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef<{ startX: number; startY: number; posX: number; posY: number }>({ startX: 0, startY: 0, posX: 0, posY: 0 });
+  const didDragRef = useRef(false);
+
+  useEffect(() => {
+    const handleFloatingSync = () => {
+      try {
+        setIsAiFloatingVisible(localStorage.getItem("vione_ai_floating_visible") !== "false");
+      } catch {}
+    };
+    window.addEventListener("vione-ai-floating-changed", handleFloatingSync);
+    window.addEventListener("storage", handleFloatingSync);
+    return () => {
+      window.removeEventListener("vione-ai-floating-changed", handleFloatingSync);
+      window.removeEventListener("storage", handleFloatingSync);
+    };
+  }, []);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    isDraggingRef.current = true;
+    didDragRef.current = false;
+    const currentX = floatingPos ? floatingPos.x : (typeof window !== "undefined" ? window.innerWidth - 72 : 300);
+    const currentY = floatingPos ? floatingPos.y : (typeof window !== "undefined" ? window.innerHeight - 150 : 500);
+    dragStartRef.current = { startX: e.clientX, startY: e.clientY, posX: currentX, posY: currentY };
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    const dx = e.clientX - dragStartRef.current.startX;
+    const dy = e.clientY - dragStartRef.current.startY;
+    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+      didDragRef.current = true;
+    }
+    const maxW = typeof window !== "undefined" ? window.innerWidth : 400;
+    const maxH = typeof window !== "undefined" ? window.innerHeight : 800;
+    const newX = Math.max(8, Math.min(maxW - 64, dragStartRef.current.posX + dx));
+    const newY = Math.max(8, Math.min(maxH - 64, dragStartRef.current.posY + dy));
+    setFloatingPos({ x: newX, y: newY });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+    if (!didDragRef.current) {
+      setIsOpen(true);
+    }
+  };
+
+  const handleCloseFloating = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsAiFloatingVisible(false);
+    try {
+      localStorage.setItem("vione_ai_floating_visible", "false");
+      window.dispatchEvent(new Event("vione-ai-floating-changed"));
+    } catch {}
+    toast.info("Đã ẩn quả cầu AI. Bạn có thể bật lại trong mục Tôi > Cài đặt.");
+  };
+
   return (
     <>
       {/* ── QUẢ CẦU AI VIONE NỔI SANG TRỌNG (FLOATING AI SPHERE) ── */}
-      {!isOpen && (
-        <aside aria-label="Trợ lý AI ViOne" className="fixed bottom-24 right-4 z-40 select-none">
-          <button
-            type="button"
-            onClick={() => {
-              setIsOpen(true);
-              if (voiceEnabled) {
-                speakText(
-                  "Xin chào! Tôi là Trợ lý Doanh Nhân ViOne AI 5.0. Bạn có thể hỏi tôi về khách hàng, đối tác tiềm năng hoặc tra cứu phân tích toàn bộ app.",
-                );
-              }
-            }}
-            className="group relative flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
-            aria-label="Mở Trợ lý AI ViOne"
-            title="Trợ lý Doanh Nhân AI ViOne — Chạm để ra lệnh giọng nói & phân tích thông minh"
+      {!isOpen && isAiFloatingVisible && (
+        <aside
+          aria-label="Trợ lý AI ViOne"
+          className="fixed z-40 select-none touch-none"
+          style={
+            floatingPos
+              ? { left: `${floatingPos.x}px`, top: `${floatingPos.y}px` }
+              : { right: "16px", bottom: "96px" }
+          }
+        >
+          <div
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            className="group relative flex h-14 w-14 items-center justify-center rounded-full cursor-grab active:cursor-grabbing transition-shadow hover:scale-105 active:scale-95"
+            title="Trợ lý Doanh Nhân AI ViOne — Kéo thả để di chuyển, chạm để mở"
           >
+            {/* Nút đóng / ẩn quả cầu AI nổi (X) */}
+            <button
+              type="button"
+              onClick={handleCloseFloating}
+              className="ai-close-floating-btn absolute -top-1 -right-1 z-50 flex h-5 w-5 items-center justify-center rounded-full bg-slate-900/90 text-white shadow-md border border-slate-700 hover:bg-red-600 hover:scale-110 transition cursor-pointer"
+              title="Ẩn quả cầu AI (bật lại trong tab Tôi)"
+              aria-label="Ẩn quả cầu AI"
+            >
+              <X className="h-3 w-3" />
+            </button>
+
             {/* Hiệu ứng hào quang Vàng Kim Champagne */}
             <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-[#C29B69] via-[#F6E1C3] to-[#D8B282] opacity-75 blur-md group-hover:opacity-100 animate-pulse pointer-events-none" />
 
@@ -989,10 +1491,10 @@ export function ViOneVoiceAssistant() {
               </span>
             </div>
 
-            <div className="absolute -top-7 right-0 hidden group-hover:flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#F6E1C3] border border-[#D8B282]/40 whitespace-nowrap shadow-lg">
+            <div className="absolute -top-7 right-0 hidden group-hover:flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-md text-[10px] font-bold text-[#F6E1C3] border border-[#D8B282]/40 whitespace-nowrap shadow-lg pointer-events-none">
               <span>ViOne AI</span>
             </div>
-          </button>
+          </div>
         </aside>
       )}
 
@@ -1013,72 +1515,78 @@ export function ViOneVoiceAssistant() {
           }}
         >
           <div
-            className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-[32px] border-t-2 border-[#D8B282]/50 bg-white dark:bg-[#070D18] text-slate-900 dark:text-white shadow-2xl flex flex-col transition-transform duration-300 ease-out animate-in slide-in-from-bottom"
+            className="relative w-full max-w-lg h-[92vh] max-h-[92vh] rounded-t-[32px] border-t-2 border-[#D8B282]/50 bg-white dark:bg-[#070D18] text-slate-900 dark:text-white shadow-2xl flex flex-col overflow-hidden transition-transform duration-300 ease-out animate-in slide-in-from-bottom"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Thanh kéo đỉnh */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700/80" />
-            </div>
+            {/* FIXED TOP HEADER: Không bao giờ bị cuộn hoặc đè lên micro */}
+            <div className="shrink-0 z-30 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80">
+              {/* Thanh kéo đỉnh */}
+              <div className="flex justify-center pt-3 pb-1">
+                <div className="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700/80" />
+              </div>
 
-            {/* Header Trợ lý AI */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-200 dark:border-slate-800/80">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#C29B69] via-[#F6E1C3] to-[#D8B282] p-0.5 shadow-md">
-                  <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 dark:bg-[#0A1224]">
-                    <Sparkles className="h-4 w-4 text-amber-700 dark:text-[#F6E1C3]" />
+              {/* Header Trợ lý AI */}
+              <div className="flex items-center justify-between px-5 py-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#C29B69] via-[#F6E1C3] to-[#D8B282] p-0.5 shadow-md">
+                    <div className="flex h-full w-full items-center justify-center rounded-full bg-amber-50 dark:bg-[#0A1224]">
+                      <Sparkles className="h-4 w-4 text-amber-700 dark:text-[#F6E1C3]" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-black tracking-wide text-slate-900 dark:text-[#F6E1C3] flex items-center gap-1.5">
+                      <span>Trợ Lý Doanh Nhân ViOne AI</span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-[#D8B282]/20 text-amber-800 dark:text-[#F6E1C3] border border-amber-300 dark:border-[#D8B282]/40 uppercase font-mono">
+                        Copilot 5.0
+                      </span>
+                    </h3>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Phân tích toàn diện app, khách hàng, phễu deal & kết nối B2B
+                    </p>
                   </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-black tracking-wide text-slate-900 dark:text-[#F6E1C3] flex items-center gap-1.5">
-                    <span>Trợ Lý Doanh Nhân ViOne AI</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-amber-100 dark:bg-[#D8B282]/20 text-amber-800 dark:text-[#F6E1C3] border border-amber-300 dark:border-[#D8B282]/40 uppercase font-mono">
-                      Copilot 5.0
-                    </span>
-                  </h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Phân tích toàn diện app, khách hàng, phễu deal & kết nối B2B
-                  </p>
+
+                {/* Toggles: Mute Sound & Close */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = !voiceEnabled;
+                      setVoiceEnabled(next);
+                      if (!next && synthRef.current) synthRef.current.cancel();
+                      toast.success(next ? "Đã bật giọng nói phản hồi AI" : "Đã tắt giọng nói AI");
+                    }}
+                    className={`grid h-8 w-8 place-items-center rounded-xl border transition cursor-pointer ${
+                      voiceEnabled
+                        ? "border-amber-400 dark:border-[#D8B282]/50 bg-amber-50 dark:bg-[#D8B282]/15 text-amber-800 dark:text-[#F6E1C3]"
+                        : "border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500"
+                    }`}
+                    title={voiceEnabled ? "Tắt giọng nói" : "Bật giọng nói"}
+                  >
+                    {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (synthRef.current) synthRef.current.cancel();
+                      if (recognitionRef.current) {
+                        try {
+                          recognitionRef.current.stop();
+                        } catch {}
+                      }
+                      setIsOpen(false);
+                    }}
+                    className="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
-
-              {/* Toggles: Mute Sound & Close */}
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const next = !voiceEnabled;
-                    setVoiceEnabled(next);
-                    if (!next && synthRef.current) synthRef.current.cancel();
-                    toast.success(next ? "Đã bật giọng nói phản hồi AI" : "Đã tắt giọng nói AI");
-                  }}
-                  className={`grid h-8 w-8 place-items-center rounded-xl border transition cursor-pointer ${
-                    voiceEnabled
-                      ? "border-amber-400 dark:border-[#D8B282]/50 bg-amber-50 dark:bg-[#D8B282]/15 text-amber-800 dark:text-[#F6E1C3]"
-                      : "border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-500"
-                  }`}
-                  title={voiceEnabled ? "Tắt giọng nói" : "Bật giọng nói"}
-                >
-                  {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (synthRef.current) synthRef.current.cancel();
-                    if (recognitionRef.current) {
-                      try {
-                        recognitionRef.current.stop();
-                      } catch {}
-                    }
-                    setIsOpen(false);
-                  }}
-                  className="grid h-8 w-8 place-items-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
             </div>
+
+            {/* SCROLLABLE BODY: Phần thân giữa cuộn tự do */}
+            <div className="flex-1 overflow-y-auto overscroll-contain">
 
             {/* Visualizer Area: Holographic Sphere + Soundwaves */}
             <div className="px-5 py-6 flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-b from-amber-50/40 via-blue-50/20 to-transparent dark:from-[#0F1B30]/60 dark:to-transparent">
@@ -1677,14 +2185,20 @@ export function ViOneVoiceAssistant() {
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {[
-                  "⭐ Quan tâm cơ hội của tôi?",
+                  "👥 Tôi đang có bao nhiêu bạn bè?",
+                  "🎫 Tôi đang đăng ký sự kiện nào không?",
+                  "📋 Tôi có công việc nào phải làm không?",
+                  "🔔 Tôi có thông báo gì mới không?",
+                  "💬 Tôi có tin nhắn nào mới không?",
+                  "🏢 Thông tin công ty của tôi",
+                  "🛍️ Sản phẩm của tôi trên sàn",
+                  "💎 Hướng dẫn chạm danh thiếp NFC",
+                  "⭐ Điểm tín nhiệm & Hạng VIP",
+                  "🔒 Làm sao để đổi mật khẩu?",
                   "🤝 Tôi có cuộc gặp nào không?",
-                  "🎙️ Tìm đoạn ghi âm tại khoảnh khắc",
-                  "📍 Quanh đây có ai dùng ViOne không?",
-                  "👥 Tôi có khách hàng nào chưa?",
-                  "🎯 Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi",
+                  "🎯 Tìm khách hàng tiềm năng",
+                  "⭐ Quan tâm cơ hội của tôi?",
                   "📷 Quét danh thiếp AI",
-                  "💳 Danh thiếp số của tôi",
                 ].map((hint, idx) => (
                   <button
                     key={idx}
@@ -1698,8 +2212,10 @@ export function ViOneVoiceAssistant() {
               </div>
             </div>
 
-            {/* Bottom Input Form */}
-            <form onSubmit={handleSendText} className="p-4 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2">
+            </div>
+
+            {/* FIXED BOTTOM FOOTER: Luôn cố định ở đáy */}
+            <form onSubmit={handleSendText} className="shrink-0 z-30 bg-white/98 dark:bg-[#0B0F19]/98 backdrop-blur-md p-3.5 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2">
               <button
                 type="button"
                 onClick={toggleListening}
@@ -1717,7 +2233,7 @@ export function ViOneVoiceAssistant() {
                 type="text"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder="Hỏi: 'Tôi có khách hàng nào chưa', 'Tìm khách hàng tiềm năng'..."
+                placeholder="Hỏi: 'Tôi có bao nhiêu bạn bè?', 'Việc cần làm hôm nay', 'Sự kiện đăng ký'..."
                 className="flex-1 min-h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 px-3.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 dark:focus:border-[#D8B282]"
               />
 

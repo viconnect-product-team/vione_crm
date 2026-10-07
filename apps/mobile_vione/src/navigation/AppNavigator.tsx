@@ -22,6 +22,12 @@ import { AttendanceModal } from "../components/AttendanceModal";
 import { WorkflowModal } from "../components/WorkflowModal";
 import { ApprovalsModal } from "../components/ApprovalsModal";
 import { CardScanReviewModal } from "../components/CardScanReviewModal";
+import {
+  IncomingQrConnectionModal,
+  QrRequesterProfile,
+} from "../components/common/IncomingQrConnectionModal";
+import { networkApi } from "../api/services";
+import { Alert } from "react-native";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -67,6 +73,7 @@ export const AppNavigator: React.FC = () => {
   const [attendanceVisible, setAttendanceVisible] = useState(false);
   const [workflowVisible, setWorkflowVisible] = useState(false);
   const [approvalsVisible, setApprovalsVisible] = useState(false);
+  const [incomingRequester, setIncomingRequester] = useState<QrRequesterProfile | null>(null);
 
   if (isLoading) {
     return (
@@ -110,6 +117,35 @@ export const AppNavigator: React.FC = () => {
       <AttendanceModal visible={attendanceVisible} onClose={() => setAttendanceVisible(false)} />
       <WorkflowModal visible={workflowVisible} onClose={() => setWorkflowVisible(false)} />
       <ApprovalsModal visible={approvalsVisible} onClose={() => setApprovalsVisible(false)} />
+
+      {/* Bilateral QR Handshake Incoming Connection Modal */}
+      <IncomingQrConnectionModal
+        visible={Boolean(incomingRequester)}
+        onClose={() => setIncomingRequester(null)}
+        requester={incomingRequester}
+        onAccept={async (req) => {
+          try {
+            if (req.connectionId) {
+              await networkApi.updateConnection(req.connectionId, "accepted");
+            }
+          } catch {}
+          Alert.alert(
+            "Kết nối thành công",
+            `Bạn và ${req.name} đã trở thành đối tác kết nối. Thông báo phản hồi đã được gửi tới đối tác.`
+          );
+        }}
+        onDecline={async (req) => {
+          try {
+            if (req.connectionId) {
+              await networkApi.updateConnection(req.connectionId, "declined");
+            }
+          } catch {}
+          Alert.alert(
+            "Đã từ chối kết nối",
+            `Đã từ chối kết nối với ${req.name}. Thông báo phản hồi đã được gửi tới đối tác.`
+          );
+        }}
+      />
     </NavigationContainer>
   );
 };

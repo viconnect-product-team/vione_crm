@@ -35,7 +35,9 @@ import {
   Building2,
   ExternalLink,
   Share2,
+  RotateCcw,
 } from "lucide-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { StickyBrandHeader } from "../../components/common/StickyBrandHeader";
@@ -44,6 +46,8 @@ import { IdentityPrivacyModal } from "../../components/IdentityPrivacyModal";
 import { CardVaultModal } from "../../components/CardVaultModal";
 import { BusinessNotificationsModal } from "../../components/BusinessNotificationsModal";
 import { ViOneVoiceAssistantModal } from "../../components/ai/ViOneVoiceAssistantModal";
+import { EditProfileModal } from "../../components/EditProfileModal";
+import { UserProfile } from "../../types";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -61,21 +65,35 @@ export const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme, theme, setTheme } = useTheme();
 
+  const [activeUser, setActiveUser] = useState<UserProfile | null>(user);
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
   const [cardVaultModalVisible, setCardVaultModalVisible] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [aiAssistantVisible, setAiAssistantVisible] = useState(false);
+  const [editProfileModalVisible, setEditProfileModalVisible] = useState(false);
 
-  const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
-  const userPhone = user?.phone || "0983 000 001";
-  const userEmail = user?.email || "ceo@vione.vn";
-  const userTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
-  const userCompany = user?.company || "Tập đoàn Đầu tư & Công nghệ ViOne";
-  const userCode = user?.code || "VN-CEO-001";
+  const currentUser = activeUser || user;
+  const displayName = currentUser?.displayName || currentUser?.name || "Doanh nhân ViOne";
+  const userPhone = currentUser?.phone || "0983 000 001";
+  const userEmail = currentUser?.email || "ceo@vione.vn";
+  const userTitle = currentUser?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
+  const userCompany = currentUser?.company || "Tập đoàn Đầu tư & Công nghệ ViOne";
+  const userCode = currentUser?.code || "VN-CEO-001";
   const userBio =
-    user?.bio ||
+    currentUser?.bio ||
     "Doanh nhân, nhà sáng lập và điều hành doanh nghiệp. Đam mê kết nối kinh doanh B2B và xúc tiến thương mại chuyển đổi số toàn diện.";
+
+  const handleRestoreFloatingAi = async () => {
+    try {
+      await AsyncStorage.removeItem("vione_ai_floating_closed");
+    } catch {}
+    setAiAssistantVisible(true);
+    Alert.alert(
+      "Trợ lý AI ViOne",
+      "Đã mở Trợ lý AI ViOne và kích hoạt lại biểu tượng AI nổi trên màn hình chính!"
+    );
+  };
 
   const handleLogout = () => {
     Alert.alert("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất khỏi ViOne Connect?", [
@@ -265,7 +283,7 @@ export const ProfileScreen: React.FC = () => {
             </View>
           </View>
 
-          {/* 2 Champagne Gold Action Buttons: [QR của tôi] & [Chạm NFC] - NO YELLOW-ORANGE GRADIENT! */}
+          {/* 3 Champagne Gold Action Buttons: [QR của tôi], [Chạm NFC] & [Chỉnh sửa] */}
           <View style={styles.cardBtnRow}>
             <TouchableOpacity
               style={[
@@ -310,17 +328,34 @@ export const ProfileScreen: React.FC = () => {
                 Chạm NFC
               </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.pillBtnWrap,
+                {
+                  backgroundColor: isDark ? "rgba(216, 178, 130, 0.16)" : "#FDF6EC",
+                  borderColor: isDark ? "#D8B282" : "rgba(216, 178, 130, 0.7)",
+                },
+              ]}
+              onPress={() => setEditProfileModalVisible(true)}
+              activeOpacity={0.8}
+            >
+              <User size={15} color={isDark ? "#D8B282" : "#8C653B"} strokeWidth={2} />
+              <Text
+                style={[
+                  styles.pillBtnText,
+                  { color: isDark ? "#D8B282" : "#8C653B" },
+                ]}
+              >
+                Chỉnh sửa
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Bottom Right Link: Xem hồ sơ */}
+          {/* Bottom Right Link: Chỉnh sửa hồ sơ */}
           <TouchableOpacity
             style={styles.viewProfileLink}
-            onPress={() =>
-              Alert.alert(
-                "Hồ sơ doanh nhân",
-                `Mã danh tính: ${userCode}\nHọ tên: ${displayName}\nChức vụ: ${userTitle}\nDoanh nghiệp: ${userCompany}`
-              )
-            }
+            onPress={() => setEditProfileModalVisible(true)}
             activeOpacity={0.7}
           >
             <Text
@@ -329,7 +364,7 @@ export const ProfileScreen: React.FC = () => {
                 { color: isDark ? "#D8B282" : "#8C653B" },
               ]}
             >
-              Xem chi tiết hồ sơ
+              Chỉnh sửa thông tin hồ sơ
             </Text>
             <ChevronRight size={14} color={isDark ? "#D8B282" : "#8C653B"} strokeWidth={2} />
           </TouchableOpacity>
@@ -554,12 +589,7 @@ export const ProfileScreen: React.FC = () => {
               </Text>
             </View>
             <TouchableOpacity
-              onPress={() =>
-                Alert.alert(
-                  "Chỉnh sửa giới thiệu",
-                  "Bạn có thể cập nhật tiểu sử và định vị cá nhân trong cài đặt hồ sơ."
-                )
-              }
+              onPress={() => setEditProfileModalVisible(true)}
             >
               <Text
                 style={[
@@ -1040,7 +1070,96 @@ export const ProfileScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* 9. Nút Đăng xuất */}
+        {/* 9. TRỢ LÝ AI VIONE (AI COPILOT) */}
+        <View
+          style={[
+            styles.settingsCard,
+            {
+              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+              shadowColor: isDark ? "#000000" : "#64748B",
+              shadowOpacity: isDark ? 0.3 : 0.04,
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.sectionTitleSmall,
+              { color: isDark ? "#D8B282" : "#8C653B", paddingHorizontal: 4, paddingTop: 6 },
+            ]}
+          >
+            TRỢ LÝ AI VIONE (AI COPILOT)
+          </Text>
+
+          {/* Mở Trợ lý AI */}
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => setAiAssistantVisible(true)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.settingLeft}>
+              <Sparkles size={16} color={isDark ? "#D8B282" : "#8C653B"} style={{ marginRight: 12 }} />
+              <View>
+                <Text
+                  style={[
+                    styles.settingLabel,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  Mở Trợ lý Doanh Nhân ViOne AI
+                </Text>
+                <Text
+                  style={[
+                    styles.settingSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Tra cứu dữ liệu realtime, đối tác, lịch hẹn và sự kiện
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={16} color={isDark ? "#94A3B8" : "#64748B"} />
+          </TouchableOpacity>
+
+          <View
+            style={[
+              styles.settingDivider,
+              { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9" },
+            ]}
+          />
+
+          {/* Khôi phục nút AI nổi ở Trang chủ */}
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={handleRestoreFloatingAi}
+            activeOpacity={0.7}
+          >
+            <View style={styles.settingLeft}>
+              <RotateCcw size={16} color={isDark ? "#D8B282" : "#8C653B"} style={{ marginRight: 12 }} />
+              <View>
+                <Text
+                  style={[
+                    styles.settingLabel,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  Khôi phục nút AI nổi ở Trang chủ
+                </Text>
+                <Text
+                  style={[
+                    styles.settingSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Mở lại bong bóng AI di chuyển tự do trên màn hình
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={16} color={isDark ? "#94A3B8" : "#64748B"} />
+          </TouchableOpacity>
+        </View>
+
+        {/* 10. Nút Đăng xuất */}
         <TouchableOpacity
           style={[
             styles.logoutBtn,
@@ -1088,6 +1207,12 @@ export const ProfileScreen: React.FC = () => {
       <CardVaultModal
         visible={cardVaultModalVisible}
         onClose={() => setCardVaultModalVisible(false)}
+      />
+      <EditProfileModal
+        visible={editProfileModalVisible}
+        onClose={() => setEditProfileModalVisible(false)}
+        currentUser={currentUser}
+        onProfileUpdated={(updated) => setActiveUser(updated)}
       />
     </SafeAreaView>
   );

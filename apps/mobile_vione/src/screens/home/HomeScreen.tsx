@@ -10,6 +10,8 @@ import {
   Alert,
   Dimensions,
   Linking,
+  Animated,
+  PanResponder,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,6 +20,8 @@ import {
   Pencil,
   SlidersHorizontal,
   ChevronRight,
+  X,
+  Calendar,
   CheckCircle2,
   Sparkles,
   ArrowRight,
@@ -100,19 +104,23 @@ const INITIAL_TODAY_OPPORTUNITIES: CommunityOpportunityItem[] = [
     title: "Gói thầu thiết kế thi công nội thất & cơ điện trụ sở tập đoàn",
     organization: "Tập đoàn Bất Động Sản Khang Điền",
     communityName: "Liên minh Doanh Nhân B2B",
+    communityId: "c-b2b-leaders",
+    publishedDate: "Hôm nay",
     dealValue: "5.2 Tỷ VNĐ",
     category: "Xây dựng & Kiến trúc",
-    daysLeft: "Còn 7 ngày",
+    daysLeft: "Đăng hôm nay · Còn 7 ngày",
     interested: false,
   },
   {
     id: "opp-today-2",
     title: "Tìm đối tác chiến lược cung ứng giải pháp AI & Phần mềm CRM",
     organization: "Tập đoàn Công Nghệ TechVibe",
-    communityName: "Gia đình ViOne",
+    communityName: "Gia Đình ViOne",
+    communityId: "c-vione-internal",
+    publishedDate: "Hôm nay",
     dealValue: "850 Triệu VNĐ",
     category: "Công nghệ & AI",
-    daysLeft: "Còn 14 ngày",
+    daysLeft: "Đăng hôm nay · Còn 14 ngày",
     interested: true,
   },
 ];
@@ -140,7 +148,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const { user } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"today" | "upcoming" | "reminders" | "voice_moments">("today");
+  const [activeTab, setActiveTab] = useState<"today" | "all" | "upcoming" | "reminders" | "voice_moments">("today");
 
   // Location permission state
   const [hasLocationPermission, setHasLocationPermission] = useState<boolean>(true);
@@ -163,6 +171,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const [postMomentVisible, setPostMomentVisible] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [aiAssistantVisible, setAiAssistantVisible] = useState(false);
+  const [showFloatingAi, setShowFloatingAi] = useState(true);
+  const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      onMoveShouldSetPanResponder: (_, gesture) => Math.abs(gesture.dx) > 4 || Math.abs(gesture.dy) > 4,
+      onPanResponderGrant: () => {
+        pan.setOffset({
+          x: (pan.x as any)._value || 0,
+          y: (pan.y as any)._value || 0,
+        });
+        pan.setValue({ x: 0, y: 0 });
+      },
+      onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
+      onPanResponderRelease: () => {
+        pan.flattenOffset();
+      },
+    })
+  ).current;
   const [opportunityDetailModalVisible, setOpportunityDetailModalVisible] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState<CommunityOpportunityItem | null>(null);
 
@@ -233,6 +260,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           return {
             id: String(ev.id),
             title: ev.title || ev.name || "Sự kiện kết nối Doanh nghiệp",
+            imageUrl: ev.imageUrl || ev.coverUrl || ev.bannerUrl || ev.image || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80",
             date: dt ? dt.toLocaleDateString("vi-VN") : "Hôm nay",
             time: dt ? dt.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "09:30",
             location: ev.location || ev.venue || "Hội trường ViOne Connect",
@@ -412,6 +440,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   }, [aiSuggestedPartners, distanceFilter, industryFilter]);
 
   const todayTotalCount = todayPool.length + todayMeetings.length + todayOpportunities.length;
+  const allTotalCount = todayMeetings.length + todayOpportunities.length + upcomingEvents.length;
 
   return (
     <SafeAreaView
@@ -473,7 +502,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           {/* Ảnh bìa doanh nhân */}
           <View style={styles.coverBannerWrap}>
             <Image
-              source={require("../../../assets/vba-hero.jpg")}
+              source={user?.coverUrl ? { uri: user.coverUrl } : require("../../../assets/vba-hero.jpg")}
               style={styles.coverBannerImg}
               resizeMode="cover"
             />
@@ -481,13 +510,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               colors={["rgba(10, 10, 11, 0.2)", "rgba(10, 10, 11, 0.75)"]}
               style={styles.coverGradient}
             />
-            <TouchableOpacity
-              style={styles.editBtn}
-              onPress={() => setMemberCardModalVisible(true)}
-              activeOpacity={0.8}
-            >
-              <Pencil size={14} color="#D8B282" />
-            </TouchableOpacity>
           </View>
 
           {/* Thông tin doanh nhân: Left Info & Right Avatar */}
@@ -648,6 +670,49 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               >
                 Hôm nay {todayTotalCount > 0 ? `(${todayTotalCount})` : ""}
               </Text>
+            </TouchableOpacity>
+
+            {/* Tab 2: Tất cả */}
+            <TouchableOpacity
+              style={[
+                styles.tabPill,
+                activeTab === "all" && {
+                  backgroundColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3",
+                  borderColor: isDark ? "#D8B282" : "rgba(216, 178, 130, 0.7)",
+                  borderWidth: 1,
+                },
+              ]}
+              onPress={() => setActiveTab("all")}
+              activeOpacity={0.8}
+            >
+              <View style={styles.tabInactiveInner}>
+                <Text
+                  style={
+                    activeTab === "all"
+                      ? [styles.tabPillTextActive, { color: isDark ? "#D8B282" : "#8C653B" }]
+                      : [styles.tabPillTextInactive, { color: isDark ? "#94A3B8" : "#64748B" }]
+                  }
+                >
+                  Tất cả
+                </Text>
+                {allTotalCount > 0 && (
+                  <View
+                    style={[
+                      styles.tabBadgeActive,
+                      { backgroundColor: isDark ? "#D8B282" : "#8C653B" },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.tabBadgeTextActive,
+                        { color: isDark ? "#050C15" : "#FFFFFF" },
+                      ]}
+                    >
+                      {allTotalCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </TouchableOpacity>
 
             {/* Tab 2: Sắp tới */}
@@ -933,22 +998,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                           <TouchableOpacity
                             style={styles.oppDetailBtn}
                             onPress={() => {
-                              setSelectedOpportunity(opp);
-                              setOpportunityDetailModalVisible(true);
+                              navigation?.navigate("Community", {
+                                communityId: opp.communityId || "c-b2b-leaders",
+                                tab: "opportunities",
+                                opportunityId: opp.id,
+                              });
                             }}
                             activeOpacity={0.85}
                           >
                             <Text style={styles.oppDetailBtnText}>Xem chi tiết cơ hội</Text>
                             <ArrowRight size={13} color="#050C15" style={{ marginLeft: 4 }} />
-                          </TouchableOpacity>
-
-                          <TouchableOpacity
-                            style={styles.oppCommunityLinkBtn}
-                            onPress={() => navigation?.navigate("Community")}
-                            activeOpacity={0.8}
-                          >
-                            <Users size={13} color="#DFB76C" style={{ marginRight: 4 }} />
-                            <Text style={styles.oppCommunityLinkText}>Vào Cộng đồng</Text>
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -983,6 +1042,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                         }}
                         activeOpacity={0.85}
                       >
+                        {ev.imageUrl ? (
+                          <Image
+                            source={{ uri: ev.imageUrl }}
+                            style={styles.eventCardImage}
+                            resizeMode="cover"
+                          />
+                        ) : null}
                         <View style={styles.cardHeaderRow}>
                           <View style={styles.cardTag}>
                             <CalendarDays size={12} color="#D8B282" style={{ marginRight: 4 }} />
@@ -1001,6 +1067,216 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 )}
               </View>
             )
+          )}
+
+          {/* Nội dung Tab TẤT CẢ (Cuộc gặp của tài khoản nếu có + Cơ hội tại cộng đồng tham gia + Sự kiện sắp tới) */}
+          {activeTab === "all" && (
+            <View style={styles.listContainer}>
+              {/* 1. CUỘC GẶP CỦA TÀI KHOẢN */}
+              <View style={styles.todaySubSection}>
+                <View style={styles.todaySubSectionHeader}>
+                  <View style={styles.todaySubSectionTitleRow}>
+                    <Text style={[styles.todaySubSectionTitle, { color: isDark ? "#D8B282" : "#8C653B", fontWeight: "900" }]}>
+                      CUỘC GẶP CỦA TÀI KHOẢN
+                    </Text>
+                  </View>
+                  <View style={[styles.todayCountBadge, { backgroundColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3", borderColor: "#8C653B", borderWidth: 1 }]}>
+                    <Text style={[styles.todayCountBadgeText, { color: "#050C15", fontWeight: "700" }]}>
+                      {todayMeetings.length} cuộc hẹn
+                    </Text>
+                  </View>
+                </View>
+
+                {todayMeetings.length > 0 ? (
+                  todayMeetings.map((meet) => (
+                    <View
+                      key={meet.id}
+                      style={[
+                        styles.eventCard,
+                        { borderColor: "#8C653B", borderWidth: 1, backgroundColor: isDark ? "#181410" : "#FFFDF9" },
+                      ]}
+                    >
+                      <View style={styles.cardHeaderRow}>
+                        <View style={[styles.cardTag, { backgroundColor: "#F6E1C3", borderColor: "#8C653B", borderWidth: 1 }]}>
+                          <Text style={[styles.cardTagText, { color: "#050C15", fontWeight: "700" }]}>
+                            [Cuộc gặp 1-1]
+                          </Text>
+                        </View>
+                        <Text style={[styles.cardDate, { color: "#050C15", fontWeight: "600" }]}>
+                          {meet.time} · {meet.date || "Hôm nay"}
+                        </Text>
+                      </View>
+                      <Text style={[styles.cardTitle, { color: "#050C15" }]}>{meet.title}</Text>
+                      <View style={{ marginTop: 4 }}>
+                        <Text style={{ fontSize: 12, color: "#050C15" }}>
+                          Đối tác: <Text style={{ fontWeight: "700" }}>{meet.counterpart}</Text>
+                        </Text>
+                        <Text style={{ fontSize: 12, color: "#050C15", marginTop: 2 }}>
+                          Địa điểm: <Text style={{ fontWeight: "700" }}>{meet.location}</Text>
+                        </Text>
+                      </View>
+                      <View style={styles.todayMeetActionRow}>
+                        {meet.format === "online" ? (
+                          <TouchableOpacity
+                            style={[styles.meetPrimaryActionBtn, { backgroundColor: "#8C653B" }]}
+                            onPress={() => Linking.openURL("https://meet.google.com/new")}
+                            activeOpacity={0.8}
+                          >
+                            <Text style={[styles.meetPrimaryActionText, { color: "#FFFFFF", fontWeight: "700" }]}>
+                              Vào phòng họp Meet
+                            </Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            style={[styles.meetPrimaryActionBtn, { backgroundColor: "#8C653B" }]}
+                            onPress={() => Linking.openURL("tel:0901234567")}
+                            activeOpacity={0.8}
+                          >
+                            <Text style={[styles.meetPrimaryActionText, { color: "#FFFFFF", fontWeight: "700" }]}>
+                              Gọi đối tác
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <View style={[styles.quietBox, { borderColor: "#8C653B", borderWidth: 1, backgroundColor: "#FAF6F0" }]}>
+                    <Text style={[styles.quietTitle, { color: "#050C15" }]}>
+                      Tài khoản hiện chưa có cuộc gặp nào
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              {/* 2. CƠ HỘI ĐANG CÓ TẠI CỘNG ĐỒNG THAM GIA */}
+              <View style={styles.todaySubSection}>
+                <View style={styles.todaySubSectionHeader}>
+                  <View style={styles.todaySubSectionTitleRow}>
+                    <Text style={[styles.todaySubSectionTitle, { color: isDark ? "#D8B282" : "#8C653B", fontWeight: "900" }]}>
+                      CƠ HỘI ĐANG CÓ TẠI CỘNG ĐỒNG THAM GIA
+                    </Text>
+                  </View>
+                  <View style={[styles.todayCountBadge, { backgroundColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3", borderColor: "#8C653B", borderWidth: 1 }]}>
+                    <Text style={[styles.todayCountBadgeText, { color: "#050C15", fontWeight: "700" }]}>
+                      {todayOpportunities.length} cơ hội
+                    </Text>
+                  </View>
+                </View>
+
+                {todayOpportunities.map((opp) => (
+                  <View
+                    key={opp.id}
+                    style={[
+                      styles.eventCard,
+                      { borderColor: "#8C653B", borderWidth: 1, backgroundColor: isDark ? "#181410" : "#FFFDF9" },
+                    ]}
+                  >
+                    <View style={styles.cardHeaderRow}>
+                      <View style={[styles.cardTag, { backgroundColor: "#F6E1C3", borderColor: "#8C653B", borderWidth: 1 }]}>
+                        <Text style={[styles.cardTagText, { color: "#050C15", fontWeight: "700" }]}>
+                          {opp.communityName || "Cộng đồng ViOne"}
+                        </Text>
+                      </View>
+                      <View style={{ backgroundColor: "#8C653B", paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 }}>
+                        <Text style={{ color: "#FFFFFF", fontSize: 10, fontWeight: "800" }}>CƠ HỘI ĐANG CÓ</Text>
+                      </View>
+                    </View>
+                    <Text style={[styles.cardTitle, { color: "#050C15" }]}>{opp.title}</Text>
+                    <View style={{ marginTop: 4 }}>
+                      <Text style={{ fontSize: 12, color: "#050C15" }}>
+                        Đơn vị: <Text style={{ fontWeight: "700" }}>{opp.organization || "Doanh nghiệp thành viên"}</Text>
+                      </Text>
+                      <Text style={{ fontSize: 12, color: "#050C15", marginTop: 2 }}>
+                        Giá trị: <Text style={{ fontWeight: "800" }}>{opp.dealValue}</Text> · {opp.daysLeft}
+                      </Text>
+                    </View>
+                    <View style={{ marginTop: 10, borderTopWidth: 1, borderTopColor: "rgba(140, 101, 59, 0.2)", paddingTop: 8 }}>
+                      <TouchableOpacity
+                        style={[styles.meetPrimaryActionBtn, { backgroundColor: "#8C653B" }]}
+                        onPress={() => {
+                          navigation.navigate("Community" as any, {
+                            communityId: "c-b2b-leaders",
+                            tab: "opportunities",
+                            opportunityId: opp.id,
+                          });
+                        }}
+                        activeOpacity={0.85}
+                      >
+                        <Text style={[styles.meetPrimaryActionText, { color: "#FFFFFF", fontWeight: "700" }]}>
+                          Xem chi tiết cơ hội
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+
+              {/* 3. SỰ KIỆN SẮP TỚI */}
+              <View style={styles.todaySubSection}>
+                <View style={styles.todaySubSectionHeader}>
+                  <View style={styles.todaySubSectionTitleRow}>
+                    <Text style={[styles.todaySubSectionTitle, { color: isDark ? "#D8B282" : "#8C653B", fontWeight: "900" }]}>
+                      SỰ KIỆN SẮP TỚI
+                    </Text>
+                  </View>
+                  <View style={[styles.todayCountBadge, { backgroundColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3", borderColor: "#8C653B", borderWidth: 1 }]}>
+                    <Text style={[styles.todayCountBadgeText, { color: "#050C15", fontWeight: "700" }]}>
+                      {upcomingEvents.length} sự kiện
+                    </Text>
+                  </View>
+                </View>
+
+                {upcomingEvents.map((ev) => (
+                  <View
+                    key={ev.id}
+                    style={[
+                      styles.eventCard,
+                      { borderColor: "#8C653B", borderWidth: 1, backgroundColor: isDark ? "#181410" : "#FFFDF9" },
+                    ]}
+                  >
+                    <View style={styles.cardHeaderRow}>
+                      <View style={[styles.cardTag, { backgroundColor: "#F6E1C3", borderColor: "#8C653B", borderWidth: 1 }]}>
+                        <Text style={[styles.cardTagText, { color: "#050C15", fontWeight: "700" }]}>
+                          {ev.community}
+                        </Text>
+                      </View>
+                      <Text style={[styles.cardDate, { color: "#050C15", fontWeight: "600" }]}>
+                        {ev.time} · {ev.date}
+                      </Text>
+                    </View>
+                    <Text style={[styles.cardTitle, { color: "#050C15" }]}>{ev.title}</Text>
+                    <View style={{ marginTop: 4 }}>
+                      <Text style={{ fontSize: 12, color: "#050C15" }}>
+                        Địa điểm: <Text style={{ fontWeight: "700" }}>{ev.location}</Text>
+                      </Text>
+                    </View>
+                    <View style={{ marginTop: 10, borderTopWidth: 1, borderTopColor: "rgba(140, 101, 59, 0.2)", paddingTop: 8 }}>
+                      <TouchableOpacity
+                        style={[styles.meetPrimaryActionBtn, { backgroundColor: "#8C653B" }]}
+                        onPress={() => {
+                          setSelectedEventForDetail({
+                            id: ev.id,
+                            title: ev.title,
+                            startsAt: `${ev.time} · ${ev.date}`,
+                            location: ev.location,
+                            category: ev.community,
+                            isRegistered: true,
+                            registeredCount: 88,
+                          });
+                          setEventDetailModalVisible(true);
+                        }}
+                        activeOpacity={0.85}
+                      >
+                        <Text style={[styles.meetPrimaryActionText, { color: "#FFFFFF", fontWeight: "700" }]}>
+                          Xem chi tiết sự kiện
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            </View>
           )}
 
           {/* Nội dung Tab SẮP TỚI (Timeline & List sự kiện sắp tới) */}
@@ -1030,6 +1306,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                     }}
                     activeOpacity={0.85}
                   >
+                    {ev.imageUrl ? (
+                      <Image
+                        source={{ uri: ev.imageUrl }}
+                        style={styles.eventCardImage}
+                        resizeMode="cover"
+                      />
+                    ) : null}
                     <View style={styles.cardHeaderRow}>
                       <View style={styles.cardTag}>
                         <CalendarDays size={12} color="#D8B282" style={{ marginRight: 4 }} />
@@ -1249,7 +1532,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
 
         {/* 4. Bộ 3 Phím Tắt Nhanh (QUICK ACTIONS - Matching 100% PWA) */}
         <View style={styles.quickActionsGrid}>
-          {/* Quick Action 1: Gặp gỡ */}
+          {/* Quick Action 1: Lên lịch */}
           <TouchableOpacity
             style={[
               styles.quickActionCard,
@@ -1258,14 +1541,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "rgba(216, 178, 130, 0.3)",
               },
             ]}
-            onPress={() => setPostMomentVisible(true)}
+            onPress={() => {
+              setSelectedPartnerForMeeting(null);
+              setScheduleMeetingVisible(true);
+            }}
             activeOpacity={0.8}
           >
             <View style={styles.quickActionIconWrap}>
-              <QuickMeetIcon size={16} color="#D8B282" />
+              <CalendarDays size={16} color="#D8B282" />
             </View>
             <Text style={[styles.quickActionLabel, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
-              Gặp gỡ
+              Lên lịch
             </Text>
           </TouchableOpacity>
 
@@ -1678,21 +1964,39 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
         }}
       />
 
-      {/* Floating AI Assistant Copilot Button */}
-      <TouchableOpacity
-        style={[
-          styles.floatingAiBtn,
-          {
-            backgroundColor: isDark ? "#12151F" : "#FFFFFF",
-            borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "rgba(216, 178, 130, 0.6)",
-          },
-        ]}
-        onPress={() => setAiAssistantVisible(true)}
-        activeOpacity={0.85}
-      >
-        <Sparkles size={20} color={isDark ? "#D8B282" : "#A3703C"} />
-        <View style={styles.floatingAiPing} />
-      </TouchableOpacity>
+      {/* Floating AI Assistant Copilot Button (Draggable & Closable) */}
+      {showFloatingAi && (
+        <Animated.View
+          style={[
+            styles.floatingAiBtn,
+            {
+              transform: [{ translateX: pan.x }, { translateY: pan.y }],
+              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "rgba(216, 178, 130, 0.6)",
+            },
+          ]}
+          {...panResponder.panHandlers}
+        >
+          <TouchableOpacity
+            style={StyleSheet.absoluteFill}
+            onPress={() => setAiAssistantVisible(true)}
+            activeOpacity={0.85}
+          >
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+              <Sparkles size={20} color={isDark ? "#D8B282" : "#A3703C"} />
+              <View style={styles.floatingAiPing} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.floatingAiCloseBadge}
+            onPress={() => setShowFloatingAi(false)}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            activeOpacity={0.7}
+          >
+            <X size={9} color="#FFFFFF" strokeWidth={3} />
+          </TouchableOpacity>
+        </Animated.View>
+      )}
     </SafeAreaView>
   );
 };
@@ -2717,6 +3021,27 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: "#10B981",
+  },
+  floatingAiCloseBadge: {
+    position: "absolute",
+    top: -6,
+    right: -6,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#EF4444",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 100,
+    elevation: 9,
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+  },
+  eventCardImage: {
+    width: "100%",
+    height: 120,
+    borderRadius: 12,
+    marginBottom: 8,
   },
   todaySubSection: {
     gap: 10,

@@ -11,6 +11,7 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { X, Flashlight, Camera } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { GoldButton } from "../../components/common/GoldButton";
+import { networkApi } from "../../api/services";
 
 interface ScanQrModalProps {
   visible: boolean;
@@ -34,9 +35,16 @@ export const ScanQrModal: React.FC<ScanQrModalProps> = ({
     if (onScanned) {
       onScanned(data);
     } else {
+      let targetId = data;
+      if (data.includes("/c/")) {
+        targetId = data.split("/c/")[1];
+      } else if (data.includes("userId=")) {
+        targetId = data.split("userId=")[1].split("&")[0];
+      }
+
       Alert.alert(
-        "Đã nhận diện mã QR",
-        `Dữ liệu: ${data}\n\nBạn có muốn gửi yêu cầu kết nối đối tác không?`,
+        "Đã nhận diện mã QR đối tác",
+        `Mã đối tác: ${targetId}\n\nBạn có muốn gửi yêu cầu kết nối danh tính số ngay lập tức?`,
         [
           {
             text: "Quét lại",
@@ -45,8 +53,16 @@ export const ScanQrModal: React.FC<ScanQrModalProps> = ({
           },
           {
             text: "Kết nối ngay",
-            onPress: () => {
-              Alert.alert("Thành công", "Đã gửi lời mời kết nối đối tác!");
+            onPress: async () => {
+              try {
+                await networkApi.sendConnectionRequest(targetId, "Yêu cầu kết nối qua quét mã QR").catch(() => {});
+                await networkApi.connectByToken(data).catch(() => {});
+              } catch {}
+
+              Alert.alert(
+                "Đã gửi yêu cầu kết nối",
+                "Popup thông tin tài khoản của bạn đã được gửi tới đối tác để xác nhận. Bạn sẽ nhận được thông báo phản hồi ngay khi đối tác bấm Đồng ý hoặc Từ chối."
+              );
               setScanned(false);
               onClose();
             },

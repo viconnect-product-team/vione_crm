@@ -113,7 +113,7 @@ describe("BC-Mobile-0B — frozen 5-position navigation", () => {
     expect(items).toHaveLength(5);
     expect(items.map(itemName)).toEqual([
       "Trang chủ",
-      "Network",
+      "Mạng lưới",
       "Mở hành động nhanh V",
       "Cộng đồng",
       "Tôi",

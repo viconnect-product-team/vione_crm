@@ -22,7 +22,7 @@ import {
 } from "@/lib/business-connect/mobile/auth-session";
 import { bcDeviceSessionTouchFn } from "@/lib/business-connect/mobile/device-session.functions";
 import { describeCurrentDevice } from "@/lib/business-connect/mobile/device-session.client-info";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { LangContext, isLang, type Lang } from "@/lib/i18n";
 import { ThemeProvider } from "@/lib/theme";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
@@ -30,6 +30,7 @@ import { registerServiceWorker } from "@/lib/register-sw";
 import { isTenantHost } from "@/lib/tenant";
 import { ViOneVoiceAssistant } from "@/components/ai/ViOneVoiceAssistant";
 import { ViOnePwaInstallPrompt } from "@/components/pwa/ViOnePwaInstallPrompt";
+import { IncomingConnectionModal } from "@/components/member/IncomingConnectionModal";
 
 const LANG_STORAGE_KEY = "vba.lang";
 
@@ -127,7 +128,7 @@ export const Route = createRootRoute({
           "Hệ sinh thái quản trị doanh nghiệp toàn diện, danh thiếp số thông minh và tự động hóa quy trình cùng ViOne AI Copilot.",
       },
       { name: "author", content: "ViOne Platform" },
-      { name: "theme-color", content: "#DFB76C" },
+      { name: "theme-color", content: "#D8B282" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
@@ -229,6 +230,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 import { useConnectAppRealtimeNotifications } from "@/hooks/use-connect-app-realtime-notifications";
 import { GlobalIncomingCallModal } from "@/components/business-connect/mobile/inbox/GlobalIncomingCallModal";
+import { NotificationPromptBanner } from "@/components/common/NotificationPromptBanner";
 
 function GlobalRealtimeNotifications() {
   const { status } = useAuth();
@@ -238,7 +240,12 @@ function GlobalRealtimeNotifications() {
 
 function AuthenticatedRealtimeNotifications() {
   useConnectAppRealtimeNotifications();
-  return <GlobalIncomingCallModal />;
+  return (
+    <>
+      <GlobalIncomingCallModal />
+      <NotificationPromptBanner />
+    </>
+  );
 }
 
 function RootComponent() {
@@ -418,6 +425,7 @@ function RootComponent() {
           <AuthProvider>
             <GlobalRealtimeNotifications />
             <GlobalViOneVoiceAssistant />
+            <IncomingConnectionModal />
             <ViOnePwaInstallPrompt />
             <AuthGate>
               <Outlet />
@@ -501,17 +509,17 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     rememberLastMobileRoute(pathname + window.location.search);
   }, [status, pathname]);
 
-  const [resumed, setResumed] = useState(false);
+  const resumedRef = useRef(false);
   useEffect(() => {
-    if (resumed) return;
+    if (resumedRef.current) return;
     if (status !== "in") return;
-    setResumed(true);
-    if (pathname !== "/connect-app") return;
+    resumedRef.current = true;
+    if (pathname !== "/connect-app" && pathname !== "/connect-app/") return;
     if (!isStandalonePwa()) return;
     const last = getLastMobileRoute();
-    if (!last || last === pathname) return;
+    if (!last || last === pathname || last === "/connect-app" || last === "/connect-app/") return;
     navigate({ to: last, replace: true });
-  }, [status, pathname, resumed, navigate]);
+  }, [status, pathname, navigate]);
 
   // On a tenant custom domain/subdomain, the home route shows a public landing.
   const [tenantHost, setTenantHost] = useState(false);

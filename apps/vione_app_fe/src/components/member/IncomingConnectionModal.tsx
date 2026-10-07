@@ -80,11 +80,29 @@ export function IncomingConnectionModal() {
       }
     };
 
+    const handleConnectionAccepted = (data: any) => {
+      const name = data?.responderProfile?.displayName || data?.accepterProfile?.displayName || "Đối tác";
+      toast.success(`🎉 ${name} đã đồng ý kết nối với bạn!`);
+      window.dispatchEvent(new CustomEvent("vba:conversation_updated"));
+      window.dispatchEvent(new CustomEvent("vba:connection_accepted"));
+      window.dispatchEvent(new CustomEvent("notifications-updated"));
+    };
+
+    const handleConnectionDeclined = (data: any) => {
+      const name = data?.responderProfile?.displayName || data?.declinerProfile?.displayName || "Đối tác";
+      toast.info(`ℹ️ ${name} đã từ chối yêu cầu kết nối.`);
+      window.dispatchEvent(new CustomEvent("notifications-updated"));
+    };
+
     socket.on("connection:requested", handleConnectionRequested);
+    socket.on("connection:accepted", handleConnectionAccepted);
+    socket.on("connection:declined", handleConnectionDeclined);
     socket.on("notification:new", handleNotification);
 
     return () => {
       socket.off("connection:requested", handleConnectionRequested);
+      socket.off("connection:accepted", handleConnectionAccepted);
+      socket.off("connection:declined", handleConnectionDeclined);
       socket.off("notification:new", handleNotification);
     };
   }, []);
@@ -92,9 +110,9 @@ export function IncomingConnectionModal() {
   if (!incoming || typeof document === "undefined") return null;
 
   const profile = incoming.requesterProfile || {};
-  const displayName = profile.display_name || "Doanh nhân CEO 1983";
-  const company = profile.company_name || "CLB Doanh Nhân CEO 1983";
-  const title = profile.job_title || "Hội viên Chính thức";
+  const displayName = profile.display_name || "Doanh nhân ViOne";
+  const company = profile.company_name || "Hệ sinh thái Doanh nhân ViOne";
+  const title = profile.job_title || "Hội viên Chiến lược";
   const avatar = profile.avatar_url;
   const phone = profile.phone;
   const email = profile.email;
@@ -108,12 +126,16 @@ export function IncomingConnectionModal() {
         body: JSON.stringify({ status: "accepted" }),
       });
 
-      // Gửi sự kiện socket 2 chiều nếu có socket kết nối
+      // Bắn phản hồi socket ngay lập tức cho tài khoản A biết
       try {
         const socket = getConnectAppSocket();
-        socket.emit("connection:accept", {
+        socket.emit("connection:respond", {
           connectionId: incoming.connectionId,
           targetUserId: profile.userId,
+          accepted: true,
+          responderProfile: {
+            displayName: "Doanh nhân ViOne",
+          },
         });
       } catch {}
 
@@ -154,8 +176,22 @@ export function IncomingConnectionModal() {
           method: "PATCH",
           body: JSON.stringify({ status: "declined" }),
         }).catch(() => {});
+
+        // Bắn phản hồi từ chối ngay lập tức cho tài khoản A
+        try {
+          const socket = getConnectAppSocket();
+          socket.emit("connection:respond", {
+            connectionId: incoming.connectionId,
+            targetUserId: profile.userId,
+            accepted: false,
+            responderProfile: {
+              displayName: "Doanh nhân ViOne",
+            },
+          });
+        } catch {}
       } catch {}
     }
+    toast.info(`Đã từ chối kết nối với ${displayName}`);
     setIncoming(null);
   };
 
@@ -172,7 +208,7 @@ export function IncomingConnectionModal() {
               <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">
                 YÊU CẦU KẾT NỐI MỚI
               </span>
-              <h3 className="text-xs font-black text-white">CLB DOANH NHÂN CEO 1983</h3>
+              <h3 className="text-xs font-black text-white">HỆ SINH THÁI DOANH NHÂN VIONE</h3>
             </div>
           </div>
           <button

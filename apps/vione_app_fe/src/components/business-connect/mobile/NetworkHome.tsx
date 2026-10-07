@@ -153,10 +153,8 @@ export function NetworkHome({
       { id: "network", label: "Mạng lưới" },
       { id: "customers", label: "Khách hàng" },
       { id: "suggestions", label: "Gợi ý (AI)" },
+      { id: "requests", label: `Lời mời${incomingRequests.requests.length > 0 ? ` (${incomingRequests.requests.length})` : ""}` },
     ];
-    if (incomingRequests.requests.length > 0) {
-      list.push({ id: "requests", label: `Lời mời (${incomingRequests.requests.length})` });
-    }
     return list;
   }, [incomingRequests.requests.length]);
 
@@ -269,7 +267,7 @@ export function NetworkHome({
           >
             <MessageSquare className="h-5 w-5 text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)]" strokeWidth={1.8} />
             {unreadDmCount > 0 ? (
-              <span className="absolute -right-0.5 -top-0.5 flex h-[17px] w-[17px] items-center justify-center rounded-full border border-solid border-[var(--bc-mobile-surface)] bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] font-['Inter-Bold',Helvetica] text-[9.5px] font-bold leading-none text-[#050c15]">
+              <span className="absolute -right-0.5 -top-0.5 flex h-[17px] w-[17px] items-center justify-center rounded-full border border-solid border-[var(--bc-mobile-surface)] bg-[#DFB76C] font-['Inter-Bold',Helvetica] text-[9.5px] font-bold leading-none text-slate-950">
                 {unreadDmCount}
               </span>
             ) : null}
@@ -286,32 +284,22 @@ export function NetworkHome({
               id="network-heading"
               className="relative flex items-center mt-[-1.00px] [font-family:'Inter-Regular',Helvetica] font-bold text-[var(--bc-mobile-text,#0F172A)] text-2xl tracking-[0] leading-8"
             >
-              Network
+              Mạng lưới
             </h1>
             <div className="flex items-center gap-2">
-              <Link
-                to="/connect-app/card-scan"
-                aria-label={t("bc.mobile.network.addPerson")}
-                title="Quét danh thiếp"
-                className="grid h-9 w-9 place-items-center rounded-full text-[var(--bc-mobile-accent)] hover:bg-[var(--bc-mobile-surface-2)] transition-colors border border-solid border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] hover:border-[var(--bc-mobile-accent)]"
-              >
-                <UserPlus className="h-4.5 w-4.5" strokeWidth={1.8} />
-              </Link>
               <button
                 type="button"
-                onClick={() => setProfileSheetOpen(true)}
-                aria-label="Hồ sơ cá nhân"
-                title={currentProfile.name}
-                className="relative h-9 w-9 rounded-full p-0.5 bg-gradient-to-tr from-[#C29B69] via-[#D8B282] to-[#F6E1C3] shadow-xs active:scale-95 transition-transform cursor-pointer"
+                onClick={() => handleTabChange("requests")}
+                aria-label="Danh sách lời mời kết bạn"
+                title="Danh sách lời mời kết bạn"
+                className="relative grid h-9 w-9 place-items-center rounded-full text-[var(--bc-mobile-accent)] hover:bg-[var(--bc-mobile-surface-2)] transition-colors border border-solid border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] hover:border-[var(--bc-mobile-accent)] cursor-pointer"
               >
-                <img
-                  src={myAvatarUrl}
-                  alt={currentProfile.name}
-                  className="w-full h-full rounded-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = avatarOrDemo(null, currentProfile.name);
-                  }}
-                />
+                <UserPlus className="h-4.5 w-4.5" strokeWidth={1.8} />
+                {incomingRequests.requests.length > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-xs">
+                    {incomingRequests.requests.length}
+                  </span>
+                )}
               </button>
             </div>
           </div>

@@ -357,7 +357,7 @@ export function CreateCommunityModal({ open, onClose, onCreated }: Props) {
               required
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="Ví dụ: Gia đình ViOne, CLB Doanh Nhân Trẻ Hà Nội..."
+              placeholder="Ví dụ: Gia Đình ViOne, CLB Doanh Nhân Trẻ Hà Nội..."
               className="w-full rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] px-4 py-2.5 text-sm text-[var(--bc-mobile-text)] placeholder:text-[var(--bc-mobile-muted)]/60 focus:border-[var(--bc-mobile-accent)] focus:outline-none transition-colors"
             />
           </div>

@@ -45,6 +45,11 @@
     * Bộ 4 icon tab đáy (`Home`, `Network`, `Community`, `Me`) BẮT BUỘC dùng vector path chuẩn từ `NavIcons.tsx` (`NavHomeIcon`, `NavNetworkIcon`, `NavCommunityIcon`, `NavMeIcon`) khớp 100% với Web PWA.
     * Chỉ báo tab đang chọn: Vạch chỉ báo trên đỉnh tab chạy dải gradient mạ vàng `["#F6E1C3", "#E6C59E", "#D8B282", "#C29B69"]` (24x3px), chữ in đậm 10.5px màu `#D8B282` (Dark) / `#A3703C` (Light). TUYỆT ĐỐI KHÔNG để khung pill/màu nền hover sau icon khi tab đang active (khử hoàn toàn background pill ở iconWrap).
     * Chuẩn hóa màu nền toàn app: Nền Dark Mode là Executive Obsidian Navy `#0B0F17` (card `#0E1522`, surface-2 `#151D2C`, viền `rgba(216, 178, 130, 0.18)`), nền Light Mode là Trắng Tinh Tế `#FFFFFF` (card `#FFFFFF`, surface-2 `#FAF8F5`). Nghiêm cấm dùng màu đen thô `#0A0A0B` hay xám slate `#F8FAFC`.
+  - **Màn Hình Đăng Nhập ViOne Executive Minimal Luxury (`ConnectAppSignIn.tsx` & `LoginScreen.tsx`)**:
+    * Logo ViOne mạ vàng nổi bật làm trung tâm: Phóng to kích thước (`h-13 w-auto sm:h-15` trên Web, `185x66` trên Mobile), hiệu ứng ánh kim phát quang `drop-shadow-[0_6px_32px_rgba(223,183,108,0.7)]`, kèm vạch phụ đề "BUSINESS CONNECT" chữ in hoa `#DFB76C`.
+    * Triệt tiêu toàn bộ text rườm rà: Xóa bỏ tiêu đề "Đăng nhập ViOne" và phụ đề "Cộng đồng doanh nhân tinh hoa & Kết nối giao thương" (hoặc cộng đồng doanh nghiệp...).
+    * Nút liên kết ngoài "Website chính thức": Bắt buộc liên kết thẳng tới website chính thức `https://viconnect.vn/` (thay thế triệt để các nút "Khám phá Web Landing" cũ).
+    * Nút hành động Đăng nhập: Áp dụng dải màu Luxury Champagne Gold `["#FFF2DC", "#DFB76C", "#D4AF37", "#B88E3E"]`, chữ đen đậm tương phản cao.
 - **Smart Customer CRM Hub (360° Lead Management)**: Hệ thống CRM ViOne (`apps/vione_app_fe`) tích hợp trung tâm quản trị khách hàng thông minh (`SmartCustomerCrmHub.tsx` tại `/members`) hỗ trợ 4 KPI, phân loại nguồn chuyển đổi (NFC Tap, Quét Card OCR, B2B Network, Website Lead), chấm điểm tiềm năng AI (AI Lead Score), cảnh báo nhịp SLA và hành động nhanh (Gọi, Mail, AI Pitch, xuất CSV).
 - **CRM System Settings & Customization**: Cho phép trực tiếp thay đổi Website chính hệ thống (`websiteUrl`), Hotline CSKH, Slogan và Logo tùy biến tại `/settings`, lưu trữ bền vững vào `localStorage` (`vba_active_assoc_logo`, `vione_custom_logo`) và phát sự kiện `association-changed` cập nhật tức thì lên `Sidebar.tsx`.
 - **CRM Login UI Light Mode Default**: Màn hình đăng nhập hệ thống CRM (`/auth`) mặc định sử dụng phong cách Trắng Sáng Sang Trọng (Light Mode), ảnh nền kiến trúc đô thị `/skyline_perspective_light.jpg`, lớp phủ sáng ngọc trai, viền vàng Champagne Gold `#DFB76C` và logo wordmark `vione-wordmark.png`.
@@ -103,6 +108,12 @@
   - Web PWA: Tích hợp input native `capture="environment"` cùng Live WebRTC camera viewfinder overlay cho phép căn góc, đổi camera trước/sau và chụp ảnh xuất sang canvas blob gắn ngay vào bài đăng.
   - Mobile Native (`mobile_vione`): Tích hợp `expo-camera` (`CameraView`), có nút bấm "Chụp ảnh trực tiếp" / "Mở Camera", danh sách ảnh "Mới chụp" và Viewfinder modal có nút chuyển camera, bật đèn pin và nút chụp ảnh shutter mạ vàng.
 
+- **ViOne Official Website URL Rule**:
+  - Mọi liên kết Web Landing hoặc chuyển hướng sang cổng thông tin hệ sinh thái tại màn hình Đăng nhập (Web PWA `auth.tsx`, `vione.login.tsx` và Mobile App `LoginScreen.tsx`) BẮT BUỘC sử dụng URL: `https://viconnect.vn/` với tên hiển thị chuẩn mực: "Website chính thức".
+
+- **Device Push & Lockscreen Notification System Rule**:
+  - Hệ thống thông báo ViOne BẮT BUỘC hỗ trợ cấp quyền và gửi thông báo đẩy (Push Notification) lên màn hình khóa thiết bị di động (qua Service Worker `reg.showNotification`, Web Audio chime, và Haptic vibration) cho mọi sự kiện quan trọng: cuộc gọi đến, tin nhắn mới, bình luận mới, và thông báo kết nối kinh doanh.
+
 - **Native App vs Web PWA 1:1 Full Parity Rule (`apps/mobile_vione`)**:
   - **Unified Sticky Brand Header (`StickyBrandHeader.tsx`)**: Toàn bộ 4 màn hình chính (`HomeScreen`, `NetworkScreen`, `CommunityScreen`, `ProfileScreen`) BẮT BUỘC sử dụng chung component `StickyBrandHeader.tsx`. Không được code header riêng lẻ gây lệch kích thước, vị trí hay thiếu nút. Header có logo vector mạ vàng `ViOneLogo.tsx` 53x20, lời chào thời gian thực (`getVNTimeGreeting()`), nút chuyển theme vuông bo góc 32x32 mạ vàng (`rgba(255,255,255,0.08)`), nền mờ `rgba(11, 15, 23, 0.95)`, viền dưới `rgba(255, 255, 255, 0.08)` và ghim dính trên đỉnh màn hình (`stickyHeader`).
   - **Triệt Tiêu Màu Tím Lệch Chuẩn (`#12151F`)**: Toàn bộ màn hình, modals và action sheets trên Native App BẮT BUỘC sử dụng nền Luxury Dark Slate `#0E1522` / Obsidian Navy `#0B0F17` và `rgba(14, 21, 34, 0.85)`. TUYỆT ĐỐI CẤM sử dụng mã màu tím `#12151F` làm lệch bảng màu thượng lưu của ViOne.
@@ -113,6 +124,63 @@
 
 - **ViOne Executive 3-Color Standard (Chuẩn 3 Màu Trắng, Đen Obsidian, Vàng Đồng Champagne Gold)**:
   - Toàn bộ khối Giám sát Vận hành Nhân sự (`EnterpriseOperationsCard` tại `ExecutiveHome.tsx`) và 3 Bottom Sheet điều hành (`WorkflowMobileSheet.tsx`, `ApprovalsMobileSheet.tsx`, `AttendanceMobileSheet.tsx`) BẮT BUỘC tuân thủ chuẩn 3 màu chủ đạo của ViOne: **Trắng (`#FFFFFF`)**, **Đen Obsidian Navy (`#0B0F17`)**, và **Vàng Đồng Champagne Gold (`#DFB76C`, `#D4AF37`)**.
+
+- **Strict Ban on Random Icons (Nghiêm Cấm Thêm Icon Linh Tinh Vào Code)**:
+  - Tuyệt đối KHÔNG tự ý chèn thêm bất kỳ biểu tượng, icon trang trí linh tinh, rườm rà hay không rõ mục đích vào giao diện.
+  - Mọi icon hiển thị bắt buộc phải thuộc bộ chuẩn ngữ nghĩa `lucide-react` (Web) / `lucide-react-native` (Mobile) hoặc bộ vector nhận diện chính thức (`ViOneLogo.tsx`, `VIconMark.tsx`, `NavIcons.tsx`).
+  - Đảm bảo tính tối giản, thanh lịch, sang trọng và chuẩn mực của một nền tảng điều hành C-Level.
+
+- **Bilateral QR Handshake Flow (Quy Trình Bắt Tay Kết Nối Song Phương Thời Gian Thực Qua QR & WebSocket)**:
+  - Khi quét mã QR hoặc chạm NFC (`ScanQrModal`), ứng dụng BẮT BUỘC phát sự kiện WebSocket `qr:connect` tới backend `ConnectAppGateway`.
+  - Gateway định tuyến và emit sự kiện `connection:incoming` tới socket client của người được quét.
+  - Thiết bị của người được quét (cả Web PWA và Native Mobile) tự động kích hoạt Modal yêu cầu kết nối song phương (`IncomingConnectionModal.tsx` trên Web và `IncomingQrConnectionModal.tsx` trên Mobile) với thông tin doanh nhân đầy đủ: avatar, họ tên, chức danh, công ty.
+  - Khi người dùng phản hồi: Phát sự kiện `connection:respond` kèm `decision: "accepted" | "declined"`. Khi chấp nhận, backend tự động lưu kết nối vào CSDL, bắn sự kiện `connection:accepted` thông báo thành công cho người quét và mở kênh chat 1-1.
+
+- **Native Mobile Profile Edit Parity (`EditProfileModal.tsx`)**:
+  - Tab "Tôi" trên Native Mobile (`apps/mobile_vione`) BẮT BUỘC có đầy đủ chức năng chỉnh sửa hồ sơ như Web PWA qua `EditProfileModal.tsx`.
+
+- **IDE Stability & Java/Gradle Extension Strict Ban Rule**:
+  - Nghiêm cấm kích hoạt hoặc cài đặt các extension Java (`redhat.java`) và Gradle auto-detect trong IDE khi mở workspace chứa thư mục `apps/mobile_vione/android`.
+  - Cấu hình `.vscode/settings.json` bắt buộc duy trì: `"java.autobuild.enabled": false`, `"java.server.launchMode": "Off"`, `"gradle.autoDetect": "off"`. Toàn bộ build Android chỉ thực thi tường minh qua script PowerShell `./build-apk.ps1` hoặc Expo EAS, tránh tuyệt đối tình trạng background process `java.exe` quét liên tục gây tràn RAM và crash IDE.
+
+- **Homepage 'Tất Cả' Category Tab Styling & Section Rules (`ExecutiveHome.tsx` & `HomeScreen.tsx`)**:
+  - Danh mục "Tất cả" (`all`) đặt cạnh tab "Hôm nay" tại Trang chủ ViOne App.
+  - Hiển thị đầy đủ 3 phân hệ theo đúng thứ tự:
+    1) **Cuộc gặp của tài khoản nếu có**: Thông tin lịch gặp 1-1, đối tác, thời gian, hình thức gặp.
+    2) **Cơ hội đang có tại cộng đồng tài khoản đấy tham gia**: Lọc đúng các cơ hội thuộc các cộng đồng mà tài khoản đã tham gia (`joinedCommunityIds`).
+    3) **Sự kiện sắp tới**: Toàn bộ sự kiện sắp diễn ra trong hệ sinh thái.
+  - **Quy chuẩn thẩm mỹ nghiêm ngặt**: NGHIÊM CẤM chèn icon cứng vào code nội dung. Sử dụng nhãn text nguyên bản (`[Cuộc gặp 1-1]`, `[Cơ hội đang có]`, `[Sự kiện sắp tới]`), khung viền nền tông màu nâu ấm (`#8C653B`, `#FAF6F0`, `#F6E1C3`), và chữ đen thuần khiết (`#050C15`). Tuyệt đối không dùng màu `lab()`, màu linh tinh chói mắt.
+
+- **ViOne AI Assistant Rich Question Scenarios & Knowledge Base Standard**:
+  - Trợ lý AI ViOne (`ai.service.ts`, `ViOneVoiceAssistant.tsx`, `ViOneVoiceAssistantModal.tsx`) BẮT BUỘC hiểu và giải đáp sâu sắc các tình huống thực tế:
+    * Số lượng và danh sách bạn bè / đối tác kết nối ("tôi đang có bao nhiêu bạn bè", "danh sách bạn bè").
+    * Chi tiết các sự kiện tài khoản đã đăng ký thành công ("tôi đang đăng ký sự kiện nào không", "vé sự kiện của tôi", "cách hủy vé").
+    * Công việc và nhiệm vụ cần giải quyết trong ngày ("tôi có công việc nào phải làm không", "việc cần làm", "phê duyệt thanh toán").
+    * Kiểm tra thông báo mới, tin nhắn chưa đọc, thông tin pháp lý công ty & MST, sản phẩm B2B đang niêm yết, quy trình đổi mật khẩu & FaceID, hướng dẫn chạm thẻ NFC thông minh, cách đăng cơ hội giao thương, và điểm tín nhiệm / hạng thành viên Titanium Executive VIP.
+
+  - Hỗ trợ trọn vẹn 8 trường thông tin chuẩn mực: Họ tên hiển thị (`displayName`), Chức vụ/Chức danh (`jobTitle`), Tên công ty (`companyName`), Ngành nghề (`industry`), Số điện thoại (`phone`), Email (`email`), Website (`website`), Tiểu sử (`bio`).
+  - Giao diện hỗ trợ chuẩn Dual-Theme, lưu trực tiếp vào CSDL qua API hoặc offline cache AsyncStorage, cập nhật tức thì thẻ danh thiếp 3D Titanium.
+
+- **ViOne AI Copilot Dynamic Knowledge & Responsive Non-Overlapping Layout**:
+  - Giao diện Modal Trợ lý AI (`ViOneVoiceAssistantModal.tsx` trên Mobile & `ViOneVoiceAssistant.tsx` trên Web) BẮT BUỘC bố trí theo cấu trúc chuẩn: Header cố định có z-index cao không đè lấn sóng micro (`shrink-0 z-20`, `paddingTop` phù hợp), Mic visualizer ở khu vực riêng biệt, Footer nhập text/voice luôn cố định dính ở đáy (`KeyboardAvoidingView`).
+  - Khả năng Dynamic triệt để: AI Copilot phải nắm bắt toàn bộ dữ liệu nền tảng thời gian thực (sự kiện đang diễn ra, danh sách cộng đồng tham gia, số lượng kết nối, cơ hội kinh doanh mới, lịch họp điều hành) và trả lời linh hoạt, thông thái, kèm Evidence Cards và Suggested Actions 1-chạm.
+  - Hỗ trợ nút nổi AI Copilot có thể kéo thả (`PanResponder`), đóng mở linh hoạt bằng nút (X) và khôi phục nút nổi bất kỳ lúc nào tại mục Cài Đặt của màn hình Profile.
+
+- **In-App Call & Video Call Realtime Remote Partner Stage**:
+  - Phân hệ gọi thoại & video trong ứng dụng (`InAppCallModal.tsx`):
+  - Khi Video Call: Hiển thị sân khấu video toàn màn hình của đối phương (`partnerVideoStage`) với hình ảnh thực tế, lớp phủ bóng đổ sang trọng, badge HD stream `1080p 60fps · ViOne RTC`.
+  - Dual-camera PiP với nút lật camera trước/sau (`SwitchCamera`), xử lý xin quyền camera phần cứng (`CameraView`).
+  - Rung phản hồi thực tế (`Vibration.vibrate`) khi đang đổ chuông, tự động dừng khi kết nối hoặc gác máy.
+  - Thẻ hiển thị phản hồi giọng nói trực tiếp (`audioVoiceFeedbackCard`), thước đo âm lượng đối phương (`partnerAudioMeterFill`) mô phỏng sóng âm đàm thoại hai chiều.
+
+- **ViOne Ecosystem Standard Email Notifications**:
+  - Mọi email gửi từ hệ thống ViOne (kích hoạt tài khoản, thông báo đăng ký thành công, xác thực OTP, thư mời sự kiện) BẮT BUỘC mang thương hiệu chuẩn: **"HỆ SINH THÁI DOANH NHÂN VIONE ONE"**.
+  - Hotline hỗ trợ: **1900 6868**, Email CSKH: **hotro@vione.vn**, Website chính thức: **vione.vn**.
+  - Tuyệt đối KHÔNG được để sót thương hiệu hiệp hội khác ("CEO 1983") trong các luồng email của ViOne.
+
+- **Direct Community Opportunities Redirection**:
+  - Khi người dùng bấm "Xem chi tiết cơ hội" từ danh sách cơ hội tại Trang Chủ (Executive Home), ứng dụng BẮT BUỘC điều hướng trực tiếp vào đúng cộng đồng sở hữu cơ hội đó (`communityId`) và tự động chuyển sang tab "Cơ hội giao thương" (Opportunities tab) bên trong cộng đồng.
+
   - Tuyệt đối loại bỏ sạch sẽ 100% các màu xanh dương `sky-500`, tím `purple-500`, và cam rực `amber-600/700` để đảm bảo nhận diện thượng lưu sang trọng dành cho lãnh đạo C-Level.
 
 - **Dual-Community & Task Assignment / Action Supervision Standard (2 Dạng Cộng Đồng & Giao Việc 1-Chạm)**:
@@ -125,7 +193,16 @@
        * Tabs hiển thị: `tasks` (Công việc), `supervision` (Giám sát CRM), `news` (Bảng tin), `events` (Sự kiện), `members` (Thành viên). TUYỆT ĐỐI KHÔNG có đăng cơ hội kinh doanh.
   - **Quản Trị Cộng Đồng Gia Đình ViOne (`canEdit = true`, `viewerRole = 'admin'`)**: Tài khoản Quản trị viên hệ thống (Admin/Owner) được cấp quyền Admin đầy đủ trên Gia đình ViOne, hiển thị nút `[⚙️ Chỉnh sửa cộng đồng]` mở `EditCommunityModal` để đổi tên, logo, ảnh bìa, tagline, giới thiệu và loại hình.
   - **Giao việc cho nhân viên (`CompanyTaskManagement`)**: Giám đốc tạo việc, chọn nhân viên phụ trách, hạn chót, liên kết khách hàng CRM.
-  - **Nhận việc thời gian thực**: Tài khoản nhân viên khi được giao việc sẽ thấy công việc ở trạng thái `assigned` và có nút nổi bật **[⚡ TIẾN HÀNH NHẬN VIỆC]**. Bấm nút $\rightarrow$ trạng thái chuyển sang `in_progress`, ghi nhận timestamp `acceptedAt` và bắn thông báo thời gian thực đến Giám đốc. Giám đốc kiểm soát được thời gian thực nhân viên đã nhận việc hay chưa.
+  - **Official Website URL & Landing Link Standard (`https://viconnect.vn/` - "Website chính thức")**:
+  - Mọi liên kết trỏ về Website giới thiệu / landing page trên màn hình Đăng nhập (cả Web PWA `apps/vione_app_fe/src/routes/auth.tsx` và Mobile Native App `apps/mobile_vione/src/screens/auth/LoginScreen.tsx`) BẮT BUỘC trỏ về URL chính thức: **`https://viconnect.vn/`**.
+  - Nhãn hiển thị của nút/liên kết BẮT BUỘC là: **"Website chính thức"** (đi kèm icon `Globe`).
+  - Trên Web mở bằng tab mới (`target="_blank" rel="noopener noreferrer"`), trên Mobile mở qua `Linking.openURL('https://viconnect.vn/')`.
+
+- **Device Lockscreen Push Notifications & Service Worker Dispatch Standard**:
+  - Toàn bộ thông báo thời gian thực quan trọng (Cuộc gọi đến, Tin nhắn mới, Bình luận mới, Yêu cầu kết nối, Chạm danh thiếp NFC, Cập nhật CRM) BẮT BUỘC phải được đẩy ra màn hình khóa / thanh thông báo điện thoại của người dùng (Lockscreen Push Notifications) thông qua `navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options))` kết hợp `notification-permissions.ts`.
+  - Service Worker (`sw.js`) BẮT BUỘC cài đặt listener cho sự kiện `push` và `notificationclick`. Khi người dùng chạm vào thông báo ngoài màn hình khóa, Service Worker phải focus vào window hiện có hoặc mở window mới chuyển hướng trực tiếp vào URL tương ứng (`event.notification.data.url`).
+  - Âm thanh và Rung: Tích hợp âm thanh Web Audio API Chime (`playNotificationChime`) cho cuộc gọi (`call`), tin nhắn (`message`), và thông báo hệ thống (`notification`); kích hoạt mẫu rung `vibrate` phù hợp (`[400, 200, 400, 200, 400, 200, 400]` cho cuộc gọi, `[200, 100, 200]` cho tin nhắn).
+  - Trải nghiệm người dùng: Luôn cung cấp banner cấp quyền nhẹ nhàng (`NotificationPromptBanner.tsx`) khi quyền đang ở mức `'default'`, và mục cài đặt thông báo trực quan trong Tab Tôi (`connect-app.me.index.tsx`) kèm nút kiểm thử "Gửi thông báo thử nghiệm" ngay trên điện thoại.
   - **Giám sát hoạt động & chăm sóc khách hàng CRM (`CompanySupervisionView`)**: Giám đốc theo dõi ma trận nhân sự, danh sách khách hàng từng nhân viên đang chăm sóc, giai đoạn phễu, giá trị hợp đồng và dòng thời gian hoạt động thực tế.
 
 - **B2B Opportunity Flow & Interactive Chat Meeting Proposal Card**:

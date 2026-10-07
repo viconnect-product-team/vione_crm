@@ -173,4 +173,9 @@ export const API_ENDPOINTS = {
     FILE: "/upload/file",
     AVATAR: "/upload/avatar",
   },
+
+  // AI Copilot
+  AI: {
+    CHAT: "/ai/chat",
+  },
 };

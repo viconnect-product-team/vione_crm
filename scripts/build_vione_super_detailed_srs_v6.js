@@ -9,7 +9,7 @@ const publicDocsDir = path.join(rootDir, 'apps', 'vione_app_fe', 'public', 'docs
 
 console.log('>>> [SRS VIONE SUPER MASTER 6.0] Bat dau bien soan SRS IEEE 830 MECE toan dien khong bo sot...');
 
-// Danh sách các Module phân rã MECE toàn diện (32 Module: 21 Web CRM + 11 Mobile App)
+// Danh sách các Module phân rã MECE toàn diện (33 Module: 21 Web CRM + 12 Mobile App)
 const srsModules = [
   // --- PHAN I: HE THONG QUAN TRI DOANH NGHIEP VIONE CRM (WEB PORTAL) ---
   {
@@ -727,6 +727,43 @@ const srsModules = [
         api: 'GET /api/connect-app/approvals/pending, POST /api/connect-app/approvals/:id/decide'
       }
     ]
+  },
+  {
+    moduleNumber: '33',
+    moduleName: 'Bắt Tay Kết Nối Song Phương QR Thời Gian Thực & Trình Chỉnh Sửa Hồ Sơ Native Parity',
+    epic: 'Cơ chế kết nối song phương qua WebSocket khi quét QR, bộ công cụ cập nhật danh tính số C-Level thuần Native và Trợ lý AI Copilot đa năng',
+    features: [
+      {
+        id: 'FR-33.01',
+        name: 'Bắt Tay Kết Nối Song Phương Thời Gian Thực (Bilateral QR Handshake Flow)',
+        actor: 'Hai doanh nhân quét mã QR của nhau (Web PWA và Native Mobile)',
+        input: 'Doanh nhân A quét mã QR của Doanh nhân B, gửi sự kiện WebSocket qr:connect.',
+        logic: '1. Doanh nhân A mở ScanQrModal quét mã QR của Doanh nhân B.\n2. Ứng dụng phát sự kiện WebSocket "qr:connect" tới ConnectAppGateway.\n3. Gateway nhận diện socket của Doanh nhân B và emit sự kiện "connection:incoming".\n4. Màn hình Doanh nhân B tự động hiển thị IncomingQrConnectionModal (Mobile) hoặc IncomingConnectionModal (Web) với thông tin hồ sơ của A.\n5. Doanh nhân B bấm [Đồng ý kết nối] -> phát "connection:respond" (accepted). Gateway cập nhật kết nối hai chiều trong CSDL, bắn thông báo xác nhận cho A và mở luồng chat 1-1.',
+        output: 'Kết nối song phương xác lập thành công tức thì trên cả 2 thiết bị.',
+        exception: 'Doanh nhân B từ chối: Phát "connection:respond" (declined), đóng modal và không lưu kết nối.',
+        api: 'WS qr:connect, WS connection:incoming, WS connection:respond, WS connection:accepted'
+      },
+      {
+        id: 'FR-33.02',
+        name: 'Trình Chỉnh Sửa Hồ Sơ Cá Nhân Doanh Nhân Thuần Native (Native Edit Profile Parity)',
+        actor: 'Doanh nhân thành viên C-Level',
+        input: 'Bấm nút [Chỉnh sửa] trên màn hình ProfileScreen Native.',
+        logic: '1. Mở EditProfileModal thuần Native với đầy đủ 8 trường thông tin chuẩn Web: Họ tên hiển thị, Chức danh, Tên doanh nghiệp, Ngành nghề, Số điện thoại, Email, Website, Tiểu sử.\n2. Người dùng chỉnh sửa và bấm [Lưu thay đổi].\n3. Ứng dụng gọi API PATCH /users/profile (hoặc lưu offline cache AsyncStorage).\n4. Cập nhật hồ sơ trong AuthContext, đồng bộ danh thiếp số 3D Titanium và làm mới giao diện Profile tức thì.',
+        output: 'Thông tin cá nhân và danh thiếp doanh nhân được cập nhật chuẩn xác 100%.',
+        exception: 'Dữ liệu không hợp lệ (email sai định dạng): Báo lỗi tại trường nhập liệu tương ứng.',
+        api: 'PATCH /api/users/profile, GET /api/users/me'
+      },
+      {
+        id: 'FR-33.03',
+        name: 'Trợ Lý AI Copilot Đa Năng Dynamic Nắm Trọn Vẹn Dữ Liệu Nền Tảng',
+        actor: 'Toàn bộ người dùng hệ thống',
+        input: 'Câu hỏi của người dùng về sự kiện, cộng đồng, tài khoản, cơ hội kinh doanh (Text hoặc Voice).',
+        logic: '1. Tiếp nhận câu hỏi tại ViOneVoiceAssistantModal (Mobile) hoặc ViOneVoiceAssistant (Web).\n2. Backend AiService phân tích ý định động, truy xuất CSDL thời gian thực: sự kiện đang diễn ra, danh sách cộng đồng đã tham gia, chỉ số kết nối tài khoản, cơ hội kinh doanh mới.\n3. Tổng hợp câu trả lời tự nhiên như Chief of Staff, kèm Evidence Cards và Suggested Actions 1-chạm.\n4. Giao diện modal tối ưu: Header không đè lấn sóng micro, Footer nhập liệu luôn cố định ở đáy.',
+        output: 'Phản hồi thông thái, chính xác 100% dữ liệu nền tảng, không rập khuôn.',
+        exception: 'Mất kết nối mạng: Chuyển sang bộ dữ liệu fallback nội bộ thông minh.',
+        api: 'POST /api/ai/chat'
+      }
+    ]
   }
 ];
 
@@ -899,7 +936,7 @@ docSections.push(
 // Phần I, II
 docSections.push(
   new Paragraph({ text: "PHẦN 1: GIỚI THIỆU CHUNG (INTRODUCTION)", heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 150 } }),
-  new Paragraph({ text: "Tài liệu SRS này đặc tả chi tiết toàn bộ yêu cầu kỹ thuật và nghiệp vụ của dự án ViOne bao gồm 21 phân hệ Web CRM và 11 phân hệ Mobile App Native & PWA (tổng cộng 32 phân hệ toàn diện), làm căn cứ nghiệm thu và bàn giao hệ thống." }),
+  new Paragraph({ text: "Tài liệu SRS này đặc tả chi tiết toàn bộ yêu cầu kỹ thuật và nghiệp vụ của dự án ViOne bao gồm 21 phân hệ Web CRM và 12 phân hệ Mobile App Native & PWA (tổng cộng 33 phân hệ toàn diện), làm căn cứ nghiệm thu và bàn giao hệ thống." }),
   new Paragraph({ text: "PHẦN 2: MÔ TẢ TỔNG QUAN VÀ DANH SÁCH USER ROLES", heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 150 } }),
   new Paragraph({ text: "Hệ thống phân định 7 nhóm quyền người dùng rõ ràng: System Admin, CEO, COO, CFO, Sales Manager, Staff và Member/Partner, tương ứng với 5 User Journey trọn vẹn từ lúc tiếp cận đến khi kết thúc giao dịch." }),
   new Paragraph({ text: "PHẦN 3: ĐẶC TẢ YÊU CẦU CHỨC NĂNG CHI TIẾT (FUNCTIONAL REQUIREMENTS)", heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 200 } })

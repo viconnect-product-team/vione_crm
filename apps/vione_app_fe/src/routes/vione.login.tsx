@@ -53,7 +53,7 @@ function VioneMobileLoginPage() {
   const [lastAction, setLastAction] = useState<"password" | "google" | "apple" | null>(null);
   const [scanOpen, setScanOpen] = useState(false);
   const [remember, setRemember] = useState(true);
-  const { user, setAuthData } = useAuth();
+  const { user, logout, setAuthData } = useAuth();
 
   async function goPostLogin() {
     const target = safeRedirect(redirectTo);
@@ -78,10 +78,15 @@ function VioneMobileLoginPage() {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    const token = typeof window !== "undefined" ? localStorage.getItem("vibe_token") : null;
+    if (user && !token) {
+      logout();
+      return;
+    }
+    if (user && token) {
       void goPostLogin();
     }
-  }, [user]);
+  }, [user, logout]);
 
   async function submit() {
     if (!email.trim()) {

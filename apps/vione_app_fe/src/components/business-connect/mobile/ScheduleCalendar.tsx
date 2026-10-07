@@ -540,7 +540,7 @@ export function ScheduleCalendar() {
   );
 }
 
-function CreateMeetingModal({
+export function CreateMeetingModal({
   onClose,
   onSuccess,
 }: {

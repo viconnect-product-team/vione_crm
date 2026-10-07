@@ -38,6 +38,8 @@ export interface CommunityOpportunityItem {
   title: string;
   organization: string;
   communityName: string;
+  communityId?: string;
+  publishedDate?: string;
   dealValue: string;
   category: string;
   daysLeft: string;

@@ -822,6 +822,50 @@ const appSections = [
       { step: '03', action: 'Gọi Thoại WebRTC', ui: 'Web Audio API Stream Routing', input: 'Nút [Gọi Điện Thoại]', output: 'Đàm thoại 2 chiều nghe giọng 100%' },
       { step: '04', action: 'Gọi Video Dual-Theme', ui: 'Giao diện Full Sáng & Tối', input: 'Nút [Gọi Video Call]', output: 'Khử tiếng vọng & Video HD sắc nét' }
     ]
+  },
+  {
+    tag: 'APP · KẾT NỐI SONG PHƯƠNG',
+    title: 'Bắt Tay Kết Nối Song Phương Thời Gian Thực Qua Mã QR & WebSocket (Incoming QR Handshake)',
+    subtitle: 'Quét mã QR kết nối tức thì, tự động kích hoạt Modal yêu cầu kết nối song phương thời gian thực trên cả Web và Mobile',
+    goal: 'Thiết lập quy trình bắt tay giao thương hai chiều minh bạch, người được quét nhận thông báo và quyết định đồng ý kết nối ngay lập tức.',
+    path: 'Thanh điều hướng đáy / Header -> Quét QR (ScanQrModal) -> Phát sự kiện WebSocket qr:connect',
+    steps: [
+      'Bước 1: Doanh nhân A mở chức năng Quét QR trên ứng dụng ViOne Mobile hoặc Web PWA.',
+      'Bước 2: Hướng camera vào mã QR danh thiếp của Doanh nhân B (hoặc quét NFC). Ứng dụng giải mã token danh thiếp và phát sự kiện WebSocket "qr:connect" lên ConnectAppGateway.',
+      'Bước 3: Ngay lập tức, màn hình ứng dụng của Doanh nhân B (dù đang dùng Web hay Native App) tự động bật Modal kết nối song phương (IncomingConnectionModal / IncomingQrConnectionModal).',
+      'Bước 4: Doanh nhân B xem đầy đủ thông tin: Ảnh đại diện, họ tên, chức vụ, tên công ty của Doanh nhân A kèm lời mời kết nối kinh doanh.',
+      'Bước 5: Doanh nhân B bấm nút [Đồng ý kết nối] mạ vàng Champagne Gold: Hệ thống phát sự kiện "connection:respond" (accept), tự động lưu kết nối vào CSDL, bắn thông báo thành công cho Doanh nhân A và mở kênh trò chuyện trực tiếp 1-1.'
+    ],
+    noteRed: 'AN TOÀN DANH TÍNH DOANH NHÂN: Người được quét hoàn toàn chủ động từ chối nếu không phù hợp qua nút [Để sau / Từ chối], đảm bảo tuyệt đối quyền riêng tư và tránh bị làm phiền.',
+    noteBlue: 'MẸO GIAO THƯƠNG: Kết nối song phương thành công sẽ tự động mở khóa tính năng chia sẻ danh thiếp vCard và cho phép gửi thẻ đề xuất hẹn gặp 1-on-1 trong hộp thư chat.',
+    workflow: [
+      { step: '01', action: 'Quét QR Danh Thiếp', ui: 'ScanQrModal Camera View', input: 'Mã QR Doanh nhân B', output: 'Phát socket qr:connect' },
+      { step: '02', action: 'Thông Báo Song Phương', ui: 'IncomingQrConnectionModal', input: 'Sự kiện connection:incoming', output: 'Bật Modal tức thì trên thiết bị B' },
+      { step: '03', action: 'Phản Hồi Kết Nối', ui: 'Nút [Đồng ý] / [Để sau]', input: 'Thao tác chạm của B', output: 'Phát socket connection:respond' },
+      { step: '04', action: 'Đồng Bộ Danh Bạ', ui: 'Network Contacts & Chat', input: 'Event connection:accepted', output: 'Lưu CSDL & mở kênh Chat 1-1' }
+    ]
+  },
+  {
+    tag: 'APP · TRỢ LÝ AI & HỒ SƠ',
+    title: 'Trợ Lý ViOne AI Copilot Đa Năng C-Level & Quản Lý Hồ Sơ Cá Nhân Native Parity',
+    subtitle: 'Trợ lý AI thông minh giải đáp mọi dữ liệu nền tảng, thiết kế giao diện không che khuất, và trình chỉnh sửa hồ sơ C-Level thuần Native',
+    goal: 'Cung cấp năng lực trợ lý ảo thông thái nắm trọn vẹn thông tin tài khoản, sự kiện, cộng đồng và chuẩn hóa công cụ chỉnh sửa danh thiếp số trên di động.',
+    path: 'Header Trang Chủ / Tab Tôi -> Trợ lý AI ViOne Copilot / Nút [Chỉnh sửa hồ sơ]',
+    steps: [
+      'Bước 1: Chạm vào Trợ lý AI ViOne Copilot (nút micro hoặc nút AI nổi có thể kéo thả PanResponder và đóng mở linh hoạt).',
+      'Bước 2: Giao diện AI xuất hiện với cấu trúc chuẩn: Header cố định không đè lấn sóng micro, Footer nhập câu hỏi luôn neo cứng ở đáy qua KeyboardAvoidingView.',
+      'Bước 3: Người dùng có thể hỏi bất kỳ câu hỏi nào: "Sự kiện nào đang diễn ra?", "Tôi đang tham gia những cộng đồng nào?", "Tài khoản của tôi có bao nhiêu kết nối?", "Tôi có cơ hội kinh doanh nào mới không?". AI phân tích ngữ cảnh người dùng theo thời gian thực và trả lời chi tiết kèm Evidence Cards và Suggested Actions.',
+      'Bước 4: Tại màn hình Tôi (ProfileScreen), chạm nút "Chỉnh sửa" mở EditProfileModal chuẩn Native: Cập nhật họ tên hiển thị, chức danh, công ty, ngành nghề, số điện thoại, email, website và tiểu sử điều hành.',
+      'Bước 5: Bấm [Lưu thay đổi]: Dữ liệu đồng bộ tức thì lên hệ thống, cập nhật danh thiếp số 3D Titanium và phản ánh ngay vào thẻ hồ sơ hiển thị cho đối tác.'
+    ],
+    noteRed: 'KHÔNG RẬP KHUÔN: AI Copilot liên tục truy vấn dữ liệu thực tế từ tài khoản và hệ thống, cam kết phản hồi chính xác 100% mọi dữ liệu trong hệ sinh thái ViOne.',
+    noteBlue: 'MẸO QUẢN TRỊ AI: Người dùng có thể tắt nút AI nổi ở trang chủ khi muốn màn hình thoáng hơn, và dễ dàng bật lại bất kỳ lúc nào tại mục Cài Đặt trên Tab Tôi.',
+    workflow: [
+      { step: '01', action: 'Kích Hoạt AI Copilot', ui: 'Floating AI / Header Micro', input: 'Voice hoặc Text câu hỏi', output: 'Mở ViOneVoiceAssistantModal' },
+      { step: '02', action: 'Phân Tích Động', ui: 'Backend AiService API', input: 'Context user & nền tảng', output: 'Dữ liệu sự kiện, cộng đồng, leads' },
+      { step: '03', action: 'Hiển Thị Trực Quan', ui: 'Evidence Cards & Action Chips', input: 'Response Markdown & Chips', output: 'Trả lời thông thái không rập khuôn' },
+      { step: '04', action: 'Chỉnh Sửa Hồ Sơ', ui: 'EditProfileModal Native', input: 'Form 8 trường thông tin', output: 'Lưu CSDL & Cập nhật danh thiếp' }
+    ]
   }
 ];
 
@@ -1262,11 +1306,11 @@ async function buildAllDocs() {
   });
   fs.copyFileSync(crmDocxPath, path.join(publicDocsDir, 'HDSD_WEB_CRM_VIONE.docx'));
 
-  console.log('>>> [2/3] Xuat ban Tai Lieu HDSD Mobile App ViOne Connect (15 Chuong)...');
+  console.log('>>> [2/3] Xuat ban Tai Lieu HDSD Mobile App ViOne Connect (17 Chuong)...');
   const appHtml = generateHtmlDoc({
     docCode: 'HDSD-VIONE-CONNECT-APP-6.0',
     title: 'HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG DI ĐỘNG VIONE CONNECT C-LEVEL',
-    subtitle: 'Cẩm nang giao thương B2B, cộng đồng 2 kiểu, danh thiếp số NFC, trợ lý AI Copilot 5.0 và WebRTC',
+    subtitle: 'Cẩm nang giao thương B2B, cộng đồng 2 kiểu, danh thiếp số NFC, trợ lý AI Copilot đa năng, kết nối QR song phương và WebRTC',
     targetAudience: 'Lãnh Đạo C-Level, Doanh Nhân Thành Viên, Đối Tác Giao Thương Mạng Lưới ViOne',
     sections: appSections
   });
@@ -1278,18 +1322,18 @@ async function buildAllDocs() {
   await generateDocxFile({
     docCode: 'HDSD-VIONE-CONNECT-APP-6.0',
     title: 'HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG DI ĐỘNG VIONE CONNECT C-LEVEL',
-    subtitle: 'Cẩm nang giao thương B2B, cộng đồng 2 kiểu, danh thiếp số NFC, trợ lý AI Copilot 5.0 và WebRTC',
+    subtitle: 'Cẩm nang giao thương B2B, cộng đồng 2 kiểu, danh thiếp số NFC, trợ lý AI Copilot đa năng, kết nối QR song phương và WebRTC',
     targetAudience: 'Lãnh Đạo C-Level, Doanh Nhân Thành Viên, Đối Tác Giao Thương Mạng Lưới ViOne',
     sections: appSections,
     outputPath: appDocxPath
   });
   fs.copyFileSync(appDocxPath, path.join(publicDocsDir, 'HDSD_APP_VIONE_CONNECT.docx'));
 
-  console.log('>>> [3/3] Xuat ban Tai Lieu Hop Nhat Toan Dien (37 Chuong)...');
+  console.log('>>> [3/3] Xuat ban Tai Lieu Hop Nhat Toan Dien (39 Chuong)...');
   const allHtml = generateHtmlDoc({
     docCode: 'HDSD-VIONE-ENTERPRISE-MASTER-6.0',
     title: 'HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE TOÀN DIỆN',
-    subtitle: 'Bộ tài liệu chuẩn hóa 37 chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động',
+    subtitle: 'Bộ tài liệu chuẩn hóa 39 chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động',
     targetAudience: 'Toàn Thể Ban Lãnh Đạo, Nhân Sự Doanh Nghiệp & Mạng Lưới Đối Tác Doanh Nhân B2B',
     sections: allSections
   });
@@ -1301,7 +1345,7 @@ async function buildAllDocs() {
   await generateDocxFile({
     docCode: 'HDSD-VIONE-ENTERPRISE-MASTER-6.0',
     title: 'HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE TOÀN DIỆN',
-    subtitle: 'Bộ tài liệu chuẩn hóa 37 chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động',
+    subtitle: 'Bộ tài liệu chuẩn hóa 39 chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động',
     targetAudience: 'Toàn Thể Ban Lãnh Đạo, Nhân Sự Doanh Nghiệp & Mạng Lưới Đối Tác Doanh Nhân B2B',
     sections: allSections,
     outputPath: allDocxPath
@@ -1309,9 +1353,9 @@ async function buildAllDocs() {
   fs.copyFileSync(allDocxPath, path.join(publicDocsDir, 'HDSD_HE_THONG_VA_APP_VIONE_TOAN_DIEN.docx'));
 
   // Tạo thêm bản Markdown tóm tắt hợp nhất
-  let mdSummary = `# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (37 CHUYÊN ĐỀ)\n\n`;
-  mdSummary += `**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 05/10/2026 | **Phiên bản:** 6.0 Enterprise\n\n---\n\n`;
-  mdSummary += `### DANH MỤC 37 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)\n\n`;
+  let mdSummary = `# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (39 CHUYÊN ĐỀ)\n\n`;
+  mdSummary += `**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 07/10/2026 | **Phiên bản:** 6.0 Enterprise\n\n---\n\n`;
+  mdSummary += `### DANH MỤC 39 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)\n\n`;
   allSections.forEach((s, i) => {
     const num = (i + 1).toString().padStart(2, '0');
     mdSummary += `#### ${num}. [${s.tag}] ${s.title}\n`;

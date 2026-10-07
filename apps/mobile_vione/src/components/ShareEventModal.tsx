@@ -11,18 +11,19 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import {
   X,
   Calendar,
-  MapPin,
   Sparkles,
   Link2,
   Building2,
   Clock,
+  Plus,
 } from "lucide-react-native";
 import { apiRequest } from "../api/client";
+import { useTheme } from "../context/ThemeContext";
 
 export interface ShareEventModalProps {
   visible: boolean;
@@ -32,6 +33,13 @@ export interface ShareEventModalProps {
   onSuccess?: () => void;
 }
 
+const SAMPLE_EVENT_IMAGES = [
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600",
+  "https://images.unsplash.com/photo-1511578314322-379afb476865?w=600",
+  "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=600",
+  "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600",
+];
+
 export const ShareEventModal: React.FC<ShareEventModalProps> = ({
   visible,
   onClose,
@@ -39,6 +47,7 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
   communityName = "",
   onSuccess,
 }) => {
+  const { isDark } = useTheme();
   const [title, setTitle] = useState("");
   const [organizer, setOrganizer] = useState(communityName || "Cộng đồng Doanh nghiệp ViOne");
   const [date, setDate] = useState("2026-10-15");
@@ -46,7 +55,18 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
   const [location, setLocation] = useState("");
   const [externalUrl, setExternalUrl] = useState("");
   const [description, setDescription] = useState("");
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAddSampleImage = () => {
+    const nextIdx = uploadedImages.length % SAMPLE_EVENT_IMAGES.length;
+    const nextImg = SAMPLE_EVENT_IMAGES[nextIdx];
+    setUploadedImages((prev) => [...prev, nextImg]);
+  };
+
+  const handleRemoveImage = (idxToRemove: number) => {
+    setUploadedImages((prev) => prev.filter((_, idx) => idx !== idxToRemove));
+  };
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -65,6 +85,8 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
         associationId: communityId,
         organizer: organizer.trim() || "Doanh nghiệp ViOne",
         externalUrl: externalUrl.trim() || null,
+        imageUrl: uploadedImages.length > 0 ? uploadedImages[0] : undefined,
+        images: uploadedImages,
         isExternal: true,
       };
 
@@ -86,6 +108,7 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
       setLocation("");
       setExternalUrl("");
       setDescription("");
+      setUploadedImages([]);
     } catch {
       Alert.alert("Thành công", "Đã ghi nhận và chia sẻ sự kiện vào cộng đồng thành công!");
       if (onSuccess) onSuccess();
@@ -95,106 +118,185 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
     }
   };
 
+  const dynamicStyles = {
+    container: {
+      backgroundColor: isDark ? "#0F172A" : "#FFFFFF",
+      borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+    },
+    header: {
+      borderBottomColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+    },
+    title: {
+      color: isDark ? "#FFFFFF" : "#0F172A",
+    },
+    label: {
+      color: isDark ? "#D8B282" : "#996515",
+    },
+    input: {
+      backgroundColor: isDark ? "rgba(255, 255, 255, 0.05)" : "#F8FAFC",
+      borderColor: isDark ? "rgba(255, 255, 255, 0.12)" : "#CBD5E1",
+      color: isDark ? "#FFFFFF" : "#0F172A",
+    },
+    footer: {
+      borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+    },
+    cancelBtn: {
+      backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9",
+    },
+    cancelText: {
+      color: isDark ? "#94A3B8" : "#64748B",
+    },
+  };
+
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.modalOverlay}
       >
-        <View style={styles.modalContainer}>
+        <View style={[styles.modalContainer, dynamicStyles.container]}>
           {/* Header */}
-          <View style={styles.modalHeader}>
+          <View style={[styles.modalHeader, dynamicStyles.header]}>
             <View style={styles.headerTitleWrap}>
               <Calendar size={16} color="#D8B282" />
-              <Text style={styles.modalTitle}>Chia Sẻ Sự Kiện</Text>
+              <Text style={[styles.modalTitle, dynamicStyles.title]}>Chia Sẻ Sự Kiện</Text>
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <X size={18} color="#94A3B8" />
+              <X size={18} color={isDark ? "#94A3B8" : "#64748B"} />
             </TouchableOpacity>
           </View>
 
           <ScrollView style={styles.formScroll} showsVerticalScrollIndicator={false}>
             {/* Tên sự kiện */}
-            <Text style={styles.inputLabel}>Tên sự kiện / Hội thảo *</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.label]}>Tên sự kiện / Hội thảo *</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={title}
               onChangeText={setTitle}
               placeholder="VD: Diễn Đàn Xúc Tiến Thương Mại B2B 2026..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
             />
 
             {/* Đơn vị tổ chức */}
-            <Text style={styles.inputLabel}>Đơn vị tổ chức</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.label]}>Đơn vị tổ chức</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={organizer}
               onChangeText={setOrganizer}
               placeholder="VD: CLB Doanh Nhân / Hiệp Hội Thương Mại..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
             />
 
             {/* Thời gian */}
             <View style={styles.row}>
               <View style={styles.col}>
-                <Text style={styles.inputLabel}>Ngày diễn ra</Text>
+                <Text style={[styles.inputLabel, dynamicStyles.label]}>Ngày diễn ra</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, dynamicStyles.input]}
                   value={date}
                   onChangeText={setDate}
                   placeholder="YYYY-MM-DD"
-                  placeholderTextColor="#64748B"
+                  placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
                 />
               </View>
               <View style={styles.col}>
-                <Text style={styles.inputLabel}>Giờ bắt đầu</Text>
+                <Text style={[styles.inputLabel, dynamicStyles.label]}>Giờ bắt đầu</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, dynamicStyles.input]}
                   value={time}
                   onChangeText={setTime}
                   placeholder="HH:mm"
-                  placeholderTextColor="#64748B"
+                  placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
                 />
               </View>
             </View>
 
             {/* Địa điểm */}
-            <Text style={styles.inputLabel}>Địa điểm tổ chức</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.label]}>Địa điểm tổ chức</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={location}
               onChangeText={setLocation}
               placeholder="VD: Khách sạn Daewoo Hà Nội / Trực tuyến..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
             />
 
+            {/* Nút tải ảnh lên & hỗ trợ nhiều ảnh */}
+            <View style={{ marginTop: 6 }}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <Text style={[styles.inputLabel, dynamicStyles.label, { marginTop: 0, marginBottom: 0 }]}>
+                  Hình ảnh sự kiện ({uploadedImages.length})
+                </Text>
+                <Text style={{ fontSize: 11, color: isDark ? "#94A3B8" : "#64748B" }}>
+                  Hỗ trợ nhiều ảnh
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                style={[
+                  styles.uploadBtn,
+                  {
+                    backgroundColor: isDark ? "rgba(216, 178, 130, 0.08)" : "#FEF3C7",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#F59E0B",
+                  },
+                ]}
+                onPress={handleAddSampleImage}
+                activeOpacity={0.8}
+              >
+                <Plus size={16} color={isDark ? "#D8B282" : "#B45309"} />
+                <Text style={[styles.uploadBtnText, { color: isDark ? "#D8B282" : "#B45309" }]}>
+                  Tải ảnh sự kiện lên (+ Thêm ảnh)
+                </Text>
+              </TouchableOpacity>
+
+              {uploadedImages.length > 0 && (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: 8 }}>
+                  {uploadedImages.map((uri, idx) => (
+                    <View key={idx} style={styles.thumbnailWrap}>
+                      <Image source={{ uri }} style={styles.thumbnailImg} />
+                      <TouchableOpacity
+                        style={styles.thumbnailRemove}
+                        onPress={() => handleRemoveImage(idx)}
+                      >
+                        <X size={12} color="#FFFFFF" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+              )}
+            </View>
+
             {/* Link ngoài */}
-            <Text style={styles.inputLabel}>Link chi tiết / Đăng ký ngoài</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.label]}>Link chi tiết / Đăng ký ngoài</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, dynamicStyles.input]}
               value={externalUrl}
               onChangeText={setExternalUrl}
               placeholder="https://event.vione.vn/..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
             />
 
             {/* Mô tả */}
-            <Text style={styles.inputLabel}>Nội dung tóm tắt</Text>
+            <Text style={[styles.inputLabel, dynamicStyles.label]}>Nội dung tóm tắt</Text>
             <TextInput
-              style={[styles.input, styles.textArea]}
+              style={[styles.input, styles.textArea, dynamicStyles.input]}
               value={description}
               onChangeText={setDescription}
               placeholder="Nội dung, diễn giả, quyền lợi khi tham gia..."
-              placeholderTextColor="#64748B"
+              placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
               multiline
               numberOfLines={4}
             />
           </ScrollView>
 
           {/* Footer Actions */}
-          <View style={styles.modalFooter}>
-            <TouchableOpacity style={styles.cancelBtn} onPress={onClose} activeOpacity={0.7}>
-              <Text style={styles.cancelBtnText}>Hủy</Text>
+          <View style={[styles.modalFooter, dynamicStyles.footer]}>
+            <TouchableOpacity
+              style={[styles.cancelBtn, dynamicStyles.cancelBtn]}
+              onPress={onClose}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.cancelBtnText, dynamicStyles.cancelText]}>Hủy</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -203,12 +305,7 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
               disabled={isSubmitting}
               activeOpacity={0.85}
             >
-              <LinearGradient
-                colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.saveBtnGradient}
-              >
+              <View style={styles.saveBtnSolid}>
                 {isSubmitting ? (
                   <ActivityIndicator size="small" color="#050811" />
                 ) : (
@@ -217,7 +314,7 @@ export const ShareEventModal: React.FC<ShareEventModalProps> = ({
                     <Text style={styles.saveBtnText}>Chia sẻ ngay</Text>
                   </>
                 )}
-              </LinearGradient>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -233,12 +330,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   modalContainer: {
-    backgroundColor: "#0F172A",
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     maxHeight: "88%",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.25)",
     paddingBottom: Platform.OS === "ios" ? 32 : 16,
   },
   modalHeader: {
@@ -248,7 +343,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.08)",
   },
   headerTitleWrap: {
     flexDirection: "row",
@@ -258,12 +352,10 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 16,
     fontWeight: "800",
-    color: "#FFFFFF",
   },
   closeBtn: {
     padding: 6,
     borderRadius: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
   },
   formScroll: {
     paddingHorizontal: 20,
@@ -272,7 +364,6 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#D8B282",
     marginBottom: 6,
     marginTop: 10,
     textTransform: "uppercase",
@@ -286,18 +377,53 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   input: {
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 13.5,
-    color: "#FFFFFF",
   },
   textArea: {
     height: 80,
     textAlignVertical: "top",
+  },
+  uploadBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderRadius: 12,
+    paddingVertical: 10,
+  },
+  uploadBtnText: {
+    fontSize: 12.5,
+    fontWeight: "700",
+  },
+  thumbnailWrap: {
+    position: "relative",
+    marginRight: 8,
+    borderRadius: 10,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.4)",
+  },
+  thumbnailImg: {
+    width: 64,
+    height: 64,
+    borderRadius: 10,
+  },
+  thumbnailRemove: {
+    position: "absolute",
+    top: 2,
+    right: 2,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    alignItems: "center",
+    justifyContent: "center",
   },
   modalFooter: {
     flexDirection: "row",
@@ -306,7 +432,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 14,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.08)",
     marginTop: 10,
   },
   cancelBtn: {
@@ -315,23 +440,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingVertical: 12,
     borderRadius: 14,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
   },
   cancelBtnText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#94A3B8",
   },
   saveBtnTouch: {
     flex: 2,
     borderRadius: 14,
     overflow: "hidden",
   },
-  saveBtnGradient: {
+  saveBtnSolid: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 12,
+    backgroundColor: "#D8B282",
+    borderRadius: 14,
   },
   saveBtnText: {
     fontSize: 13,

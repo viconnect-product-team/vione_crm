@@ -1,10 +1,10 @@
-# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (37 CHUYÊN ĐỀ)
+# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (39 CHUYÊN ĐỀ)
 
-**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 05/10/2026 | **Phiên bản:** 6.0 Enterprise
+**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 07/10/2026 | **Phiên bản:** 6.0 Enterprise
 
 ---
 
-### DANH MỤC 37 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
+### DANH MỤC 39 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
 
 #### 01. [CRM · XÁC THỰC] Đăng Nhập Quản Trị Hệ Thống CRM ViOne Phong Cách Sáng Sang Trọng
 - **Mục tiêu:** Đăng nhập an toàn vào bảng điều hành số CRM ViOne qua tài khoản doanh nghiệp hoặc quản trị viên.
@@ -448,4 +448,28 @@
   * Bước 5: Thiết kế Full Dual-Theme: Giao diện cuộc gọi hỗ trợ hoàn hảo cả Theme Sáng (nền trắng ngọc trai mạ vàng đồng, tên đối phương màu đen obsidian sắc nét) và Theme Tối (Obsidian Navy chữ trắng tinh khôi).
 - **Lưu ý:** KẾT NỐI ÂM THANH THỰC TẾ: Công nghệ Web Audio API định tuyến luồng âm thanh trực tiếp từ microphone đối phương, đảm bảo nghe thấy giọng nói 100%.
 - **Mẹo C-Level:** MẸO BẬT ÂM THANH: Nếu trình duyệt có chính sách hạn chế autoplay, ứng dụng trang bị sẵn nút "🔊 Bật âm thanh đối phương" để mở tiếng ngay tức thì.
+
+#### 38. [APP · KẾT NỐI SONG PHƯƠNG] Bắt Tay Kết Nối Song Phương Thời Gian Thực Qua Mã QR & WebSocket (Incoming QR Handshake)
+- **Mục tiêu:** Thiết lập quy trình bắt tay giao thương hai chiều minh bạch, người được quét nhận thông báo và quyết định đồng ý kết nối ngay lập tức.
+- **Đường dẫn:** `Thanh điều hướng đáy / Header -> Quét QR (ScanQrModal) -> Phát sự kiện WebSocket qr:connect`
+- **Các bước:**
+  * Bước 1: Doanh nhân A mở chức năng Quét QR trên ứng dụng ViOne Mobile hoặc Web PWA.
+  * Bước 2: Hướng camera vào mã QR danh thiếp của Doanh nhân B (hoặc quét NFC). Ứng dụng giải mã token danh thiếp và phát sự kiện WebSocket "qr:connect" lên ConnectAppGateway.
+  * Bước 3: Ngay lập tức, màn hình ứng dụng của Doanh nhân B (dù đang dùng Web hay Native App) tự động bật Modal kết nối song phương (IncomingConnectionModal / IncomingQrConnectionModal).
+  * Bước 4: Doanh nhân B xem đầy đủ thông tin: Ảnh đại diện, họ tên, chức vụ, tên công ty của Doanh nhân A kèm lời mời kết nối kinh doanh.
+  * Bước 5: Doanh nhân B bấm nút [Đồng ý kết nối] mạ vàng Champagne Gold: Hệ thống phát sự kiện "connection:respond" (accept), tự động lưu kết nối vào CSDL, bắn thông báo thành công cho Doanh nhân A và mở kênh trò chuyện trực tiếp 1-1.
+- **Lưu ý:** AN TOÀN DANH TÍNH DOANH NHÂN: Người được quét hoàn toàn chủ động từ chối nếu không phù hợp qua nút [Để sau / Từ chối], đảm bảo tuyệt đối quyền riêng tư và tránh bị làm phiền.
+- **Mẹo C-Level:** MẸO GIAO THƯƠNG: Kết nối song phương thành công sẽ tự động mở khóa tính năng chia sẻ danh thiếp vCard và cho phép gửi thẻ đề xuất hẹn gặp 1-on-1 trong hộp thư chat.
+
+#### 39. [APP · TRỢ LÝ AI & HỒ SƠ] Trợ Lý ViOne AI Copilot Đa Năng C-Level & Quản Lý Hồ Sơ Cá Nhân Native Parity
+- **Mục tiêu:** Cung cấp năng lực trợ lý ảo thông thái nắm trọn vẹn thông tin tài khoản, sự kiện, cộng đồng và chuẩn hóa công cụ chỉnh sửa danh thiếp số trên di động.
+- **Đường dẫn:** `Header Trang Chủ / Tab Tôi -> Trợ lý AI ViOne Copilot / Nút [Chỉnh sửa hồ sơ]`
+- **Các bước:**
+  * Bước 1: Chạm vào Trợ lý AI ViOne Copilot (nút micro hoặc nút AI nổi có thể kéo thả PanResponder và đóng mở linh hoạt).
+  * Bước 2: Giao diện AI xuất hiện với cấu trúc chuẩn: Header cố định không đè lấn sóng micro, Footer nhập câu hỏi luôn neo cứng ở đáy qua KeyboardAvoidingView.
+  * Bước 3: Người dùng có thể hỏi bất kỳ câu hỏi nào: "Sự kiện nào đang diễn ra?", "Tôi đang tham gia những cộng đồng nào?", "Tài khoản của tôi có bao nhiêu kết nối?", "Tôi có cơ hội kinh doanh nào mới không?". AI phân tích ngữ cảnh người dùng theo thời gian thực và trả lời chi tiết kèm Evidence Cards và Suggested Actions.
+  * Bước 4: Tại màn hình Tôi (ProfileScreen), chạm nút "Chỉnh sửa" mở EditProfileModal chuẩn Native: Cập nhật họ tên hiển thị, chức danh, công ty, ngành nghề, số điện thoại, email, website và tiểu sử điều hành.
+  * Bước 5: Bấm [Lưu thay đổi]: Dữ liệu đồng bộ tức thì lên hệ thống, cập nhật danh thiếp số 3D Titanium và phản ánh ngay vào thẻ hồ sơ hiển thị cho đối tác.
+- **Lưu ý:** KHÔNG RẬP KHUÔN: AI Copilot liên tục truy vấn dữ liệu thực tế từ tài khoản và hệ thống, cam kết phản hồi chính xác 100% mọi dữ liệu trong hệ sinh thái ViOne.
+- **Mẹo C-Level:** MẸO QUẢN TRỊ AI: Người dùng có thể tắt nút AI nổi ở trang chủ khi muốn màn hình thoáng hơn, và dễ dàng bật lại bất kỳ lúc nào tại mục Cài Đặt trên Tab Tôi.
 

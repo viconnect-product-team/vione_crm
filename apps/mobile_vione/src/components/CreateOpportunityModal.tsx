@@ -9,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   Alert,
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -21,8 +22,10 @@ import {
   FileText,
   Plus,
   Check,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react-native";
-import { Colors } from "../theme/colors";
+import { useTheme } from "../context/ThemeContext";
 import { CommunityOpportunityItem } from "./OpportunityDetailModal";
 import { opportunityApi } from "../api/services";
 
@@ -43,6 +46,7 @@ const CATEGORIES = [
 ];
 
 const COMMUNITIES = [
+  "Gia Đình ViOne",
   "ViOne C-Level Enterprise Hub",
   "CLB Doanh Nhân ViOne Global Leaders",
   "Liên Minh Doanh Nghiệp Công Nghệ & AI",
@@ -60,13 +64,35 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
   onClose,
   onCreate,
 }) => {
+  const { isDark } = useTheme();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [dealValue, setDealValue] = useState("");
   const [communityName, setCommunityName] = useState(COMMUNITIES[0]);
   const [duration, setDuration] = useState("14");
   const [description, setDescription] = useState("");
+  const [images, setImages] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const handlePickImage = () => {
+    if (images.length >= 5) {
+      Alert.alert("Giới hạn ảnh", "Tối đa 5 ảnh đính kèm cho mỗi cơ hội kinh doanh.");
+      return;
+    }
+    const sampleImages = [
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=600&auto=format&fit=crop&q=80",
+    ];
+    const nextImg = sampleImages[images.length % sampleImages.length];
+    setImages((prev) => [...prev, nextImg]);
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -107,23 +133,36 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
     setTitle("");
     setDealValue("");
     setDescription("");
+    setImages([]);
     onClose();
   };
+
+  const sheetBg = isDark ? "#0B0F17" : "#FFFFFF";
+  const inputBg = isDark ? "#0E1522" : "#F8FAFC";
+  const inputBorder = isDark ? "rgba(255, 255, 255, 0.12)" : "#CBD5E1";
+  const textColor = isDark ? "#F8FAFC" : "#0F172A";
+  const mutedText = isDark ? "#94A3B8" : "#64748B";
+  const labelColor = isDark ? "#CBD5E1" : "#334155";
+  const borderColor = isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0";
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.backdrop}>
-        <View style={styles.sheetContainer}>
+        <View style={[styles.sheetContainer, { backgroundColor: sheetBg, borderColor }]}>
           {/* Header */}
-          <View style={styles.headerBar}>
+          <View style={[styles.headerBar, { borderBottomColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0" }]}>
             <View style={styles.headerLeft}>
               <View style={styles.iconCircle}>
-                <Briefcase size={16} color="#D8B282" />
+                <Briefcase size={16} color="#DFB76C" />
               </View>
-              <Text style={styles.headerTitle}>Đăng cơ hội kinh doanh B2B</Text>
+              <Text style={[styles.headerTitle, { color: textColor }]}>Đăng cơ hội kinh doanh B2B</Text>
             </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.7}>
-              <X size={20} color="#94A3B8" />
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.closeBtn, { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9" }]}
+              activeOpacity={0.7}
+            >
+              <X size={20} color={mutedText} />
             </TouchableOpacity>
           </View>
 
@@ -134,11 +173,11 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
           >
             {/* Project Title */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Tên dự án / Nhu cầu cung ứng B2B *</Text>
+              <Text style={[styles.inputLabel, { color: labelColor }]}>Tên dự án / Nhu cầu cung ứng B2B *</Text>
               <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, { backgroundColor: inputBg, borderColor: inputBorder, color: textColor }]}
                 placeholder="Ví dụ: Triển khai Hệ thống MEP Tòa Nhà Keangnam..."
-                placeholderTextColor="#64748B"
+                placeholderTextColor={mutedText}
                 value={title}
                 onChangeText={setTitle}
               />
@@ -146,11 +185,11 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
             {/* Deal Value */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Quy mô ngân sách / Giá trị hợp đồng *</Text>
+              <Text style={[styles.inputLabel, { color: labelColor }]}>Quy mô ngân sách / Giá trị hợp đồng *</Text>
               <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, { backgroundColor: inputBg, borderColor: inputBorder, color: textColor }]}
                 placeholder="Ví dụ: 3.5 Tỷ VNĐ hoặc Thỏa thuận"
-                placeholderTextColor="#64748B"
+                placeholderTextColor={mutedText}
                 value={dealValue}
                 onChangeText={setDealValue}
               />
@@ -158,79 +197,181 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
 
             {/* Category Selector */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Lĩnh vực ngành nghề</Text>
+              <Text style={[styles.inputLabel, { color: labelColor }]}>Lĩnh vực ngành nghề</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagScroll}>
-                {CATEGORIES.map((cat) => (
-                  <TouchableOpacity
-                    key={cat}
-                    style={[styles.tagPill, category === cat && styles.tagPillActive]}
-                    onPress={() => setCategory(cat)}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={[styles.tagPillText, category === cat && styles.tagPillTextActive]}>
-                      {cat}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                {CATEGORIES.map((cat) => {
+                  const active = category === cat;
+                  return (
+                    <TouchableOpacity
+                      key={cat}
+                      style={[
+                        styles.tagPill,
+                        {
+                          backgroundColor: active
+                            ? isDark ? "rgba(223, 183, 108, 0.18)" : "#FDF6EC"
+                            : inputBg,
+                          borderColor: active ? "#DFB76C" : inputBorder,
+                        },
+                      ]}
+                      onPress={() => setCategory(cat)}
+                      activeOpacity={0.8}
+                    >
+                      <Text
+                        style={[
+                          styles.tagPillText,
+                          {
+                            color: active ? (isDark ? "#DFB76C" : "#8C653B") : mutedText,
+                            fontWeight: active ? "700" : "500",
+                          },
+                        ]}
+                      >
+                        {cat}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
               </ScrollView>
             </View>
 
             {/* Target Community */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Đăng trong cộng đồng / Liên minh</Text>
+              <Text style={[styles.inputLabel, { color: labelColor }]}>Đăng trong cộng đồng / Liên minh</Text>
               <View style={styles.communityOptionsCol}>
-                {COMMUNITIES.map((c) => (
-                  <TouchableOpacity
-                    key={c}
-                    style={[styles.communityOption, communityName === c && styles.communityOptionActive]}
-                    onPress={() => setCommunityName(c)}
-                    activeOpacity={0.8}
-                  >
-                    <Building2
-                      size={15}
-                      color={communityName === c ? "#D8B282" : "#94A3B8"}
-                      style={{ marginRight: 8 }}
-                    />
-                    <Text
+                {COMMUNITIES.map((c) => {
+                  const active = communityName === c;
+                  return (
+                    <TouchableOpacity
+                      key={c}
                       style={[
-                        styles.communityOptionText,
-                        communityName === c && styles.communityOptionTextActive,
+                        styles.communityOption,
+                        {
+                          backgroundColor: active
+                            ? isDark ? "rgba(223, 183, 108, 0.12)" : "#FDF6EC"
+                            : inputBg,
+                          borderColor: active ? "#DFB76C" : inputBorder,
+                        },
                       ]}
+                      onPress={() => setCommunityName(c)}
+                      activeOpacity={0.8}
                     >
-                      {c}
-                    </Text>
-                    {communityName === c && <Check size={16} color="#D8B282" style={{ marginLeft: "auto" }} />}
-                  </TouchableOpacity>
-                ))}
+                      <Building2
+                        size={15}
+                        color={active ? "#DFB76C" : mutedText}
+                        style={{ marginRight: 8 }}
+                      />
+                      <Text
+                        style={[
+                          styles.communityOptionText,
+                          {
+                            color: active ? textColor : mutedText,
+                            fontWeight: active ? "700" : "500",
+                          },
+                        ]}
+                      >
+                        {c}
+                      </Text>
+                      {active && <Check size={16} color="#DFB76C" style={{ marginLeft: "auto" }} />}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
             </View>
 
             {/* Duration */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Thời hạn tiếp nhận hồ sơ</Text>
+              <Text style={[styles.inputLabel, { color: labelColor }]}>Thời hạn tiếp nhận hồ sơ</Text>
               <View style={styles.durationRow}>
-                {DURATIONS.map((dur) => (
-                  <TouchableOpacity
-                    key={dur.id}
-                    style={[styles.durBtn, duration === dur.id && styles.durBtnActive]}
-                    onPress={() => setDuration(dur.id)}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={[styles.durBtnText, duration === dur.id && styles.durBtnTextActive]}>
-                      {dur.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+                {DURATIONS.map((dur) => {
+                  const active = duration === dur.id;
+                  return (
+                    <TouchableOpacity
+                      key={dur.id}
+                      style={[
+                        styles.durBtn,
+                        {
+                          backgroundColor: active
+                            ? isDark ? "rgba(223, 183, 108, 0.18)" : "#FDF6EC"
+                            : inputBg,
+                          borderColor: active ? "#DFB76C" : inputBorder,
+                        },
+                      ]}
+                      onPress={() => setDuration(dur.id)}
+                      activeOpacity={0.8}
+                    >
+                      <Text
+                        style={[
+                          styles.durBtnText,
+                          {
+                            color: active ? (isDark ? "#DFB76C" : "#8C653B") : mutedText,
+                            fontWeight: active ? "700" : "500",
+                          },
+                        ]}
+                      >
+                        {dur.label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
+            </View>
+
+            {/* Image attachments with thumbnails and delete buttons */}
+            <View style={styles.inputGroup}>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <Text style={[styles.inputLabel, { color: labelColor, marginBottom: 0 }]}>
+                  Hình ảnh minh họa sản phẩm / dịch vụ
+                </Text>
+                <Text style={{ fontSize: 11, color: mutedText }}>
+                  {images.length > 0 ? `${images.length}/5 ảnh` : "Tối đa 5 ảnh"}
+                </Text>
+              </View>
+
+              {images.length > 0 && (
+                <View style={styles.imagesGrid}>
+                  {images.map((img, idx) => (
+                    <View key={idx} style={[styles.imagePreviewBox, { borderColor: inputBorder }]}>
+                      <Image source={{ uri: img }} style={styles.imageThumbnail} />
+                      <TouchableOpacity
+                        style={styles.removeImageBtn}
+                        onPress={() => handleRemoveImage(idx)}
+                        activeOpacity={0.8}
+                      >
+                        <X size={12} color="#FFFFFF" />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              )}
+
+              <TouchableOpacity
+                style={[
+                  styles.uploadBtn,
+                  {
+                    backgroundColor: inputBg,
+                    borderColor: inputBorder,
+                  },
+                ]}
+                onPress={handlePickImage}
+                activeOpacity={0.8}
+              >
+                <Upload size={16} color="#DFB76C" style={{ marginRight: 8 }} />
+                <Text style={[styles.uploadBtnText, { color: textColor }]}>
+                  {images.length === 0 ? "Chạm để đính kèm ảnh minh họa" : "Thêm ảnh khác (+)"}
+                </Text>
+              </TouchableOpacity>
             </View>
 
             {/* Description & Criteria */}
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Mô tả yêu cầu & tiêu chí chọn nhà thầu</Text>
+              <Text style={[styles.inputLabel, { color: labelColor }]}>Mô tả yêu cầu & tiêu chí chọn nhà thầu</Text>
               <TextInput
-                style={[styles.textInput, styles.textArea]}
+                style={[
+                  styles.textInput,
+                  styles.textArea,
+                  { backgroundColor: inputBg, borderColor: inputBorder, color: textColor },
+                ]}
                 placeholder="Yêu cầu về năng lực, hồ sơ chứng chỉ, tiến độ nghiệm thu và thông tin liên hệ bảo mật..."
-                placeholderTextColor="#64748B"
+                placeholderTextColor={mutedText}
                 multiline
                 numberOfLines={4}
                 value={description}
@@ -240,7 +381,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
           </ScrollView>
 
           {/* Bottom Submit */}
-          <View style={styles.bottomFooter}>
+          <View style={[styles.bottomFooter, { borderTopColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0" }]}>
             <TouchableOpacity
               style={styles.submitBtn}
               onPress={handleSubmit}
@@ -248,7 +389,7 @@ export const CreateOpportunityModal: React.FC<CreateOpportunityModalProps> = ({
               activeOpacity={0.88}
             >
               <LinearGradient
-                colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                colors={["#FFF2DC", "#DFB76C", "#D4AF37", "#B88E3E"]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.submitGradient}
@@ -273,11 +414,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheetContainer: {
-    backgroundColor: "#0B0F17",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.25)",
     overflow: "hidden",
   },
   headerBar: {
@@ -288,7 +427,6 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingBottom: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255, 255, 255, 0.08)",
   },
   headerLeft: {
     flexDirection: "row",
@@ -298,9 +436,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    backgroundColor: "rgba(223, 183, 108, 0.15)",
     borderWidth: 1,
-    borderColor: "rgba(216, 178, 130, 0.3)",
+    borderColor: "rgba(223, 183, 108, 0.3)",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
@@ -308,13 +446,11 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#F8FAFC",
   },
   closeBtn: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -329,17 +465,13 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#CBD5E1",
     marginBottom: 6,
   },
   textInput: {
-    backgroundColor: "#0E1522",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: "#F8FAFC",
     fontSize: 13,
   },
   textArea: {
@@ -351,26 +483,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   tagPill: {
-    backgroundColor: "#0E1522",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 7,
     marginRight: 8,
   },
-  tagPillActive: {
-    backgroundColor: "rgba(216, 178, 130, 0.18)",
-    borderColor: "#D8B282",
-  },
   tagPillText: {
     fontSize: 12,
-    color: "#94A3B8",
-    fontWeight: "500",
-  },
-  tagPillTextActive: {
-    color: "#D8B282",
-    fontWeight: "700",
   },
   communityOptionsCol: {
     gap: 8,
@@ -379,24 +499,13 @@ const styles = StyleSheet.create({
   communityOption: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#0E1522",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
-  communityOptionActive: {
-    borderColor: "rgba(216, 178, 130, 0.5)",
-    backgroundColor: "rgba(216, 178, 130, 0.08)",
-  },
   communityOptionText: {
     fontSize: 12,
-    color: "#94A3B8",
-  },
-  communityOptionTextActive: {
-    color: "#F8FAFC",
-    fontWeight: "600",
   },
   durationRow: {
     flexDirection: "row",
@@ -404,31 +513,61 @@ const styles = StyleSheet.create({
   },
   durBtn: {
     flex: 1,
-    backgroundColor: "#0E1522",
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
     borderRadius: 10,
     paddingVertical: 10,
     alignItems: "center",
   },
-  durBtnActive: {
-    borderColor: "#D8B282",
-    backgroundColor: "rgba(216, 178, 130, 0.15)",
-  },
   durBtnText: {
     fontSize: 12,
-    color: "#94A3B8",
-    fontWeight: "600",
   },
-  durBtnTextActive: {
-    color: "#D8B282",
-    fontWeight: "700",
+  imagesGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 10,
+  },
+  imagePreviewBox: {
+    width: 64,
+    height: 64,
+    borderRadius: 10,
+    overflow: "hidden",
+    position: "relative",
+    borderWidth: 1,
+  },
+  imageThumbnail: {
+    width: "100%",
+    height: "100%",
+  },
+  removeImageBtn: {
+    position: "absolute",
+    top: 3,
+    right: 3,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "rgba(220, 38, 38, 0.9)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  uploadBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  uploadBtnText: {
+    fontSize: 12,
+    fontWeight: "600",
   },
   bottomFooter: {
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderTopWidth: 1,
-    borderTopColor: "rgba(255, 255, 255, 0.08)",
   },
   submitBtn: {
     borderRadius: 12,

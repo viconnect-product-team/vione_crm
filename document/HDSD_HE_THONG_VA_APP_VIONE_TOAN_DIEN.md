@@ -1,10 +1,10 @@
-# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (37 CHUYÊN ĐỀ)
+# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (41 CHUYÊN ĐỀ)
 
-**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 05/10/2026 | **Phiên bản:** 6.0 Enterprise
+**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 07/10/2026 | **Phiên bản:** 6.0 Enterprise
 
 ---
 
-### DANH MỤC 37 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
+### DANH MỤC 41 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
 
 #### 01. [CRM · XÁC THỰC] Đăng Nhập Quản Trị Hệ Thống CRM ViOne Phong Cách Sáng Sang Trọng
 - **Mục tiêu:** Đăng nhập an toàn vào bảng điều hành số CRM ViOne qua tài khoản doanh nghiệp hoặc quản trị viên.
@@ -281,20 +281,16 @@
 - **Lưu ý:** QUY TRÌNH LIỀN MẠCH: Toàn bộ quá trình tạo tài khoản nằm trọn vẹn trong trải nghiệm in-app, tuyệt đối không mở các trang web tiếp thị bên ngoài.
 - **Mẹo C-Level:** MẸO HỒ SƠ: Sau khi đăng ký, hãy vào mục Hồ sơ cá nhân để cập nhật ảnh đại diện và chức danh giúp đối tác dễ nhận diện.
 
-#### 25. [APP · TRANG CHỦ] Trang Chủ Doanh Nhân ViOne Connect & Lịch Trình Điều Hành Đa Nguồn Hôm Nay
-- **Mục tiêu:** Cung cấp cho doanh nhân bảng tin điều hành toàn diện, tích hợp Lịch gặp 1-1, Cơ hội kinh doanh mới từ cộng đồng và Sự kiện hội thảo trong ngày.
-- **Đường dẫn:** `Thanh điều hướng đáy -> Chạm vào Tab: Trang Chủ (Home) -> Chọn Tab [Hôm nay]`
+#### 25. [APP · TRANG CHỦ] Trang Chủ Doanh Nhân ViOne Connect & Lịch Trình Điều Hành 4 Danh Mục
+- **Mục tiêu:** Cung cấp cho doanh nhân bảng tin điều hành, lịch làm việc và kết nối đối tác nhanh chóng trên di động.
+- **Đường dẫn:** `Thanh điều hướng đáy -> Chạm vào Tab: Trang Chủ (Home)`
 - **Các bước:**
   * Bước 1: Header trên cùng hiển thị Lời chào cá nhân hóa theo thời gian thực và Avatar mạ vàng bấm mở Profile Drawer.
   * Bước 2: Quan sát Thẻ Hội Viên Doanh Nhân mạ vàng nổi bật ở vị trí trung tâm hiển thị: Họ tên, Chức vụ, Tên công ty và Mã số thẻ.
-  * Bước 3: Sử dụng 4 Tab lịch trình điều hành: [Hôm nay ({tổng số})], [Sắp tới], [Lời nhắc] và [🎙️ Ghi âm].
-  * Bước 4: Tại Tab [Hôm nay], hệ thống tự động phân loại và hiển thị 3 khối nội dung trọng tâm:
-    - **1. LỊCH GẶP HÔM NAY:** Toàn bộ cuộc gặp 1-1 và họp đối tác đã chốt lịch, kèm thông tin đối tác, thời gian, phím gọi trực tiếp Google Meet (online) hoặc Gọi điện thoại (offline), và nút Đổi lịch hẹn.
-    - **2. CƠ HỘI MỚI TỪ CỘNG ĐỒNG:** Hiển thị thẻ cơ hội kinh doanh mới nhất trong ngày kèm tag cộng đồng, huy hiệu "CƠ HỘI MỚI", tổ chức, giá trị deal ước tính, nút [Xem chi tiết cơ hội] và nút [Vào Cộng đồng] để kết nối nhanh chóng.
-    - **3. SỰ KIỆN HÔM NAY:** Danh sách hội thảo, diễn đàn doanh nhân trong ngày kèm đếm ngược giờ và thông tin phòng họp.
-  * Bước 5: Xem khối Giám sát Vận hành C-Level: Điểm danh nhân sự, phê duyệt tài chính và tiến độ công việc Kanban.
-  * Bước 6: Thanh định vị AI: Tích hợp nút [📍 Bật vị trí] màu vàng Champagne Gold để quét người dùng ViOne quanh đây.
-- **Lưu ý:** ĐỒNG BỘ THỜI GIAN THỰC & ĐIỀU HƯỚNG LIỀN MẠCH: Bấm "Xem chi tiết" cơ hội sẽ mở bảng chi tiết kèm nút chuyển thẳng vào trang Cộng đồng. Tab bình luận khoảnh khắc (Moments) hỗ trợ nhập thông minh chuẩn Facebook (Avatar thật, khay icon emoji, đính kèm ảnh, trả lời đa tầng).
+  * Bước 3: Sử dụng 4 Tab lịch trình điều hành: [Hôm nay] [Sắp tới] [Lời nhắc] và [🎙️ Ghi âm] để quản lý mọi hoạt động và nghe lại giọng nói khoảnh khắc.
+  * Bước 4: Xem khối Giám sát Vận hành C-Level: Điểm danh nhân sự, phê duyệt tài chính và tiến độ công việc Kanban.
+  * Bước 5: Thanh định vị AI: Tích hợp nút [📍 Bật vị trí] để sẵn sàng quét người dùng ViOne quanh đây.
+- **Lưu ý:** ĐỒNG BỘ THỜI GIAN THỰC: Mọi lịch hẹn cơ hội được chấp nhận qua tin nhắn chat sẽ tự động xuất hiện ngay trong Tab [Hôm nay].
 - **Mẹo C-Level:** MẸO LÃNH ĐẠO: Chạm vào tab [🎙️ Ghi âm] để nghe lại các đoạn ghi âm khoảnh khắc với sóng âm và trình phát inline tiện lợi.
 
 #### 26. [APP · THẺ DOANH NHÂN] Bottom Sheet Thẻ Doanh Nhân Bo Tròn 36px Tích Hợp Vuốt Tay Xuống
@@ -452,4 +448,57 @@
   * Bước 5: Thiết kế Full Dual-Theme: Giao diện cuộc gọi hỗ trợ hoàn hảo cả Theme Sáng (nền trắng ngọc trai mạ vàng đồng, tên đối phương màu đen obsidian sắc nét) và Theme Tối (Obsidian Navy chữ trắng tinh khôi).
 - **Lưu ý:** KẾT NỐI ÂM THANH THỰC TẾ: Công nghệ Web Audio API định tuyến luồng âm thanh trực tiếp từ microphone đối phương, đảm bảo nghe thấy giọng nói 100%.
 - **Mẹo C-Level:** MẸO BẬT ÂM THANH: Nếu trình duyệt có chính sách hạn chế autoplay, ứng dụng trang bị sẵn nút "🔊 Bật âm thanh đối phương" để mở tiếng ngay tức thì.
+
+#### 38. [APP · KẾT NỐI SONG PHƯƠNG] Bắt Tay Kết Nối Song Phương Thời Gian Thực Qua Mã QR & WebSocket (Incoming QR Handshake)
+- **Mục tiêu:** Thiết lập quy trình bắt tay giao thương hai chiều minh bạch, người được quét nhận thông báo và quyết định đồng ý kết nối ngay lập tức.
+- **Đường dẫn:** `Thanh điều hướng đáy / Header -> Quét QR (ScanQrModal) -> Phát sự kiện WebSocket qr:connect`
+- **Các bước:**
+  * Bước 1: Doanh nhân A mở chức năng Quét QR trên ứng dụng ViOne Mobile hoặc Web PWA.
+  * Bước 2: Hướng camera vào mã QR danh thiếp của Doanh nhân B (hoặc quét NFC). Ứng dụng giải mã token danh thiếp và phát sự kiện WebSocket "qr:connect" lên ConnectAppGateway.
+  * Bước 3: Ngay lập tức, màn hình ứng dụng của Doanh nhân B (dù đang dùng Web hay Native App) tự động bật Modal kết nối song phương (IncomingConnectionModal / IncomingQrConnectionModal).
+  * Bước 4: Doanh nhân B xem đầy đủ thông tin: Ảnh đại diện, họ tên, chức vụ, tên công ty của Doanh nhân A kèm lời mời kết nối kinh doanh.
+  * Bước 5: Doanh nhân B bấm nút [Đồng ý kết nối] mạ vàng Champagne Gold: Hệ thống phát sự kiện "connection:respond" (accept), tự động lưu kết nối vào CSDL, bắn thông báo thành công cho Doanh nhân A và mở kênh trò chuyện trực tiếp 1-1.
+- **Lưu ý:** AN TOÀN DANH TÍNH DOANH NHÂN: Người được quét hoàn toàn chủ động từ chối nếu không phù hợp qua nút [Để sau / Từ chối], đảm bảo tuyệt đối quyền riêng tư và tránh bị làm phiền.
+- **Mẹo C-Level:** MẸO GIAO THƯƠNG: Kết nối song phương thành công sẽ tự động mở khóa tính năng chia sẻ danh thiếp vCard và cho phép gửi thẻ đề xuất hẹn gặp 1-on-1 trong hộp thư chat.
+
+#### 39. [APP · TRỢ LÝ AI & HỒ SƠ] Trợ Lý ViOne AI Copilot Đa Năng C-Level & Quản Lý Hồ Sơ Cá Nhân Native Parity
+- **Mục tiêu:** Cung cấp năng lực trợ lý ảo thông thái nắm trọn vẹn thông tin tài khoản, sự kiện, cộng đồng và chuẩn hóa công cụ chỉnh sửa danh thiếp số trên di động.
+- **Đường dẫn:** `Header Trang Chủ / Tab Tôi -> Trợ lý AI ViOne Copilot / Nút [Chỉnh sửa hồ sơ]`
+- **Các bước:**
+  * Bước 1: Chạm vào Trợ lý AI ViOne Copilot (nút micro hoặc nút AI nổi có thể kéo thả PanResponder và đóng mở linh hoạt).
+  * Bước 2: Giao diện AI xuất hiện với cấu trúc chuẩn: Header cố định không đè lấn sóng micro, Footer nhập câu hỏi luôn neo cứng ở đáy qua KeyboardAvoidingView.
+  * Bước 3: Người dùng có thể hỏi bất kỳ câu hỏi nào: "Sự kiện nào đang diễn ra?", "Tôi đang tham gia những cộng đồng nào?", "Tài khoản của tôi có bao nhiêu kết nối?", "Tôi có cơ hội kinh doanh nào mới không?". AI phân tích ngữ cảnh người dùng theo thời gian thực và trả lời chi tiết kèm Evidence Cards và Suggested Actions.
+  * Bước 4: Tại màn hình Tôi (ProfileScreen), chạm nút "Chỉnh sửa" mở EditProfileModal chuẩn Native: Cập nhật họ tên hiển thị, chức danh, công ty, ngành nghề, số điện thoại, email, website và tiểu sử điều hành.
+  * Bước 5: Bấm [Lưu thay đổi]: Dữ liệu đồng bộ tức thì lên hệ thống, cập nhật danh thiếp số 3D Titanium và phản ánh ngay vào thẻ hồ sơ hiển thị cho đối tác.
+- **Lưu ý:** KHÔNG RẬP KHUÔN: AI Copilot liên tục truy vấn dữ liệu thực tế từ tài khoản và hệ thống, cam kết phản hồi chính xác 100% mọi dữ liệu trong hệ sinh thái ViOne.
+- **Mẹo C-Level:** MẸO QUẢN TRỊ AI: Người dùng có thể tắt nút AI nổi ở trang chủ khi muốn màn hình thoáng hơn, và dễ dàng bật lại bất kỳ lúc nào tại mục Cài Đặt trên Tab Tôi.
+
+#### 40. [APP · ĐĂNG NHẬP & CỔNG THÔNG TIN] Chuyển Hướng Website Chính Thức ViConnect (https://viconnect.vn/) Tại Màn Hình Đăng Nhập ViOne App
+- **Mục tiêu:** Cung cấp cổng thông tin chính thức của hệ sinh thái ViOne ngay tại màn hình đăng nhập ứng dụng cho đối tác, khách hàng và doanh nhân tìm hiểu nền tảng.
+- **Đường dẫn:** `Màn hình Đăng nhập ViOne (/auth trên PWA hoặc LoginScreen trên Native App) -> Nút "Website chính thức"`
+- **Các bước:**
+  * Bước 1: Mở màn hình đăng nhập ứng dụng ViOne.
+  * Bước 2: Quan sát góc trên bên phải hoặc thanh điều hướng header: Nút liên kết hiển thị với biểu tượng Toàn cầu (Globe) và nhãn rõ ràng: "Website chính thức".
+  * Bước 3: Nhấp hoặc chạm vào nút "Website chính thức":
+    - Trên Web PWA: Trình duyệt tự động mở tab mới trỏ tới địa chỉ chính thức https://viconnect.vn/.
+    - Trên Mobile Native App: Hệ thống tự động kích hoạt trình duyệt thiết bị chuyển hướng tới https://viconnect.vn/ mà không làm gián đoạn phiên ứng dụng hiện tại.
+  * Bước 4: Doanh nhân có thể tìm hiểu toàn cảnh hệ sinh thái ViOne, các giải pháp kết nối giao thương B2B, danh thiếp thông minh NFC, và tài liệu hướng dẫn.
+- **Lưu ý:** CHUẨN ĐỊNH DANH THƯƠNG HIỆU: Toàn bộ liên kết cổng giới thiệu tại màn hình đăng nhập cam kết trỏ duy nhất về https://viconnect.vn/.
+- **Mẹo C-Level:** MẸO ĐỐI TÁC: Khách hàng mới khi chưa có tài khoản có thể bấm vào "Website chính thức" để đăng ký thông tin hợp tác trước khi vào cổng CRM.
+
+#### 41. [APP · THÔNG BÁO MÀN HÌNH KHÓA] Hệ Thống Cấp Quyền & Đẩy Thông Báo Ra Màn Hình Khóa Điện Thoại (Lockscreen Push Notifications) Cho Cuộc Gọi Đến, Tin Nhắn Mới, Bình Luận, Chạm NFC & Yêu Cầu Kết Nối
+- **Mục tiêu:** Đảm bảo Ban Lãnh Đạo và Doanh nhân không bao giờ bỏ lỡ bất kỳ cuộc gọi video/thoại, tin nhắn quan trọng, bình luận đối tác, lượt chạm danh thiếp NFC hay cơ hội kinh doanh mới ngay cả khi điện thoại đang khóa màn hình.
+- **Đường dẫn:** `Banner nhắc cấp quyền đầu trang / Tab Tôi -> Mục: Thông Báo Hệ Thống & Cuộc Gọi -> Nút: [Cấp quyền thông báo ngay]`
+- **Các bước:**
+  * Bước 1: Khi đăng nhập ứng dụng lần đầu, Banner vàng Champagne Gold xuất hiện ở đầu màn hình: "Bật thông báo màn hình khóa để nhận cuộc gọi đến, tin nhắn & bình luận mới tức thì". Chạm vào nút "Bật thông báo ngay".
+  * Bước 2: Trình duyệt hoặc hệ điều hành điện thoại hiển thị hộp thoại xác nhận quyền hệ thống: Chạm vào "Cho phép" (Allow).
+  * Bước 3: Ứng dụng đăng ký Service Worker và cấu hình bộ lắng nghe Push Notifications. Huy hiệu trạng thái chuyển sang màu xanh: "Đã bật thông báo màn hình khóa".
+  * Bước 4: Nhận thông báo đa phân hệ thời gian thực:
+    - Cuộc gọi đến (Video & Voice Call): Màn hình khóa rung dồn dập [400ms - 200ms - 400ms], phát chuông ngân Web Audio Chime hai tầng (520Hz -> 880Hz), hiển thị tên người gọi và nút chạm để trả lời.
+    - Tin nhắn đối tác mới: Báo hiệu rung kép [200ms - 100ms - 200ms] kèm trích đoạn nội dung tin nhắn. Chạm vào thông báo sẽ mở thẳng phòng chat với đối tác.
+    - Bình luận khoảnh khắc: Đẩy thông báo tên người bình luận và nội dung. Chạm vào thông báo sẽ mở ngay bài viết.
+    - Bắt tay kết nối & Chạm NFC: Đẩy thông báo tức thời khi đối tác vừa chạm thẻ danh thiếp thông minh hoặc gửi yêu cầu kết nối giao thương.
+  * Bước 5: Kiểm thử trực tiếp: Tại Tab Tôi -> Mục "Thông báo hệ thống & Cuộc gọi", bấm nút "Gửi thông báo thử nghiệm". Màn hình điện thoại sẽ rung và hiển thị ngay thông báo kiểm tra kèm âm thanh chuông báo sang trọng.
+- **Lưu ý:** HOẠT ĐỘNG NGAY CẢ KHI TẮT MÀN HÌNH: Nhờ tích hợp Service Worker showNotification, các cảnh báo được đẩy trực tiếp lên màn hình khóa thiết bị và thanh thông báo của Android và iOS.
+- **Mẹo C-Level:** MẸO TRÁNH BỊ CHẶN: Nếu vô tình bấm Chặn thông báo trên trình duyệt, người dùng có thể nhấp vào biểu tượng Ổ khóa / Cài đặt trang web trên thanh địa chỉ URL để cấp lại quyền "Cho phép thông báo".
 

@@ -553,11 +553,11 @@ export const NetworkScreen: React.FC = () => {
         <View style={styles.titleSection}>
           <View style={styles.titleRow}>
             <Text style={[styles.pageTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
-              Network
+              Mạng lưới
             </Text>
             <TouchableOpacity
               style={styles.addPersonBtn}
-              onPress={() => Alert.alert("Thêm kết nối", "Quét mã QR hoặc nhập thông tin doanh nhân mới.")}
+              onPress={() => setActiveTab("requests")}
               activeOpacity={0.8}
             >
               <UserPlus size={18} color="#D8B282" />

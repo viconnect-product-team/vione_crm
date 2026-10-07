@@ -172,7 +172,7 @@ function SettingsPage() {
                       href={websiteUrl.startsWith("http") ? websiteUrl : `https://${websiteUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8C653B] dark:text-[#DFB76C] hover:underline"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 hover:underline"
                     >
                       <span>Mở Website</span>
                       <Globe className="h-3 w-3" />

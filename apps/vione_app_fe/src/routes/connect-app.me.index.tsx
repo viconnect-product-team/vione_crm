@@ -24,10 +24,20 @@ import {
   Trophy,
   Upload,
   X,
+  BellRing,
+  Check,
 } from "lucide-react";
+import {
+  getNotificationPermission,
+  requestNotificationPermission,
+  sendExternalNotification,
+  type NotificationPermissionState,
+} from "@/lib/notification-permissions";
 import { useT, useLang } from "@/lib/i18n";
 import { useTheme } from "@/lib/theme";
 import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import { signOutSession } from "@/lib/business-connect/mobile/auth-session";
 import { fetchNestApi } from "@/lib/api-client";
 import type { IdentityShowcaseItem } from "@/lib/business-connect/mobile/identity-showcase.service";
@@ -202,7 +212,7 @@ function ConnectAppMePage() {
   const { lang, setLang } = useLang();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const getMine = useServerFn(bcIdentityGetMineFn);
   const getOrCreateLink = useServerFn(bcIdentityGetOrCreateShareLinkFn);
   const rotateLink = useServerFn(bcIdentityRotateShareLinkFn);
@@ -217,6 +227,43 @@ function ConnectAppMePage() {
   const [rotating, setRotating] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [signOutFailed, setSignOutFailed] = useState(false);
+
+  // Trạng thái hiển thị Quả cầu AI ViOne nổi
+  const [isAiFloatingEnabled, setIsAiFloatingEnabled] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return (
+      localStorage.getItem("vione_ai_assistant_visible") !== "false" &&
+      localStorage.getItem("vione_ai_floating_visible") !== "false"
+    );
+  });
+
+  useEffect(() => {
+    const handleVis = () => {
+      setIsAiFloatingEnabled(
+        localStorage.getItem("vione_ai_assistant_visible") !== "false" &&
+        localStorage.getItem("vione_ai_floating_visible") !== "false"
+      );
+    };
+    window.addEventListener("vione_ai_visibility_changed", handleVis);
+    window.addEventListener("vione-ai-floating-changed", handleVis);
+    return () => {
+      window.removeEventListener("vione_ai_visibility_changed", handleVis);
+      window.removeEventListener("vione-ai-floating-changed", handleVis);
+    };
+  }, []);
+
+  // Trạng thái cấp quyền thông báo hệ thống
+  const [notifPermission, setNotifPermission] = useState<NotificationPermissionState>(() =>
+    getNotificationPermission(),
+  );
+
+  useEffect(() => {
+    const handlePermChange = (e: any) => {
+      setNotifPermission(e?.detail?.state || getNotificationPermission());
+    };
+    window.addEventListener("vione_notification_permission_changed", handlePermChange);
+    return () => window.removeEventListener("vione_notification_permission_changed", handlePermChange);
+  }, []);
 
   const load = useCallback(async () => {
     setLoadFailed(false);
@@ -348,10 +395,15 @@ function ConnectAppMePage() {
     setSigningOut(true);
     setSignOutFailed(false);
     try {
+      try {
+        logout();
+      } catch (e) {
+        console.warn("logout error:", e);
+      }
       await signOutSession(queryClient);
       await navigate({
         to: "/vione/login" as any,
-        search: { redirect: "/connect-app" } as any,
+        search: {} as any,
         replace: true,
       });
     } catch {
@@ -762,6 +814,99 @@ function ConnectAppMePage() {
               <p className="mt-2 pb-1 text-[12px] leading-relaxed text-[var(--bc-mobile-muted)]">
                 {t("bc.mobile.me.language.hint")}
               </p>
+            </SectionCard>
+
+            {/* Trợ lý AI ViOne Floating Switch */}
+            <SectionCard title="Trợ lý AI ViOne (AI Copilot)">
+              <div className="flex items-center justify-between py-2">
+                <div className="space-y-0.5 pr-3">
+                  <span className="text-[13.5px] font-semibold text-[var(--bc-mobile-text)] flex items-center gap-1.5">
+                    <Sparkles className="h-4 w-4 text-amber-500" />
+                    <span>Quả cầu AI ViOne nổi trên màn hình</span>
+                  </span>
+                  <p className="text-[11.5px] text-[var(--bc-mobile-muted)] leading-relaxed">
+                    Hiển thị quả cầu AI thông minh để tra cứu, ra lệnh giọng nói & phân tích deal
+                  </p>
+                </div>
+                <Switch
+                  checked={isAiFloatingEnabled}
+                  onCheckedChange={(checked) => {
+                    setIsAiFloatingEnabled(checked);
+                    localStorage.setItem("vione_ai_assistant_visible", checked ? "true" : "false");
+                    localStorage.setItem("vione_ai_floating_visible", checked ? "true" : "false");
+                    window.dispatchEvent(new Event("vione_ai_visibility_changed"));
+                    window.dispatchEvent(new Event("vione-ai-floating-changed"));
+                    toast.success(checked ? "Đã bật quả cầu AI ViOne nổi" : "Đã ẩn quả cầu AI ViOne nổi");
+                  }}
+                />
+              </div>
+            </SectionCard>
+
+            {/* Thông báo hệ thống & Cuộc gọi Push Notifications */}
+            <SectionCard title="Thông báo hệ thống & Cuộc gọi">
+              <div className="py-2 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5 pr-3">
+                    <span className="text-[13.5px] font-semibold text-[var(--bc-mobile-text)] flex items-center gap-1.5">
+                      <BellRing className="h-4 w-4 text-amber-500" />
+                      <span>Thông báo khóa màn hình & Cuộc gọi</span>
+                    </span>
+                    <p className="text-[11.5px] text-[var(--bc-mobile-muted)] leading-relaxed">
+                      Báo lên màn hình điện thoại khi có cuộc gọi đến, tin nhắn đối tác, bình luận và cập nhật kinh doanh
+                    </p>
+                  </div>
+                  {notifPermission === "granted" ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-bold shrink-0">
+                      <Check className="h-3.5 w-3.5" />
+                      <span>Đã bật</span>
+                    </span>
+                  ) : notifPermission === "denied" ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-bold shrink-0">
+                      <span>Bị chặn</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-bold shrink-0">
+                      <span>Chưa cấp</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  {notifPermission !== "granted" ? (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const res = await requestNotificationPermission();
+                        setNotifPermission(res);
+                        if (res === "granted") {
+                          toast.success("Đã cấp quyền thông báo thành công!");
+                        } else if (res === "denied") {
+                          toast.error("Quyền thông báo bị chặn. Vui lòng cho phép trong cài đặt trình duyệt của máy.");
+                        }
+                      }}
+                      className="flex-1 py-2 px-3 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 font-bold text-xs shadow-sm hover:brightness-105 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5 border border-[#f0d499]/80"
+                    >
+                      <BellRing className="h-3.5 w-3.5" />
+                      <span>Cấp quyền thông báo ngay</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        sendExternalNotification("🔔 Kiểm tra thông báo ViOne", {
+                          body: "Hệ thống thông báo màn hình khóa đang hoạt động hoàn hảo!",
+                          url: "/connect-app",
+                        });
+                        toast.success("Đã gửi thông báo thử nghiệm lên màn hình!");
+                      }}
+                      className="flex-1 py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95 transition cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <BellRing className="h-3.5 w-3.5 text-amber-500" />
+                      <span>Gửi thông báo thử nghiệm</span>
+                    </button>
+                  )}
+                </div>
+              </div>
             </SectionCard>
 
             {/* Appearance Theme Switcher */}

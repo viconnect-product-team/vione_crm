@@ -1,6 +1,6 @@
 export function registerServiceWorker() {
   if (typeof window !== "undefined" && "serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
+    const doRegister = () => {
       navigator.serviceWorker
         .register("/sw.js")
         .then((reg) => {
@@ -9,6 +9,12 @@ export function registerServiceWorker() {
         .catch((err) => {
           console.warn("[PWA] Service Worker registration failed:", err);
         });
-    });
+    };
+
+    if (document.readyState === "complete") {
+      doRegister();
+    } else {
+      window.addEventListener("load", doRegister);
+    }
   }
 }

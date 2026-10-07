@@ -13,6 +13,7 @@ import {
 import type { MomentComment, MomentCommentListResponse } from "@/lib/business-connect/mobile/moment-comments.types";
 import { useConnectAppSocket } from "./use-connect-app-socket";
 import { useViewerUserId } from "./use-viewer-user-id";
+import { sendCommentNotification } from "@/lib/notification-permissions";
 
 export const momentCommentKeys = {
   root: ["bc-mobile", "moment-comments"] as const,
@@ -100,6 +101,15 @@ export function useMomentComments(momentId: string) {
       );
       // Invalidate like status to update comments count
       queryClient.invalidateQueries({ queryKey: momentCommentKeys.likeStatus(momentId) });
+
+      const authorId = data.comment?.userId || data.comment?.author?.userId;
+      if (authorId && authorId !== viewerUserId) {
+        sendCommentNotification(
+          data.comment?.author?.displayName || "Hội viên ViOne",
+          data.comment?.content || "Đã bình luận vào bài viết",
+          momentId,
+        );
+      }
     };
 
     const handleCommentDeleted = (data: { momentId: string; commentId: string }) => {

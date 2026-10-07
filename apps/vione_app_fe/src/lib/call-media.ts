@@ -83,7 +83,7 @@ export function createLuxuryAvatarStream(label: string = "Doanh nhân ViOne"): M
     ctx.beginPath();
     ctx.arc(centerX, centerY, 65, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = "#DFB76C";
+    ctx.strokeStyle = "#D8B282";
     ctx.lineWidth = 3;
     ctx.stroke();
 
@@ -101,7 +101,7 @@ export function createLuxuryAvatarStream(label: string = "Doanh nhân ViOne"): M
     ctx.fillText(label, centerX, 315);
 
     // Trạng thái mã hóa
-    ctx.fillStyle = "#DFB76C";
+    ctx.fillStyle = "#D8B282";
     ctx.font = "12px sans-serif";
     ctx.fillText("VIONE ENCRYPTED DIRECT VOICE CALL", centerX, 342);
 

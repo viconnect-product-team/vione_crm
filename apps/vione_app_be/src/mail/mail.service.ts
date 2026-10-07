@@ -106,7 +106,7 @@ export class MailService {
     const appUrl = portalUrl || 'https://14.225.217.232:5444/association/login';
     const crmUrl = 'https://14.225.217.232:5443/auth';
 
-    const subject = `[CLB CEO 1983] Chào mừng Gia nhập — Thông tin Tài khoản Đăng nhập của Anh/Chị ${fullName}`;
+    const subject = `[VIONE ONE] Chào mừng Gia nhập — Thông tin Tài khoản Đăng nhập của Anh/Chị ${fullName}`;
 
     const html = `
 <!DOCTYPE html>
@@ -132,27 +132,26 @@ export class MailService {
     .info-value { color: #0f172a; font-weight: 700; word-break: break-all; }
     .cred-highlight { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 8px; font-family: monospace; font-size: 15px; font-weight: 800; border: 1px dashed #7dd3fc; }
     .btn-wrap { text-align: center; margin: 30px 0; }
-    .btn-primary { display: inline-block; background: linear-gradient(135deg, #FFD700 0%, #FF9500 100%); color: #001a4d; font-weight: 800; font-size: 15px; text-decoration: none; padding: 14px 34px; border-radius: 9999px; box-shadow: 0 4px 14px rgba(255, 149, 0, 0.35); transition: transform 0.2s; }
-    .btn-secondary { display: inline-block; background: #003B95; color: #ffffff; font-weight: 700; font-size: 13px; text-decoration: none; padding: 10px 22px; border-radius: 9999px; margin-left: 10px; }
+    .btn-primary { display: inline-block; background: #003B95; color: #ffffff; font-weight: 800; font-size: 15px; text-decoration: none; padding: 14px 34px; border-radius: 9999px; box-shadow: 0 4px 14px rgba(0, 59, 149, 0.35); }
     .note { font-size: 12px; color: #94a3b8; line-height: 1.5; background: #f1f5f9; padding: 12px 16px; border-radius: 10px; margin-top: 20px; }
     .footer { background: #0b1329; padding: 24px; text-align: center; color: rgba(255, 255, 255, 0.5); font-size: 11.5px; line-height: 1.6; }
-    .footer-brand { color: #FFD700; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+    .footer-brand { color: #DFB76C; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="gold-badge">✦ Chào Mừng Hội Viên Mới ✦</div>
-      <h1 class="title">CLB DOANH NHÂN CEO 1983</h1>
+      <div class="gold-badge">✦ Chào Mừng Hội Viên Mới VIONE ONE ✦</div>
+      <h1 class="title">HỆ SINH THÁI DOANH NHÂN VIONE ONE</h1>
       <p class="subtitle">Kết nối bền vững — Kiến tạo thịnh vượng — Vươn tầm doanh nhân</p>
     </div>
 
     <div class="content">
       <div class="greeting">Kính gửi Anh/Chị <strong>${fullName}</strong>,</div>
       <div class="intro">
-        Ban Thư Ký CLB Doanh Nhân CEO 1983 xin trân trọng thông báo hồ sơ đăng ký gia nhập của Anh/Chị ${companyName ? `(đại diện cho <strong>${companyName}</strong>)` : ''} đã được tiếp nhận thành công vào hệ thống.
+        Ban Quản Trị Hệ sinh thái Doanh nhân VIONE ONE xin trân trọng thông báo hồ sơ đăng ký gia nhập của Anh/Chị ${companyName ? `(đại diện cho <strong>${companyName}</strong>)` : ''} đã được tiếp nhận thành công vào hệ thống.
         <br><br>
-        Dưới đây là thông tin tài khoản hội viên chính thức của Anh/Chị để đăng nhập vào <strong>App Hiệp Hội CEO 1983</strong>:
+        Dưới đây là thông tin tài khoản hội viên chính thức của Anh/Chị để đăng nhập vào <strong>App Doanh Nhân VIONE ONE</strong>:
       </div>
 
       <div class="card-box">
@@ -168,13 +167,13 @@ export class MailService {
         ${memberCode ? `
         <div class="info-row" style="margin-top: 8px;">
           <span class="info-label">Mã số Hội viên dự kiến:</span>
-          <span class="info-value" style="color: #d97706;">${memberCode}</span>
+          <span class="info-value" style="color: #003B95; font-weight: bold;">${memberCode}</span>
         </div>
         ` : ''}
       </div>
 
       <div class="btn-wrap">
-        <a href="${appUrl}" class="btn-primary" target="_blank">📲 Đăng Nhập App Hiệp Hội</a>
+        <a href="${appUrl}" class="btn-primary" target="_blank">📲 Đăng Nhập App VIONE ONE</a>
       </div>
 
       <div class="note">
@@ -183,9 +182,9 @@ export class MailService {
     </div>
 
     <div class="footer">
-      <div class="footer-brand">CLB DOANH NHÂN CEO 1983 (HanoiBA)</div>
-      <div>Văn phòng Ban Thư Ký · Hotline: 0983 1983 83 · Email: btk@ceo1983.com</div>
-      <div style="margin-top: 6px;">Cổng thông tin chính thức: <a href="https://ceo1983.com" style="color: #93c5fd; text-decoration: none;">ceo1983.com</a></div>
+      <div class="footer-brand">HỆ SINH THÁI DOANH NHÂN VIONE ONE</div>
+      <div>Văn phòng Ban Quản Trị · Hotline: 1900 6868 · Email: hotro@vione.vn</div>
+      <div style="margin-top: 6px;">Cổng thông tin chính thức: <a href="https://vione.vn" style="color: #93c5fd; text-decoration: none;">vione.vn</a></div>
     </div>
   </div>
 </body>
@@ -197,7 +196,7 @@ export class MailService {
       try {
         const fromAddr = this.getCleanFromEmail();
         const info = await this.transporter.sendMail({
-          from: `"CLB Doanh Nhân CEO 1983" <${fromAddr}>`,
+          from: `"Hệ Sinh Thái Doanh Nhân VIONE ONE" <${fromAddr}>`,
           to: cleanTo,
           subject,
           html,
@@ -415,7 +414,7 @@ export class MailService {
     }
 
     const appLoginUrl = portalUrl || 'https://14.225.217.232:5444/association/login';
-    const subject = `[CLB CEO 1983] Chào Mừng Anh/Chị ${fullName} Gia Nhập Ứng Dụng Doanh Nhân CEO 1983`;
+    const subject = `[VIONE ONE] Chào Mừng Anh/Chị ${fullName} Gia Nhập Ứng Dụng Doanh Nhân VIONE ONE`;
 
     const html = `
 <!DOCTYPE html>
@@ -428,7 +427,7 @@ export class MailService {
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; color: #1e293b; }
     .container { max-width: 620px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 36px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
     .header { background: linear-gradient(135deg, #001A4D 0%, #003B95 55%, #0B192C 100%); padding: 36px 28px; text-align: center; color: #ffffff; }
-    .gold-badge { display: inline-block; background: rgba(245, 158, 11, 0.2); border: 1px solid #F59E0B; color: #FCD34D; padding: 5px 16px; border-radius: 9999px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .gold-badge { display: inline-block; background: rgba(223, 183, 108, 0.2); border: 1px solid #DFB76C; color: #DFB76C; padding: 5px 16px; border-radius: 9999px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
     .title { font-size: 22px; font-weight: 900; margin: 0 0 6px 0; color: #ffffff; line-height: 1.3; }
     .subtitle { font-size: 13px; color: rgba(255, 255, 255, 0.85); margin: 0; }
     .content { padding: 32px 28px; }
@@ -448,25 +447,25 @@ export class MailService {
     .step-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #003B95; color: #ffffff; border-radius: 50%; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
 
     .btn-wrap { text-align: center; margin: 30px 0 14px 0; }
-    .btn-primary { display: inline-block; background: linear-gradient(135deg, #FFD700 0%, #FF9500 100%); color: #001a4d !important; font-weight: 800; font-size: 15px; text-decoration: none; padding: 14px 34px; border-radius: 9999px; box-shadow: 0 4px 14px rgba(255, 149, 0, 0.35); }
+    .btn-primary { display: inline-block; background: #003B95; color: #ffffff !important; font-weight: 800; font-size: 15px; text-decoration: none; padding: 14px 34px; border-radius: 9999px; box-shadow: 0 4px 14px rgba(0, 59, 149, 0.35); }
     
     .note { font-size: 12px; color: #64748b; line-height: 1.5; background: #f8fafc; padding: 12px 16px; border-radius: 10px; margin-top: 20px; border: 1px solid #e2e8f0; }
     .footer { background: #0b1329; padding: 24px; text-align: center; color: rgba(255, 255, 255, 0.55); font-size: 11.5px; line-height: 1.6; }
-    .footer-brand { color: #F59E0B; font-weight: 800; font-size: 13px; margin-bottom: 4px; }
+    .footer-brand { color: #DFB76C; font-weight: 800; font-size: 13px; margin-bottom: 4px; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="gold-badge">✦ ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG ✦</div>
-      <h1 class="title">CLB DOANH NHÂN CEO 1983</h1>
+      <div class="gold-badge">✦ ĐĂNG KÝ TÀI KHOẢN VIONE ONE THÀNH CÔNG ✦</div>
+      <h1 class="title">HỆ SINH THÁI DOANH NHÂN VIONE ONE</h1>
       <p class="subtitle">Hệ Sinh Thái Kết Nối & Giao Thương Doanh Nhân Toàn Diện</p>
     </div>
 
     <div class="content">
       <div class="greeting">Kính gửi Anh/Chị <strong>${fullName}</strong>,</div>
       <div class="intro">
-        Ban Thư Ký CLB Doanh Nhân CEO 1983 xin chúc mừng Anh/Chị ${companyName ? `(Doanh nghiệp: <strong>${companyName}</strong>)` : ''} đã đăng ký tài khoản thành công trên nền tảng <strong>App Hiệp Hội CEO 1983</strong>.
+        Ban Quản Trị Hệ sinh thái Doanh nhân VIONE ONE xin chúc mừng Anh/Chị ${companyName ? `(Doanh nghiệp: <strong>${companyName}</strong>)` : ''} đã đăng ký tài khoản thành công trên nền tảng <strong>App Doanh Nhân VIONE ONE</strong>.
         <br><br>
         Tài khoản của Anh/Chị đã được kích hoạt trên hệ thống với các thông tin như sau:
       </div>
@@ -503,7 +502,7 @@ export class MailService {
         </div>
         <div class="step-item">
           <span class="step-num">2</span>
-          <span><strong>Đăng Gian hàng & Cơ hội giao thương:</strong> Giới thiệu sản phẩm, dịch vụ và tìm kiếm đối tác B2B trong CLB.</span>
+          <span><strong>Đăng Gian hàng & Cơ hội giao thương:</strong> Giới thiệu sản phẩm, dịch vụ và tìm kiếm đối tác B2B trong cộng đồng.</span>
         </div>
         <div class="step-item">
           <span class="step-num">3</span>
@@ -512,18 +511,18 @@ export class MailService {
       </div>
 
       <div class="btn-wrap">
-        <a href="${appLoginUrl}" class="btn-primary" target="_blank">📲 Mở App & Đăng Nhập Ngay</a>
+        <a href="${appLoginUrl}" class="btn-primary" target="_blank">📲 Mở App VIONE ONE & Đăng Nhập Ngay</a>
       </div>
 
       <div class="note">
-        <strong>* Hỗ trợ kỹ thuật:</strong> Nếu cần trợ giúp kích hoạt tài khoản hoặc cài đặt ứng dụng lên màn hình chính điện thoại (PWA), Anh/Chị vui lòng liên hệ Ban Thư Ký CLB qua Hotline: <strong>0983 1983 83</strong> hoặc gửi phản hồi trực tiếp qua email này.
+        <strong>* Hỗ trợ kỹ thuật:</strong> Nếu cần trợ giúp kích hoạt tài khoản hoặc cài đặt ứng dụng lên màn hình chính điện thoại (PWA), Anh/Chị vui lòng liên hệ Ban Quản Trị VIONE ONE qua Hotline: <strong>1900 6868</strong> hoặc gửi email về: <strong>hotro@vione.vn</strong>.
       </div>
     </div>
 
     <div class="footer">
-      <div class="footer-brand">CLB DOANH NHÂN CEO 1983 (HanoiBA)</div>
-      <div>Văn phòng Ban Thư Ký · Hotline: 0983 1983 83 · Email: btk@ceo1983.com</div>
-      <div style="margin-top: 4px;">Cổng thông tin & Ứng dụng: <a href="https://14.225.217.232:5444" style="color: #93c5fd; text-decoration: none;">14.225.217.232:5444</a></div>
+      <div class="footer-brand">HỆ SINH THÁI DOANH NHÂN VIONE ONE</div>
+      <div>Văn phòng Ban Quản Trị · Hotline: 1900 6868 · Email: hotro@vione.vn</div>
+      <div style="margin-top: 4px;">Cổng thông tin & Ứng dụng: <a href="https://vione.vn" style="color: #93c5fd; text-decoration: none;">vione.vn</a></div>
     </div>
   </div>
 </body>
@@ -535,7 +534,7 @@ export class MailService {
       try {
         const fromAddr = this.getCleanFromEmail();
         const info = await this.transporter.sendMail({
-          from: `"CLB Doanh Nhân CEO 1983" <${fromAddr}>`,
+          from: `"Hệ Sinh Thái Doanh Nhân VIONE ONE" <${fromAddr}>`,
           to: cleanTo,
           subject,
           html,

@@ -350,20 +350,22 @@ function CrmAdminAuthPage() {
             "radial-gradient(circle at 50% 20%, rgba(223, 183, 108, 0.35) 0%, rgba(201, 158, 85, 0.15) 40%, transparent 70%)",
         }}
       />
-      <div className="pointer-events-none fixed -top-40 -right-40 h-96 w-96 rounded-full bg-[#DFB76C]/20 blur-[120px]" />
-      <div className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-[#E8C98E]/25 blur-[120px]" />
+      <div className="pointer-events-none fixed -top-40 -right-40 h-96 w-96 rounded-full bg-amber-400/20 blur-[120px]" />
+      <div className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-amber-200/25 blur-[120px]" />
 
       {/* Main Luxury Glassmorphism Light Card */}
-      <div className="relative z-10 w-full max-w-md rounded-3xl border border-[#DFB76C]/35 bg-white/92 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_25px_60px_rgba(223,183,108,0.22),0_10px_35px_rgba(15,23,42,0.08)] text-slate-900 transition-all duration-200">
-        {/* Top bar: Back to Landing & Theme/Lang Switchers */}
-        <div className="flex items-center justify-between pb-4 border-b border-[#DFB76C]/20">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#8C653B] transition hover:text-[#644621] hover:underline"
+      <div className="relative z-10 w-full max-w-md rounded-3xl border border-amber-400/35 bg-white/92 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_25px_60px_rgba(216,178,130,0.22),0_10px_35px_rgba(15,23,42,0.08)] text-slate-900 transition-all duration-200">
+        {/* Top bar: Back to Official Website & Theme/Lang Switchers */}
+        <div className="flex items-center justify-between pb-4 border-b border-amber-400/20">
+          <a
+            href="https://viconnect.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 transition hover:text-amber-900 hover:underline"
           >
-            <ArrowLeft className="h-3.5 w-3.5 text-[#8C653B]" />
-            <span>Trang chủ ViOne</span>
-          </Link>
+            <ArrowLeft className="h-3.5 w-3.5 text-amber-700" />
+            <span>Website chính thức</span>
+          </a>
           <div className="flex items-center gap-2">
             <ThemeSwitcher />
             <LuxuryLangSwitcher />
@@ -373,16 +375,21 @@ function CrmAdminAuthPage() {
         {/* Brand Crest & Headers */}
         <div className="mt-5 flex flex-col items-center justify-center text-center">
           {/* Logo Vione Official Wordmark */}
-          <Link to="/" className="inline-block transition-transform hover:scale-[1.02]">
+          <a
+            href="https://viconnect.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block transition-transform hover:scale-[1.02]"
+          >
             <img
               src="/vione-wordmark.png"
               alt="ViOne Logo"
               className="h-10 w-auto object-contain drop-shadow-sm"
             />
-          </Link>
+          </a>
 
-          <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full bg-[#DFB76C]/15 px-3 py-1 border border-[#DFB76C]/35 text-[11px] font-bold text-[#8C653B]">
-            <Sparkles className="h-3.5 w-3.5 text-[#B8860B]" />
+          <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 px-3 py-1 border border-amber-400/35 text-[11px] font-bold text-amber-700">
+            <Sparkles className="h-3.5 w-3.5 text-amber-600" />
             <span>HỆ THỐNG ĐIỀU HÀNH THÔNG MINH</span>
           </div>
 
@@ -436,7 +443,7 @@ function CrmAdminAuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@connect.vn"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-[#DFB76C] focus:ring-2 focus:ring-[#DFB76C]/20 shadow-xs"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
             />
           </div>
 
@@ -449,7 +456,7 @@ function CrmAdminAuthPage() {
                 <Link
                   to="/forgot-password"
                   search={{ email: email.trim() || undefined }}
-                  className="text-[11.5px] font-semibold text-[#8C653B] hover:text-[#644621] hover:underline transition-colors"
+                  className="text-[11.5px] font-semibold text-amber-700 hover:text-amber-900 hover:underline transition-colors"
                 >
                   {t("auth.forgotPassword")}
                 </Link>
@@ -462,12 +469,12 @@ function CrmAdminAuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("auth.passwordPlaceholder")}
-                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-[#DFB76C] focus:ring-2 focus:ring-[#DFB76C]/20 shadow-xs"
+                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#8C653B] transition-colors focus:outline-none cursor-pointer"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-700 transition-colors focus:outline-none cursor-pointer"
                 aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -487,7 +494,7 @@ function CrmAdminAuthPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Nhập lại mật khẩu"
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-[#DFB76C] focus:ring-2 focus:ring-[#DFB76C]/20 shadow-xs"
+                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
                 />
               </div>
             </div>
@@ -497,7 +504,7 @@ function CrmAdminAuthPage() {
           <button
             type="submit"
             disabled={busy}
-            className="relative mt-2 flex h-12 w-full items-center justify-center rounded-xl text-[15px] sm:text-[16px] font-bold text-slate-950 transition-all hover:brightness-105 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-lg bg-gradient-to-r from-[#DFB76C] via-[#E8C98E] to-[#C99E55] hover:from-[#E8C98E] hover:to-[#B3873E] shadow-[#DFB76C]/30"
+            className="relative mt-2 flex h-12 w-full items-center justify-center rounded-xl text-[15px] sm:text-[16px] font-bold text-slate-950 transition-all hover:brightness-105 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] shadow-amber-500/25"
           >
             {loading ? (
               <span className="flex items-center gap-2 text-slate-950 font-bold">
@@ -537,10 +544,10 @@ function CrmAdminAuthPage() {
               type="button"
               onClick={() => void oauth("google")}
               disabled={busy}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-[#DFB76C]/50"
+              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-amber-400/50"
             >
               {oauthPending === "google" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-[#8C653B]" aria-hidden="true" />
+                <Loader2 className="h-4 w-4 animate-spin text-amber-700" aria-hidden="true" />
               ) : (
                 <GoogleMark />
               )}
@@ -550,10 +557,10 @@ function CrmAdminAuthPage() {
               type="button"
               onClick={() => void oauth("apple")}
               disabled={busy}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-[#DFB76C]/50"
+              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-amber-400/50"
             >
               {oauthPending === "apple" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-[#8C653B]" aria-hidden="true" />
+                <Loader2 className="h-4 w-4 animate-spin text-amber-700" aria-hidden="true" />
               ) : (
                 <AppleMark />
               )}

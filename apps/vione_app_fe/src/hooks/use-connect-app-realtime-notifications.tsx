@@ -6,6 +6,10 @@ import { useViewerUserId } from "./use-viewer-user-id";
 import { notificationKeys } from "./use-bc-notifications";
 import { bcMobileHomeKeys } from "./use-business-connect-home";
 import { GlobalNetworkSDK } from "@/lib/global-network/network.sdk";
+import {
+  sendExternalNotification,
+  sendConnectionNotification,
+} from "@/lib/notification-permissions";
 
 // Global cache of recent notifications / connection event keys to strictly prevent double toasts across components & re-renders
 const globalRecentToastKeys = new Map<string, number>();
@@ -289,6 +293,7 @@ export function useConnectAppRealtimeNotifications() {
           senderUserId,
           connectionId,
         });
+        sendConnectionNotification(senderName, senderCompany);
         return;
       }
 
@@ -298,6 +303,14 @@ export function useConnectAppRealtimeNotifications() {
       playNotificationSound();
       const title = notif?.safeDisplayData?.title || "Bạn có thông báo mới";
       const desc = notif?.safeDisplayData?.body || notif?.safeDisplayData?.companyName;
+      const targetRoute = notif?.action?.targetRoute || "/connect-app/notifications";
+
+      // Báo lên màn hình điện thoại / lockscreen
+      sendExternalNotification(title, {
+        body: desc,
+        url: targetRoute,
+        tag: `notif-${notifId || Date.now()}`,
+      });
 
       toast.info(title, {
         description: desc,
@@ -332,6 +345,12 @@ export function useConnectAppRealtimeNotifications() {
         senderUserId,
         connectionId,
       });
+
+      sendExternalNotification("⚡ Chạm danh thiếp VIP", {
+        body: `${name} vừa quét mã hoặc chạm thẻ danh thiếp của bạn!`,
+        url: "/connect-app/network?tab=requests",
+        tag: `nfc-${connectionId || Date.now()}`,
+      });
     };
 
     const handleConnectionRequested = (data: any) => {
@@ -352,6 +371,8 @@ export function useConnectAppRealtimeNotifications() {
         senderUserId,
         connectionId,
       });
+
+      sendConnectionNotification(name, company);
     };
 
     const handleConnectionCancelled = (_data: any) => {

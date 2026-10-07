@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Phone, PhoneOff, Video, Sparkles } from "lucide-react";
 import { getConnectAppSocket } from "@/hooks/use-connect-app-socket";
 import { useViewerUserId } from "@/hooks/use-viewer-user-id";
-import { sendExternalNotification } from "@/lib/notification-permissions";
+import { sendExternalNotification, sendCallNotification } from "@/lib/notification-permissions";
 import { DmCallModal } from "./DmCallModal";
 
 export interface IncomingCallData {
@@ -83,12 +83,8 @@ export function GlobalIncomingCallModal() {
       }
       setIncomingCall(data);
       startRingtone();
-      // External background notification like Messenger / Zalo
-      sendExternalNotification(`Cuộc gọi đến từ ${data.callerName || "Đối tác"}`, {
-        body: data.callType === "video" ? "📹 Cuộc gọi Video trực tiếp" : "📞 Cuộc gọi thoại trực tiếp",
-        icon: data.callerAvatar || "/app-icon.png",
-        tag: `call-${data.callId}`,
-      });
+      // Báo cuộc gọi đến lên màn hình khóa điện thoại (Lockscreen Notification)
+      sendCallNotification(data.callerName || "Đối tác ViOne", data.callType, data.callId);
     };
 
     const handleCallEnded = () => {

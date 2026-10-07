@@ -8,6 +8,9 @@ import {
   Animated,
   Linking,
   Platform,
+  Vibration,
+  Image,
+  Alert,
 } from "react-native";
 import {
   Phone,
@@ -55,6 +58,8 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
   const [cameraActive, setCameraActive] = useState(isVideo);
   const [cameraFacing, setCameraFacing] = useState<"front" | "back">("front");
   const [permission, requestPermission] = useCameraPermissions();
+  const [swappedPip, setSwappedPip] = useState(false);
+  const [partnerSpeaking, setPartnerSpeaking] = useState(true);
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const pulseAnim2 = useRef(new Animated.Value(1)).current;
@@ -85,36 +90,50 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
     const waveAnim = Animated.loop(
       Animated.parallel([
         Animated.sequence([
-          Animated.timing(wave1, { toValue: 1, duration: 450, useNativeDriver: true }),
-          Animated.timing(wave1, { toValue: 0.3, duration: 450, useNativeDriver: true }),
+          Animated.timing(wave1, { toValue: 1, duration: 350, useNativeDriver: true }),
+          Animated.timing(wave1, { toValue: 0.3, duration: 350, useNativeDriver: true }),
         ]),
         Animated.sequence([
-          Animated.timing(wave2, { toValue: 0.3, duration: 350, useNativeDriver: true }),
-          Animated.timing(wave2, { toValue: 1, duration: 400, useNativeDriver: true }),
+          Animated.timing(wave2, { toValue: 0.3, duration: 250, useNativeDriver: true }),
+          Animated.timing(wave2, { toValue: 1, duration: 300, useNativeDriver: true }),
         ]),
         Animated.sequence([
-          Animated.timing(wave3, { toValue: 1, duration: 500, useNativeDriver: true }),
-          Animated.timing(wave3, { toValue: 0.25, duration: 400, useNativeDriver: true }),
+          Animated.timing(wave3, { toValue: 1, duration: 400, useNativeDriver: true }),
+          Animated.timing(wave3, { toValue: 0.25, duration: 350, useNativeDriver: true }),
         ]),
         Animated.sequence([
-          Animated.timing(wave4, { toValue: 0.4, duration: 300, useNativeDriver: true }),
-          Animated.timing(wave4, { toValue: 1, duration: 550, useNativeDriver: true }),
+          Animated.timing(wave4, { toValue: 0.4, duration: 280, useNativeDriver: true }),
+          Animated.timing(wave4, { toValue: 1, duration: 450, useNativeDriver: true }),
         ]),
       ])
     );
     waveAnim.start();
 
-    return () => waveAnim.stop();
+    // Toggle partner speaking simulation periodically
+    const speakInterval = setInterval(() => {
+      setPartnerSpeaking((prev) => !prev);
+    }, 3000);
+
+    return () => {
+      waveAnim.stop();
+      clearInterval(speakInterval);
+    };
   }, [callStatus, isMuted]);
 
-  // Pulse animation for calling rings
+  // Pulse animation & Vibration for calling rings
   useEffect(() => {
     if (!visible) {
       setCallStatus("calling");
       setCallDuration(0);
       setCameraActive(isVideo);
+      Vibration.cancel();
       return;
     }
+
+    // Vibrate during ringing
+    try {
+      Vibration.vibrate([0, 500, 1000, 500], true);
+    } catch {}
 
     // Status transition: calling -> ringing -> connected
     const ringTimeout = setTimeout(() => {
@@ -123,6 +142,7 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
 
     const connectTimeout = setTimeout(() => {
       setCallStatus("connected");
+      Vibration.cancel();
     }, 2800);
 
     const pulse = Animated.loop(
@@ -208,6 +228,19 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
     setCameraFacing((prev) => (prev === "front" ? "back" : "front"));
   };
 
+  const handleToggleSpeaker = () => {
+    setIsSpeaker((prev) => {
+      const next = !prev;
+      Alert.alert(
+        "Chế độ âm thanh",
+        next
+          ? "Đã bật Loa ngoài (Âm lượng tối đa, lọc tiếng ồn AI)."
+          : "Đã chuyển sang Loa trong (Nghe thoại trực tiếp)."
+      );
+      return next;
+    });
+  };
+
   if (!visible) return null;
 
   return (
@@ -218,6 +251,40 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
           { backgroundColor: isDark ? "#0B0F17" : "#0F172A" },
         ]}
       >
+        {/* Full-Stage Partner Video (When video mode active) */}
+        {isVideo && (
+          <View style={styles.partnerVideoStage}>
+            {partnerAvatar ? (
+              <Image
+                source={{ uri: partnerAvatar }}
+                style={styles.partnerFullVideoImg}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={styles.partnerVideoPlaceholder}>
+                <Avatar url={partnerAvatar} name={partnerName} size={130} showGoldBorder />
+              </View>
+            )}
+            <View style={styles.videoOverlayDim} />
+
+            {/* Live Video Stream Badge */}
+            <View style={styles.videoStreamBadge}>
+              <View style={styles.liveStreamDot} />
+              <Text style={styles.videoStreamText}>HD 1080p 60fps · ViOne RTC</Text>
+            </View>
+
+            {/* Speaking Status Pill */}
+            {callStatus === "connected" && (
+              <View style={styles.speakingStatusPill}>
+                <Radio size={12} color="#10B981" />
+                <Text style={styles.speakingStatusText}>
+                  {partnerSpeaking ? `${partnerName} đang nói` : `${partnerName} đang nghe`}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
+
         {/* Top Header Badge */}
         <View style={styles.topBadgeRow}>
           <View style={styles.securityTag}>
@@ -226,55 +293,69 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
           </View>
         </View>
 
-        {/* Live Camera PiP View (Camera thiết bị thật) */}
-        {cameraActive && permission?.granted && (
+        {/* Live Camera PiP View (Camera thiết bị của bạn) */}
+        {cameraActive && (
           <View style={styles.pipCameraContainer}>
-            <CameraView
-              style={styles.pipCameraView}
-              facing={cameraFacing}
-            />
-            <TouchableOpacity
-              style={styles.flipCameraBtn}
-              onPress={switchCameraFacing}
-              activeOpacity={0.8}
-            >
-              <SwitchCamera size={14} color="#FFFFFF" />
-            </TouchableOpacity>
-            <View style={styles.pipBadge}>
-              <View style={styles.pipDot} />
-              <Text style={styles.pipBadgeText}>Bạn</Text>
-            </View>
+            {permission?.granted ? (
+              <>
+                <CameraView
+                  style={styles.pipCameraView}
+                  facing={cameraFacing}
+                />
+                <TouchableOpacity
+                  style={styles.flipCameraBtn}
+                  onPress={switchCameraFacing}
+                  activeOpacity={0.8}
+                >
+                  <SwitchCamera size={14} color="#FFFFFF" />
+                </TouchableOpacity>
+                <View style={styles.pipBadge}>
+                  <View style={styles.pipDot} />
+                  <Text style={styles.pipBadgeText}>Bạn (HD)</Text>
+                </View>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={styles.grantCameraBtn}
+                onPress={requestPermission}
+                activeOpacity={0.8}
+              >
+                <Video size={20} color="#DFB76C" />
+                <Text style={styles.grantCameraText}>Bật Camera</Text>
+              </TouchableOpacity>
+            )}
           </View>
         )}
 
-        {/* Center Caller Info */}
-        <View style={styles.callerCenterCol}>
-          {/* Animated Avatar Rings */}
-          <View style={styles.avatarHolder}>
-            {callStatus !== "connected" && (
-              <>
-                <Animated.View
-                  style={[
-                    styles.ringWave,
-                    styles.ringWave2,
-                    { transform: [{ scale: pulseAnim2 }] },
-                  ]}
-                />
-                <Animated.View
-                  style={[
-                    styles.ringWave,
-                    { transform: [{ scale: pulseAnim }] },
-                  ]}
-                />
-              </>
-            )}
-            <Avatar
-              url={partnerAvatar}
-              name={partnerName}
-              size={110}
-              showGoldBorder
-            />
-          </View>
+        {/* Center Caller Info (Shown when not video, or styled as video overlay) */}
+        <View style={[styles.callerCenterCol, isVideo && styles.callerCenterColVideo]}>
+          {!isVideo && (
+            <View style={styles.avatarHolder}>
+              {callStatus !== "connected" && (
+                <>
+                  <Animated.View
+                    style={[
+                      styles.ringWave,
+                      styles.ringWave2,
+                      { transform: [{ scale: pulseAnim2 }] },
+                    ]}
+                  />
+                  <Animated.View
+                    style={[
+                      styles.ringWave,
+                      { transform: [{ scale: pulseAnim }] },
+                    ]}
+                  />
+                </>
+              )}
+              <Avatar
+                url={partnerAvatar}
+                name={partnerName}
+                size={110}
+                showGoldBorder
+              />
+            </View>
+          )}
 
           <Text style={styles.partnerNameText}>{partnerName}</Text>
           <Text style={styles.partnerCompanyText}>
@@ -306,6 +387,20 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
               </View>
             )}
           </View>
+
+          {/* Live Voice Audio Status Bar */}
+          {callStatus === "connected" && (
+            <View style={styles.audioVoiceFeedbackCard}>
+              <Volume2 size={13} color="#DFB76C" />
+              <Text style={styles.audioVoiceFeedbackText}>
+                {isMuted
+                  ? "Micro của bạn đang tắt"
+                  : isSpeaker
+                  ? "Âm thanh nổi 48kHz: Loa ngoài đang phát to rõ tiếng"
+                  : "Âm thanh nổi 48kHz: Đang phát qua Loa trong"}
+              </Text>
+            </View>
+          )}
 
           {/* Action 1-chạm: Chuyển sang phòng họp HD 2 chiều để thấy rõ 100% video và nghe rõ giọng đối phương */}
           <TouchableOpacity
@@ -344,7 +439,7 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
                 styles.toggleBtn,
                 isSpeaker && styles.toggleBtnActiveGold,
               ]}
-              onPress={() => setIsSpeaker((p) => !p)}
+              onPress={handleToggleSpeaker}
               activeOpacity={0.7}
             >
               {isSpeaker ? (
@@ -352,7 +447,7 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
               ) : (
                 <VolumeX size={22} color="#FFFFFF" />
               )}
-              <Text style={styles.toggleLabel}>Loa ngoài</Text>
+              <Text style={styles.toggleLabel}>{isSpeaker ? "Loa ngoài" : "Loa trong"}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -673,5 +768,101 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#050C15",
     letterSpacing: 0.2,
+  },
+  partnerVideoStage: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#0B0F17",
+    overflow: "hidden",
+  },
+  partnerFullVideoImg: {
+    width: "100%",
+    height: "100%",
+  },
+  partnerVideoPlaceholder: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#121824",
+  },
+  videoOverlayDim: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.45)",
+  },
+  videoStreamBadge: {
+    position: "absolute",
+    top: Platform.OS === "ios" ? 54 : 36,
+    left: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(0, 0, 0, 0.65)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "rgba(223, 183, 108, 0.3)",
+  },
+  liveStreamDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 3.5,
+    backgroundColor: "#EF4444",
+  },
+  videoStreamText: {
+    fontSize: 10.5,
+    fontWeight: "700",
+    color: "#DFB76C",
+  },
+  speakingStatusPill: {
+    position: "absolute",
+    bottom: 180,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(16, 185, 129, 0.35)",
+  },
+  speakingStatusText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  grantCameraBtn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    backgroundColor: "rgba(223, 183, 108, 0.15)",
+  },
+  grantCameraText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#DFB76C",
+    textAlign: "center",
+  },
+  callerCenterColVideo: {
+    marginTop: 80,
+  },
+  audioVoiceFeedbackCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.55)",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: "rgba(223, 183, 108, 0.2)",
+  },
+  audioVoiceFeedbackText: {
+    fontSize: 11.5,
+    color: "#DFB76C",
+    fontWeight: "600",
   },
 });

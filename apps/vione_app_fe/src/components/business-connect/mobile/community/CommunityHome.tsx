@@ -339,14 +339,14 @@ export function getCommunityVisuals(name: string, logoUrl?: string | null, banne
   if (lower.includes("vione") || lower.includes("gia đình") || lower.includes("ceo") || lower.includes("1983")) {
     defaultBanner = "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
-    category = "Gia đình ViOne • C-Level";
+    category = "Gia Đình ViOne • C-Level";
     categoryColor = "border-[#D8B282]/50 bg-[#D8B282]/15 text-[#8C653B] dark:text-[#F6E1C3]";
     attendees = [
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80",
     ];
-    descFallback = "Mạng lưới kết nối Chủ tịch, CEO & Lãnh đạo doanh nghiệp thuộc Gia đình ViOne.";
+    descFallback = "Mạng lưới kết nối Chủ tịch, CEO & Lãnh đạo doanh nghiệp thuộc Gia Đình ViOne.";
   } else if (lower.includes("ai") || lower.includes("vietnam") || lower.includes("tech")) {
     defaultBanner = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80";

@@ -478,3 +478,12 @@ export const businessCardApi = {
     return api.get<any[]>(API_ENDPOINTS.BUSINESS_CARDS.LEADS);
   },
 };
+
+// =========================================================================
+// 14. AI COPILOT ASSISTANT
+// =========================================================================
+export const aiApi = {
+  chat: async (message: string, conversationId?: string) => {
+    return api.post<any>(API_ENDPOINTS.AI.CHAT, { message, conversationId });
+  },
+};

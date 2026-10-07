@@ -139,17 +139,11 @@ export function ConnectAppSignIn({
         </div>
 
         {/* Brand Header */}
-        <div className="flex flex-col items-center justify-center text-center py-2 shrink-0">
-          <ViOneLogo className="h-8.5 w-auto sm:h-9.5 transition-transform hover:scale-105 duration-300 drop-shadow-[0_4px_24px_rgba(216,178,130,0.6)]" />
-          <div className="mt-1 text-[9.5px] font-bold tracking-[0.28em] text-[#D8B282] uppercase">
+        <div className="flex flex-col items-center justify-center text-center py-3 shrink-0">
+          <ViOneLogo className="h-13 w-auto sm:h-15 transition-transform hover:scale-105 duration-300 drop-shadow-[0_6px_32px_rgba(223,183,108,0.7)]" />
+          <div className="mt-2 text-[10px] sm:text-[11px] font-extrabold tracking-[0.32em] text-[#DFB76C] uppercase">
             BUSINESS CONNECT
           </div>
-          <h1 className="mt-2 font-serif text-[21px] sm:text-[23px] font-medium tracking-wide text-[#F6E1C3]">
-            Đăng nhập ViOne
-          </h1>
-          <p className="mt-0.5 text-[12px] text-[#D4C3A3]/80">
-            Cộng đồng doanh nhân tinh hoa & Kết nối giao thương
-          </p>
         </div>
 
         {/* Error */}
@@ -276,7 +270,10 @@ export function ConnectAppSignIn({
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="bc-auth-password" className="block text-[12px] font-medium text-[#D4C3A3]">
+            <label
+              htmlFor="bc-auth-password"
+              className="block text-[12px] font-medium text-[#D4C3A3]"
+            >
               {t("bc.mobile.auth.passwordLabel")}
             </label>
             <div className="relative">
@@ -352,16 +349,14 @@ export function ConnectAppSignIn({
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin text-[#050c15]" /> {t("bc.mobile.auth.processing")}
+                <Loader2 className="h-4 w-4 animate-spin text-[#050c15]" />{" "}
+                {t("bc.mobile.auth.processing")}
               </span>
             ) : (
               t("bc.mobile.auth.signIn")
             )}
             {!loading && (
-              <ArrowRight
-                className="absolute right-4 h-4 w-4 text-[#050c15]"
-                aria-hidden="true"
-              />
+              <ArrowRight className="absolute right-4 h-4 w-4 text-[#050c15]" aria-hidden="true" />
             )}
           </button>
         </form>
@@ -378,16 +373,18 @@ export function ConnectAppSignIn({
           </Link>
         </div>
 
-        {/* Khám phá Web Landing ViOne Connect (Figma) */}
+        {/* Website chính thức ViConnect */}
         <div className="shrink-0 my-1">
-          <Link
-            to="/landing"
-            className="relative flex h-9.5 w-full items-center justify-center gap-2 rounded-xl border border-[#D8B282]/30 bg-[#0A0A0B]/80 px-3 text-[12.5px] font-medium transition-all hover:border-[#D8B282]/60 hover:bg-[#D8B282]/10 active:scale-[0.99] cursor-pointer text-[#F6E1C3]"
+          <a
+            href="https://viconnect.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative flex h-10 w-full items-center justify-center gap-2.5 rounded-xl border border-[#DFB76C]/40 bg-white/[0.04] backdrop-blur-sm px-4 text-[13px] font-semibold transition-all hover:border-[#DFB76C]/80 hover:bg-white/[0.08] active:scale-[0.99] cursor-pointer text-[#F6E1C3] shadow-xs"
           >
-            <Globe2 className="h-4 w-4 text-[#D8B282]" aria-hidden="true" />
-            <span>Khám phá ViOne Connect (Web Landing)</span>
-            <ArrowRight className="absolute right-4 h-3.5 w-3.5 text-[#D8B282]" aria-hidden="true" />
-          </Link>
+            <Globe2 className="h-4 w-4 text-[#DFB76C]" aria-hidden="true" />
+            <span>Website chính thức</span>
+            <ArrowRight className="absolute right-4 h-4 w-4 text-[#DFB76C]" aria-hidden="true" />
+          </a>
         </div>
 
         {/* Scan NFC / QR */}
@@ -398,7 +395,9 @@ export function ConnectAppSignIn({
         >
           <QrCode className="h-5 w-5 shrink-0 text-[#E2D3B3]" aria-hidden="true" />
           <span>
-            <span className="block text-[13px] font-bold text-[#E2D3B3]">{t("bc.mobile.auth.scanTitle")}</span>
+            <span className="block text-[13px] font-bold text-[#E2D3B3]">
+              {t("bc.mobile.auth.scanTitle")}
+            </span>
             <span className="block text-[11px] leading-tight text-[#D4C3A3]/80">
               {t("bc.mobile.auth.scanSubtitle")}
             </span>

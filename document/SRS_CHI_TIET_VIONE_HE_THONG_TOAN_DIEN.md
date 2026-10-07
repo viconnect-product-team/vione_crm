@@ -379,20 +379,6 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Luồng Ngoại Lệ (Exception Handling):** Vé không tồn tại hoặc đã check-in trước đó: Báo lỗi vé không hợp lệ.
 - **RESTful API Endpoint:** `POST /api/events/checkin`
 
-##### FR-13.03 - Hủy Đăng Ký Tham Gia Sự Kiện & Hoàn Lại Suất Tham Dự (Event Registration Cancellation)
-- **Actor:** Hội viên, Doanh nhân, Khách mời đã đăng ký sự kiện
-- **Input:** ID sự kiện (`:id`), lý do hủy (tùy chọn).
-- **Logic Xử Lý:**
-  1. Người dùng bấm nút "Hủy đăng ký" trên giao diện chi tiết sự kiện (`EventDetailMobileSheet` trên Web PWA hoặc Native Mobile App).
-  2. Hệ thống gọi API hủy đăng ký với hỗ trợ đa phương thức định tuyến: `DELETE /api/events/:id/register`, `POST /api/events/:id/unregister` hoặc `DELETE /api/events/:id/cancel`.
-  3. Backend định danh người dùng qua Token JWT và đối soát đa trường mở rộng (`userId`, `memberId`, `email`, `phone`).
-  4. Cập nhật bản ghi đăng ký sang trạng thái `cancelled`, giảm an toàn biến đếm số lượng người tham gia (`registered = Math.max(0, registered - 1)`), hoàn lại 1 suất tham dự khả dụng cho cộng đồng.
-  5. Xóa khóa lưu trữ cục bộ trạng thái đăng ký trên thiết bị khách (`localStorage.removeItem('bc_event_reg_${id}')`).
-  6. Gửi thông báo xác nhận hủy đăng ký thành công qua hệ thống Notification thời gian thực.
-- **Output:** Xác nhận hủy đăng ký thành công, trạng thái nút bấm trên giao diện chuyển về "Đăng ký tham gia ngay", số lượng vé khả dụng được cập nhật tức thì.
-- **Luồng Ngoại Lệ (Exception Handling):** Người dùng chưa từng đăng ký hoặc sự kiện đã diễn ra: Hệ thống trả về thông báo lỗi chi tiết, không trừ số lượng vé.
-- **RESTful API Endpoint:** `DELETE /api/events/:id/register`, `POST /api/events/:id/unregister`, `DELETE /api/events/:id/cancel`
-
 
 #### MODULE 14: QUẢN LÝ CUỘC GẶP KẾT NỐI DOANH NHÂN 1-ON-1
 *Mục tiêu Epic:* Đặt lịch hẹn làm việc, kết nối đối tác chiến lược và biên bản cuộc gặp
@@ -426,21 +412,20 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **RESTful API Endpoint:** `POST /api/connect-app/dm/messages, WebSocket event: message:send`
 
 
-#### MODULE 16: TRÍ TUỆ NHÂN TẠO VIONE AI COPILOT 6.0 (DYNAMIC CHIEF OF STAFF)
-*Mục tiêu Epic:* Trợ lý ảo C-Level thông minh toàn năng: Đàm thoại điều hành đa ngữ cảnh, trả lời linh hoạt 100% nghiệp vụ hệ thống ViOne như con người, kết nối LLM Gateway (Gemini/OpenAI), OCR danh thiếp, nhập liệu Excel, đối tác thông minh và giám sát tải.
+#### MODULE 16: TRÍ TUỆ NHÂN TẠO VIONE AI COPILOT 5.0
+*Mục tiêu Epic:* 6 Năng lực AI chuyên biệt: Đàm thoại điều hành, OCR danh thiếp, nhập liệu Excel, soạn hợp đồng, gợi ý đối tác và giám sát tải
 
-##### FR-16.01 - Trợ Lý AI Copilot Đàm Thoại Điều Hành & Báo Cáo Doanh Nghiệp (Dynamic Chief of Staff)
-- **Actor:** CEO, Ban Lãnh Đạo C-Level, Quản lý, Hội viên doanh nhân
-- **Input:** Câu lệnh giọng nói hoặc văn bản tự nhiên về bất kỳ khía cạnh nào của ViOne (báo cáo doanh thu, hủy/đăng ký sự kiện, chụp ảnh khoảnh khắc camera, danh thiếp số NFC/QR, chấm công GPS, quy trình duyệt chi 3 cấp VietQR, cộng đồng B2B vs nội bộ, ghép nối đối tác...).
+##### FR-16.01 - Trợ Lý AI Copilot Đàm Thoại Điều Hành & Báo Cáo Doanh Nghiệp
+- **Actor:** CEO, Ban Lãnh Đạo C-Level
+- **Input:** Câu lệnh giọng nói hoặc văn bản tự nhiên (Ví dụ: "Tóm tắt doanh thu tháng này và công nợ khách hàng lớn nhất").
 - **Logic Xử Lý:**
-  1. Tiếp nhận câu hỏi và chuyển văn bản qua bộ phân tích ngữ định NLP/NLU.
-  2. Xác thực quyền dữ liệu và phạm vi tenant của người dùng.
-  3. Kiểm tra kết nối **LLM Gateway** (Gemini/OpenAI API): Nếu có API key hợp lệ, truyền Prompt hệ thống cấu hình vai trò Giám đốc Điều hành C-Level (Chief of Staff) cùng dữ liệu KPI trực tiếp để mô hình sinh câu trả lời tự nhiên, sâu sắc và thực tế.
-  4. Nếu chạy chế độ suy luận động nội bộ (Dynamic Inference Engine): Ánh xạ qua bộ ma trận tri thức toàn diện 8+ lĩnh vực nghiệp vụ của ViOne, tổng hợp câu trả lời chi tiết theo định dạng văn phong lãnh đạo C-Level, kèm Thẻ bằng chứng trực quan (Evidence Cards: Metric Cards, Event Cards, Voice Moment Cards...) và các nút điều hướng tắt (Route Actions) 1-chạm.
-  5. Tuyệt đối không trả về thông điệp từ chối thụ động (ví dụ: "chưa đủ thông minh để giải đáp"). Mọi thắc mắc đều được hướng dẫn từng bước rõ ràng, mạch lạc và thấu đáo.
-  6. Ghi nhận toàn bộ tương tác vào bảng nhật ký `ai_audit_logs`.
-- **Output:** Phản hồi thông minh, giải đáp toàn diện mọi vấn đề nghiệp vụ kèm biểu đồ/thẻ bằng chứng và đường dẫn thao tác tức thời.
-- **Luồng Ngoại Lệ (Exception Handling):** Yêu cầu vượt quyền hạn tenant: Phản hồi giải thích quy định bảo mật dữ liệu doanh nghiệp một cách khéo léo và đề xuất người có thẩm quyền liên hệ.
+  1. Tiếp nhận câu hỏi và chuyển văn bản qua bộ xử lý ngôn ngữ tự nhiên NLP.
+  2. Xác thực quyền dữ liệu của người hỏi (chỉ truy vấn dữ liệu trong phạm vi tenant được phép).
+  3. Tự động sinh câu lệnh truy vấn CSDL an toàn (Text-to-SQL an toàn) để trích xuất số liệu thực tế.
+  4. Tổng hợp thông tin và định dạng câu trả lời súc tích theo văn phong C-Level.
+  5. Ghi nhật ký vào bảng ai_audit_logs.
+- **Output:** Bản tóm tắt số liệu điều hành kèm biểu đồ và gợi ý hành động tiếp theo.
+- **Luồng Ngoại Lệ (Exception Handling):** Câu hỏi yêu cầu dữ liệu vượt quá quyền hạn: Trả lời "Bạn không có quyền truy cập dữ liệu tài chính này".
 - **RESTful API Endpoint:** `POST /api/ai/chat`
 
 ##### FR-16.02 - Quét & Nhận Diện Danh Thiếp OCR AI Tự Động Nhập CRM
@@ -607,29 +592,6 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Luồng Ngoại Lệ (Exception Handling):** Hết hạn 24 giờ: Chuyển story vào kho lưu trữ cá nhân, không hiển thị công khai.
 - **RESTful API Endpoint:** `POST /api/connect-app/moments/story, GET /api/connect-app/moments/stories`
 
-##### FR-25.02 - Chụp Ảnh Trực Tiếp Từ Camera Thiết Bị Đăng Khoảnh Khắc (Direct Live Camera Capture)
-- **Actor:** Doanh nhân, Người dùng ứng dụng ViOne Web PWA & Mobile Native
-- **Input:** Quyền truy cập camera thiết bị, thao tác nhấn nút "Chụp ảnh ngay" trong modal Đăng khoảnh khắc (`PostMomentModal`).
-- **Logic Xử Lý:**
-  1. **Trên Web PWA:** Kích hoạt đồng thời 2 cơ chế: Thẻ `<input type="file" accept="image/*" capture="environment">` gọi máy ảnh hệ điều hành mặc định, và khung ngắm trực tiếp WebRTC (`navigator.mediaDevices.getUserMedia`) toàn màn hình cho phép xem trước góc máy, đổi camera trước/sau, chụp bắt khung hình qua HTML5 Canvas với độ phân giải cao.
-  2. **Trên Mobile Native (Expo/React Native):** Sử dụng phần cứng camera qua module `expo-camera` (`CameraView`, `useCameraPermissions`). Mở khung ngắm Viewfinder trực tiếp toàn màn hình với nút chụp trập tức thì (Shutter), bật/tắt đèn Flash/Torch, đảo camera selfie/sau. Ảnh chụp được lưu vào cache và tự động đính kèm vào danh sách ảnh đính kèm của khoảnh khắc.
-  3. Cho phép người dùng chụp liên tiếp nhiều ảnh hoặc kết hợp chọn thêm ảnh từ thư viện, ghi âm giọng nói đính kèm và gắn vị trí địa lý GPS trước khi đăng tải.
-- **Output:** Ảnh chụp trực tiếp sắc nét được hiển thị trong khu vực xem trước "Mới chụp" và đính kèm vào bài đăng khoảnh khắc thời gian thực.
-- **Luồng Ngoại Lệ (Exception Handling):** Người dùng từ chối cấp quyền camera: Hiển thị hộp thoại giải thích và hướng dẫn mở quyền trong Cài đặt thiết bị, đồng thời kích hoạt fallback chọn ảnh từ Thư viện tệp.
-- **RESTful API Endpoint:** `POST /api/connect-app/moments, In-app Components: PostMomentModal.tsx`
-
-##### FR-25.03 - Hệ Thống Bình Luận Khoảnh Khắc Thông Minh Chuẩn Mạng Xã Hội (Facebook-Style Smart Moment Comments)
-- **Actor:** Doanh nhân, Hội viên mạng lưới trên Mobile Native & PWA
-- **Input:** Chạm vào biểu tượng bình luận trên thẻ khoảnh khắc hoặc bài viết mạng lưới.
-- **Logic Xử Lý:**
-  1. **Khung nhập bình luận chuẩn Facebook:** Hiển thị ảnh đại diện thật của người dùng hiện tại, ô nhập dạng viên nang (pill-shape) tự co giãn, khay icon emoji cảm xúc (10 biểu tượng chọn nhanh), nút đính kèm ảnh (Camera/Thư viện) kèm chip xem trước và nút xóa, phím tắt `@` gắn thẻ đối tác nhanh.
-  2. **Thanh ngữ cảnh trả lời (Reply Banner):** Khi người dùng chọn "Trả lời" một bình luận, hiển thị thanh ngữ cảnh "Đang trả lời @[Tên đối tác]" kèm nút [✕ Hủy] và tự động focus ô nhập.
-  3. **Cấu trúc luồng phản hồi đa tầng (Nested Replies):** Hiển thị danh sách phản hồi thụt lề chuẩn Facebook kèm đường chỉ rẽ nhánh cong kết nối bình luận gốc với các câu trả lời con.
-  4. **Nút gửi chuẩn nhận diện:** Nút gửi màu vàng Champagne Gold ánh kim (`#DFB76C`), tự động kích hoạt khi có nội dung hoặc ảnh đính kèm.
-  5. **Hỗ trợ giao diện kép (Dual-Theme):** Tối ưu hoàn hảo cả Chế độ Sáng (nền trắng `#FFFFFF`, bubble xám nhạt `#F0F2F5`) và Chế độ Tối (nền `#0B0F17`, bubble `#1E2638`).
-- **Output:** Trải nghiệm bình luận tương tác mượt mà, chuyên nghiệp như Facebook trên cả hai nền tảng Native và PWA.
-- **RESTful API Endpoint:** `POST /api/connect-app/moments/:id/comments, GET /api/connect-app/moments/:id/comments`
-
 
 #### MODULE 26: HỒ SƠ DANH TÍNH SỐ, DANH THIẾP TITANIUM 3D & CHIA SẺ CHẠM NFC
 *Mục tiêu Epic:* Danh thiếp số 3D lật mặt sang trọng, chạm NFC một chạm và bảo vệ quyền riêng tư C-Level
@@ -792,19 +754,19 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 #### MODULE 32: BẢNG ĐIỀU HÀNH LỊCH TRÌNH TÁC NGHIỆP HÔM NAY & DUYỆT HỒ SƠ C-LEVEL MOBILE (EXECUTIVE HOME & APPROVALS)
 *Mục tiêu Epic:* Trung tâm điều hành di động hợp nhất toàn bộ lịch trình công việc, các cuộc hẹn đối tác B2B và phê duyệt hồ sơ giấy tờ mọi lúc mọi nơi cho lãnh đạo bận rộn
 
-##### FR-32.01 - Lịch Trình Tác Nghiệp & Cơ Hội Hôm Nay (Today's Executive Agenda & Opportunities)
+##### FR-32.01 - Lịch Trình Tác Nghiệp Hôm Nay (Today's Executive Agenda)
 - **Actor:** CEO, Lãnh đạo doanh nghiệp
-- **Input:** Mở màn hình chính ExecutiveHome trên App ViOne Connect (Native & PWA), chọn Tab "Hôm nay".
+- **Input:** Mở màn hình chính ExecutiveHome trên App ViOne Connect.
 - **Logic Xử Lý:**
-  1. Hệ thống tự động truy vấn và tổng hợp 3 nguồn lịch trình và tương tác trong ngày hôm nay:
-     - **Lịch gặp 1-1 / họp đối tác B2B:** Hiển thị thời gian hẹn, đối tác, chức danh, nút "Google Meet" (họp online) hoặc "Gọi điện" (gặp offline), nút Đổi lịch.
-     - **Cơ hội mới từ cộng đồng doanh nhân:** Hiển thị thẻ cơ hội mới phát sinh trong ngày kèm tag cộng đồng, huy hiệu "CƠ HỘI MỚI", tổ chức, giá trị deal ước tính, nút "Xem chi tiết cơ hội" (mở modal) và "Vào Cộng đồng" (chuyển tiếp thẳng đến trang Cộng đồng).
-     - **Sự kiện hội thảo hôm nay:** Hiển thị sự kiện, thời gian bắt đầu, vị trí tổ chức, trạng thái vé QR hoặc đăng ký.
-  2. Hiển thị tổng số lượng hợp nhất trên nhãn Tab `Hôm nay ({totalCount})`.
-  3. Khi bấm "Xem chi tiết" cơ hội hoặc sự kiện, mở modal chi tiết tương ứng và cho phép chuyển tiếp liền mạch vào phân hệ Cộng đồng B2B.
-- **Output:** Bảng điều hành Hôm nay đa chiều, không chỉ giới hạn ở sự kiện mà còn cập nhật lịch gặp thực tế và cơ hội kinh doanh mới nhất.
-- **Luồng Ngoại Lệ (Exception Handling):** Không có lịch trình hoặc cơ hội nào trong ngày: Hiển thị giao diện "Hôm nay thật yên tĩnh" với gợi ý kết nối thêm đối tác.
-- **RESTful API Endpoint:** `GET /api/connect-app/executive/today-agenda, GET /api/opportunities, GET /api/vba-scheduled-meetings`
+  1. Hệ thống tự động truy vấn và tổng hợp 3 nguồn lịch trình trong ngày hôm nay:
+     - Lịch họp nội bộ và công việc được giao từ module Quản lý công việc CRM.
+     - Lịch hẹn gặp đối tác giao thương B2B đã được cả hai bên xác nhận (từ Module 29).
+     - Sự kiện hội thảo, gala doanh nhân mà người dùng đã đăng ký vé QR.
+  2. Hiển thị dạng dòng thời gian (Timeline) rõ ràng theo từng khung giờ: Sáng, Chiều, Tối.
+  3. Nhấp vào mỗi thẻ lịch trình mở ngay chi tiết cuộc họp, phòng họp trực tuyến hoặc vị trí trên Google Maps.
+- **Output:** Lịch trình hôm nay toàn diện, cập nhật theo thời gian thực không bỏ sót sự kiện.
+- **Luồng Ngoại Lệ (Exception Handling):** Không có lịch trình trong ngày: Hiển thị thông điệp "Hôm nay bạn không có lịch trình nào, tận hưởng một ngày làm việc hiệu quả!".
+- **RESTful API Endpoint:** `GET /api/connect-app/executive/today-agenda`
 
 ##### FR-32.02 - Trung Tâm Duyệt Hồ Sơ Nhanh Di Động (Approvals Mobile Sheet)
 - **Actor:** Ban Giám Đốc, Kế toán trưởng, Trưởng bộ phận
@@ -818,6 +780,77 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Luồng Ngoại Lệ (Exception Handling):** Không đủ hạn mức phê duyệt: Hiển thị thông báo chuyển hồ sơ lên cấp phê duyệt cao hơn (CEO/CFO).
 - **RESTful API Endpoint:** `GET /api/connect-app/approvals/pending, POST /api/connect-app/approvals/:id/decide`
 
+
+#### MODULE 33: BẮT TAY KẾT NỐI SONG PHƯƠNG QR THỜI GIAN THỰC & TRÌNH CHỈNH SỬA HỒ SƠ NATIVE PARITY
+*Mục tiêu Epic:* Cơ chế kết nối song phương qua WebSocket khi quét QR, bộ công cụ cập nhật danh tính số C-Level thuần Native và Trợ lý AI Copilot đa năng
+
+##### FR-33.01 - Bắt Tay Kết Nối Song Phương Thời Gian Thực (Bilateral QR Handshake Flow)
+- **Actor:** Hai doanh nhân quét mã QR của nhau (Web PWA và Native Mobile)
+- **Input:** Doanh nhân A quét mã QR của Doanh nhân B, gửi sự kiện WebSocket qr:connect.
+- **Logic Xử Lý:**
+  1. Doanh nhân A mở ScanQrModal quét mã QR của Doanh nhân B.
+  2. Ứng dụng phát sự kiện WebSocket "qr:connect" tới ConnectAppGateway.
+  3. Gateway nhận diện socket của Doanh nhân B và emit sự kiện "connection:incoming".
+  4. Màn hình Doanh nhân B tự động hiển thị IncomingQrConnectionModal (Mobile) hoặc IncomingConnectionModal (Web) với thông tin hồ sơ của A.
+  5. Doanh nhân B bấm [Đồng ý kết nối] -> phát "connection:respond" (accepted). Gateway cập nhật kết nối hai chiều trong CSDL, bắn thông báo xác nhận cho A và mở luồng chat 1-1.
+- **Output:** Kết nối song phương xác lập thành công tức thì trên cả 2 thiết bị.
+- **Luồng Ngoại Lệ (Exception Handling):** Doanh nhân B từ chối: Phát "connection:respond" (declined), đóng modal và không lưu kết nối.
+- **RESTful API Endpoint:** `WS qr:connect, WS connection:incoming, WS connection:respond, WS connection:accepted`
+
+##### FR-33.02 - Trình Chỉnh Sửa Hồ Sơ Cá Nhân Doanh Nhân Thuần Native (Native Edit Profile Parity)
+- **Actor:** Doanh nhân thành viên C-Level
+- **Input:** Bấm nút [Chỉnh sửa] trên màn hình ProfileScreen Native.
+- **Logic Xử Lý:**
+  1. Mở EditProfileModal thuần Native với đầy đủ 8 trường thông tin chuẩn Web: Họ tên hiển thị, Chức danh, Tên doanh nghiệp, Ngành nghề, Số điện thoại, Email, Website, Tiểu sử.
+  2. Người dùng chỉnh sửa và bấm [Lưu thay đổi].
+  3. Ứng dụng gọi API PATCH /users/profile (hoặc lưu offline cache AsyncStorage).
+  4. Cập nhật hồ sơ trong AuthContext, đồng bộ danh thiếp số 3D Titanium và làm mới giao diện Profile tức thì.
+- **Output:** Thông tin cá nhân và danh thiếp doanh nhân được cập nhật chuẩn xác 100%.
+- **Luồng Ngoại Lệ (Exception Handling):** Dữ liệu không hợp lệ (email sai định dạng): Báo lỗi tại trường nhập liệu tương ứng.
+- **RESTful API Endpoint:** `PATCH /api/users/profile, GET /api/users/me`
+
+##### FR-33.03 - Trợ Lý AI Copilot Đa Năng Dynamic Nắm Trọn Vẹn Dữ Liệu Nền Tảng
+- **Actor:** Toàn bộ người dùng hệ thống
+- **Input:** Câu hỏi của người dùng về sự kiện, cộng đồng, tài khoản, cơ hội kinh doanh (Text hoặc Voice).
+- **Logic Xử Lý:**
+  1. Tiếp nhận câu hỏi tại ViOneVoiceAssistantModal (Mobile) hoặc ViOneVoiceAssistant (Web).
+  2. Backend AiService phân tích ý định động, truy xuất CSDL thời gian thực: sự kiện đang diễn ra, danh sách cộng đồng đã tham gia, chỉ số kết nối tài khoản, cơ hội kinh doanh mới.
+  3. Tổng hợp câu trả lời tự nhiên như Chief of Staff, kèm Evidence Cards và Suggested Actions 1-chạm.
+  4. Giao diện modal tối ưu: Header không đè lấn sóng micro, Footer nhập liệu luôn cố định ở đáy.
+- **Output:** Phản hồi thông thái, chính xác 100% dữ liệu nền tảng, không rập khuôn.
+- **Luồng Ngoại Lệ (Exception Handling):** Mất kết nối mạng: Chuyển sang bộ dữ liệu fallback nội bộ thông minh.
+- **RESTful API Endpoint:** `POST /api/ai/chat`
+
+##### FR-33.04 - Cổng Thông Tin Website Chính Thức ViConnect (https://viconnect.vn/) Tại Màn Hình Đăng Nhập
+- **Actor:** Khách vãng lai, Đối tác, Doanh nhân C-Level.
+- **Input:** Chạm/Nhấp vào nút "Website chính thức" trên màn hình đăng nhập (Web PWA hoặc Mobile Native App).
+- **Logic Xử Lý:**
+  1. Giao diện đăng nhập khởi tạo nút liên kết tại Header với icon Globe và nhãn hiển thị: "Website chính thức".
+  2. Khi người dùng nhấp:
+     - Trên Web PWA: Mở tab mới của trình duyệt điều hướng an toàn tới `https://viconnect.vn/` (`target="_blank" rel="noopener noreferrer"`).
+     - Trên Mobile Native App: Kích hoạt module `Linking.openURL('https://viconnect.vn/')` mở trình duyệt ngoại vi an toàn của thiết bị.
+  3. Duy trì trạng thái phiên đăng nhập của ứng dụng mà không gây xung đột hay thoát app.
+- **Output:** Người dùng truy cập trực tiếp Website chính thức ViConnect tìm hiểu giải pháp nền tảng.
+- **Luồng Ngoại Lệ:** Thiết bị không có trình duyệt mặc định: Hiển thị thông báo hướng dẫn hoặc mở WebView nội bộ an toàn.
+- **Client Route:** `/auth` (PWA) & `LoginScreen` (Native).
+
+##### FR-33.05 - Hệ Thống Cấp Quyền & Đẩy Thông Báo Ra Màn Hình Khóa Thiết Bị (Lockscreen Push Notifications)
+- **Actor:** Người dùng đã đăng nhập hệ sinh thái ViOne.
+- **Input:** Tương tác cấp quyền thông báo hệ thống (Notification Permission); Các sự kiện thời gian thực phát sinh (Cuộc gọi đến, Tin nhắn mới, Bình luận mới, Yêu cầu kết nối, Chạm NFC, Cập nhật CRM).
+- **Logic Xử Lý:**
+  1. Khi người dùng truy cập: Component `NotificationPromptBanner` kiểm tra quyền `Notification.permission`. Nếu trạng thái là `default`, hiển thị banner mạ vàng Champagne Gold mời cấp quyền 1-chạm.
+  2. Khi người dùng bấm "Bật thông báo ngay": Gọi `Notification.requestPermission()`. Nếu được cấp (`granted`), phát sự kiện `vione_notification_permission_changed` và kích hoạt Service Worker (`public/sw.js`).
+  3. Service Worker cài đặt listener cho 2 sự kiện:
+     - `push`: Tiếp nhận payload thông báo từ máy chủ hoặc local background worker.
+     - `notificationclick`: Đóng thông báo và tự động `clients.focus()` hoặc `clients.openWindow(url)` điều hướng trực tiếp vào màn hình nghiệp vụ tương ứng (chat thread, cuộc gọi, moment detail).
+  4. Trình phát âm thanh Web Audio Chime (`playNotificationChime`): Khởi tạo AudioContext phát sóng âm chuông ngân cho cuộc gọi (`call`), tin nhắn (`message`), và thông báo chung (`notification`).
+  5. Hàm đẩy thông báo màn hình khóa `sendExternalNotification()`:
+     - Gọi `navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options))`.
+     - Đính kèm mẫu rung phần cứng `vibrate: [400, 200, 400, 200, 400, 200, 400]` cho cuộc gọi hoặc `[200, 100, 200]` cho tin nhắn.
+  6. Trung tâm quản trị & kiểm thử tại Tab Tôi: Card "Thông báo hệ thống & Cuộc gọi" hiển thị huy hiệu trạng thái trực tiếp, nút cấp quyền và nút "Gửi thông báo thử nghiệm" kiểm tra trực tiếp trên thiết bị.
+- **Output:** Mọi cảnh báo cuộc gọi, tin nhắn, bình luận, kết nối được hiển thị ngay tức thì trên màn hình khóa và thanh trạng thái điện thoại kèm âm thanh và rung phản hồi.
+- **Luồng Ngoại Lệ:** Người dùng chặn thông báo (`denied`): Hiển thị hướng dẫn mở lại quyền trong cài đặt trình duyệt / thiết bị.
+- **RESTful / WebSocket Event:** WebSocket `connection:incoming`, `call:offer`, `message:new`, `moment:comment:added`.
 
 ---
 

@@ -266,10 +266,10 @@ export class ConnectAppService implements OnModuleInit {
       `);
       await this.prisma.$executeRawUnsafe(`
         UPDATE public.associations
-        SET name = 'Gia đình ViOne',
-            tagline = 'Gia đình ViOne',
-            about = 'Cộng đồng chính thức Gia đình ViOne — Gắn kết thịnh vượng, kết nối cơ hội kinh doanh và kiến tạo giá trị bền vững.',
-            description = 'Mạng lưới kết nối và kiến tạo giá trị chung cho toàn thể thành viên Gia đình ViOne.',
+        SET name = 'Gia Đình ViOne',
+            tagline = 'Gia Đình ViOne',
+            about = 'Cộng đồng chính thức Gia Đình ViOne — Gắn kết thịnh vượng, kết nối cơ hội kinh doanh và kiến tạo giá trị bền vững.',
+            description = 'Mạng lưới kết nối và kiến tạo giá trị chung cho toàn thể thành viên Gia Đình ViOne.',
             short_name = 'ViOne Family',
             updated_at = now()
         WHERE id = 'c1983000-0000-4000-8000-000000001983'::uuid
@@ -9087,7 +9087,7 @@ export class ConnectAppService implements OnModuleInit {
     return 'b2b_networking';
   }
 
-  private seedCompanyInternalData(communityId: string, companyName: string = 'Gia đình ViOne') {
+  private seedCompanyInternalData(communityId: string, companyName: string = 'Gia Đình ViOne') {
     // Không nạp dữ liệu demo/mock theo yêu cầu bắt buộc: dữ liệu chỉ tạo từ hành động thật của người dùng
     if (!this.companyEmployeesStore.has(communityId)) {
       this.companyEmployeesStore.set(communityId, []);
@@ -9112,7 +9112,7 @@ export class ConnectAppService implements OnModuleInit {
           COALESCE(m.phone, u.phone, '') as phone,
           COALESCE(am.role, 'member') as role,
           COALESCE(m.title, 'Thành viên') as "roleTitle",
-          COALESCE(m.company, 'Gia đình ViOne') as department,
+          COALESCE(m.company, 'Gia Đình ViOne') as department,
           COALESCE(u.avatar_url, m.avatar, '') as "avatarUrl",
           'active' as status,
           am.created_at as "joinedAt"
@@ -9191,7 +9191,7 @@ export class ConnectAppService implements OnModuleInit {
       phone: body.phone || '',
       role: body.role || 'employee',
       roleTitle: body.roleTitle || 'Chuyên viên Doanh nghiệp',
-      department: body.department || 'Gia đình ViOne',
+      department: body.department || 'Gia Đình ViOne',
       avatarUrl: body.avatarUrl || '',
       status: 'active',
       joinedAt: new Date().toISOString(),
@@ -10389,7 +10389,7 @@ export class ConnectAppService implements OnModuleInit {
         peerCode: mem?.code || peer,
         userId: peerUserId ?? null,
         isOnline,
-        name: isSystem ? 'Ban Quản Trị Gia đình ViOne' : (mem?.display_name || mem?.name || mem?.contact || peer.toUpperCase()),
+        name: isSystem ? 'Ban Quản Trị Gia Đình ViOne' : (mem?.display_name || mem?.name || mem?.contact || peer.toUpperCase()),
         avatarUrl: isSystem ? '/vione-logo-gold.png' : (mem?.avatar ?? null),
         last: latest.text,
         time: latest.created_at ? new Date(latest.created_at).toISOString() : new Date().toISOString(),
@@ -10409,9 +10409,9 @@ export class ConnectAppService implements OnModuleInit {
     if (!byPeer.has('admin')) {
       resList.push({
         peerCode: 'admin',
-        name: 'Ban Quản Trị Gia đình ViOne',
+        name: 'Ban Quản Trị Gia Đình ViOne',
         avatarUrl: '/vione-logo-gold.png',
-        last: 'Chào mừng Quý Anh/Chị đến với Kênh Thông Báo Chính Thức của Ban Quản Trị Gia đình ViOne!',
+        last: 'Chào mừng Quý Anh/Chị đến với Kênh Thông Báo Chính Thức của Ban Quản Trị Gia Đình ViOne!',
         time: new Date(Date.now() - 3600000).toISOString(),
         rawTime: new Date(Date.now() - 3600000).toISOString(),
         unread: 0,
@@ -10859,11 +10859,11 @@ export class ConnectAppService implements OnModuleInit {
             threadId: ensuredThreadId,
             personId: peerUserId ? `u:${peerUserId}` : `code:${peerKey}`,
             displayName: isSystem
-              ? 'Ban Hỗ Trợ Gia đình ViOne'
+              ? 'Ban Hỗ Trợ Gia Đình ViOne'
               : (mem?.display_name || mem?.name || `Hội viên ${peerKey.toUpperCase()}`),
             avatarUrl: isSystem ? '/vione-logo.png' : (mem?.avatar_url || mem?.avatar || null),
             headline: isSystem ? 'Hỗ trợ hội viên ViOne' : (mem?.headline || mem?.position || null),
-            companyName: isSystem ? 'Gia đình ViOne' : (mem?.company_name || mem?.company || null),
+            companyName: isSystem ? 'Gia Đình ViOne' : (mem?.company_name || mem?.company || null),
             isOnline: isSystem ? true : (peerUserId ? (this.gateway?.isUserOnline(peerUserId) ?? false) : false),
             lastMessageAt: latest.created_at ? new Date(latest.created_at).toISOString() : null,
             lastMessagePreview: latest.text || null,

@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert,
   Dimensions,
+  Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
@@ -218,16 +219,16 @@ export const LoginScreen: React.FC = () => {
 
             {/* Brand Header */}
             <View style={styles.brandHeader}>
-              <ViOneLogo width={160} height={56} />
+              <ViOneLogo width={185} height={66} />
               <Text style={styles.brandSubtitle}>BUSINESS CONNECT</Text>
-              <Text style={styles.loginHeading}>
-                {isRegister ? "Đăng ký tài khoản mới" : "Đăng nhập ViOne"}
-              </Text>
-              <Text style={styles.loginSubheading}>
-                {isRegister
-                  ? "Khởi tạo tài khoản doanh nhân & gia nhập hệ sinh thái ViOne"
-                  : "Cộng đồng doanh nhân tinh hoa & Kết nối giao thương"}
-              </Text>
+              {isRegister && (
+                <>
+                  <Text style={styles.loginHeading}>Đăng ký tài khoản mới</Text>
+                  <Text style={styles.loginSubheading}>
+                    Khởi tạo tài khoản doanh nhân & gia nhập hệ sinh thái ViOne
+                  </Text>
+                </>
+              )}
             </View>
 
             {isRegister ? (
@@ -541,19 +542,21 @@ export const LoginScreen: React.FC = () => {
                   <ChevronRight size={16} color="#E2D3B3" style={styles.rightChevron} />
                 </TouchableOpacity>
 
-                {/* Explore Web Landing ViOne Connect */}
+                {/* Official Website ViOne Connect */}
                 <TouchableOpacity
                   style={styles.landingBtn}
-                  onPress={() =>
-                    Alert.alert(
-                      "Khám phá ViOne Connect",
-                      "Truy cập cổng thông tin doanh nhân: https://vione.vn"
-                    )
-                  }
+                  onPress={() => {
+                    Linking.openURL("https://viconnect.vn/").catch(() => {
+                      Alert.alert(
+                        "Website chính thức",
+                        "Truy cập cổng thông tin doanh nhân: https://viconnect.vn/"
+                      );
+                    });
+                  }}
                   activeOpacity={0.85}
                 >
                   <Globe size={15} color="#D8B282" />
-                  <Text style={styles.landingBtnText}>Khám phá ViOne Connect (Web Landing)</Text>
+                  <Text style={styles.landingBtnText}>Website chính thức</Text>
                   <ArrowRight size={15} color="#D8B282" style={styles.rightChevron} />
                 </TouchableOpacity>
 
