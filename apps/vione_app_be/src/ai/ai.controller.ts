@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Request, Res, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '../auth/optional-jwt-auth.guard';
 import { AiService } from './ai.service';
@@ -32,6 +32,26 @@ export class AiController {
   async chat(@Request() req: any, @Body() body: { message: string; conversationId?: string; capability?: string }) {
     const userId = req.user?.id || '00000000-0000-4000-8000-000000000002';
     return this.aiService.chat(userId, body);
+  }
+
+  /** POST /api/ai/export-excel — Tạo file báo cáo Excel động từ CSDL */
+  @Post('export-excel')
+  @UseGuards(OptionalJwtAuthGuard)
+  async exportExcel(@Body() body: { type?: string; title?: string }) {
+    return this.aiService.generateExcelReport(body.type || 'finance', { title: body.title });
+  }
+
+  /** GET /api/ai/download-excel/:id — Tải file báo cáo Excel động */
+  @Get('download-excel/:id')
+  async downloadExcel(@Param('id') id: string, @Res() res: any) {
+    const report = this.aiService.getGeneratedReport(id);
+    if (!report) {
+      return res.status(404).json({ ok: false, message: 'Báo cáo không tồn tại hoặc đã hết hạn.' });
+    }
+    res.setHeader('Content-Type', report.mimeType);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(report.filename)}"`);
+    res.setHeader('Content-Length', report.buffer.length);
+    return res.end(report.buffer);
   }
 
   /** POST /api/ai/excel-import — Endpoint AI tự động nhập liệu Excel/CSV vào CSDL */

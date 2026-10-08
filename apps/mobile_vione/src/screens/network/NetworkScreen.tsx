@@ -37,6 +37,7 @@ import {
   SlidersHorizontal,
   Sun,
   Moon,
+  Calendar,
 } from "lucide-react-native";
 import { Colors } from "../../theme/colors";
 import { useTheme } from "../../context/ThemeContext";
@@ -50,6 +51,7 @@ import { CreateGroupModal } from "./CreateGroupModal";
 import { StoryViewerModal, StoryItemData } from "../../components/StoryViewerModal";
 import { CreateStoryModal } from "../../components/CreateStoryModal";
 import { CustomerDetailModal } from "../../components/CustomerDetailModal";
+import { CreateCustomerModal, NewCustomerData } from "../../components/CreateCustomerModal";
 import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
 import { PostMomentModal } from "../../components/PostMomentModal";
 import { MomentCommentModal } from "../../components/MomentCommentModal";
@@ -328,8 +330,11 @@ export const NetworkScreen: React.FC = () => {
   const [nurtureList, setNurtureList] = useState(NURTURE_PARTNERS);
 
   // Parity Modals (Customer Detail, Meeting Scheduler, Moments & Comments)
+  const [customersList, setCustomersList] = useState(B2B_CUSTOMERS);
+  const [customerStageFilter, setCustomerStageFilter] = useState<string>("all");
   const [selectedCustomer, setSelectedCustomer] = useState<any | null>(null);
   const [customerDetailVisible, setCustomerDetailVisible] = useState(false);
+  const [createCustomerVisible, setCreateCustomerVisible] = useState(false);
   const [selectedPartnerForMeeting, setSelectedPartnerForMeeting] = useState<{ name: string; company: string } | null>(null);
   const [scheduleMeetingVisible, setScheduleMeetingVisible] = useState(false);
   const [postMomentVisible, setPostMomentVisible] = useState(false);
@@ -1151,77 +1156,176 @@ export const NetworkScreen: React.FC = () => {
         {/* ─── TAB 2: KHÁCH HÀNG (CUSTOMERS PANEL) ─── */}
         {activeTab === "customers" && (
           <View style={styles.tabContent}>
-            {/* Summary Pipeline Cards */}
-            <View style={styles.pipelineSummaryRow}>
-              <View
-                style={[
-                  styles.pipelineCard,
-                  {
-                    backgroundColor: isDark ? "#12151F" : "#FFFFFF",
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
-                    shadowColor: isDark ? "#000000" : "#64748B",
-                    shadowOpacity: isDark ? 0.3 : 0.04,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowRadius: 6,
-                    elevation: 2,
-                  },
-                ]}
-              >
-                <DollarSign size={20} color={isDark ? "#D8B282" : "#A3703C"} />
-                <Text
+            {/* Summary Pipeline Metric Grid (4 Executive Metrics) */}
+            <View style={{ gap: 8, marginBottom: 12 }}>
+              <View style={styles.pipelineSummaryRow}>
+                <View
                   style={[
-                    styles.pipelineNumber,
-                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                    styles.pipelineCard,
+                    {
+                      backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      shadowColor: isDark ? "#000000" : "#64748B",
+                      shadowOpacity: isDark ? 0.3 : 0.04,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 6,
+                      elevation: 2,
+                    },
                   ]}
                 >
-                  4.55 Tỷ
-                </Text>
-                <Text
+                  <DollarSign size={18} color={isDark ? "#D8B282" : "#A3703C"} />
+                  <Text style={[styles.pipelineNumber, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    4.55 Tỷ
+                  </Text>
+                  <Text style={[styles.pipelineLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Quy mô cơ hội
+                  </Text>
+                </View>
+
+                <View
                   style={[
-                    styles.pipelineLabel,
-                    { color: isDark ? "#94A3B8" : "#64748B" },
+                    styles.pipelineCard,
+                    {
+                      backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      shadowColor: isDark ? "#000000" : "#64748B",
+                      shadowOpacity: isDark ? 0.3 : 0.04,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 6,
+                      elevation: 2,
+                    },
                   ]}
                 >
-                  Quy mô cơ hội
-                </Text>
+                  <TrendingUp size={18} color="#38BDF8" />
+                  <Text style={[styles.pipelineNumber, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    3 B2B
+                  </Text>
+                  <Text style={[styles.pipelineLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Đang đàm phán
+                  </Text>
+                </View>
               </View>
-              <View
-                style={[
-                  styles.pipelineCard,
-                  {
-                    backgroundColor: isDark ? "#12151F" : "#FFFFFF",
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
-                    shadowColor: isDark ? "#000000" : "#64748B",
-                    shadowOpacity: isDark ? 0.3 : 0.04,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowRadius: 6,
-                    elevation: 2,
-                  },
-                ]}
-              >
-                <TrendingUp size={20} color="#38BDF8" />
-                <Text
+
+              <View style={styles.pipelineSummaryRow}>
+                <View
                   style={[
-                    styles.pipelineNumber,
-                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                    styles.pipelineCard,
+                    {
+                      backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      shadowColor: isDark ? "#000000" : "#64748B",
+                      shadowOpacity: isDark ? 0.3 : 0.04,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 6,
+                      elevation: 2,
+                    },
                   ]}
                 >
-                  3 B2B
-                </Text>
-                <Text
+                  <Sparkles size={18} color="#10B981" />
+                  <Text style={[styles.pipelineNumber, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    78% Won
+                  </Text>
+                  <Text style={[styles.pipelineLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Tỷ lệ chốt deal
+                  </Text>
+                </View>
+
+                <View
                   style={[
-                    styles.pipelineLabel,
-                    { color: isDark ? "#94A3B8" : "#64748B" },
+                    styles.pipelineCard,
+                    {
+                      backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      shadowColor: isDark ? "#000000" : "#64748B",
+                      shadowOpacity: isDark ? 0.3 : 0.04,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowRadius: 6,
+                      elevation: 2,
+                    },
                   ]}
                 >
-                  Đang đàm phán
-                </Text>
+                  <Calendar size={18} color="#F59E0B" />
+                  <Text style={[styles.pipelineNumber, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
+                    2 Cuộc hẹn
+                  </Text>
+                  <Text style={[styles.pipelineLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    Lịch chăm sóc tuần
+                  </Text>
+                </View>
               </View>
             </View>
 
-            {/* Customer List */}
-            <Text style={[styles.sectionHeaderSmall, { marginTop: 16 }]}>DANH SÁCH KHÁCH HÀNG TIỀM NĂNG</Text>
-            {B2B_CUSTOMERS.map((cust) => (
+            {/* Filter Stage Pills */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }}>
+              {[
+                { key: "all", label: `Tất cả (${customersList.length})` },
+                { key: "Đàm phán", label: "Đàm phán (2)" },
+                { key: "Đề xuất", label: "Đề xuất (1)" },
+                { key: "Ký kết", label: "Ký kết (0)" },
+              ].map((f) => {
+                const isActive = customerStageFilter === f.key;
+                return (
+                  <TouchableOpacity
+                    key={f.key}
+                    onPress={() => setCustomerStageFilter(f.key)}
+                    style={[
+                      {
+                        paddingHorizontal: 12,
+                        paddingVertical: 6,
+                        borderRadius: 20,
+                        marginRight: 6,
+                        borderWidth: 1,
+                        backgroundColor: isActive
+                          ? isDark ? "rgba(216, 178, 130, 0.2)" : "#F6E1C3"
+                          : isDark ? "#12151F" : "#F1F5F9",
+                        borderColor: isActive
+                          ? "#D8B282"
+                          : isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                      },
+                    ]}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        fontWeight: isActive ? "700" : "500",
+                        color: isActive
+                          ? isDark ? "#F6E1C3" : "#8C653B"
+                          : isDark ? "#94A3B8" : "#64748B",
+                      }}
+                    >
+                      {f.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            {/* Customer List Header */}
+            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <Text style={[styles.sectionHeaderSmall, { marginTop: 0, marginBottom: 0 }]}>
+                DANH SÁCH KHÁCH HÀNG ({customersList.length})
+              </Text>
+              <TouchableOpacity
+                style={{ borderRadius: 12, overflow: "hidden" }}
+                onPress={() => setCreateCustomerVisible(true)}
+                activeOpacity={0.85}
+              >
+                <LinearGradient
+                  colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                  style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 6, gap: 5 }}
+                >
+                  <Plus size={13} color="#050C15" strokeWidth={2.5} />
+                  <Text style={{ fontSize: 11.5, fontWeight: "800", color: "#050C15" }}>Thêm khách hàng</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+
+            {customersList
+              .filter((cust) => {
+                if (customerStageFilter === "all") return true;
+                return cust.stage.toLowerCase().includes(customerStageFilter.toLowerCase());
+              })
+              .map((cust) => (
               <TouchableOpacity
                 key={cust.id}
                 style={[
@@ -1244,10 +1348,10 @@ export const NetworkScreen: React.FC = () => {
                     dealValue: cust.dealValue,
                     stage: cust.stage,
                     priority: cust.priority,
-                    phone: "0912 345 678",
-                    email: "b2b@v-pharma.vn",
-                    tags: ["VIP", "Doanh nghiệp lớn", "Hợp đồng Q4"],
-                    lastInteraction: "2 ngày trước",
+                    phone: (cust as any).phone || "0912 345 678",
+                    email: (cust as any).email || "b2b@v-pharma.vn",
+                    tags: (cust as any).tags || ["VIP", "Doanh nghiệp lớn", "Hợp đồng Q4"],
+                    lastInteraction: (cust as any).lastInteraction || "2 ngày trước",
                   });
                   setCustomerDetailVisible(true);
                 }}
@@ -1759,6 +1863,12 @@ export const NetworkScreen: React.FC = () => {
         visible={customerDetailVisible}
         customer={selectedCustomer}
         onClose={() => setCustomerDetailVisible(false)}
+        onUpdateCustomer={(updated) => {
+          setCustomersList((prev) =>
+            prev.map((c) => (c.id === updated.id ? { ...c, ...updated } : c))
+          );
+          setSelectedCustomer(updated);
+        }}
         onOpenChat={(cust) => {
           setCustomerDetailVisible(false);
           const partnerName = cust.contactPerson || cust.name;
@@ -1777,6 +1887,31 @@ export const NetworkScreen: React.FC = () => {
             company: cust.name,
           });
           setScheduleMeetingVisible(true);
+        }}
+      />
+
+      {/* Parity Modals: Thêm Khách Hàng Tiềm Năng B2B CRM */}
+      <CreateCustomerModal
+        visible={createCustomerVisible}
+        onClose={() => setCreateCustomerVisible(false)}
+        onCustomerCreated={(newCust: NewCustomerData) => {
+          setCustomersList((prev) => [
+            {
+              id: newCust.id,
+              name: newCust.name,
+              contactPerson: newCust.contactPerson,
+              role: newCust.role || "Đại diện kinh doanh",
+              stage: newCust.stage,
+              dealValue: newCust.dealValue,
+              priority: newCust.priority,
+              lastContact: "Vừa xong",
+              phone: newCust.phone,
+              email: newCust.email,
+              tags: newCust.tags,
+              lastInteraction: newCust.lastInteraction,
+            } as any,
+            ...prev,
+          ]);
         }}
       />
 

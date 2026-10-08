@@ -532,6 +532,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const isPublic =
     pathname === "/" ||
     pathname === "/auth" ||
+    pathname.startsWith("/auth/") ||
+    pathname === "/login" ||
+    pathname.startsWith("/login/") ||
     pathname === "/register" ||
     pathname === "/forgot-password" ||
     pathname === "/reset-password" ||

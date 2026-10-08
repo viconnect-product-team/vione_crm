@@ -821,36 +821,94 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Luồng Ngoại Lệ (Exception Handling):** Mất kết nối mạng: Chuyển sang bộ dữ liệu fallback nội bộ thông minh.
 - **RESTful API Endpoint:** `POST /api/ai/chat`
 
-##### FR-33.04 - Cổng Thông Tin Website Chính Thức ViConnect (https://viconnect.vn/) Tại Màn Hình Đăng Nhập
-- **Actor:** Khách vãng lai, Đối tác, Doanh nhân C-Level.
-- **Input:** Chạm/Nhấp vào nút "Website chính thức" trên màn hình đăng nhập (Web PWA hoặc Mobile Native App).
-- **Logic Xử Lý:**
-  1. Giao diện đăng nhập khởi tạo nút liên kết tại Header với icon Globe và nhãn hiển thị: "Website chính thức".
-  2. Khi người dùng nhấp:
-     - Trên Web PWA: Mở tab mới của trình duyệt điều hướng an toàn tới `https://viconnect.vn/` (`target="_blank" rel="noopener noreferrer"`).
-     - Trên Mobile Native App: Kích hoạt module `Linking.openURL('https://viconnect.vn/')` mở trình duyệt ngoại vi an toàn của thiết bị.
-  3. Duy trì trạng thái phiên đăng nhập của ứng dụng mà không gây xung đột hay thoát app.
-- **Output:** Người dùng truy cập trực tiếp Website chính thức ViConnect tìm hiểu giải pháp nền tảng.
-- **Luồng Ngoại Lệ:** Thiết bị không có trình duyệt mặc định: Hiển thị thông báo hướng dẫn hoặc mở WebView nội bộ an toàn.
-- **Client Route:** `/auth` (PWA) & `LoginScreen` (Native).
 
-##### FR-33.05 - Hệ Thống Cấp Quyền & Đẩy Thông Báo Ra Màn Hình Khóa Thiết Bị (Lockscreen Push Notifications)
-- **Actor:** Người dùng đã đăng nhập hệ sinh thái ViOne.
-- **Input:** Tương tác cấp quyền thông báo hệ thống (Notification Permission); Các sự kiện thời gian thực phát sinh (Cuộc gọi đến, Tin nhắn mới, Bình luận mới, Yêu cầu kết nối, Chạm NFC, Cập nhật CRM).
+#### MODULE 34: VIONE AI COPILOT ĐA NĂNG, XUẤT BÁO CÁO EXCEL THỰC TẾ & BẢNG ĐIỀU HÀNH EXECUTIVE POSTGRESQL
+*Mục tiêu Epic:* Trợ lý AI đối thoại thông minh, trích xuất bảng tính Excel (.xlsx) chuẩn C-Level từ CSDL thực, bảng điều hành lưu lượng web landing và sổ cái tài chính PostgreSQL
+
+##### FR-34.01 - Dynamic ViOne AI Copilot & Xuất Báo Cáo Excel (.xlsx) Tự Động
+- **Actor:** Ban Lãnh Đạo C-Level, Quản lý tài chính, Nhân sự, Sales
+- **Input:** Câu lệnh hỏi đáp có từ khóa xuất dữ liệu: "báo cáo tài chính", "excel thu chi", "chấm công", "danh sách hội viên", "trình ký".
 - **Logic Xử Lý:**
-  1. Khi người dùng truy cập: Component `NotificationPromptBanner` kiểm tra quyền `Notification.permission`. Nếu trạng thái là `default`, hiển thị banner mạ vàng Champagne Gold mời cấp quyền 1-chạm.
-  2. Khi người dùng bấm "Bật thông báo ngay": Gọi `Notification.requestPermission()`. Nếu được cấp (`granted`), phát sự kiện `vione_notification_permission_changed` và kích hoạt Service Worker (`public/sw.js`).
-  3. Service Worker cài đặt listener cho 2 sự kiện:
-     - `push`: Tiếp nhận payload thông báo từ máy chủ hoặc local background worker.
-     - `notificationclick`: Đóng thông báo và tự động `clients.focus()` hoặc `clients.openWindow(url)` điều hướng trực tiếp vào màn hình nghiệp vụ tương ứng (chat thread, cuộc gọi, moment detail).
-  4. Trình phát âm thanh Web Audio Chime (`playNotificationChime`): Khởi tạo AudioContext phát sóng âm chuông ngân cho cuộc gọi (`call`), tin nhắn (`message`), và thông báo chung (`notification`).
-  5. Hàm đẩy thông báo màn hình khóa `sendExternalNotification()`:
-     - Gọi `navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options))`.
-     - Đính kèm mẫu rung phần cứng `vibrate: [400, 200, 400, 200, 400, 200, 400]` cho cuộc gọi hoặc `[200, 100, 200]` cho tin nhắn.
-  6. Trung tâm quản trị & kiểm thử tại Tab Tôi: Card "Thông báo hệ thống & Cuộc gọi" hiển thị huy hiệu trạng thái trực tiếp, nút cấp quyền và nút "Gửi thông báo thử nghiệm" kiểm tra trực tiếp trên thiết bị.
-- **Output:** Mọi cảnh báo cuộc gọi, tin nhắn, bình luận, kết nối được hiển thị ngay tức thì trên màn hình khóa và thanh trạng thái điện thoại kèm âm thanh và rung phản hồi.
-- **Luồng Ngoại Lệ:** Người dùng chặn thông báo (`denied`): Hiển thị hướng dẫn mở lại quyền trong cài đặt trình duyệt / thiết bị.
-- **RESTful / WebSocket Event:** WebSocket `connection:incoming`, `call:offer`, `message:new`, `moment:comment:added`.
+  1. AiService.chat() nhận diện ý định xuất báo cáo.
+  2. Gọi generateExcelReport(reportType, options) truy vấn PostgreSQL: finance (transactions, invoices), attendance (member_checkins), members, traffic (landing_page_visits), approvals (document_approvals).
+  3. Dùng exceljs tạo workbook Navy & Champagne Gold, auto column widths, định dạng tiền tệ VND, SUM formula.
+  4. Trả về downloadUrl /api/ai/download-excel/:id.
+- **Output:** File Excel .xlsx chuẩn doanh nghiệp tải về máy.
+- **Luồng Ngoại Lệ (Exception Handling):** Không có dữ liệu trong kỳ: Sinh bảng tính thông báo không phát sinh dữ liệu.
+- **RESTful API Endpoint:** `POST /api/ai/export-excel, GET /api/ai/download-excel/:id, POST /api/ai/chat`
+
+##### FR-34.02 - Bảng Điều Hành Lưu Lượng Web Landing Doanh Nghiệp Thời Gian Thực
+- **Actor:** Tổng Giám Đốc, Ban Quản Trị, Marketing Director
+- **Input:** Bộ chọn chu kỳ: Ngày, Tuần, Tháng.
+- **Logic Xử Lý:**
+  1. API GET /api/admin/traffic-analytics truy vấn bảng landing_page_visits.
+  2. Thống kê Hôm nay, Hôm qua, Tuần này, Tháng này và tăng trưởng tuần.
+  3. Trả về biểu đồ AreaChart và bảng xếp hạng Top Landing Pages.
+- **Output:** Chỉ số lưu lượng và đồ thị biến động traffic trực quan.
+- **Luồng Ngoại Lệ (Exception Handling):** Không kết nối được DB: Fallback số liệu cache gần nhất.
+- **RESTful API Endpoint:** `GET /api/admin/traffic-analytics`
+
+
+#### MODULE 35: HOÀN THIỆN 5 PHÂN HỆ CỐT LÕI HỆ SINH THÁI VIONE C-LEVEL
+*Mục tiêu Epic:* AI Copilot trung thực & typewriter streaming, đăng tin linh hoạt, tin nhắn tự khởi tạo luồng, chỉnh sửa thẻ trang chủ tinh gọn & CRM khách hàng điều hành
+
+##### FR-35.01 - AI Copilot Trung Thực Tuyệt Đối & Hiệu Ứng Typewriter Streaming
+- **Actor:** Mọi người dùng, Lãnh đạo doanh nghiệp
+- **Input:** Câu hỏi: "tôi có bao nhiêu bạn bè", "danh sách bạn bè".
+- **Logic Xử Lý:**
+  1. Truy vấn CSDL thực tế public.user_connections với status = accepted.
+  2. Khi kết nối = 0: Tuyệt đối không giả lập 156 bạn bè; báo cáo trung thực 0 kết nối và gợi ý đối tác tiềm năng thực từ public.vione_users đồng bộ với Tab Mạng lưới.
+  3. Hiển thị hiệu ứng gõ chữ Typewriter Streaming từng ký tự kèm con trỏ nhấp nháy ▎ (chu kỳ 14ms).
+- **Output:** Phản hồi trung thực, mượt mà và gợi ý đối tác thực.
+- **Luồng Ngoại Lệ (Exception Handling):** Lỗi mạng: Fallback thông minh báo cáo 0 kết nối.
+- **RESTful API Endpoint:** `POST /api/ai/chat`
+
+##### FR-35.02 - Đăng Tin & Khoảnh Khắc Linh Hoạt & Đính Kèm Ảnh Bền Vững
+- **Actor:** Doanh nhân, Thành viên cộng đồng
+- **Input:** Nội dung bài viết, chủ đề/chuyên mục tùy chọn, ảnh đính kèm tùy chọn.
+- **Logic Xử Lý:**
+  1. Chủ đề/chuyên mục không bắt buộc (mặc định null), có nút [Bỏ chọn chủ đề] / [Bỏ chọn chuyên mục].
+  2. Bỏ ảnh mẫu cưỡng ép, cho phép bài thuần text hoặc ảnh thật.
+  3. Backend prepareMoment lưu storage_path vào media và finalizeMoment bảo vệ media slots.
+- **Output:** Bài viết/khoảnh khắc xuất bản thành công kèm ảnh nguyên vẹn.
+- **Luồng Ngoại Lệ (Exception Handling):** Tải ảnh thất bại: Thông báo và cho phép đăng bài dạng text.
+- **RESTful API Endpoint:** `POST /connect-app/moments/prepare, POST /connect-app/moments/finalize`
+
+##### FR-35.03 - Hộp Thư Tin Nhắn Phân Giải Đối Tác & Khắc Phục Lỗi Tiền Tố Thread ID
+- **Actor:** Người gửi và Người nhận tin nhắn
+- **Input:** Thread ID hoặc Counterpart ID (th-, u:, p:), nội dung tin nhắn.
+- **Logic Xử Lý:**
+  1. Backend bóc tách an toàn các tiền tố th-, u:, p: trước khi kiểm tra UUID.
+  2. Tự động khởi tạo thread mới nếu counterpart UUID chưa có thread, tránh lỗi thread_not_found.
+  3. listMyDmThreads truy vấn vione_users đảm bảo trả về tên, avatar và counterpartUserId.
+- **Output:** Hộp thư hiển thị đầy đủ mọi tài khoản đã chat và mở kênh chat 1-1 liền mạch.
+- **Luồng Ngoại Lệ (Exception Handling):** ID không hợp lệ: Báo lỗi định dạng ID.
+- **RESTful API Endpoint:** `GET /connect-app/dm/threads, GET /connect-app/dm/threads/:id, POST /connect-app/dm/threads/:id/messages`
+
+##### FR-35.04 - Chỉnh Sửa Nhanh Thẻ Doanh Nhân Trang Chủ & Khử Trùng Lặp Nút Upload
+- **Actor:** Doanh nhân chủ tài khoản
+- **Input:** Mở trang chủ hoặc bấm chỉnh sửa thẻ.
+- **Logic Xử Lý:**
+  1. HomeScreen tự động gọi meApi.getIdentity() nạp avatar_url và cover_url từ vione_users.
+  2. Backend upsertMyIdentity đồng bộ hai chiều sang vione_users.
+  3. Modal QuickEditProfileModal chỉ giữ đúng 1 nút tải ảnh bìa và 1 nút tải avatar.
+- **Output:** Ảnh bìa và avatar hiển thị ổn định, giao diện chỉnh sửa tinh gọn.
+- **Luồng Ngoại Lệ (Exception Handling):** Lỗi tải ảnh: Fallback gradient mạ vàng sang trọng.
+- **RESTful API Endpoint:** `GET /connect-app/me/identity, PUT /connect-app/me/identity`
+
+##### FR-35.05 - Quản Trị Khách Hàng CRM Chuẩn Điều Hành C-Level
+- **Actor:** Lãnh đạo doanh nghiệp, Giám đốc kinh doanh, Sales
+- **Input:** Quản lý danh sách khách hàng và cơ hội trong Tab Mạng lưới.
+- **Logic Xử Lý:**
+  1. 4 Thẻ chỉ số Pipeline điều hành mạ vàng: Quy mô cơ hội, Đang đàm phán, Tỷ lệ chốt deal, Lịch chăm sóc tuần.
+  2. Stage Filter Pills: Tất cả, Đàm phán, Đề xuất, Ký kết.
+  3. Stepper tương tác 4 giai đoạn: Tiếp cận -> Tư vấn -> Đàm phán -> Ký kết chuyển trạng thái 1-chạm.
+  4. Chỉ báo Deal Health (Nóng 90%, Ổn định 70%, Cần chăm sóc 40%) và Touchpoint Logs đa kênh.
+  5. Kết nối onUpdateCustomer cập nhật phản ứng tức thì ra danh sách ngoài.
+- **Output:** Giao diện CRM khách hàng di động chuẩn Executive C-Level.
+- **Luồng Ngoại Lệ (Exception Handling):** Dữ liệu thiếu trường: Tự động gán mặc định an toàn.
+- **RESTful API Endpoint:** `GET /connect-app/network/customers, POST /connect-app/network/customers`
+
 
 ---
 

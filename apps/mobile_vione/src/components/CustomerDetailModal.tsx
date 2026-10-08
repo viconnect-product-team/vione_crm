@@ -50,7 +50,10 @@ interface CustomerDetailModalProps {
   onClose: () => void;
   onOpenChat?: (customer: B2BCustomerData) => void;
   onScheduleMeeting?: (customer: B2BCustomerData) => void;
+  onUpdateCustomer?: (customer: B2BCustomerData) => void;
 }
+
+const DEAL_STAGES = ["Tiếp cận", "Tư vấn & Báo giá", "Đàm phán HĐ", "Ký kết thành công"];
 
 export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
   visible,
@@ -58,15 +61,41 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
   onClose,
   onOpenChat,
   onScheduleMeeting,
+  onUpdateCustomer,
 }) => {
   if (!customer) return null;
 
+  const [currentStage, setCurrentStage] = useState(customer.stage || "Đàm phán HĐ");
+  const [dealHealth, setDealHealth] = useState<"hot" | "healthy" | "risk">("hot");
   const [notes, setNotes] = useState(
     customer.notes || "Khách hàng quan tâm gói giải pháp chuyển đổi số & cung ứng vật tư. Đã gửi hồ sơ năng lực."
   );
   const [tags, setTags] = useState<string[]>(customer.tags || ["Thầu chính", "Khách VIP", "Cần chăm sóc"]);
   const [newTagInput, setNewTagInput] = useState("");
   const [showAddTag, setShowAddTag] = useState(false);
+
+  const [touchpoints, setTouchpoints] = useState<Array<{ id: string; type: string; title: string; time: string }>>([
+    { id: "tp-1", type: "meet", title: "Gặp mặt 1-1 tại phòng VIP ViOne Lounge trao đổi nhu cầu", time: "Hôm qua 15:30" },
+    { id: "tp-2", type: "quote", title: "Đã gửi hồ sơ năng lực & bảng dự toán sơ bộ", time: "2 ngày trước" },
+    { id: "tp-3", type: "call", title: "Cuộc gọi thiết lập mối quan hệ từ sự kiện kết nối", time: "Tuần trước" },
+  ]);
+
+  const handleAddTouchpoint = (type: "call" | "meet" | "quote" | "message") => {
+    const labels: Record<string, string> = {
+      call: "Cuộc gọi điện thoại tư vấn giải pháp",
+      meet: "Cuộc gặp trực tiếp 1-1 tại ViOne",
+      quote: "Gửi báo giá & dự toán ngân sách",
+      message: "Trao đổi tin nhắn tiến độ hợp đồng",
+    };
+    const newEntry = {
+      id: `tp-${Date.now()}`,
+      type,
+      title: labels[type] || "Tương tác khách hàng",
+      time: "Vừa xong",
+    };
+    setTouchpoints((prev) => [newEntry, ...prev]);
+    Alert.alert("Ghi nhận tương tác", `Đã lưu nhật ký: ${labels[type]}`);
+  };
 
   const phone = customer.phone || "0912 345 678";
   const email = customer.email || "contact@" + customer.name.toLowerCase().replace(/[^a-z0-9]/g, "") + ".vn";
@@ -92,7 +121,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
                   <Text style={styles.priorityText}>Ưu tiên {customer.priority}</Text>
                 </View>
                 <View style={styles.stageBadge}>
-                  <Text style={styles.stageText}>{customer.stage}</Text>
+                  <Text style={styles.stageText}>{currentStage}</Text>
                 </View>
               </View>
               <Text style={styles.customerName} numberOfLines={1}>
@@ -123,8 +152,60 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
               </View>
             </LinearGradient>
 
+            {/* Deal Stage Progression Stepper */}
+            <Text style={styles.sectionHeader}>GIAI ĐOẠN PHỄU DEAL (CHẠM ĐỂ CHUYỂN)</Text>
+            <View style={styles.stageStepperWrap}>
+              {DEAL_STAGES.map((stg, idx) => {
+                const isCurrent = currentStage === stg;
+                return (
+                  <TouchableOpacity
+                    key={stg}
+                    onPress={() => setCurrentStage(stg)}
+                    style={[styles.stageStepBtn, isCurrent && styles.stageStepBtnActive]}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.stageStepText, isCurrent && styles.stageStepTextActive]}>
+                      {idx + 1}. {stg}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {/* Deal Health Selector */}
+            <Text style={[styles.sectionHeader, { marginTop: 14 }]}>SỨC KHỎE THƯƠNG VỤ (DEAL HEALTH)</Text>
+            <View style={styles.healthRow}>
+              <TouchableOpacity
+                style={[styles.healthPill, dealHealth === "hot" && styles.healthPillHotActive]}
+                onPress={() => setDealHealth("hot")}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.healthPillText, dealHealth === "hot" && { color: "#EF4444", fontWeight: "800" }]}>
+                  🔥 Nóng (90% Win)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.healthPill, dealHealth === "healthy" && styles.healthPillHealthyActive]}
+                onPress={() => setDealHealth("healthy")}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.healthPillText, dealHealth === "healthy" && { color: "#10B981", fontWeight: "800" }]}>
+                  🟢 Ổn định (70%)
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.healthPill, dealHealth === "risk" && styles.healthPillRiskActive]}
+                onPress={() => setDealHealth("risk")}
+                activeOpacity={0.8}
+              >
+                <Text style={[styles.healthPillText, dealHealth === "risk" && { color: "#F59E0B", fontWeight: "800" }]}>
+                  ⚠️ Cần chăm sóc (40%)
+                </Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Contact Person Details */}
-            <Text style={styles.sectionHeader}>NGƯỜI ĐẠI DIỆN LIÊN HỆ</Text>
+            <Text style={[styles.sectionHeader, { marginTop: 14 }]}>NGƯỜI ĐẠI DIỆN LIÊN HỆ</Text>
             <View style={styles.infoBox}>
               <View style={styles.infoRow}>
                 <User size={15} color="#D8B282" style={{ marginRight: 8 }} />
@@ -176,8 +257,36 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
               </TouchableOpacity>
             </View>
 
+            {/* Touchpoints Timeline */}
+            <Text style={[styles.sectionHeader, { marginTop: 14 }]}>NHẬT KÝ TƯƠNG TÁC ĐA KÊNH</Text>
+            <View style={styles.quickTouchpointBar}>
+              <TouchableOpacity style={styles.touchpointBtn} onPress={() => handleAddTouchpoint("call")}>
+                <Text style={styles.touchpointBtnText}>+ Cuộc gọi</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.touchpointBtn} onPress={() => handleAddTouchpoint("meet")}>
+                <Text style={styles.touchpointBtnText}>+ Gặp 1-1</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.touchpointBtn} onPress={() => handleAddTouchpoint("quote")}>
+                <Text style={styles.touchpointBtnText}>+ Báo giá</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.touchpointBtn} onPress={() => handleAddTouchpoint("message")}>
+                <Text style={styles.touchpointBtnText}>+ Tin nhắn</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.timelineBox}>
+              {touchpoints.map((tp) => (
+                <View key={tp.id} style={styles.timelineRow}>
+                  <View style={styles.timelineDot} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.timelineTitle}>{tp.title}</Text>
+                    <Text style={styles.timelineTime}>{tp.time}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
             {/* Tags Management */}
-            <View style={styles.tagsHeaderRow}>
+            <View style={[styles.tagsHeaderRow, { marginTop: 14 }]}>
               <Text style={styles.sectionHeader}>THẺ PHÂN LOẠI KHÁCH HÀNG</Text>
               <TouchableOpacity onPress={() => setShowAddTag(!showAddTag)}>
                 <Text style={styles.addTagLink}>+ Thêm thẻ</Text>
@@ -226,6 +335,16 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
             <TouchableOpacity
               style={styles.saveBtn}
               onPress={async () => {
+                const updated: B2BCustomerData = {
+                  ...customer,
+                  stage: currentStage,
+                  notes,
+                  tags,
+                };
+                if (onUpdateCustomer) {
+                  onUpdateCustomer(updated);
+                }
+
                 if (customer.id) {
                   try {
                     await customerApi.addCustomerLog(customer.id, { content: notes });
@@ -234,7 +353,7 @@ export const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
                     console.warn("Lỗi lưu customer log lên server:", err);
                   }
                 }
-                Alert.alert("Thành công", "Đã cập nhật tiến độ chăm sóc khách hàng.");
+                Alert.alert("Thành công", "Đã cập nhật tiến độ chăm sóc khách hàng và giai đoạn deal.");
                 onClose();
               }}
             >
@@ -527,5 +646,116 @@ const styles = StyleSheet.create({
     color: "#050C15",
     fontSize: 13,
     fontWeight: "800",
+  },
+  stageStepperWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginBottom: 4,
+  },
+  stageStepBtn: {
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+  },
+  stageStepBtnActive: {
+    backgroundColor: "rgba(216, 178, 130, 0.2)",
+    borderColor: "#D8B282",
+  },
+  stageStepText: {
+    color: "#94A3B8",
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  stageStepTextActive: {
+    color: "#F6E1C3",
+    fontWeight: "700",
+  },
+  healthRow: {
+    flexDirection: "row",
+    gap: 6,
+  },
+  healthPill: {
+    flex: 1,
+    paddingVertical: 7,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+  },
+  healthPillHotActive: {
+    backgroundColor: "rgba(239, 68, 68, 0.15)",
+    borderColor: "#EF4444",
+  },
+  healthPillHealthyActive: {
+    backgroundColor: "rgba(16, 185, 129, 0.15)",
+    borderColor: "#10B981",
+  },
+  healthPillRiskActive: {
+    backgroundColor: "rgba(245, 158, 11, 0.15)",
+    borderColor: "#F59E0B",
+  },
+  healthPillText: {
+    fontSize: 10.5,
+    color: "#94A3B8",
+    fontWeight: "600",
+  },
+  quickTouchpointBar: {
+    flexDirection: "row",
+    gap: 6,
+    marginBottom: 8,
+  },
+  touchpointBtn: {
+    flex: 1,
+    paddingVertical: 6,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(216, 178, 130, 0.12)",
+    borderRadius: 7,
+    borderWidth: 1,
+    borderColor: "rgba(216, 178, 130, 0.25)",
+  },
+  touchpointBtnText: {
+    color: "#D8B282",
+    fontSize: 10.5,
+    fontWeight: "700",
+  },
+  timelineBox: {
+    backgroundColor: "#181D2A",
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    marginBottom: 8,
+  },
+  timelineRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 8,
+    paddingVertical: 6,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(255, 255, 255, 0.05)",
+  },
+  timelineDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#D8B282",
+    marginTop: 5,
+  },
+  timelineTitle: {
+    color: "#F8FAFC",
+    fontSize: 11.5,
+    fontWeight: "600",
+  },
+  timelineTime: {
+    color: "#94A3B8",
+    fontSize: 10,
+    marginTop: 2,
   },
 });

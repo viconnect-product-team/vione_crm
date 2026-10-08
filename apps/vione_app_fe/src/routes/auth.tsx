@@ -12,10 +12,16 @@ import {
   Eye,
   EyeOff,
   Loader2,
-  ShieldCheck,
   Sparkles,
-  Lock,
   X,
+  TrendingUp,
+  Users,
+  Bot,
+  Layers,
+  ArrowUpRight,
+  CheckCircle2,
+  Activity,
+  Zap,
 } from "lucide-react";
 import { classifyAuthError, type AuthErrorInfo } from "@/lib/business-connect/mobile/auth-error";
 import {
@@ -43,29 +49,10 @@ export const Route = createFileRoute("/auth")({
     ...(search.portal === "crm" || search.portal === "admin" ? { portal: "crm" as const } : {}),
   }),
   head: () => ({
-    meta: [{ title: "Đăng nhập Vione AI 5.0 — Hệ thống Quản trị & Điều hành" }],
+    meta: [{ title: "Đăng nhập ViOne CRM — Hệ thống Quản trị Doanh nghiệp" }],
   }),
   component: CrmAdminAuthPage,
 });
-
-function GoogleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="currentColor" aria-hidden="true">
-      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-    </svg>
-  );
-}
-
-function AppleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="currentColor" aria-hidden="true">
-      <path d="M16.36 12.72c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.83-.81-3.01-.79-1.55.02-2.98.9-3.78 2.29-1.61 2.8-.41 6.94 1.16 9.21.77 1.11 1.68 2.36 2.88 2.31 1.16-.05 1.6-.75 3-.75s1.79.75 3.01.72c1.24-.02 2.03-1.13 2.79-2.25.88-1.29 1.24-2.54 1.26-2.6-.03-.01-2.42-.93-2.44-3.7ZM14.1 5.1c.64-.78 1.07-1.85.95-2.93-.92.04-2.03.61-2.69 1.38-.59.68-1.11 1.78-.97 2.83 1.03.08 2.07-.52 2.71-1.28Z" />
-    </svg>
-  );
-}
 
 function safeRedirect(target?: string): string | null {
   if (!target) return null;
@@ -90,7 +77,6 @@ function CrmAdminAuthPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [oauthPending, setOauthPending] = useState<"google" | "apple" | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authErrorInfo, setAuthErrorInfo] = useState<AuthErrorInfo | null>(null);
   const [remember, setRemember] = useState(true);
@@ -98,7 +84,7 @@ function CrmAdminAuthPage() {
 
   const destPath = safeRedirect(redirectTo) ?? "";
 
-  // Tách biệt hoàn toàn: nếu truy cập sang cổng khác, tự động chuyển về đúng route chuyên biệt
+  // Tự động phân luồng theo portal chuyên biệt
   useEffect(() => {
     if (searchPortal === "crm" || searchPortal === "admin") {
       return;
@@ -123,7 +109,13 @@ function CrmAdminAuthPage() {
 
   async function goPostLogin() {
     const target = safeRedirect(redirectTo);
-    if (target && !target.startsWith("/connect-app") && !target.startsWith("/vione") && !target.startsWith("/auth") && !target.startsWith("/association/login")) {
+    if (
+      target &&
+      !target.startsWith("/connect-app") &&
+      !target.startsWith("/vione") &&
+      !target.startsWith("/auth") &&
+      !target.startsWith("/association/login")
+    ) {
       navigate({ to: target as any, replace: true });
       return;
     }
@@ -150,7 +142,7 @@ function CrmAdminAuthPage() {
 
   async function submit() {
     if (!email.trim()) {
-      setAuthError("Vui lòng nhập email hoặc tài khoản quản trị");
+      setAuthError("Vui lòng nhập tài khoản hoặc email quản trị");
       return;
     }
     if (!password) {
@@ -197,399 +189,434 @@ function CrmAdminAuthPage() {
     }
   }
 
-  // Google Sign-In helper using GIS
-  const loginGoogleWeb = (): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || "your-google-client-id";
-
-      const initializeGis = () => {
-        try {
-          (window as any).google.accounts.id.initialize({
-            client_id: clientId,
-            ux_mode: "popup",
-            callback: (res: any) => {
-              if (res.credential) {
-                resolve(res.credential);
-              } else {
-                reject(new Error("No credential returned from Google"));
-              }
-            },
-          });
-
-          (window as any).google.accounts.id.prompt((notification: any) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-              const btn = document.getElementById("hidden-google-btn")?.querySelector("div");
-              if (btn) btn.click();
-            }
-          });
-        } catch (err) {
-          reject(err);
-        }
-      };
-
-      if ((window as any).google?.accounts?.id) {
-        initializeGis();
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeGis;
-      script.onerror = () => reject(new Error("Failed to load Google GIS SDK"));
-      document.head.appendChild(script);
-    });
-  };
-
-  // Sign In with Apple helper
-  const loginAppleWeb = (): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      const clientId = import.meta.env.VITE_APPLE_CLIENT_ID || "your-apple-client-id";
-
-      const initializeApple = () => {
-        try {
-          (window as any).AppleID.auth.init({
-            clientId,
-            scope: "name email",
-            redirectURI: window.location.origin + "/auth",
-            usePopup: true,
-          });
-
-          (window as any).AppleID.auth
-            .signIn()
-            .then((res: any) => resolve(res))
-            .catch((err: any) => reject(err));
-        } catch (err) {
-          reject(err);
-        }
-      };
-
-      if ((window as any).AppleID?.auth) {
-        initializeApple();
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/auth.js";
-      script.async = true;
-      script.defer = true;
-      script.onload = initializeApple;
-      script.onerror = () => reject(new Error("Failed to load Apple Sign In SDK"));
-      document.head.appendChild(script);
-    });
-  };
-
-  async function oauth(provider: "google" | "apple") {
-    setOauthPending(provider);
-    setAuthError(null);
-    setAuthErrorInfo(null);
-
-    try {
-      if (provider === "google") {
-        const idToken = await loginGoogleWeb();
-        const customSession = await fetchNestApi("/auth/google", {
-          method: "POST",
-          body: JSON.stringify({ token: idToken }),
-        });
-
-        setAuthData(customSession);
-        applyRememberPreference(remember, customSession.user.email);
-        await goPostLogin();
-      } else if (provider === "apple") {
-        const appleResult = await loginAppleWeb();
-        if (!appleResult || !appleResult.authorization?.id_token) {
-          throw new Error("Apple login failed - no token received");
-        }
-
-        const customSession = await fetchNestApi("/auth/apple", {
-          method: "POST",
-          body: JSON.stringify({
-            identityToken: appleResult.authorization.id_token,
-            authorizationCode: appleResult.authorization.code,
-            fullName: appleResult.user?.name,
-            email: appleResult.user?.email,
-          }),
-        });
-
-        setAuthData(customSession);
-        applyRememberPreference(remember, customSession.user.email);
-        await goPostLogin();
-      }
-    } catch (e: any) {
-      const info = classifyAuthError(e, { provider });
-      setAuthErrorInfo(info);
-      const msg = t(info.messageKey as Parameters<typeof t>[0]) || e?.message || "Đăng nhập OAuth thất bại";
-      setAuthError(msg);
-      toast.error(msg);
-    } finally {
-      setOauthPending(null);
-    }
-  }
-
-  const busy = loading || oauthPending !== null;
-
-  // Giao diện đăng nhập Sáng sang trọng Hoàng gia Vàng Đồng ViOne 5.0
   return (
-    <main className="relative min-h-[100dvh] w-full overflow-x-hidden flex items-center justify-center p-4 sm:p-6 bg-slate-100 text-slate-900 transition-colors duration-200">
-      {/* Background Image: Corporate Luxury Architecture */}
+    <main className="relative min-h-[100dvh] w-full overflow-x-hidden flex flex-col justify-between bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      {/* Dynamic Keyframes for seamless floating zero-gravity animations */}
+      <style>{`
+        @keyframes vione-orbit-cw {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes vione-orbit-ccw {
+          from { transform: rotate(360deg); }
+          to { transform: rotate(0deg); }
+        }
+        @keyframes vione-free-float-1 {
+          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+          50% { transform: translate(-10px, -18px) rotate(1.2deg); }
+        }
+        @keyframes vione-free-float-2 {
+          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+          50% { transform: translate(12px, -14px) rotate(-1.5deg); }
+        }
+        @keyframes vione-free-float-3 {
+          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+          50% { transform: translate(-12px, 16px) rotate(-1deg); }
+        }
+        @keyframes vione-free-float-4 {
+          0%, 100% { transform: translate(0px, 0px) rotate(0deg); }
+          50% { transform: translate(10px, 18px) rotate(1.2deg); }
+        }
+        @keyframes vione-pulse-aura {
+          0%, 100% { opacity: 0.35; transform: scale(0.96); }
+          50% { opacity: 0.75; transform: scale(1.08); }
+        }
+        @keyframes vione-particle-drift {
+          0% { transform: translateY(0px) scale(0.9); opacity: 0.3; }
+          50% { transform: translateY(-16px) scale(1.15); opacity: 0.85; }
+          100% { transform: translateY(0px) scale(0.9); opacity: 0.3; }
+        }
+        .anim-orbit-cw { animation: vione-orbit-cw 42s linear infinite; }
+        .anim-orbit-ccw { animation: vione-orbit-ccw 28s linear infinite; }
+        .anim-float-free-1 { animation: vione-free-float-1 7s ease-in-out infinite; }
+        .anim-float-free-2 { animation: vione-free-float-2 8s ease-in-out infinite 0.8s; }
+        .anim-float-free-3 { animation: vione-free-float-3 7.5s ease-in-out infinite 1.5s; }
+        .anim-float-free-4 { animation: vione-free-float-4 8.5s ease-in-out infinite 2.2s; }
+        .anim-aura-glow { animation: vione-pulse-aura 5s ease-in-out infinite; }
+        .anim-particle-1 { animation: vione-particle-drift 4.5s ease-in-out infinite 0.3s; }
+        .anim-particle-2 { animation: vione-particle-drift 5.5s ease-in-out infinite 1.8s; }
+        .anim-particle-3 { animation: vione-particle-drift 6s ease-in-out infinite 2.5s; }
+      `}</style>
+
+      {/* 1. Ảnh chìm nền Skyline Architecture */}
       <div
-        className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
+        className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-90 dark:opacity-40"
         style={{
           backgroundImage: "url('/skyline_perspective_light.jpg')",
         }}
       />
-      {/* Soft Light Overlay for Optimal Contrast */}
-      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-white/85 via-slate-50/75 to-white/90 backdrop-blur-[2px]" />
 
-      {/* Ambient Champagne Gold Glow Accents */}
+      {/* 2. Soft Light / Dark Overlay for Optimal Contrast */}
+      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-white/88 via-slate-50/78 to-white/92 dark:from-slate-950/92 dark:via-slate-900/85 dark:to-slate-950/94 backdrop-blur-[2px]" />
+
+      {/* 3. Ambient Champagne Gold Glow Accents */}
       <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-40"
+        className="pointer-events-none fixed inset-0 z-0 opacity-40 dark:opacity-25"
         style={{
           background:
-            "radial-gradient(circle at 50% 20%, rgba(223, 183, 108, 0.35) 0%, rgba(201, 158, 85, 0.15) 40%, transparent 70%)",
+            "radial-gradient(circle at 30% 35%, rgba(223, 183, 108, 0.32) 0%, rgba(201, 158, 85, 0.1) 50%, transparent 75%)",
         }}
       />
-      <div className="pointer-events-none fixed -top-40 -right-40 h-96 w-96 rounded-full bg-amber-400/20 blur-[120px]" />
-      <div className="pointer-events-none fixed -bottom-40 -left-40 h-96 w-96 rounded-full bg-amber-200/25 blur-[120px]" />
+      <div className="pointer-events-none fixed -top-40 -left-40 h-96 w-96 rounded-full bg-amber-400/20 blur-[140px]" />
+      <div className="pointer-events-none fixed -bottom-40 -right-40 h-96 w-96 rounded-full bg-amber-200/25 blur-[140px]" />
 
-      {/* Main Luxury Glassmorphism Light Card */}
-      <div className="relative z-10 w-full max-w-md rounded-3xl border border-amber-400/35 bg-white/92 p-6 sm:p-8 backdrop-blur-2xl shadow-[0_25px_60px_rgba(216,178,130,0.22),0_10px_35px_rgba(15,23,42,0.08)] text-slate-900 transition-all duration-200">
-        {/* Top bar: Back to Official Website & Theme/Lang Switchers */}
-        <div className="flex items-center justify-between pb-4 border-b border-amber-400/20">
-          <a
-            href="https://viconnect.vn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 transition hover:text-amber-900 hover:underline"
-          >
-            <ArrowLeft className="h-3.5 w-3.5 text-amber-700" />
-            <span>Website chính thức</span>
-          </a>
-          <div className="flex items-center gap-2">
-            <ThemeSwitcher />
-            <LuxuryLangSwitcher />
-          </div>
-        </div>
-
-        {/* Brand Crest & Headers */}
-        <div className="mt-5 flex flex-col items-center justify-center text-center">
-          {/* Logo Vione Official Wordmark */}
-          <a
-            href="https://viconnect.vn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block transition-transform hover:scale-[1.02]"
-          >
-            <img
-              src="/vione-wordmark.png"
-              alt="ViOne Logo"
-              className="h-10 w-auto object-contain drop-shadow-sm"
-            />
-          </a>
-
-          <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 px-3 py-1 border border-amber-400/35 text-[11px] font-bold text-amber-700">
-            <Sparkles className="h-3.5 w-3.5 text-amber-600" />
-            <span>HỆ THỐNG ĐIỀU HÀNH THÔNG MINH</span>
-          </div>
-
-          <h1 className="mt-3 text-[22px] sm:text-[24px] font-extrabold tracking-tight text-slate-900">
-            {mode === "signin" ? "Đăng nhập Hệ thống CRM" : "Đăng ký Quản trị viên"}
-          </h1>
-          <p className="mt-1 text-xs sm:text-[13px] text-slate-500 max-w-[21rem]">
-            {mode === "signin"
-              ? "Cổng điều phối quản trị vận hành, tự động hóa & AI Copilot ViOne"
-              : "Khởi tạo tài khoản quản trị hệ thống ViOne"}
-          </p>
-        </div>
-
-        {/* Error Alert */}
-        {authError && (
-          <div
-            role="alert"
-            className="mt-4 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 leading-relaxed shadow-xs"
-          >
-            <div className="flex items-start gap-2.5">
-              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
-              <div className="flex-1">
-                <p className="font-semibold">{authError}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAuthError(null)}
-                className="flex h-5 w-5 items-center justify-center rounded hover:bg-rose-100 cursor-pointer text-rose-500"
-              >
-                <X className="h-3.5 w-3.5" aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Credentials Form */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            void submit();
-          }}
-          className="mt-5 space-y-3.5"
+      {/* Top Navbar */}
+      <header className="relative z-20 w-full px-6 py-4 flex items-center justify-between border-b border-amber-400/15 backdrop-blur-md bg-white/40 dark:bg-slate-950/40">
+        <a
+          href="https://viconnect.vn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-xs font-bold text-amber-800 dark:text-amber-400 transition hover:text-amber-950 dark:hover:text-amber-200"
         >
-          <div>
-            <label className="block text-[11.5px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-              Tài khoản / Email
-            </label>
-            <input
-              type="text"
-              autoComplete="username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@connect.vn"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
-            />
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>Website chính thức</span>
+        </a>
+        <div className="flex items-center gap-2.5">
+          <ThemeSwitcher />
+          <LuxuryLangSwitcher />
+        </div>
+      </header>
+
+      {/* Main Content: 2 Cột (Animation Bên Trái Lơ Lửng Tự Nhiên & Đăng Nhập Sát Bên Phải) */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 flex-1 flex items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 w-full items-center">
+          
+          {/* CỘT BÊN TRÁI: GIAO DIỆN ANIMATION LƠ LỬNG TỰ NHIÊN (HOÀN TOÀN KHÔNG BORDER, KHÔNG BACKGROUND CARD) */}
+          <div className="lg:col-span-7 w-full hidden lg:flex flex-col justify-center relative min-h-[580px]">
+            
+            {/* Header Text giới thiệu kiến trúc điều hành (Nhẹ nhàng, bay bổng không viền) */}
+            <div className="relative z-10 mb-4 pl-2">
+              <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 border border-amber-400/30 px-3.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 backdrop-blur-md">
+                <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                <span>KIẾN TRÚC ĐIỀU HÀNH DOANH NGHIỆP C-LEVEL</span>
+              </div>
+              <h2 className="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                Vận Hành Tự Động Hóa & <br />
+                <span className="bg-gradient-to-r from-amber-700 via-amber-500 to-amber-800 dark:from-amber-400 dark:via-amber-300 dark:to-amber-500 bg-clip-text text-transparent">
+                  Kết Nối Khách Hàng B2B
+                </span>
+              </h2>
+              <p className="mt-2 text-xs sm:text-[13.5px] text-slate-600 dark:text-slate-400 max-w-lg leading-relaxed">
+                Nền tảng kiểm soát dòng tiền, phê duyệt VietQR 3 cấp và tối ưu hóa phễu kinh doanh đa chi nhánh cùng Trợ lý AI Copilot.
+              </p>
+            </div>
+
+            {/* Khu vực Animation: Trôi tự do trong không gian (Zero Background, Zero Border) */}
+            <div className="relative w-full h-[450px] flex items-center justify-center select-none pointer-events-none">
+              
+              {/* Glowing Aura Particle Clusters bay lơ lửng */}
+              <div className="absolute top-12 left-1/4 h-3 w-3 rounded-full bg-amber-400 shadow-[0_0_15px_#DFB76C] anim-particle-1" />
+              <div className="absolute bottom-16 right-1/3 h-2.5 w-2.5 rounded-full bg-amber-300 shadow-[0_0_12px_#DFB76C] anim-particle-2" />
+              <div className="absolute top-1/3 right-1/4 h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_10px_#C99E55] anim-particle-3" />
+
+              {/* Hào quang tâm điểm phát sáng dịu mắt */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-80 h-80 rounded-full bg-amber-400/20 dark:bg-amber-500/15 blur-[110px] anim-aura-glow" />
+              </div>
+
+              {/* 1. Các Vòng Quỹ Đạo Ánh Sáng Xoay Tự Do (Orbital Rings in Open Space) */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Vòng ngoài lớn */}
+                <div className="w-[380px] h-[380px] rounded-full border border-amber-400/20 anim-orbit-cw flex items-center justify-center">
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-amber-400 shadow-[0_0_14px_#DFB76C]" />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 h-2.5 w-2.5 rounded-full bg-amber-300 shadow-[0_0_10px_#DFB76C]" />
+                </div>
+                {/* Vòng giữa nét đứt kim loại mạ vàng */}
+                <div className="w-[270px] h-[270px] rounded-full border border-dashed border-amber-400/35 anim-orbit-ccw flex items-center justify-center">
+                  <div className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-amber-500 shadow-[0_0_12px_#C99E55]" />
+                  <div className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-amber-300 shadow-[0_0_8px_#DFB76C]" />
+                </div>
+                {/* Vòng trong tinh tế */}
+                <div className="w-[170px] h-[170px] rounded-full border border-amber-400/15 anim-orbit-cw flex items-center justify-center" />
+                
+                {/* Lõi Trung Tâm Holographic Core ViOne (Bay lơ lửng) */}
+                <div className="relative z-10 flex flex-col items-center justify-center anim-aura-glow">
+                  <div className="h-24 w-24 rounded-full bg-gradient-to-tr from-amber-400/35 via-white/85 to-amber-300/40 dark:from-amber-600/35 dark:via-slate-800 dark:to-amber-400/35 p-[2px] shadow-[0_0_40px_rgba(223,183,108,0.5)] backdrop-blur-xl">
+                    <div className="h-full w-full rounded-full bg-white/95 dark:bg-slate-900/95 flex flex-col items-center justify-center p-2 text-center shadow-inner">
+                      <img
+                        src="/vione-gold-192.png"
+                        alt="ViOne Core"
+                        className="h-9 w-9 object-contain drop-shadow-md"
+                      />
+                      <span className="text-[9.5px] font-black text-amber-700 dark:text-amber-400 tracking-wider mt-0.5">VIONE AI</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Bốn Thẻ KPI Động Lơ Lửng Độc Lập Trôi Tự Do (Floating Orbit Satellites) */}
+
+              {/* Thẻ 1: Doanh Thu & Dòng Tiền (Góc Trên Trái) */}
+              <div className="absolute top-2 left-2 xl:left-6 z-20 anim-float-free-1">
+                <div className="rounded-2xl border border-amber-400/40 bg-white/90 dark:bg-slate-900/90 p-4 shadow-[0_16px_36px_rgba(216,178,130,0.22)] backdrop-blur-2xl w-58">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="h-8 w-8 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center shadow-xs">
+                      <TrendingUp className="h-4 w-4" />
+                    </div>
+                    <span className="text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-full flex items-center gap-0.5">
+                      <ArrowUpRight className="h-3 w-3" /> +38.5%
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Dòng Tiền & Doanh Thu</div>
+                  <div className="text-sm font-extrabold text-slate-900 dark:text-white">Duyệt chi VietQR 3 cấp</div>
+                </div>
+              </div>
+
+              {/* Thẻ 2: ViOne AI Copilot (Góc Trên Phải) */}
+              <div className="absolute top-4 right-2 xl:right-6 z-20 anim-float-free-2">
+                <div className="rounded-2xl border border-amber-400/40 bg-white/90 dark:bg-slate-900/90 p-4 shadow-[0_16px_36px_rgba(216,178,130,0.22)] backdrop-blur-2xl w-58">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="h-8 w-8 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-300 flex items-center justify-center shadow-xs">
+                      <Bot className="h-4 w-4" />
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 text-[10.5px] font-bold text-amber-700 dark:text-amber-300 bg-amber-400/15 px-2 py-0.5 rounded-full">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-ping" />
+                      Live AI 24/7
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Trợ Lý Điều Hành</div>
+                  <div className="text-sm font-extrabold text-slate-900 dark:text-white">Cảnh báo & Phân tích tự động</div>
+                </div>
+              </div>
+
+              {/* Thẻ 3: Mạng Lưới Khách Hàng B2B (Góc Dưới Trái) */}
+              <div className="absolute bottom-6 left-2 xl:left-6 z-20 anim-float-free-3">
+                <div className="rounded-2xl border border-amber-400/40 bg-white/90 dark:bg-slate-900/90 p-4 shadow-[0_16px_36px_rgba(216,178,130,0.22)] backdrop-blur-2xl w-58">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <div className="h-8 w-8 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center shadow-xs">
+                      <Users className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-extrabold text-slate-900 dark:text-white">1,280+ Đối tác</div>
+                      <div className="text-[10.5px] text-slate-500 dark:text-slate-400">Doanh nghiệp B2B kết nối</div>
+                    </div>
+                  </div>
+                  <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 rounded-full w-[88%]" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Thẻ 4: Vận Hành Đa Chi Nhánh (Góc Dưới Phải) */}
+              <div className="absolute bottom-4 right-2 xl:right-6 z-20 anim-float-free-4">
+                <div className="rounded-2xl border border-amber-400/40 bg-white/90 dark:bg-slate-900/90 p-4 shadow-[0_16px_36px_rgba(216,178,130,0.22)] backdrop-blur-2xl w-58">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="h-8 w-8 rounded-xl bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center shadow-xs">
+                      <Layers className="h-4 w-4" />
+                    </div>
+                    <span className="text-[11px] font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-full">
+                      SLA 99.98%
+                    </span>
+                  </div>
+                  <div className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Đồng Bộ Hệ Thống</div>
+                  <div className="text-sm font-extrabold text-slate-900 dark:text-white">Đa Chi Nhánh Thời Gian Thực</div>
+                </div>
+              </div>
+
+              {/* Dải Trạng Thái Hệ Thống Bay Tự Nhiên Ở Dưới Cùng */}
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 rounded-full bg-white/70 dark:bg-slate-900/70 border border-amber-400/25 px-4 py-1.5 text-xs text-slate-600 dark:text-slate-300 backdrop-blur-xl shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="font-semibold">Hệ thống ViOne CRM sẵn sàng kết nối</span>
+                <span className="text-amber-500 font-bold">• Enterprise v5.0</span>
+              </div>
+
+            </div>
+
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-[11.5px] font-bold text-slate-700 uppercase tracking-wider">
-                Mật khẩu bảo mật
-              </label>
-              {mode === "signin" && (
-                <Link
-                  to="/forgot-password"
-                  search={{ email: email.trim() || undefined }}
-                  className="text-[11.5px] font-semibold text-amber-700 hover:text-amber-900 hover:underline transition-colors"
+          {/* CỘT BÊN PHẢI: MÀN HÌNH ĐĂNG NHẬP SÁT BÊN PHẢI */}
+          <div className="lg:col-span-5 w-full max-w-md ml-auto">
+            <div className="rounded-3xl border border-amber-400/35 bg-white/95 dark:bg-slate-900/90 p-7 sm:p-9 backdrop-blur-2xl shadow-[0_25px_60px_rgba(216,178,130,0.22),0_10px_35px_rgba(15,23,42,0.08)] text-slate-900 dark:text-slate-100 transition-all duration-200">
+              
+              {/* Brand Logo & Hệ Thống Text (Chỉ logo ViOne + text hệ thống) */}
+              <div className="flex flex-col items-center justify-center text-center">
+                <a
+                  href="https://viconnect.vn/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block transition-transform hover:scale-[1.02]"
                 >
-                  {t("auth.forgotPassword")}
-                </Link>
-              )}
-            </div>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("auth.passwordPlaceholder")}
-                className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-700 transition-colors focus:outline-none cursor-pointer"
-                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
+                  <img
+                    src="/vione-wordmark.png"
+                    alt="ViOne Logo"
+                    className="h-11 sm:h-12 w-auto object-contain drop-shadow-sm"
+                  />
+                </a>
 
-          {mode === "signup" && (
-            <div>
-              <label className="block text-[11.5px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Xác nhận mật khẩu
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Nhập lại mật khẩu"
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/80 px-4 pr-11 text-sm text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:bg-white focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
-                />
+                <div className="mt-3.5 inline-flex items-center gap-1.5 rounded-full bg-amber-400/15 px-3 py-1 border border-amber-400/30 text-[11px] font-bold text-amber-700 dark:text-amber-300">
+                  <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                  <span>HỆ THỐNG QUẢN TRỊ DOANH NGHIỆP CRM</span>
+                </div>
+
+                <h1 className="mt-3 text-2xl sm:text-[25px] font-extrabold tracking-tight text-slate-900 dark:text-white">
+                  {mode === "signin" ? "Đăng nhập Hệ thống" : "Đăng ký Quản trị viên"}
+                </h1>
+                <p className="mt-1 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 max-w-[20rem]">
+                  ViOne Enterprise Management & AI Copilot Platform
+                </p>
+              </div>
+
+              {/* Error Alert */}
+              {authError && (
+                <div
+                  role="alert"
+                  className="mt-4 rounded-xl border border-rose-200 bg-rose-50 dark:bg-rose-950/40 dark:border-rose-900/50 p-3 text-xs text-rose-700 dark:text-rose-300 leading-relaxed shadow-xs"
+                >
+                  <div className="flex items-start gap-2.5">
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
+                    <div className="flex-1">
+                      <p className="font-semibold">{authError}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setAuthError(null)}
+                      className="flex h-5 w-5 items-center justify-center rounded hover:bg-rose-100 dark:hover:bg-rose-900/40 cursor-pointer text-rose-500"
+                    >
+                      <X className="h-3.5 w-3.5" aria-hidden="true" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Form Đăng Nhập */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void submit();
+                }}
+                className="mt-6 space-y-4"
+              >
+                <div>
+                  <label className="block text-[11.5px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Tài khoản / Email
+                  </label>
+                  <input
+                    type="text"
+                    autoComplete="username"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="admin@connect.vn"
+                    className="h-12 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-slate-50/80 dark:bg-slate-800/80 px-4 text-sm text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-[11.5px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Mật khẩu
+                    </label>
+                    {mode === "signin" && (
+                      <Link
+                        to="/forgot-password"
+                        search={{ email: email.trim() || undefined }}
+                        className="text-[11.5px] font-semibold text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 hover:underline transition-colors"
+                      >
+                        {t("auth.forgotPassword")}
+                      </Link>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="h-12 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-slate-50/80 dark:bg-slate-800/80 px-4 pr-11 text-sm text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-700 dark:hover:text-amber-400 transition-colors focus:outline-none cursor-pointer"
+                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {mode === "signup" && (
+                  <div>
+                    <label className="block text-[11.5px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                      Xác nhận mật khẩu
+                    </label>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="h-12 w-full rounded-xl border border-slate-200 dark:border-slate-750 bg-slate-50/80 dark:bg-slate-800/80 px-4 pr-11 text-sm text-slate-900 dark:text-white outline-none transition-all placeholder:text-slate-400 focus:bg-white dark:focus:bg-slate-800 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 shadow-xs"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Ghi nhớ đăng nhập */}
+                <div className="flex items-center justify-between pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600 dark:text-slate-400 select-none">
+                    <input
+                      type="checkbox"
+                      checked={remember}
+                      onChange={(e) => setRemember(e.target.checked)}
+                      className="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-400/30 accent-amber-600"
+                    />
+                    <span>Ghi nhớ đăng nhập</span>
+                  </label>
+                </div>
+
+                {/* Nút Đăng nhập Hoàng Gia Champagne Gold */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="relative mt-2 flex h-12 w-full items-center justify-center rounded-xl text-[15px] sm:text-[16px] font-bold text-slate-950 transition-all hover:bg-[#d4a85a] active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-lg bg-[#DFB76C] border border-[#f0d499]/80 shadow-amber-500/25"
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-2 text-slate-950 font-bold">
+                      <Loader2 className="h-5 w-5 animate-spin text-slate-950" /> Đang xử lý...
+                    </span>
+                  ) : mode === "signin" ? (
+                    "Đăng nhập Hệ thống CRM"
+                  ) : (
+                    "Đăng ký Quản trị viên"
+                  )}
+                  {!loading && (
+                    <ArrowRight
+                      className="absolute right-5 sm:right-6 h-5 w-5 text-slate-950 font-bold"
+                      aria-hidden="true"
+                    />
+                  )}
+                </button>
+              </form>
+
+              {/* Chuyển đổi Đăng nhập / Đăng ký */}
+              <div className="mt-6 pt-5 border-t border-slate-200/70 dark:border-slate-800 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode(mode === "signin" ? "signup" : "signin");
+                    setAuthError(null);
+                  }}
+                  className="text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 transition-colors hover:text-amber-600 dark:hover:text-[#DFB76C] cursor-pointer"
+                >
+                  {mode === "signin" ? (
+                    <span>Chưa có tài khoản quản trị? <strong className="text-amber-600 dark:text-[#DFB76C] underline underline-offset-4">Đăng ký ngay</strong></span>
+                  ) : (
+                    <span>Đã có tài khoản quản trị? <strong className="text-amber-600 dark:text-[#DFB76C] underline underline-offset-4">Đăng nhập</strong></span>
+                  )}
+                </button>
               </div>
             </div>
-          )}
-
-          {/* Primary Submit Button - Royal Champagne Gold Gradient */}
-          <button
-            type="submit"
-            disabled={busy}
-            className="relative mt-2 flex h-12 w-full items-center justify-center rounded-xl text-[15px] sm:text-[16px] font-bold text-slate-950 transition-all hover:brightness-105 active:scale-[0.99] disabled:opacity-50 cursor-pointer shadow-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] shadow-amber-500/25"
-          >
-            {loading ? (
-              <span className="flex items-center gap-2 text-slate-950 font-bold">
-                <Loader2 className="h-5 w-5 animate-spin text-slate-950" /> {t("auth.processing")}
-              </span>
-            ) : mode === "signin" ? (
-              "Đăng nhập Hệ thống CRM"
-            ) : (
-              "Đăng ký Quản trị viên"
-            )}
-            {!loading && (
-              <ArrowRight
-                className="absolute right-5 sm:right-6 h-5 w-5 text-slate-950 font-bold"
-                aria-hidden="true"
-              />
-            )}
-          </button>
-        </form>
-
-        {/* Security Badge */}
-        <div className="mt-4 flex items-center justify-center gap-1.5 text-[11.5px] font-semibold text-slate-600 bg-slate-50 py-1.5 px-3 rounded-lg border border-slate-200/70">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-          <span>Bảo mật AI • Mã hóa chuẩn AES-256</span>
-        </div>
-
-        {/* Divider */}
-        <div className="my-4 flex items-center gap-3 text-xs text-slate-400">
-          <span className="h-px flex-1 bg-slate-200" />
-          <span>{t("auth.divider")}</span>
-          <span className="h-px flex-1 bg-slate-200" />
-        </div>
-
-        {/* Social OAuth Buttons: Google + Apple */}
-        {mode === "signin" && (
-          <div className="space-y-2.5">
-            <button
-              type="button"
-              onClick={() => void oauth("google")}
-              disabled={busy}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-amber-400/50"
-            >
-              {oauthPending === "google" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-amber-700" aria-hidden="true" />
-              ) : (
-                <GoogleMark />
-              )}
-              <span>Đăng nhập với Google</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => void oauth("apple")}
-              disabled={busy}
-              className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-[13.5px] font-semibold transition-all active:scale-[0.99] disabled:opacity-50 shadow-xs cursor-pointer hover:border-amber-400/50"
-            >
-              {oauthPending === "apple" ? (
-                <Loader2 className="h-4 w-4 animate-spin text-amber-700" aria-hidden="true" />
-              ) : (
-                <AppleMark />
-              )}
-              <span>Đăng nhập với Apple</span>
-            </button>
           </div>
-        )}
 
-        {/* Bottom Toggle Link */}
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={() => {
-              setMode(mode === "signin" ? "signup" : "signin");
-              setAuthError(null);
-            }}
-            className="text-xs sm:text-[13px] text-slate-500 transition-colors hover:text-[#8C653B] cursor-pointer"
-          >
-            {mode === "signin" ? (
-              <span>Chưa có tài khoản quản trị? <strong className="text-[#8C653B] underline underline-offset-4">Đăng ký ngay</strong></span>
-            ) : (
-              <span>Đã có tài khoản? <strong className="text-[#8C653B] underline underline-offset-4">Đăng nhập</strong></span>
-            )}
-          </button>
         </div>
       </div>
 
-      {/* Hidden container for Google Identity popup fallback */}
-      <div id="hidden-google-btn" className="hidden" />
+      {/* Footer */}
+      <footer className="relative z-20 w-full py-3.5 px-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-amber-400/10 backdrop-blur-sm bg-white/30 dark:bg-slate-950/30">
+        <span>© {new Date().getFullYear()} ViOne Platform • Hệ thống Quản trị & Điều hành Doanh nghiệp Toàn diện</span>
+      </footer>
     </main>
   );
 }

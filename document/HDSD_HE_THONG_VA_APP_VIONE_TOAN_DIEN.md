@@ -1,10 +1,10 @@
-# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (41 CHUYÊN ĐỀ)
+# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (40 CHUYÊN ĐỀ)
 
-**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 07/10/2026 | **Phiên bản:** 6.0 Enterprise
+**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 08/10/2026 | **Phiên bản:** 6.0 Enterprise
 
 ---
 
-### DANH MỤC 41 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
+### DANH MỤC 40 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
 
 #### 01. [CRM · XÁC THỰC] Đăng Nhập Quản Trị Hệ Thống CRM ViOne Phong Cách Sáng Sang Trọng
 - **Mục tiêu:** Đăng nhập an toàn vào bảng điều hành số CRM ViOne qua tài khoản doanh nghiệp hoặc quản trị viên.
@@ -473,32 +473,15 @@
 - **Lưu ý:** KHÔNG RẬP KHUÔN: AI Copilot liên tục truy vấn dữ liệu thực tế từ tài khoản và hệ thống, cam kết phản hồi chính xác 100% mọi dữ liệu trong hệ sinh thái ViOne.
 - **Mẹo C-Level:** MẸO QUẢN TRỊ AI: Người dùng có thể tắt nút AI nổi ở trang chủ khi muốn màn hình thoáng hơn, và dễ dàng bật lại bất kỳ lúc nào tại mục Cài Đặt trên Tab Tôi.
 
-#### 40. [APP · ĐĂNG NHẬP & CỔNG THÔNG TIN] Chuyển Hướng Website Chính Thức ViConnect (https://viconnect.vn/) Tại Màn Hình Đăng Nhập ViOne App
-- **Mục tiêu:** Cung cấp cổng thông tin chính thức của hệ sinh thái ViOne ngay tại màn hình đăng nhập ứng dụng cho đối tác, khách hàng và doanh nhân tìm hiểu nền tảng.
-- **Đường dẫn:** `Màn hình Đăng nhập ViOne (/auth trên PWA hoặc LoginScreen trên Native App) -> Nút "Website chính thức"`
+#### 40. [APP · 5 PHÂN HỆ NÂNG CẤP] Hoàn Thiện 5 Phân Hệ Trọng Yếu: AI Copilot Typewriter, Đăng Tin & Khoảnh Khắc, Hộp Thư, Thẻ Doanh Nhân & CRM Khách Hàng
+- **Mục tiêu:** Cung cấp trải nghiệm mượt mà, chính xác và chuyên nghiệp nhất trên toàn bộ hệ sinh thái ứng dụng ViOne.
+- **Đường dẫn:** `Trang Chủ / Mạng Lưới / Đăng Khoảnh Khắc / Hộp Thư / Khách Hàng CRM`
 - **Các bước:**
-  * Bước 1: Mở màn hình đăng nhập ứng dụng ViOne.
-  * Bước 2: Quan sát góc trên bên phải hoặc thanh điều hướng header: Nút liên kết hiển thị với biểu tượng Toàn cầu (Globe) và nhãn rõ ràng: "Website chính thức".
-  * Bước 3: Nhấp hoặc chạm vào nút "Website chính thức":
-    - Trên Web PWA: Trình duyệt tự động mở tab mới trỏ tới địa chỉ chính thức https://viconnect.vn/.
-    - Trên Mobile Native App: Hệ thống tự động kích hoạt trình duyệt thiết bị chuyển hướng tới https://viconnect.vn/ mà không làm gián đoạn phiên ứng dụng hiện tại.
-  * Bước 4: Doanh nhân có thể tìm hiểu toàn cảnh hệ sinh thái ViOne, các giải pháp kết nối giao thương B2B, danh thiếp thông minh NFC, và tài liệu hướng dẫn.
-- **Lưu ý:** CHUẨN ĐỊNH DANH THƯƠNG HIỆU: Toàn bộ liên kết cổng giới thiệu tại màn hình đăng nhập cam kết trỏ duy nhất về https://viconnect.vn/.
-- **Mẹo C-Level:** MẸO ĐỐI TÁC: Khách hàng mới khi chưa có tài khoản có thể bấm vào "Website chính thức" để đăng ký thông tin hợp tác trước khi vào cổng CRM.
-
-#### 41. [APP · THÔNG BÁO MÀN HÌNH KHÓA] Hệ Thống Cấp Quyền & Đẩy Thông Báo Ra Màn Hình Khóa Điện Thoại (Lockscreen Push Notifications) Cho Cuộc Gọi Đến, Tin Nhắn Mới, Bình Luận, Chạm NFC & Yêu Cầu Kết Nối
-- **Mục tiêu:** Đảm bảo Ban Lãnh Đạo và Doanh nhân không bao giờ bỏ lỡ bất kỳ cuộc gọi video/thoại, tin nhắn quan trọng, bình luận đối tác, lượt chạm danh thiếp NFC hay cơ hội kinh doanh mới ngay cả khi điện thoại đang khóa màn hình.
-- **Đường dẫn:** `Banner nhắc cấp quyền đầu trang / Tab Tôi -> Mục: Thông Báo Hệ Thống & Cuộc Gọi -> Nút: [Cấp quyền thông báo ngay]`
-- **Các bước:**
-  * Bước 1: Khi đăng nhập ứng dụng lần đầu, Banner vàng Champagne Gold xuất hiện ở đầu màn hình: "Bật thông báo màn hình khóa để nhận cuộc gọi đến, tin nhắn & bình luận mới tức thì". Chạm vào nút "Bật thông báo ngay".
-  * Bước 2: Trình duyệt hoặc hệ điều hành điện thoại hiển thị hộp thoại xác nhận quyền hệ thống: Chạm vào "Cho phép" (Allow).
-  * Bước 3: Ứng dụng đăng ký Service Worker và cấu hình bộ lắng nghe Push Notifications. Huy hiệu trạng thái chuyển sang màu xanh: "Đã bật thông báo màn hình khóa".
-  * Bước 4: Nhận thông báo đa phân hệ thời gian thực:
-    - Cuộc gọi đến (Video & Voice Call): Màn hình khóa rung dồn dập [400ms - 200ms - 400ms], phát chuông ngân Web Audio Chime hai tầng (520Hz -> 880Hz), hiển thị tên người gọi và nút chạm để trả lời.
-    - Tin nhắn đối tác mới: Báo hiệu rung kép [200ms - 100ms - 200ms] kèm trích đoạn nội dung tin nhắn. Chạm vào thông báo sẽ mở thẳng phòng chat với đối tác.
-    - Bình luận khoảnh khắc: Đẩy thông báo tên người bình luận và nội dung. Chạm vào thông báo sẽ mở ngay bài viết.
-    - Bắt tay kết nối & Chạm NFC: Đẩy thông báo tức thời khi đối tác vừa chạm thẻ danh thiếp thông minh hoặc gửi yêu cầu kết nối giao thương.
-  * Bước 5: Kiểm thử trực tiếp: Tại Tab Tôi -> Mục "Thông báo hệ thống & Cuộc gọi", bấm nút "Gửi thông báo thử nghiệm". Màn hình điện thoại sẽ rung và hiển thị ngay thông báo kiểm tra kèm âm thanh chuông báo sang trọng.
-- **Lưu ý:** HOẠT ĐỘNG NGAY CẢ KHI TẮT MÀN HÌNH: Nhờ tích hợp Service Worker showNotification, các cảnh báo được đẩy trực tiếp lên màn hình khóa thiết bị và thanh thông báo của Android và iOS.
-- **Mẹo C-Level:** MẸO TRÁNH BỊ CHẶN: Nếu vô tình bấm Chặn thông báo trên trình duyệt, người dùng có thể nhấp vào biểu tượng Ổ khóa / Cài đặt trang web trên thanh địa chỉ URL để cấp lại quyền "Cho phép thông báo".
+  * Bước 1: Trợ lý AI ViOne Copilot: Khi hỏi về bạn bè kết nối ("tôi có bao nhiêu bạn bè"), AI truy vấn CSDL PostgreSQL thực tế, báo trung thực số 0 nếu chưa có kết nối, loại bỏ triệt để ảo giác 156 bạn bè; đồng thời chữ hiển thị mượt mà theo hiệu ứng máy đánh chữ Typewriter Streaming với con trỏ nhấp nháy.
+  * Bước 2: Đăng Tin & Khoảnh Khắc: Chủ đề/chuyên mục hoàn toàn không bắt buộc (chạm để chọn hoặc bỏ chọn qua nút "[Bỏ chọn chủ đề]"), ảnh mẫu được gỡ bỏ để người dùng đăng bài chữ thuần túy hoặc ảnh thực tế từ camera/thư viện mà không bị mất ảnh sau khi xuất bản.
+  * Bước 3: Hộp Thư Tin Nhắn: Danh sách hiển thị đầy đủ mọi tài khoản đã từng nhắn tin qua lại, hệ thống tự động bóc tách tiền tố "th-" và tự khởi tạo luồng chat với người dùng mới mà không phát sinh lỗi UUID.
+  * Bước 4: Thẻ Doanh Nhân Trang Chủ: Ảnh bìa và ảnh đại diện tự động đồng bộ từ dữ liệu danh tính người dùng; modal chỉnh sửa nhanh được tối ưu chỉ còn đúng 1 nút tải ảnh bìa và 1 nút tải avatar tinh gọn.
+  * Bước 5: Quản Trị Khách Hàng CRM: Tab Khách hàng trang bị 4 thẻ chỉ số Pipeline (Quy mô cơ hội, Đang đàm phán, Tỷ lệ chốt deal, Lịch chăm sóc tuần), kèm stepper tiến trình 4 giai đoạn, bộ chọn Deal Health và dòng thời gian ghi nhật ký chăm sóc đa kênh.
+- **Lưu ý:** DỮ LIỆU CHÍNH XÁC & MINH BẠCH: Toàn bộ thông tin hiển thị từ AI, danh bạ đến CRM đều được đối soát trực tiếp từ CSDL thực, đảm bảo sự trung thực tuyệt đối cho lãnh đạo.
+- **Mẹo C-Level:** MẸO SỬ DỤNG: Dùng nút chuyển giai đoạn 1-chạm trong chi tiết khách hàng CRM để cập nhật tức thì trạng thái đàm phán hợp đồng cho toàn bộ đội ngũ bán hàng.
 

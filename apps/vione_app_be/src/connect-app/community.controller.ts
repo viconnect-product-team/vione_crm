@@ -28,7 +28,7 @@ function cleanCommunityId(communityId: string): string {
   if (match) {
     return match[0];
   }
-  return 'c1983000-0000-4000-8000-000000001983';
+  return id || 'c1983000-0000-4000-8000-000000001983';
 }
 
 @Controller(['communities', 'connect-app/community'])
@@ -505,13 +505,31 @@ export class CommunityController {
     return this.connectAppService.addCompanyEmployee(req.user.id, cleanCommunityId(communityId), body);
   }
 
+  @Get('tasks/my-all')
+  @UseGuards(JwtAuthGuard)
+  async listAllMyCompanyTasks(
+    @Request() req,
+    @Query('status') status?: string,
+  ) {
+    return this.connectAppService.listAllUserCompanyTasks(req.user?.id, status);
+  }
+
   @Get(':communityId/tasks')
   async listCompanyTasks(
     @Request() req,
     @Param('communityId') communityId: string,
     @Query('status') status?: string,
+    @Query('isMyTasks') isMyTasks?: string,
+    @Query('assigneeId') assigneeId?: string,
   ) {
-    return this.connectAppService.listCompanyTasks(req.user?.id, cleanCommunityId(communityId), status);
+    const isMy = isMyTasks === 'true' || isMyTasks === '1';
+    return this.connectAppService.listCompanyTasks(
+      req.user?.id,
+      cleanCommunityId(communityId),
+      status,
+      isMy,
+      assigneeId,
+    );
   }
 
   @Post(':communityId/tasks')

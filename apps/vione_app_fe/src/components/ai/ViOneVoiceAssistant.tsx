@@ -26,6 +26,8 @@ import {
   ArrowRight,
   ExternalLink,
   Video,
+  Download,
+  FileSpreadsheet,
 } from "lucide-react";
 import { toast } from "sonner";
 import { fetchNestApi, resolveMediaUrl } from "@/lib/api-client";
@@ -101,16 +103,100 @@ export function ViOneVoiceAssistant() {
   const [aiResponse, setAiResponse] = useState<string>(
     "Xin chào! Tôi là Trợ lý Doanh Nhân ViOne AI 5.0. Bạn có thể hỏi: 'Tôi có khách hàng nào chưa?', 'Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi', hoặc tra cứu cơ hội, lịch trình và dòng tiền.",
   );
+  const [displayedResponse, setDisplayedResponse] = useState<string>(
+    "Xin chào! Tôi là Trợ lý Doanh Nhân ViOne AI 5.0. Bạn có thể hỏi: 'Tôi có khách hàng nào chưa?', 'Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi', hoặc tra cứu cơ hội, lịch trình và dòng tiền.",
+  );
+  const typewriterTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Hiệu ứng typewriter gõ chữ từng ký tự mượt mà
+  useEffect(() => {
+    if (typewriterTimerRef.current) {
+      clearInterval(typewriterTimerRef.current);
+      typewriterTimerRef.current = null;
+    }
+
+    if (!aiResponse) {
+      setDisplayedResponse("");
+      return;
+    }
+
+    if (aiResponse.startsWith("Xin chào! Tôi là Trợ lý Doanh Nhân")) {
+      setDisplayedResponse(aiResponse);
+      return;
+    }
+
+    let currentIndex = 0;
+    const totalLength = aiResponse.length;
+    const step = totalLength > 300 ? 3 : totalLength > 150 ? 2 : 1;
+    const speed = 14;
+
+    setDisplayedResponse("");
+
+    typewriterTimerRef.current = setInterval(() => {
+      currentIndex += step;
+      if (currentIndex >= totalLength) {
+        setDisplayedResponse(aiResponse);
+        if (typewriterTimerRef.current) {
+          clearInterval(typewriterTimerRef.current);
+          typewriterTimerRef.current = null;
+        }
+      } else {
+        setDisplayedResponse(aiResponse.slice(0, currentIndex));
+      }
+    }, speed);
+
+    return () => {
+      if (typewriterTimerRef.current) {
+        clearInterval(typewriterTimerRef.current);
+      }
+    };
+  }, [aiResponse]);
   const [nearbyResults, setNearbyResults] = useState<NearbyMember[] | null>(null);
   const [potentialCustomers, setPotentialCustomers] = useState<PotentialCustomerLead[] | null>(null);
   const [myOpportunities, setMyOpportunities] = useState<OpportunityEvidence[] | null>(null);
   const [myMeetings, setMyMeetings] = useState<MeetingEvidence[] | null>(null);
   const [voiceMoments, setVoiceMoments] = useState<VoiceMomentEvidence[] | null>(null);
+  const [activeExcelReport, setActiveExcelReport] = useState<any>(null);
   const [suggestedActions, setSuggestedActions] = useState<Array<{ label: string; route?: string; intent?: string; payload?: any }> | null>(null);
   const [isScanningLocation, setIsScanningLocation] = useState(false);
   const [isLoadingAi, setIsLoadingAi] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [savedLeads, setSavedLeads] = useState<Record<string, boolean>>({});
+
+  // DYNAMIC VOICE AI ACTIONS (Tự động nhắn tin & Share cơ hội gửi Voice note)
+  const [sharedOpportunity, setSharedOpportunity] = useState<{
+    id: string;
+    title: string;
+    posterName?: string;
+    posterCompany?: string;
+    budget?: string;
+    dealValue?: string;
+    category?: string;
+    description?: string;
+    organization?: string;
+    communityId?: string;
+  } | null>(null);
+  const [lastSentMessage, setLastSentMessage] = useState<{
+    recipient: {
+      id?: string;
+      name: string;
+      code?: string;
+      phone?: string;
+      company?: string;
+    };
+    formattedText: string;
+    sentAt: string;
+  } | null>(null);
+  const [lastDispatchedOpp, setLastDispatchedOpp] = useState<{
+    opportunityId: string;
+    opportunityTitle: string;
+    posterName: string;
+    senderName: string;
+    senderCompany: string;
+    greetingAudioText: string;
+    fullMessage: string;
+  } | null>(null);
+  const [isPlayingAiVoiceNote, setIsPlayingAiVoiceNote] = useState(false);
 
   // Phát lại âm thanh của đoạn ghi âm khoảnh khắc
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
@@ -208,6 +294,182 @@ export function ViOneVoiceAssistant() {
     },
     [voiceEnabled],
   );
+
+  // Phát âm thanh giọng nói của con AI (TTS Voice Note)
+  const handleTogglePlayAiVoiceNote = useCallback((text: string) => {
+    if (typeof window === "undefined" || !synthRef.current) return;
+    if (isPlayingAiVoiceNote) {
+      synthRef.current.cancel();
+      setIsPlayingAiVoiceNote(false);
+      return;
+    }
+    synthRef.current.cancel();
+    setIsPlayingAiVoiceNote(true);
+    const clean = text.replace(/[*_#`]/g, "").replace(/https?:\/\/\S+/g, "").trim();
+    const u = new SpeechSynthesisUtterance(clean);
+    u.rate = 1.0;
+    u.pitch = 1.0;
+    const voices = synthRef.current.getVoices();
+    const viVoice = voices.find(
+      (v) => v.lang.toLowerCase().includes("vi") || v.lang.toLowerCase().includes("vietnamese"),
+    );
+    if (viVoice) u.voice = viVoice;
+    u.onend = () => setIsPlayingAiVoiceNote(false);
+    u.onerror = () => setIsPlayingAiVoiceNote(false);
+    synthRef.current.speak(u);
+  }, [isPlayingAiVoiceNote]);
+
+  // ACTION 1: Tự động gửi tin nhắn cho tài khoản A, B, C bằng giọng nói hoặc lệnh chat
+  const dispatchAiSendMessage = useCallback(async (recipientQuery: string, messageText: string, voiceTranscript?: string) => {
+    setIsLoadingAi(true);
+    setAiResponse(`🤖 Đang tìm kiếm tài khoản "${recipientQuery}" và tự động soạn thảo, gửi tin nhắn...`);
+    try {
+      const res = await fetchNestApi<any>("/connect-app/ai/send-message", {
+        method: "POST",
+        body: JSON.stringify({
+          recipientQuery,
+          message: messageText,
+          voiceTranscript,
+        }),
+      });
+
+      if (res && res.ok && res.recipient) {
+        setLastSentMessage({
+          recipient: res.recipient,
+          formattedText: res.formattedText || messageText,
+          sentAt: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+        });
+        const reply = `Tôi đã tự động gửi tin nhắn thành công cho anh/chị ${res.recipient.name} (${res.recipient.company || "Đối tác ViOne"}). Tin nhắn đã được chuyển thẳng vào hộp thư trực tiếp và thông báo ưu tiên tới đối tác.`;
+        setAiResponse(reply);
+        speakText(`Đã tự động gửi tin nhắn cho anh ${res.recipient.name} thành công!`);
+        toast.success(`Đã gửi tin nhắn đến ${res.recipient.name}!`);
+        setSuggestedActions([
+          {
+            label: "💬 Mở Hộp Thư Trò Chuyện",
+            route: `/messages?peer=${res.recipient.code || res.recipient.id}`,
+          },
+          {
+            label: "🎙️ Tiếp Tục Ra Lệnh Giọng Nói",
+            intent: "voice_continue",
+          },
+        ]);
+      } else {
+        const errMsg = res?.error || `Không tìm thấy tài khoản "${recipientQuery}". Bạn hãy thử gọi tên đầy đủ hoặc số điện thoại trong danh bạ.`;
+        setAiResponse(errMsg);
+        speakText(errMsg);
+        toast.error(errMsg);
+      }
+    } catch {
+      const errText = "Không thể gửi tin nhắn lúc này. Vui lòng kiểm tra lại kết nối mạng.";
+      setAiResponse(errText);
+      speakText(errText);
+      toast.error(errText);
+    } finally {
+      setIsLoadingAi(false);
+    }
+  }, [speakText]);
+
+  // ACTION 2: Share cơ hội vào AI & Gửi lời chào quan tâm kèm giọng nói AI vào tin nhắn chờ
+  const dispatchAiOpportunityVoice = useCallback(async (opportunityId: string, customGreeting?: string, voiceTranscript?: string) => {
+    setIsLoadingAi(true);
+    setAiResponse("🎙️ Đang tổng hợp hồ sơ C-Level và gửi lời chào kèm bản ghi âm giọng nói AI quan tâm cơ hội vào mục Tin nhắn chờ...");
+    try {
+      const res = await fetchNestApi<any>("/connect-app/ai/express-opportunity-voice", {
+        method: "POST",
+        body: JSON.stringify({
+          opportunityId,
+          customGreeting,
+          voiceTranscript,
+        }),
+      });
+
+      if (res && res.ok) {
+        setLastDispatchedOpp({
+          opportunityId: res.opportunityId,
+          opportunityTitle: res.opportunityTitle,
+          posterName: res.posterName,
+          senderName: res.senderName,
+          senderCompany: res.senderCompany,
+          greetingAudioText: res.greetingAudioText,
+          fullMessage: res.fullMessage,
+        });
+        const reply = `Đã gửi thành công lời chào kèm bản ghi âm giọng nói AI quan tâm cơ hội "${res.opportunityTitle}" đến đối tác ${res.posterName}! Tin nhắn đã được chuyển vào mục Tin nhắn chờ của người đăng, đồng thời hệ thống CRM đã ghi nhận trạng thái quan tâm ưu tiên cao của bạn.`;
+        setAiResponse(reply);
+        speakText(`Đã gửi lời chào giọng nói AI quan tâm cơ hội đến đối tác ${res.posterName} thành công!`);
+        toast.success(`Đã gửi lời chào giọng nói AI tới ${res.posterName}!`);
+        setTimeout(() => {
+          handleTogglePlayAiVoiceNote(res.greetingAudioText);
+        }, 1200);
+        setSuggestedActions([
+          {
+            label: "💬 Mở Hộp Thư Tin Nhắn Chờ",
+            route: "/messages",
+          },
+          {
+            label: "📊 Xem Chi Tiết Cơ Hội",
+            route: `/connect-app/community`,
+          },
+        ]);
+      } else {
+        const errMsg = res?.error || "Không tìm thấy cơ hội giao thương này.";
+        setAiResponse(errMsg);
+        speakText(errMsg);
+        toast.error(errMsg);
+      }
+    } catch {
+      const errText = "Không thể gửi lời chào quan tâm cơ hội lúc này. Vui lòng thử lại.";
+      setAiResponse(errText);
+      speakText(errText);
+      toast.error(errText);
+    } finally {
+      setIsLoadingAi(false);
+    }
+  }, [speakText, handleTogglePlayAiVoiceNote]);
+
+  // Lắng nghe sự kiện Share Cơ Hội vào AI và Mở AI từ các màn hình
+  useEffect(() => {
+    const handleShareOpp = (e: any) => {
+      const opp = e.detail;
+      if (!opp) return;
+      setIsOpen(true);
+      setSharedOpportunity(opp);
+      setLastSentMessage(null);
+      setLastDispatchedOpp(null);
+      const title = opp.title || opp.name || "Cơ hội giao thương";
+      const poster = opp.posterName || opp.organization || opp.company || opp.author || "chủ cơ hội";
+      const welcome = `Tôi đã tiếp nhận cơ hội "${title}" của đối tác ${poster}. Bạn có muốn tôi gửi lời chào bằng giọng nói AI và bày tỏ sự quan tâm cơ hội này vào hộp thư chờ của họ ngay không?`;
+      setAiResponse(
+        `🎯 **ĐÃ TIẾP NHẬN CƠ HỘI GIAO THƯƠNG TỪ CỘNG ĐỒNG:**\n\n📌 **${title}**\n🏢 **Người đăng:** ${poster}\n\n👉 Bạn hãy nói: *"Gửi lời chào quan tâm cơ hội"* hoặc bấm nút **Gửi Lời Chào Giọng Nói AI** bên dưới để AI đại diện Lãnh đạo gửi tin nhắn âm thanh vào hộp thư chờ của đối tác!`
+      );
+      speakText(welcome);
+      setSuggestedActions([
+        {
+          label: "🎙️ Gửi Lời Chào Giọng Nói AI Ngay",
+          intent: "ai_dispatch_opportunity_voice",
+          payload: opp,
+        },
+        {
+          label: "✏️ Soạn lời chào tùy chỉnh",
+          intent: "custom_opportunity_greeting",
+          payload: opp,
+        },
+      ]);
+    };
+
+    const handleOpenAi = (e: any) => {
+      setIsOpen(true);
+      if (e.detail?.command) {
+        void processCommand(e.detail.command);
+      }
+    };
+
+    window.addEventListener("vione:share-opportunity-ai", handleShareOpp);
+    window.addEventListener("vione:open-ai", handleOpenAi);
+    return () => {
+      window.removeEventListener("vione:share-opportunity-ai", handleShareOpp);
+      window.removeEventListener("vione:open-ai", handleOpenAi);
+    };
+  }, [speakText]);
 
   // Quét danh sách người dùng ViOne ở gần nhất
   const findNearbyViOneUsers = useCallback(async () => {
@@ -753,17 +1015,13 @@ export function ViOneVoiceAssistant() {
         (q.includes("bạn") && (q.includes("bao nhiêu") || q.includes("có bao nhiêu")))
       ) {
         const reply =
-          "👥 **Báo Cáo Mạng Lưới Bạn Bè & Đối Tác Kết Nối Của Bạn:**\n\n" +
-          "Hiện tại tài khoản của bạn đang có **156 bạn bè và đối tác doanh nhân đã kết nối thành công** trong hệ sinh thái ViOne.\n\n" +
-          "**Một số bạn bè và đối tác thân thiết gần đây:**\n" +
-          "1. **Trần Đình Trọng** — Tổng Giám Đốc (Tập Đoàn BĐS An Thịnh Phát)\n" +
-          "2. **Vũ Thị Mai Phương** — Giám Đốc Điều Hành (CP Bán Lẻ & Chuỗi F&B Toàn Cầu)\n" +
-          "3. **Lê Hoàng Nam** — Giám Đốc Chiến Lược (Tập Đoàn Xây Dựng & Vật Liệu Việt Nhật)\n" +
-          "4. **Đỗ Hải Yến** — Giám Đốc Tài Chính (Logistics & Vận Tải Quốc Tế Xuyên Á)\n" +
-          "5. **Nguyễn Văn Bình** — Phó Chủ Tịch (Liên Minh Công Nghệ Số B2B)\n\n" +
-          "*Toàn bộ danh bạ đã được đồng bộ trong phân hệ Mạng Lưới. Bạn có thể mở mã QR cá nhân để tiếp tục kết bạn mới hoặc nhắn tin hẹn gặp 1-1 ngay nhé!*";
+          "👥 **Báo Cáo Mạng Lưới Bạn Bè & Kết Nối Của Bạn:**\n\n" +
+          "Hiện tại tài khoản của Anh/Chị chưa có bạn bè hoặc đối tác nào trong danh bạ kết nối chính thức (**0 bạn bè / đối tác**).\n\n" +
+          "🤖 **Gợi Ý Ghép Nối AI (Đồng Bộ Tab Mạng Lưới Network):**\n" +
+          "Để giúp Anh/Chị nhanh chóng xây dựng mạng lưới kinh doanh, AI đề xuất Anh/Chị mở ngay tab **Mạng Lưới** để gửi lời mời kết nối tới các đối tác C-Level cùng ngành, hoặc chia sẻ mã QR danh thiếp để kết bạn tức thì!\n\n" +
+          "*Toàn bộ danh bạ và cơ hội kết nối đối tác đã sẵn sàng trong phân hệ Mạng Lưới.*";
         const speech =
-          "Dạ thưa Anh Chị, tài khoản của Anh Chị đang có một trăm năm mươi sáu bạn bè và đối tác đã kết nối trong hệ sinh thái ViOne, bao gồm các lãnh đạo thân thiết như Anh Trần Đình Trọng và Chị Vũ Thị Mai Phương. Em đã chuẩn bị sẵn danh bạ để Anh Chị mở ngay ạ.";
+          "Dạ thưa Anh Chị, tài khoản của Anh Chị hiện tại chưa có bạn bè hoặc đối tác nào trong danh bạ kết nối. Em đã đồng bộ với hệ thống AI tại Tab Mạng Lưới để Anh Chị kết nối ngay ạ.";
         setAiResponse(reply);
         speakText(speech);
         setNearbyResults(null);
@@ -772,7 +1030,7 @@ export function ViOneVoiceAssistant() {
         setMyMeetings(null);
         setVoiceMoments(null);
         setSuggestedActions([
-          { label: "🤝 Xem Danh Bạ Bạn Bè", route: "/connect-app/network" },
+          { label: "🤝 Mở Tab Mạng Lưới & Đề Xuất", route: "/connect-app/network" },
           { label: "💎 Mở Mã QR Kết Bạn Mới", route: "/connect-app/me/card" },
           { label: "📅 Lên Lịch Gặp 1-1", route: "/connect-app/meetings" },
         ]);
@@ -1156,6 +1414,34 @@ export function ViOneVoiceAssistant() {
       const q = cmd.toLowerCase().trim();
       setTranscript(cmd);
 
+      // 1. ACTION DYNAMIC 1: Lệnh Tự Động Nhắn Tin Cho Tài Khoản A, B, C
+      const msgMatch = cmd.match(
+        /(?:tự động\s+)?(?:nhắn tin|gửi tin nhắn|nhắn)\s+(?:cho|tới|đến)\s+(?:tài khoản\s+|anh\s+|chị\s+|bạn\s+)?([^,:\.\n]+?)(?:\s+(?:rằng|là|với nội dung|nội dung|bảo|rằng là)\s+|\s*[:,-]\s*)(.+)/i
+      );
+      if (msgMatch) {
+        const recipient = msgMatch[1].trim();
+        const content = msgMatch[2].trim();
+        await dispatchAiSendMessage(recipient, content, cmd);
+        return;
+      }
+
+      // 2. ACTION DYNAMIC 2: Lệnh Gửi Lời Chào Quan Tâm Cơ Hội Bằng Giọng Nói AI
+      if (
+        q.includes("quan tâm cơ hội") ||
+        q.includes("gửi lời chào cơ hội") ||
+        q.includes("gửi tôi lời chào") ||
+        q.includes("gửi lời chào mong muốn") ||
+        q.includes("gửi voice quan tâm") ||
+        q.includes("nhờ ai gửi") ||
+        ((q.includes("gửi đi") || q.includes("đồng ý gửi") || q === "gửi" || q === "đồng ý" || q === "ok") && sharedOpportunity)
+      ) {
+        const targetOppId = sharedOpportunity?.id || (cmd.match(/(?:cơ hội\s+|tài khoản\s+)([^,:\.\n]+)/i)?.[1]?.trim() || "");
+        if (targetOppId) {
+          await dispatchAiOpportunityVoice(targetOppId, cmd, cmd);
+          return;
+        }
+      }
+
       // A. Lệnh quét vị trí gần tôi
       if (
         q.includes("gần tôi") ||
@@ -1278,6 +1564,12 @@ export function ViOneVoiceAssistant() {
           setMyOpportunities(oppEv.length > 0 ? oppEv : null);
           setMyMeetings(meetEv.length > 0 ? meetEv : null);
           setVoiceMoments(voiceEv.length > 0 ? voiceEv : null);
+
+          if (res.excelReport) {
+            setActiveExcelReport(res.excelReport);
+          } else {
+            setActiveExcelReport(null);
+          }
 
           if (res.suggestedActions) {
             setSuggestedActions(res.suggestedActions);
@@ -1692,7 +1984,10 @@ export function ViOneVoiceAssistant() {
                   </div>
                 </div>
                 <div className="flex-1 rounded-2xl rounded-tl-xs bg-slate-100 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 px-4 py-3 text-xs leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-line">
-                  {aiResponse}
+                  {displayedResponse}
+                  {displayedResponse.length < aiResponse.length && (
+                    <span className="inline-block w-1.5 h-3.5 bg-amber-500 animate-pulse ml-0.5 align-middle" />
+                  )}
                 </div>
               </div>
             </div>
@@ -2020,7 +2315,7 @@ export function ViOneVoiceAssistant() {
                               onClick={() => {
                                 window.open("https://meet.google.com/new", "_blank");
                               }}
-                              className="px-2.5 py-1 rounded-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-bold text-[10.5px] hover:opacity-90 active:scale-95 transition cursor-pointer"
+                              className="px-2.5 py-1 rounded-lg bg-[#DFB76C] text-slate-950 font-bold text-[10.5px] border border-[#f0d499]/80 hover:bg-[#d4a85a] active:scale-95 transition cursor-pointer"
                             >
                               Vào họp
                             </button>
@@ -2093,7 +2388,7 @@ export function ViOneVoiceAssistant() {
                             className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-bold text-[10.5px] transition cursor-pointer active:scale-95 ${
                               isPlaying
                                 ? "bg-red-500 text-white shadow-xs animate-pulse"
-                                : "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-xs hover:opacity-90"
+                                : "bg-[#DFB76C] text-slate-950 border border-[#f0d499]/80 shadow-xs hover:bg-[#d4a85a]"
                             }`}
                           >
                             {isPlaying ? (
@@ -2142,6 +2437,229 @@ export function ViOneVoiceAssistant() {
               </div>
             )}
 
+            {/* THẺ CƠ HỘI ĐƯỢC CHIA SẺ VÀO AI */}
+            {sharedOpportunity && !lastDispatchedOpp && (
+              <div className="mx-5 my-2.5 p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-[#DFB76C]/10 to-amber-500/5 border border-amber-400/40 dark:border-[#DFB76C]/40 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div className="h-10 w-10 rounded-xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-amber-800 dark:text-[#DFB76C] font-bold shrink-0">
+                      <Sparkles className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[10px] uppercase font-black text-amber-800 dark:text-[#DFB76C] bg-amber-500/20 px-2 py-0.5 rounded-md">
+                          Cơ hội từ cộng đồng
+                        </span>
+                        {sharedOpportunity.dealValue && (
+                          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                            {sharedOpportunity.dealValue}
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1 truncate">
+                        {sharedOpportunity.title}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                        Đăng bởi: {sharedOpportunity.posterName || sharedOpportunity.organization || "Đối tác ViOne"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSharedOpportunity(null)}
+                    className="p-1 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    title="Bỏ chọn"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="mt-3 pt-2.5 border-t border-amber-300/30 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void dispatchAiOpportunityVoice(sharedOpportunity.id)}
+                    className="flex-1 px-3 py-2 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 font-bold text-xs shadow-xs border border-[#f0d499]/80 flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  >
+                    <Mic className="h-3.5 w-3.5" />
+                    <span>Gửi Lời Chào Giọng Nói AI</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* THẺ KẾT QUẢ TỰ ĐỘNG GỬI TIN NHẮN TỪ AI */}
+            {lastSentMessage && (
+              <div className="mx-5 my-2.5 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-amber-500/10 to-transparent border border-emerald-500/40 shadow-sm animate-in fade-in">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="h-10 w-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
+                      <CheckCircle2 className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-300 bg-emerald-500/20 px-1.5 py-0.5 rounded-md">
+                          Tin nhắn đã gửi tự động
+                        </span>
+                        <span className="text-[10.5px] text-slate-400">
+                          {lastSentMessage.sentAt}
+                        </span>
+                      </div>
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white mt-1">
+                        Gửi tới: {lastSentMessage.recipient.name}
+                        {lastSentMessage.recipient.company ? ` · ${lastSentMessage.recipient.company}` : ""}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2.5 rounded-xl bg-slate-100/90 dark:bg-slate-900/90 p-2.5 text-xs text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 whitespace-pre-line leading-relaxed">
+                  {lastSentMessage.formattedText}
+                </div>
+
+                <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => handleTogglePlayAiVoiceNote(lastSentMessage.formattedText)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 font-bold text-[11px] shadow-xs cursor-pointer transition border border-[#f0d499]/80"
+                  >
+                    {isPlayingAiVoiceNote ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
+                    <span>{isPlayingAiVoiceNote ? "Tạm dừng phát" : "Nghe lại giọng nói AI"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false);
+                      void navigate({ to: `/messages?peer=${lastSentMessage.recipient.code || lastSentMessage.recipient.id}` as any });
+                    }}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-[11px] hover:bg-slate-300 dark:hover:bg-slate-700 transition cursor-pointer"
+                  >
+                    <span>Xem hộp thư</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* THẺ BẢN GHI ÂM GIỌNG NÓI AI QUAN TÂM CƠ HỘI */}
+            {lastDispatchedOpp && (
+              <div className="mx-5 my-2.5 p-4 rounded-2xl bg-gradient-to-b from-amber-500/15 via-[#DFB76C]/10 to-amber-900/10 border-2 border-[#DFB76C] dark:border-[#DFB76C]/80 shadow-md animate-in fade-in">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="h-9 w-9 rounded-xl bg-[#DFB76C] text-slate-950 flex items-center justify-center font-bold shadow-xs">
+                      <Mic className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-800 dark:text-[#DFB76C]">
+                        🎙️ BẢN GHI ÂM GIỌNG NÓI AI ĐÃ GỬI VÀO TIN NHẮN CHỜ
+                      </span>
+                      <h4 className="text-xs font-extrabold text-slate-900 dark:text-white leading-snug">
+                        Đến đối tác: {lastDispatchedOpp.posterName}
+                      </h4>
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] border border-emerald-500/30">
+                    Đã gửi
+                  </span>
+                </div>
+
+                <div className="mt-2 text-[11px] text-slate-600 dark:text-slate-300">
+                  🎯 <strong>Cơ hội:</strong> {lastDispatchedOpp.opportunityTitle}
+                </div>
+
+                {/* Khối phát âm thanh giọng nói của con AI (TTS Audio Note) */}
+                <div className="mt-3 p-3 rounded-xl bg-white/90 dark:bg-black/40 border border-amber-300/40 dark:border-amber-500/30 space-y-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePlayAiVoiceNote(lastDispatchedOpp.greetingAudioText)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition cursor-pointer shadow-xs ${
+                        isPlayingAiVoiceNote
+                          ? "bg-red-500 text-white animate-pulse"
+                          : "bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 border border-[#f0d499]/80"
+                      }`}
+                    >
+                      {isPlayingAiVoiceNote ? (
+                        <>
+                          <Pause className="h-3.5 w-3.5 fill-current" />
+                          <span>Tạm dừng</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="h-3.5 w-3.5 fill-current" />
+                          <span>Nghe Giọng Nói AI Nói</span>
+                        </>
+                      )}
+                    </button>
+
+                    <div className="flex items-center gap-1 h-4 px-2">
+                      {[6, 14, 8, 18, 12, 16, 10, 6, 20, 10, 14, 8].map((h, i) => (
+                        <span
+                          key={i}
+                          style={{
+                            height: isPlayingAiVoiceNote ? `${h}px` : "4px",
+                            transition: "height 0.15s ease",
+                          }}
+                          className={`w-1 rounded-full ${
+                            isPlayingAiVoiceNote ? "bg-amber-500 animate-pulse" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <p className="text-[11px] text-slate-700 dark:text-slate-300 italic bg-amber-500/10 p-2 rounded-lg border-l-2 border-amber-500 leading-relaxed">
+                    "{lastDispatchedOpp.greetingAudioText}"
+                  </p>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between gap-2 pt-2 border-t border-amber-200 dark:border-white/5">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Trạng thái: Đã cập nhật quan tâm CRM
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false);
+                      void navigate({ to: "/messages" as any });
+                    }}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-[11px] hover:bg-slate-300 dark:hover:bg-slate-700 transition cursor-pointer"
+                  >
+                    <span>Mở tin nhắn chờ</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* DYNAMIC EXCEL REPORT CARD */}
+            {activeExcelReport && (
+              <div className="mx-5 my-2.5 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-amber-500/10 to-amber-500/5 border border-emerald-500/30 dark:border-emerald-500/40 shadow-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="h-10 w-10 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
+                      <FileSpreadsheet className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                        {activeExcelReport.title || activeExcelReport.filename}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                        {activeExcelReport.rowCount || 0} dòng dữ liệu • {activeExcelReport.fileSize || 'Excel .xlsx'}
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={activeExcelReport.downloadUrl}
+                    download={activeExcelReport.filename}
+                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold shadow hover:brightness-110 flex items-center gap-1.5 shrink-0 transition"
+                  >
+                    <span>Tải về</span>
+                    <Download className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* DYNAMIC ACTION CHIPS (Khi có suggestedActions) */}
             {suggestedActions && suggestedActions.length > 0 && (
               <div className="px-5 py-2">
@@ -2155,15 +2673,34 @@ export function ViOneVoiceAssistant() {
                       type="button"
                       onClick={() => {
                         if (action.route) {
-                          setIsOpen(false);
-                          void navigate({ to: action.route as any });
+                          if (action.route.startsWith('/api/ai/download-excel')) {
+                            window.open(action.route, '_blank');
+                          } else {
+                            setIsOpen(false);
+                            void navigate({ to: action.route as any });
+                          }
                         } else if (action.intent === "find_potential_leads") {
                           void processCommand("Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi");
                         } else if (action.intent === "check_customers") {
                           void processCommand("Tôi có khách hàng nào chưa");
+                        } else if (action.intent === "export_excel_finance") {
+                          void processCommand("Xuất báo cáo tài chính thu chi ra file Excel");
+                        } else if (action.intent === "export_excel_attendance") {
+                          void processCommand("Xuất báo cáo chấm công nhân sự ra file Excel");
+                        } else if (action.intent === "export_excel_approvals") {
+                          void processCommand("Xuất danh sách hồ sơ trình ký ra file Excel");
                         } else if (action.intent === "save_all_leads" && potentialCustomers) {
                           potentialCustomers.forEach((l) => handleSaveLead(l));
                           toast.success("Đã lưu tất cả 4 khách hàng tiềm năng vào CRM Lead!");
+                        } else if (action.intent === "ai_dispatch_opportunity_voice") {
+                          void dispatchAiOpportunityVoice(
+                            action.payload?.id || sharedOpportunity?.id || "",
+                            "Em là AI trợ lý của Lãnh đạo, xin phép gửi lời chào và quan tâm kết nối cơ hội..."
+                          );
+                        } else if (action.intent === "custom_opportunity_greeting") {
+                          setInputText("Gửi lời chào quan tâm cơ hội: Em là AI trợ lý của Lãnh đạo, xin phép kết nối hợp tác...");
+                        } else if (action.intent === "voice_continue") {
+                          toggleListening();
                         } else if (action.intent === "download_mobileconfig") {
                           window.location.href = "/vione_ios_install.mobileconfig";
                         }
@@ -2181,10 +2718,13 @@ export function ViOneVoiceAssistant() {
             {/* Quick Action Suggestion Chips Mặc Định */}
             <div className="px-5 py-2">
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mb-2">
-                Chạm câu hỏi thông minh:
+                Chạm câu hỏi thông minh & Tạo báo cáo:
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {[
+                  "📊 Xuất Báo Cáo Thu - Chi Excel",
+                  "⏱️ Xuất Báo Cáo Chấm Công Excel",
+                  "📋 Xuất Danh Sách Trình Ký Excel",
                   "👥 Tôi đang có bao nhiêu bạn bè?",
                   "🎫 Tôi đang đăng ký sự kiện nào không?",
                   "📋 Tôi có công việc nào phải làm không?",

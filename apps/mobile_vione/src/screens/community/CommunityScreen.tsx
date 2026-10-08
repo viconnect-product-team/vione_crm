@@ -12,6 +12,7 @@ import {
   Dimensions,
   ActivityIndicator,
   Linking,
+  Share,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
@@ -59,8 +60,14 @@ import { ProposeOpportunityMeetingModal } from "../../components/ProposeOpportun
 import { EditCommunityModal } from "../../components/EditCommunityModal";
 import { ShareEventModal } from "../../components/ShareEventModal";
 import { AssignTaskModal } from "../../components/AssignTaskModal";
-import { communityApi, eventsApi, opportunityApi } from "../../api";
+import { CreateNewsModal } from "../../components/CreateNewsModal";
+import { CommunityNewsDetailModal } from "../../components/CommunityNewsDetailModal";
+import { CommunityInviteModal } from "../../components/CommunityInviteModal";
+import { MemberCardBottomSheet, MemberCardData } from "../../components/MemberCardBottomSheet";
+import { communityApi, eventsApi, opportunityApi, meApi } from "../../api";
 import { apiRequest } from "../../api/client";
+import { useAuth } from "../../context/AuthContext";
+import { BusinessNotificationsModal } from "../../components/BusinessNotificationsModal";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -153,7 +160,7 @@ export function getCommunityVisuals(name: string, logoUrl?: string | null, banne
   ];
   let descFallback = "Liên minh xúc tiến thương mại, kết nối cơ hội kinh doanh và đầu tư quy mô lớn.";
 
-  if (lower.includes("vione") || lower.includes("gia đình") || lower.includes("ceo") || lower.includes("1983")) {
+  if (lower.includes("vione") || lower.includes("gia đình") || lower.includes("ceo") || lower.includes("lãnh đạo")) {
     defaultBanner = "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=80";
     defaultAvatar = logoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
     category = "Gia Đình ViOne • C-Level";
@@ -254,11 +261,14 @@ const INITIAL_EVENTS: B2BEvent[] = [];
 const INITIAL_NEWS: NewsPostItem[] = [];
 const INITIAL_MEMBERS: MemberItem[] = [];
 
+export type TaskFilterType = "all" | "my_tasks" | "assigned" | "in_progress" | "completed";
+
 interface CommunityScreenProps {
   route?: {
     params?: {
       communityId?: string;
       tab?: DetailTab;
+      filter?: TaskFilterType;
       opportunityId?: string;
     };
   };
@@ -270,6 +280,7 @@ interface CommunityScreenProps {
 // ==========================================
 export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigation }) => {
   const { colors, isDark } = useTheme();
+  const { user } = useAuth();
 
   // Navigation State: null = CommunityHome (Level 1); string = CommunityDetail (Level 2)
   const [selectedCommunityId, setSelectedCommunityId] = useState<string | null>(
@@ -283,11 +294,13 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
   const [events, setEvents] = useState<B2BEvent[]>(INITIAL_EVENTS);
   const [opportunities, setOpportunities] = useState<CommunityOpportunityItem[]>(INITIAL_OPPORTUNITIES);
   const [refreshing, setRefreshing] = useState(false);
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
+  const [unreadNotifCount, setUnreadNotifCount] = useState(0);
 
   // Detail Level 2 States
   const [detailTab, setDetailTab] = useState<DetailTab>(route?.params?.tab || "tasks");
   const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
-  const [taskFilter, setTaskFilter] = useState<"all" | "assigned" | "in_progress" | "completed">("all");
+  const [taskFilter, setTaskFilter] = useState<TaskFilterType>(route?.params?.filter || "all");
   const [acceptingTaskId, setAcceptingTaskId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -295,6 +308,9 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
       setSelectedCommunityId(route.params.communityId);
       if (route.params.tab) {
         setDetailTab(route.params.tab);
+      }
+      if (route.params.filter) {
+        setTaskFilter(route.params.filter);
       }
       if (route.params.opportunityId) {
         const found = opportunities.find((o) => o.id === route.params?.opportunityId);
@@ -318,6 +334,17 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
   const [oppModalVisible, setOppModalVisible] = useState(false);
   const [proposeMeetingVisible, setProposeMeetingVisible] = useState(false);
   const [selectedOppForMeeting, setSelectedOppForMeeting] = useState<CommunityOpportunityItem | null>(null);
+
+  // Community News & Announcement states
+  const [newsList, setNewsList] = useState<NewsPostItem[]>(INITIAL_NEWS);
+  const [createNewsVisible, setCreateNewsVisible] = useState(false);
+  const [selectedNews, setSelectedNews] = useState<NewsPostItem | null>(null);
+  const [newsDetailVisible, setNewsDetailVisible] = useState(false);
+
+  // Invite & Member Card Bottom Sheet states
+  const [inviteModalVisible, setInviteModalVisible] = useState(false);
+  const [selectedMember, setSelectedMember] = useState<MemberCardData | null>(null);
+  const [memberSheetVisible, setMemberSheetVisible] = useState(false);
 
   // Active community in Detail view
   const currentCommunity = useMemo(() => {
@@ -391,7 +418,53 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
     } catch {
       // Keep initial
     }
+
+    try {
+      const notifRes = await meApi.getUnreadNotificationCount();
+      if (notifRes?.data?.count !== undefined) {
+        setUnreadNotifCount(notifRes.data.count);
+      }
+    } catch {
+      // ignore
+    }
   };
+
+  const loadTasks = async (commId: string) => {
+    try {
+      const res = await communityApi.getCommunityTasks(commId);
+      const list = res?.data?.tasks || [];
+      if (Array.isArray(list) && list.length > 0) {
+        setTasks(
+          list.map((t: any) => ({
+            id: t.id,
+            communityId: t.communityId || commId,
+            title: t.title,
+            description: t.description || "",
+            assigneeId: t.assigneeId || "",
+            assigneeName: t.assigneeName || "Nhân sự",
+            assignerName: t.assignerName,
+            priority: t.priority || "medium",
+            status: t.status || "assigned",
+            acceptedAt: t.acceptedAt || null,
+            completedAt: t.completedAt || null,
+            deadline: t.deadline || "Hôm nay",
+            customerName: t.customerName,
+            customerPhone: t.customerPhone,
+            customerRequirements: t.customerRequirements,
+            createdAt: t.createdAt || new Date().toISOString(),
+          }))
+        );
+      }
+    } catch (e) {
+      console.warn("Failed to load community tasks:", e);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCommunityId) {
+      loadTasks(selectedCommunityId);
+    }
+  }, [selectedCommunityId]);
 
   useEffect(() => {
     loadData();
@@ -400,6 +473,9 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
   const onRefresh = async () => {
     setRefreshing(true);
     await loadData();
+    if (selectedCommunityId) {
+      await loadTasks(selectedCommunityId);
+    }
     setRefreshing(false);
   };
 
@@ -435,9 +511,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
     setAcceptingTaskId(task.id);
     try {
       if (selectedCommunityId) {
-        await apiRequest(`connect-app/community/${selectedCommunityId}/tasks/${task.id}/accept`, {
-          method: "POST",
-        }).catch(() => null);
+        await communityApi.acceptCommunityTask(selectedCommunityId, task.id);
       }
 
       const nowStr = new Date().toISOString();
@@ -462,15 +536,22 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
   };
 
   const handleCompleteTask = async (task: TaskItem) => {
-    const nowStr = new Date().toISOString();
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === task.id
-          ? { ...t, status: "completed", completedAt: nowStr }
-          : t
-      )
-    );
-    Alert.alert("Hoàn thành việc", `Đã hoàn tất nhiệm vụ: ${task.title}`);
+    try {
+      if (selectedCommunityId) {
+        await communityApi.updateCommunityTaskStatus(selectedCommunityId, task.id, "completed");
+      }
+      const nowStr = new Date().toISOString();
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === task.id
+            ? { ...t, status: "completed", completedAt: nowStr }
+            : t
+        )
+      );
+      Alert.alert("Hoàn thành việc", `Đã hoàn tất nhiệm vụ: ${task.title}`);
+    } catch {
+      Alert.alert("Lỗi", "Không thể cập nhật trạng thái nhiệm vụ. Vui lòng thử lại!");
+    }
   };
 
   // Join community
@@ -505,13 +586,39 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
 
   const hasAdmin = communities.some((c) => c.viewerRole === "admin");
 
-  // Filtered tasks in Level 2 Detail
+  // Đếm số lượng việc được giao cho chính tài khoản đang đăng nhập
+  const myTasksCount = useMemo(() => {
+    if (!user) return 0;
+    const userName = (user.name || user.displayName || "").toLowerCase();
+    const userEmail = (user.email || "").split("@")[0].toLowerCase();
+    return tasks.filter((t) => {
+      const taskAssignee = (t.assigneeName || "").toLowerCase();
+      return (
+        t.assigneeId === user.id ||
+        (userName && taskAssignee.includes(userName)) ||
+        (userEmail && taskAssignee.includes(userEmail))
+      );
+    }).length;
+  }, [tasks, user]);
+
+  // Filtered tasks in Level 2 Detail (Tất cả, ⭐ Việc của tôi, Chờ nhận việc, Đang làm, Đã xong)
   const filteredTasks = useMemo(() => {
     return tasks.filter((t) => {
       if (taskFilter === "all") return true;
+      if (taskFilter === "my_tasks") {
+        if (!user) return false;
+        const userName = (user.name || user.displayName || "").toLowerCase();
+        const userEmail = (user.email || "").split("@")[0].toLowerCase();
+        const taskAssignee = (t.assigneeName || "").toLowerCase();
+        return (
+          t.assigneeId === user.id ||
+          (userName && taskAssignee.includes(userName)) ||
+          (userEmail && taskAssignee.includes(userEmail))
+        );
+      }
       return t.status === taskFilter;
     });
-  }, [tasks, taskFilter]);
+  }, [tasks, taskFilter, user]);
 
   const totalTasks = tasks.length;
   const assignedTasksCount = tasks.filter((t) => t.status === "assigned").length;
@@ -542,10 +649,17 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                     borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
                   },
                 ]}
-                onPress={() => Alert.alert("Thông báo", "Không có thông báo cộng đồng mới.")}
+                onPress={() => setNotificationsVisible(true)}
                 activeOpacity={0.7}
               >
                 <Bell size={16} color={isDark ? "#D8B282" : "#64748B"} strokeWidth={1.8} />
+                {unreadNotifCount > 0 && (
+                  <View style={styles.unreadBadge}>
+                    <Text style={styles.unreadBadgeText}>
+                      {unreadNotifCount > 9 ? "9+" : unreadNotifCount}
+                    </Text>
+                  </View>
+                )}
               </TouchableOpacity>
             }
           />
@@ -1234,6 +1348,18 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                 </View>
               </View>
 
+              {/* Nút Mời Thành Viên */}
+              <TouchableOpacity
+                style={[
+                  styles.editCommunityBtn,
+                  { borderColor: "rgba(216, 178, 130, 0.4)" },
+                ]}
+                onPress={() => setInviteModalVisible(true)}
+              >
+                <Share2 size={13} color="#DFB76C" />
+                <Text style={styles.editCommunityText}>Mời thành viên</Text>
+              </TouchableOpacity>
+
               {/* Nút Quản Trị Viên: Chỉnh sửa cộng đồng */}
               {(currentCommunity.viewerRole === "admin" || currentCommunity.canEdit) && (
                 <TouchableOpacity
@@ -1269,7 +1395,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                   style={styles.primaryActionButton}
                   onPress={() => {
                     setDetailTab("news");
-                    Alert.alert("Đăng bài", "Tạo bài viết thông báo mới cho nội bộ công ty.");
+                    setCreateNewsVisible(true);
                   }}
                 >
                   <LinearGradient
@@ -1313,7 +1439,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                   style={styles.primaryActionButton}
                   onPress={() => {
                     setDetailTab("news");
-                    Alert.alert("Đăng tin", "Đăng bài viết chia sẻ cơ hội hoặc câu chuyện doanh nhân.");
+                    setCreateNewsVisible(true);
                   }}
                 >
                   <LinearGradient
@@ -1557,6 +1683,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                 >
                   {[
                     { id: "all", label: `Tất cả (${totalTasks})` },
+                    { id: "my_tasks", label: `⭐ Việc của tôi (${myTasksCount})` },
                     { id: "assigned", label: `⚡ Chờ nhận việc (${assignedTasksCount})` },
                     { id: "in_progress", label: `Đang làm (${inProgressTasksCount})` },
                     { id: "completed", label: `Đã xong (${completedTasksCount})` },
@@ -1909,8 +2036,28 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
             {/* ================================================================= */}
             {detailTab === "news" && (
               <View style={styles.newsSection}>
-                {INITIAL_NEWS.map((item) => (
-                  <View
+                {/* Header "+ Đăng bài viết" */}
+                <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <Text style={[styles.sectionHeaderSmall, { marginBottom: 0 }]}>
+                    BẢN TIN & THÔNG BÁO ({newsList.length})
+                  </Text>
+                  <TouchableOpacity
+                    style={{ borderRadius: 12, overflow: "hidden" }}
+                    onPress={() => setCreateNewsVisible(true)}
+                    activeOpacity={0.85}
+                  >
+                    <LinearGradient
+                      colors={["#F6E1C3", "#DFB76C", "#C99C47"]}
+                      style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 12, paddingVertical: 6, gap: 5 }}
+                    >
+                      <Plus size={13} color="#050C15" strokeWidth={2.5} />
+                      <Text style={{ fontSize: 11.5, fontWeight: "800", color: "#050C15" }}>Đăng bài</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+
+                {newsList.map((item) => (
+                  <TouchableOpacity
                     key={item.id}
                     style={[
                       styles.newsCard,
@@ -1919,6 +2066,11 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                         borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
                       },
                     ]}
+                    onPress={() => {
+                      setSelectedNews(item);
+                      setNewsDetailVisible(true);
+                    }}
+                    activeOpacity={0.88}
                   >
                     <View style={styles.newsAuthorRow}>
                       <Image source={{ uri: item.authorAvatar }} style={styles.newsAuthorAvatar} />
@@ -1935,7 +2087,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                     <Text style={[styles.newsTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>
                       {item.title}
                     </Text>
-                    <Text style={[styles.newsContent, { color: isDark ? "#94A3B8" : "#64748B" }]}>
+                    <Text numberOfLines={3} style={[styles.newsContent, { color: isDark ? "#94A3B8" : "#64748B" }]}>
                       {item.content}
                     </Text>
 
@@ -1951,21 +2103,43 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                     >
                       <TouchableOpacity
                         style={styles.newsStatBtn}
-                        onPress={() => Alert.alert("Tương tác", "Đã thích bài viết.")}
+                        onPress={() => {
+                          setNewsList((prev) =>
+                            prev.map((n) =>
+                              n.id === item.id ? { ...n, likes: n.likes + 1 } : n
+                            )
+                          );
+                        }}
                       >
                         <Star size={14} color="#DFB76C" />
-                        <Text style={styles.newsStatText}>{item.likes} Lượt thích</Text>
+                        <Text style={styles.newsStatText}>{item.likes} Thích</Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         style={styles.newsStatBtn}
-                        onPress={() => Alert.alert("Bình luận", "Mở khung thảo luận.")}
+                        onPress={() => {
+                          setSelectedNews(item);
+                          setNewsDetailVisible(true);
+                        }}
                       >
                         <MessageSquare size={14} color="#94A3B8" />
-                        <Text style={styles.newsStatText}>{item.comments} Bình luận</Text>
+                        <Text style={styles.newsStatText}>{item.comments} Thảo luận</Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.newsStatBtn}
+                        onPress={() => {
+                          Share.share({
+                            title: item.title,
+                            message: `${item.title}\n\nXem bản tin trên ViOne B2B Network:\nhttps://vione.vn/news/${item.id}`,
+                          });
+                        }}
+                      >
+                        <Share2 size={13} color="#D8B282" />
+                        <Text style={styles.newsStatText}>Chia sẻ</Text>
                       </TouchableOpacity>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             )}
@@ -2039,7 +2213,7 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
             {detailTab === "members" && (
               <View style={styles.membersSection}>
                 {INITIAL_MEMBERS.map((m) => (
-                  <View
+                  <TouchableOpacity
                     key={m.id}
                     style={[
                       styles.memberCard,
@@ -2048,6 +2222,20 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
                         borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
                       },
                     ]}
+                    onPress={() => {
+                      setSelectedMember({
+                        id: m.id,
+                        name: m.name,
+                        title: m.title,
+                        company: m.company,
+                        phone: m.phone,
+                        email: m.email,
+                        avatarUrl: m.avatarUrl,
+                        role: m.role,
+                      });
+                      setMemberSheetVisible(true);
+                    }}
+                    activeOpacity={0.85}
                   >
                     <Image source={{ uri: m.avatarUrl }} style={styles.memberAvatar} />
                     <View style={{ flex: 1, marginLeft: 12 }}>
@@ -2069,11 +2257,23 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
 
                     <TouchableOpacity
                       style={styles.contactBtn}
-                      onPress={() => Alert.alert("Kết nối", `Đã gửi lời chào tới ${m.name}`)}
+                      onPress={() => {
+                        setSelectedMember({
+                          id: m.id,
+                          name: m.name,
+                          title: m.title,
+                          company: m.company,
+                          phone: m.phone,
+                          email: m.email,
+                          avatarUrl: m.avatarUrl,
+                          role: m.role,
+                        });
+                        setMemberSheetVisible(true);
+                      }}
                     >
                       <MessageSquare size={16} color="#D8B282" />
                     </TouchableOpacity>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
             )}
@@ -2208,6 +2408,73 @@ export const CommunityScreen: React.FC<CommunityScreenProps> = ({ route, navigat
           if (selectedOpp) {
             handleInterestOpp(selectedOpp);
           }
+        }}
+      />
+
+      {/* Modal Thông báo thời gian thực */}
+      <BusinessNotificationsModal
+        visible={notificationsVisible}
+        onClose={() => setNotificationsVisible(false)}
+        navigation={navigation}
+      />
+
+      {/* Modal Đăng bài viết / Tin tức */}
+      <CreateNewsModal
+        visible={createNewsVisible}
+        onClose={() => setCreateNewsVisible(false)}
+        communityId={currentCommunity?.id}
+        onPostCreated={(newPost: any) => {
+          setNewsList((prev) => [
+            {
+              id: newPost.id,
+              authorName: newPost.authorName,
+              authorTitle: newPost.authorTitle,
+              authorAvatar: newPost.authorAvatar,
+              timeAgo: "Vừa xong",
+              title: newPost.title,
+              content: newPost.content,
+              imageUrl: newPost.imageUrl,
+              likes: 0,
+              comments: 0,
+            },
+            ...prev,
+          ]);
+        }}
+      />
+
+      {/* Modal Chi tiết tin tức / bài viết */}
+      <CommunityNewsDetailModal
+        visible={newsDetailVisible}
+        news={selectedNews}
+        onClose={() => {
+          setNewsDetailVisible(false);
+          setSelectedNews(null);
+        }}
+        onToggleLike={(newsId) => {
+          setNewsList((prev) =>
+            prev.map((n) =>
+              n.id === newsId ? { ...n, likes: n.likes + 1 } : n
+            )
+          );
+        }}
+      />
+
+      {/* Modal Mời thành viên tham gia cộng đồng */}
+      <CommunityInviteModal
+        visible={inviteModalVisible}
+        communityId={currentCommunity?.id}
+        communityName={currentCommunity?.name || "Cộng đồng Doanh nhân ViOne"}
+        communityDescription={currentCommunity?.shortDescription}
+        onClose={() => setInviteModalVisible(false)}
+      />
+
+      {/* BottomSheet Danh thiếp đối tác / thành viên */}
+      <MemberCardBottomSheet
+        visible={memberSheetVisible}
+        member={selectedMember}
+        onClose={() => {
+          setMemberSheetVisible(false);
+          setSelectedMember(null);
         }}
       />
     </SafeAreaView>
@@ -3384,6 +3651,13 @@ const styles = StyleSheet.create({
   opportunitiesDetailSection: {
     marginTop: 14,
     gap: 12,
+  },
+
+  sectionHeaderSmall: {
+    fontSize: 12.5,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+    color: "#DFB76C",
   },
 
   // News styles

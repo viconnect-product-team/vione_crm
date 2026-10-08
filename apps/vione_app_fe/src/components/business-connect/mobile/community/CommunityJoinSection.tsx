@@ -58,7 +58,7 @@ export function CommunityJoinSection() {
 
   // Các cộng đồng đã có yêu cầu (đang chờ/từ chối/đã huỷ) hiển thị ở danh sách
   // thẻ cộng đồng phía trên; mục gợi ý chỉ giữ cộng đồng chưa gửi yêu cầu.
-  const suggestions = candidates.filter((c) => c.status === "none");
+  const suggestions = candidates.filter((c) => c.status === "none" && !c.name.toLowerCase().includes("1983"));
 
   if (initialLoading || suggestions.length === 0) return null;
 

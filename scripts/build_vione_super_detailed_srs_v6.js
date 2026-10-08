@@ -764,6 +764,90 @@ const srsModules = [
         api: 'POST /api/ai/chat'
       }
     ]
+  },
+  {
+    moduleNumber: '34',
+    moduleName: 'ViOne AI Copilot Đa Năng, Xuất Báo Cáo Excel Thực Tế & Bảng Điều Hành Executive PostgreSQL',
+    epic: 'Trợ lý AI đối thoại thông minh, trích xuất bảng tính Excel (.xlsx) chuẩn C-Level từ CSDL thực, bảng điều hành lưu lượng web landing và sổ cái tài chính PostgreSQL',
+    features: [
+      {
+        id: 'FR-34.01',
+        name: 'Dynamic ViOne AI Copilot & Xuất Báo Cáo Excel (.xlsx) Tự Động',
+        actor: 'Ban Lãnh Đạo C-Level, Quản lý tài chính, Nhân sự, Sales',
+        input: 'Câu lệnh hỏi đáp có từ khóa xuất dữ liệu: "báo cáo tài chính", "excel thu chi", "chấm công", "danh sách hội viên", "trình ký".',
+        logic: '1. AiService.chat() nhận diện ý định xuất báo cáo.\n2. Gọi generateExcelReport(reportType, options) truy vấn PostgreSQL: finance (transactions, invoices), attendance (member_checkins), members, traffic (landing_page_visits), approvals (document_approvals).\n3. Dùng exceljs tạo workbook Navy & Champagne Gold, auto column widths, định dạng tiền tệ VND, SUM formula.\n4. Trả về downloadUrl /api/ai/download-excel/:id.',
+        output: 'File Excel .xlsx chuẩn doanh nghiệp tải về máy.',
+        exception: 'Không có dữ liệu trong kỳ: Sinh bảng tính thông báo không phát sinh dữ liệu.',
+        api: 'POST /api/ai/export-excel, GET /api/ai/download-excel/:id, POST /api/ai/chat'
+      },
+      {
+        id: 'FR-34.02',
+        name: 'Bảng Điều Hành Lưu Lượng Web Landing Doanh Nghiệp Thời Gian Thực',
+        actor: 'Tổng Giám Đốc, Ban Quản Trị, Marketing Director',
+        input: 'Bộ chọn chu kỳ: Ngày, Tuần, Tháng.',
+        logic: '1. API GET /api/admin/traffic-analytics truy vấn bảng landing_page_visits.\n2. Thống kê Hôm nay, Hôm qua, Tuần này, Tháng này và tăng trưởng tuần.\n3. Trả về biểu đồ AreaChart và bảng xếp hạng Top Landing Pages.',
+        output: 'Chỉ số lưu lượng và đồ thị biến động traffic trực quan.',
+        exception: 'Không kết nối được DB: Fallback số liệu cache gần nhất.',
+        api: 'GET /api/admin/traffic-analytics'
+      }
+    ]
+  },
+  {
+    moduleNumber: '35',
+    moduleName: 'Hoàn Thiện 5 Phân Hệ Cốt Lõi Hệ Sinh Thái ViOne C-Level',
+    epic: 'AI Copilot trung thực & typewriter streaming, đăng tin linh hoạt, tin nhắn tự khởi tạo luồng, chỉnh sửa thẻ trang chủ tinh gọn & CRM khách hàng điều hành',
+    features: [
+      {
+        id: 'FR-35.01',
+        name: 'AI Copilot Trung Thực Tuyệt Đối & Hiệu Ứng Typewriter Streaming',
+        actor: 'Mọi người dùng, Lãnh đạo doanh nghiệp',
+        input: 'Câu hỏi: "tôi có bao nhiêu bạn bè", "danh sách bạn bè".',
+        logic: '1. Truy vấn CSDL thực tế public.user_connections với status = accepted.\n2. Khi kết nối = 0: Tuyệt đối không giả lập 156 bạn bè; báo cáo trung thực 0 kết nối và gợi ý đối tác tiềm năng thực từ public.vione_users đồng bộ với Tab Mạng lưới.\n3. Hiển thị hiệu ứng gõ chữ Typewriter Streaming từng ký tự kèm con trỏ nhấp nháy ▎ (chu kỳ 14ms).',
+        output: 'Phản hồi trung thực, mượt mà và gợi ý đối tác thực.',
+        exception: 'Lỗi mạng: Fallback thông minh báo cáo 0 kết nối.',
+        api: 'POST /api/ai/chat'
+      },
+      {
+        id: 'FR-35.02',
+        name: 'Đăng Tin & Khoảnh Khắc Linh Hoạt & Đính Kèm Ảnh Bền Vững',
+        actor: 'Doanh nhân, Thành viên cộng đồng',
+        input: 'Nội dung bài viết, chủ đề/chuyên mục tùy chọn, ảnh đính kèm tùy chọn.',
+        logic: '1. Chủ đề/chuyên mục không bắt buộc (mặc định null), có nút [Bỏ chọn chủ đề] / [Bỏ chọn chuyên mục].\n2. Bỏ ảnh mẫu cưỡng ép, cho phép bài thuần text hoặc ảnh thật.\n3. Backend prepareMoment lưu storage_path vào media và finalizeMoment bảo vệ media slots.',
+        output: 'Bài viết/khoảnh khắc xuất bản thành công kèm ảnh nguyên vẹn.',
+        exception: 'Tải ảnh thất bại: Thông báo và cho phép đăng bài dạng text.',
+        api: 'POST /connect-app/moments/prepare, POST /connect-app/moments/finalize'
+      },
+      {
+        id: 'FR-35.03',
+        name: 'Hộp Thư Tin Nhắn Phân Giải Đối Tác & Khắc Phục Lỗi Tiền Tố Thread ID',
+        actor: 'Người gửi và Người nhận tin nhắn',
+        input: 'Thread ID hoặc Counterpart ID (th-, u:, p:), nội dung tin nhắn.',
+        logic: '1. Backend bóc tách an toàn các tiền tố th-, u:, p: trước khi kiểm tra UUID.\n2. Tự động khởi tạo thread mới nếu counterpart UUID chưa có thread, tránh lỗi thread_not_found.\n3. listMyDmThreads truy vấn vione_users đảm bảo trả về tên, avatar và counterpartUserId.',
+        output: 'Hộp thư hiển thị đầy đủ mọi tài khoản đã chat và mở kênh chat 1-1 liền mạch.',
+        exception: 'ID không hợp lệ: Báo lỗi định dạng ID.',
+        api: 'GET /connect-app/dm/threads, GET /connect-app/dm/threads/:id, POST /connect-app/dm/threads/:id/messages'
+      },
+      {
+        id: 'FR-35.04',
+        name: 'Chỉnh Sửa Nhanh Thẻ Doanh Nhân Trang Chủ & Khử Trùng Lặp Nút Upload',
+        actor: 'Doanh nhân chủ tài khoản',
+        input: 'Mở trang chủ hoặc bấm chỉnh sửa thẻ.',
+        logic: '1. HomeScreen tự động gọi meApi.getIdentity() nạp avatar_url và cover_url từ vione_users.\n2. Backend upsertMyIdentity đồng bộ hai chiều sang vione_users.\n3. Modal QuickEditProfileModal chỉ giữ đúng 1 nút tải ảnh bìa và 1 nút tải avatar.',
+        output: 'Ảnh bìa và avatar hiển thị ổn định, giao diện chỉnh sửa tinh gọn.',
+        exception: 'Lỗi tải ảnh: Fallback gradient mạ vàng sang trọng.',
+        api: 'GET /connect-app/me/identity, PUT /connect-app/me/identity'
+      },
+      {
+        id: 'FR-35.05',
+        name: 'Quản Trị Khách Hàng CRM Chuẩn Điều Hành C-Level',
+        actor: 'Lãnh đạo doanh nghiệp, Giám đốc kinh doanh, Sales',
+        input: 'Quản lý danh sách khách hàng và cơ hội trong Tab Mạng lưới.',
+        logic: '1. 4 Thẻ chỉ số Pipeline điều hành mạ vàng: Quy mô cơ hội, Đang đàm phán, Tỷ lệ chốt deal, Lịch chăm sóc tuần.\n2. Stage Filter Pills: Tất cả, Đàm phán, Đề xuất, Ký kết.\n3. Stepper tương tác 4 giai đoạn: Tiếp cận -> Tư vấn -> Đàm phán -> Ký kết chuyển trạng thái 1-chạm.\n4. Chỉ báo Deal Health (Nóng 90%, Ổn định 70%, Cần chăm sóc 40%) và Touchpoint Logs đa kênh.\n5. Kết nối onUpdateCustomer cập nhật phản ứng tức thì ra danh sách ngoài.',
+        output: 'Giao diện CRM khách hàng di động chuẩn Executive C-Level.',
+        exception: 'Dữ liệu thiếu trường: Tự động gán mặc định an toàn.',
+        api: 'GET /connect-app/network/customers, POST /connect-app/network/customers'
+      }
+    ]
   }
 ];
 

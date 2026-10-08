@@ -982,12 +982,33 @@ export function ExecutiveHome() {
                                 </div>
 
                                 <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)] flex items-center gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      window.dispatchEvent(
+                                        new CustomEvent("vione:share-opportunity-ai", {
+                                          detail: {
+                                            id: opp.id,
+                                            title: opp.title,
+                                            organization: opp.organization,
+                                            dealValue: opp.dealValue,
+                                            category: opp.category,
+                                            communityId: opp.communityId,
+                                          },
+                                        })
+                                      );
+                                    }}
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-2.5 py-2 text-[11px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
+                                  >
+                                    <Mic className="h-3 w-3 text-slate-950" />
+                                    <span>🤖 Nhờ AI Gửi Voice</span>
+                                  </button>
                                   <Link
                                     to={opp.communityId ? (`/connect-app/community/${opp.communityId}/opportunities` as any) : ("/connect-app/community" as any)}
-                                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
+                                    className="inline-flex items-center justify-center gap-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-2 text-[11px] font-bold text-slate-700 dark:text-slate-200 transition cursor-pointer border border-slate-200 dark:border-slate-700"
                                   >
-                                    <span>Xem chi tiết cơ hội</span>
-                                    <ArrowRight className="h-3.5 w-3.5" />
+                                    <span>Chi tiết</span>
+                                    <ArrowRight className="h-3 w-3" />
                                   </Link>
                                 </div>
                               </div>
@@ -1055,10 +1076,10 @@ export function ExecutiveHome() {
                   {/* 1. CUỘC GẶP CỦA TÀI KHOẢN (NẾU CÓ) */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-[#8C653B] dark:text-[#D8B282]">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-[#D8B282]">
                         CUỘC GẶP CỦA TÀI KHOẢN
                       </span>
-                      <span className="rounded-md border border-[#8C653B]/30 bg-[#F6E1C3]/30 px-2 py-0.5 text-[10px] font-bold text-[#050c15]">
+                      <span className="rounded-md border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-accent-soft)] px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:text-[#D8B282]">
                         {todayMeetings.length} cuộc hẹn
                       </span>
                     </div>
@@ -1068,42 +1089,42 @@ export function ExecutiveHome() {
                         {todayMeetings.map((m: any) => (
                           <div
                             key={m.id}
-                            className="rounded-2xl border border-[#8C653B]/30 bg-[#FFFDF9] dark:bg-[#1A1510] p-3.5 shadow-xs"
+                            className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
                           >
                             <div className="flex items-center justify-between gap-2">
-                              <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[#F6E1C3] text-[#050c15] border border-[#8C653B]/30">
+                              <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
                                 [Cuộc gặp 1-1]
                               </span>
-                              <span className="text-[11px] font-semibold text-[#050c15]">
+                              <span className="text-[11px] font-semibold text-[var(--bc-mobile-muted)]">
                                 {m.time} · {m.date || "Hôm nay"}
                               </span>
                             </div>
 
-                            <h4 className="mt-2 text-[14px] font-bold text-[#050c15] dark:text-[#F6E1C3] leading-snug">
+                            <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
                               {m.title}
                             </h4>
 
-                            <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
-                              Đối tác: <span className="font-semibold">{m.counterpart}</span>
+                            <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
+                              Đối tác: <span className="font-semibold text-slate-800 dark:text-slate-200">{m.counterpart}</span>
                             </div>
 
-                            <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
-                              Địa điểm: <span className="font-semibold">{m.location}</span>
+                            <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
+                              Địa điểm: <span className="font-semibold text-slate-800 dark:text-slate-200">{m.location}</span>
                             </div>
 
-                            <div className="mt-2.5 pt-2 border-t border-[#8C653B]/20 flex items-center justify-end">
+                            <div className="mt-2.5 pt-2 border-t border-[var(--bc-mobile-border)] flex items-center justify-end">
                               {m.format === "online" ? (
                                 <button
                                   type="button"
                                   onClick={() => toast.info("Đang mở phòng họp Google Meet")}
-                                  className="rounded-lg bg-[#8C653B] hover:bg-[#724e2c] px-3 py-1.5 text-[11.5px] font-bold text-white transition cursor-pointer"
+                                  className="rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3.5 py-1.5 text-[11.5px] font-bold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
                                 >
                                   Vào phòng họp Meet
                                 </button>
                               ) : (
                                 <a
                                   href={`tel:${m.phone || "0988888888"}`}
-                                  className="rounded-lg bg-[#8C653B] hover:bg-[#724e2c] px-3 py-1.5 text-[11.5px] font-bold text-white transition"
+                                  className="rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3.5 py-1.5 text-[11.5px] font-bold text-slate-950 transition shadow-xs border border-[#f0d499]/80"
                                 >
                                   Gọi đối tác
                                 </a>
@@ -1113,8 +1134,8 @@ export function ExecutiveHome() {
                         ))}
                       </div>
                     ) : (
-                      <div className="rounded-xl border border-[#8C653B]/20 bg-[#FAF6F0] dark:bg-[#1A1510] p-3 text-center">
-                        <p className="text-xs font-semibold text-[#050c15] dark:text-[#E2D3B3]">
+                      <div className="rounded-xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)] p-3 text-center">
+                        <p className="text-xs font-semibold text-[var(--bc-mobile-text)]">
                           Tài khoản hiện chưa có cuộc gặp nào
                         </p>
                       </div>
@@ -1124,10 +1145,10 @@ export function ExecutiveHome() {
                   {/* 2. CƠ HỘI ĐANG CÓ TẠI CỘNG ĐỒNG THAM GIA */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-[#8C653B] dark:text-[#D8B282]">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-[#D8B282]">
                         CƠ HỘI ĐANG CÓ TẠI CỘNG ĐỒNG THAM GIA
                       </span>
-                      <span className="rounded-md border border-[#8C653B]/30 bg-[#F6E1C3]/30 px-2 py-0.5 text-[10px] font-bold text-[#050c15]">
+                      <span className="rounded-md border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-accent-soft)] px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:text-[#D8B282]">
                         {allOpportunitiesList.length} cơ hội
                       </span>
                     </div>
@@ -1136,27 +1157,27 @@ export function ExecutiveHome() {
                       {allOpportunitiesList.map((opp: any) => (
                         <div
                           key={opp.id}
-                          className="rounded-2xl border border-[#8C653B]/30 bg-[#FFFDF9] dark:bg-[#1A1510] p-3.5 shadow-xs"
+                          className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[#F6E1C3] text-[#050c15] border border-[#8C653B]/30">
+                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
                               {opp.communityName || "Cộng đồng ViOne"}
                             </span>
-                            <span className="inline-flex items-center rounded-md bg-[#8C653B] px-2 py-0.5 text-[9.5px] font-extrabold text-white">
+                            <span className="inline-flex items-center gap-1 rounded-md bg-[#DFB76C] px-1.5 py-0.5 text-[9.5px] font-extrabold text-slate-950 border border-[#f0d499]/80">
                               CƠ HỘI ĐANG CÓ
                             </span>
                           </div>
 
-                          <h4 className="mt-2 text-[14px] font-bold text-[#050c15] dark:text-[#F6E1C3] leading-snug">
+                          <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
                             {opp.title}
                           </h4>
 
-                          <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
-                            Đơn vị: <span className="font-semibold">{opp.organization}</span>
+                          <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
+                            Đơn vị: <span className="font-semibold text-slate-800 dark:text-slate-200">{opp.organization}</span>
                           </div>
 
-                          <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs text-[#050c15] dark:text-[#E2D3B3]">
-                            <span className="rounded-md border border-[#8C653B]/40 bg-[#F6E1C3]/30 px-2 py-0.5 font-bold text-[#050c15]">
+                          <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs text-[var(--bc-mobile-muted)]">
+                            <span className="rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
                               {opp.dealValue}
                             </span>
                             <span>
@@ -1164,12 +1185,34 @@ export function ExecutiveHome() {
                             </span>
                           </div>
 
-                          <div className="mt-3 pt-2.5 border-t border-[#8C653B]/20">
+                          <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)] flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                window.dispatchEvent(
+                                  new CustomEvent("vione:share-opportunity-ai", {
+                                    detail: {
+                                      id: opp.id,
+                                      title: opp.title,
+                                      organization: opp.organization,
+                                      dealValue: opp.dealValue,
+                                      category: opp.category,
+                                      communityId: opp.communityId,
+                                    },
+                                  })
+                                );
+                              }}
+                              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-2.5 py-2 text-[11px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
+                            >
+                              <Mic className="h-3 w-3 text-slate-950" />
+                              <span>🤖 Nhờ AI Gửi Voice</span>
+                            </button>
                             <Link
                               to={opp.communityId ? (`/connect-app/community/${opp.communityId}/opportunities` as any) : ("/connect-app/community" as any)}
-                              className="w-full inline-flex items-center justify-center rounded-xl bg-[#8C653B] hover:bg-[#724e2c] px-3 py-2 text-[11.5px] font-extrabold text-white transition cursor-pointer"
+                              className="inline-flex items-center justify-center gap-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-2 text-[11px] font-bold text-slate-700 dark:text-slate-200 transition cursor-pointer border border-slate-200 dark:border-slate-700"
                             >
-                              Xem chi tiết cơ hội
+                              <span>Chi tiết</span>
+                              <ArrowRight className="h-3 w-3" />
                             </Link>
                           </div>
                         </div>
@@ -1180,10 +1223,10 @@ export function ExecutiveHome() {
                   {/* 3. SỰ KIỆN SẮP TỚI */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[11px] font-black uppercase tracking-wider text-[#8C653B] dark:text-[#D8B282]">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-700 dark:text-[#D8B282]">
                         SỰ KIỆN SẮP TỚI
                       </span>
-                      <span className="rounded-md border border-[#8C653B]/30 bg-[#F6E1C3]/30 px-2 py-0.5 text-[10px] font-bold text-[#050c15]">
+                      <span className="rounded-md border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-accent-soft)] px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:text-[#D8B282]">
                         {allUpcomingList.length} sự kiện
                       </span>
                     </div>
@@ -1192,32 +1235,33 @@ export function ExecutiveHome() {
                       {allUpcomingList.map((ev: any) => (
                         <div
                           key={ev.id}
-                          className="rounded-2xl border border-[#8C653B]/30 bg-[#FFFDF9] dark:bg-[#1A1510] p-3.5 shadow-xs"
+                          className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[#F6E1C3] text-[#050c15] border border-[#8C653B]/30">
+                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
                               {ev.communityName || ev.community || "Hiệp hội ViOne"}
                             </span>
-                            <span className="text-[11px] font-semibold text-[#050c15]">
+                            <span className="text-[11px] font-semibold text-[var(--bc-mobile-muted)]">
                               {ev.formattedDate || ev.date || "Sắp diễn ra"} · {ev.time || ""}
                             </span>
                           </div>
 
-                          <h4 className="mt-2 text-[14px] font-bold text-[#050c15] dark:text-[#F6E1C3] leading-snug">
+                          <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
                             {ev.title}
                           </h4>
 
-                          <div className="mt-1 text-xs text-[#050c15] dark:text-[#E2D3B3]">
-                            Địa điểm: <span className="font-semibold">{ev.location}</span>
+                          <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
+                            Địa điểm: <span className="font-semibold text-slate-800 dark:text-slate-200">{ev.location}</span>
                           </div>
 
-                          <div className="mt-3 pt-2.5 border-t border-[#8C653B]/20">
+                          <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)]">
                             <button
                               type="button"
                               onClick={() => handleOpenEvent(ev)}
-                              className="w-full inline-flex items-center justify-center rounded-xl bg-[#8C653B] hover:bg-[#724e2c] px-3 py-2 text-[11.5px] font-extrabold text-white transition cursor-pointer"
+                              className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
                             >
-                              Xem chi tiết sự kiện
+                              <span>Xem chi tiết sự kiện</span>
+                              <ArrowRight className="h-3.5 w-3.5" />
                             </button>
                           </div>
                         </div>
@@ -2211,24 +2255,6 @@ function QuickEditProfileModal({
               <label className="text-xs font-bold text-[var(--bc-mobile-text)]">
                 Ảnh bìa trang cá nhân
               </label>
-              <button
-                type="button"
-                onClick={() => coverInputRef.current?.click()}
-                disabled={uploadingCover}
-                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-[#D8B282] hover:underline cursor-pointer disabled:opacity-50"
-              >
-                {uploadingCover ? (
-                  <>
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                    <span>Đang tải lên...</span>
-                  </>
-                ) : (
-                  <>
-                    <Camera className="h-3 w-3" />
-                    <span>Tải ảnh bìa</span>
-                  </>
-                )}
-              </button>
             </div>
             <input
               type="file"
@@ -2249,13 +2275,22 @@ function QuickEditProfileModal({
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-white/70 text-xs font-medium">
-                  Chưa có ảnh bìa — Chạm để tải ảnh từ máy
+                  Chưa có ảnh bìa
                 </div>
               )}
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors flex items-center justify-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-md text-white text-xs font-semibold shadow-md">
-                  <Camera className="h-3.5 w-3.5 text-amber-400" />
-                  {uploadingCover ? "Đang tải ảnh bìa lên MinIO..." : "Chạm để thay đổi ảnh bìa"}
+                  {uploadingCover ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin text-amber-400" />
+                      <span>Đang tải ảnh bìa lên...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Camera className="h-3.5 w-3.5 text-amber-400" />
+                      <span>Đổi ảnh bìa</span>
+                    </>
+                  )}
                 </span>
               </div>
             </div>
@@ -2267,24 +2302,6 @@ function QuickEditProfileModal({
               <label className="text-xs font-bold text-[var(--bc-mobile-text)]">
                 Ảnh đại diện
               </label>
-              <button
-                type="button"
-                onClick={() => avatarInputRef.current?.click()}
-                disabled={uploadingAvatar}
-                className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-600 dark:text-[#D8B282] hover:underline cursor-pointer disabled:opacity-50"
-              >
-                {uploadingAvatar ? (
-                  <>
-                    <Loader2 className="h-3 w-3 animate-spin" />
-                    <span>Đang tải lên...</span>
-                  </>
-                ) : (
-                  <>
-                    <Camera className="h-3 w-3" />
-                    <span>Tải ảnh đại diện</span>
-                  </>
-                )}
-              </button>
             </div>
             <input
               type="file"
@@ -2294,43 +2311,37 @@ function QuickEditProfileModal({
               className="hidden"
             />
             <div className="flex items-center gap-3.5 p-3 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface-2)]">
-              <div
-                onClick={() => avatarInputRef.current?.click()}
-                className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-[var(--bc-mobile-border-gold)] overflow-hidden bg-[var(--bc-mobile-surface)] cursor-pointer group shadow-md"
-              >
+              <div className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full border-2 border-[var(--bc-mobile-border-gold)] overflow-hidden bg-[var(--bc-mobile-surface)] shadow-md">
                 <img
                   src={resolveMediaUrl(avatar) || avatarOrDemo(avatar, name)}
                   alt="Avatar"
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform"
+                  className="h-full w-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = demoAvatar(name);
                   }}
                 />
-                <div className="absolute inset-0 bg-black/35 group-hover:bg-black/50 transition-colors grid place-items-center">
-                  <Camera className="h-4 w-4 text-white drop-shadow" />
-                </div>
               </div>
               <div className="min-w-0 flex-1">
                 <button
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
                   disabled={uploadingAvatar}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--bc-mobile-border-gold)] bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-700 dark:text-[#D8B282] cursor-pointer transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-[var(--bc-mobile-border-gold)] bg-amber-500/10 hover:bg-amber-500/20 text-xs font-bold text-amber-700 dark:text-[#D8B282] cursor-pointer transition-colors"
                 >
                   {uploadingAvatar ? (
                     <>
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      <span>Đang tải lên MinIO...</span>
+                      <span>Đang tải lên...</span>
                     </>
                   ) : (
                     <>
                       <Camera className="h-3.5 w-3.5" />
-                      <span>Chọn ảnh từ thiết bị</span>
+                      <span>Đổi ảnh đại diện</span>
                     </>
                   )}
                 </button>
                 <p className="mt-1 text-[11px] text-[var(--bc-mobile-muted)] truncate">
-                  Định dạng JPG, PNG, WEBP. Tự động lưu lên hệ thống.
+                  Định dạng JPG, PNG, WEBP tự động đồng bộ.
                 </p>
               </div>
             </div>

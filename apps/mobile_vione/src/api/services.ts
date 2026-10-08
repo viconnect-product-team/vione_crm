@@ -298,6 +298,35 @@ export const communityApi = {
     const q = query ? `?query=${encodeURIComponent(query)}` : "";
     return api.get<any[]>(`${API_ENDPOINTS.COMMUNITIES.MEMBERS(communityId)}${q}`);
   },
+  getCommunityEmployees: async (communityId: string) => {
+    return api.get<{ ok: boolean; employees: any[] }>(API_ENDPOINTS.COMMUNITIES.EMPLOYEES(communityId));
+  },
+  getCommunityTasks: async (communityId: string, status?: string, isMyTasks?: boolean) => {
+    const params = new URLSearchParams();
+    if (status && status !== "all") params.append("status", status);
+    if (isMyTasks) params.append("isMyTasks", "true");
+    const qs = params.toString() ? `?${params.toString()}` : "";
+    return api.get<{ ok: boolean; tasks: any[] }>(`${API_ENDPOINTS.COMMUNITIES.TASKS(communityId)}${qs}`);
+  },
+  getAllMyCommunityTasks: async (status?: string) => {
+    const q = status && status !== "all" ? `?status=${status}` : "";
+    return api.get<{ ok: boolean; tasks: any[] }>(`${API_ENDPOINTS.COMMUNITIES.ALL_MY_TASKS}${q}`);
+  },
+  createCommunityTask: async (communityId: string, data: any) => {
+    return api.post<{ ok: boolean; task: any; message: string }>(API_ENDPOINTS.COMMUNITIES.TASKS(communityId), data);
+  },
+  acceptCommunityTask: async (communityId: string, taskId: string) => {
+    return api.post<{ ok: boolean; message: string }>(API_ENDPOINTS.COMMUNITIES.TASK_ACCEPT(communityId, taskId), {});
+  },
+  updateCommunityTaskStatus: async (communityId: string, taskId: string, status: string) => {
+    return api.patch<{ ok: boolean; task: any; message: string }>(API_ENDPOINTS.COMMUNITIES.TASK_STATUS(communityId, taskId), { status });
+  },
+  getCommunitySupervision: async (communityId: string) => {
+    return api.get<{ ok: boolean; employees: any[]; tasks: any[]; customerCare: any[] }>(API_ENDPOINTS.COMMUNITIES.SUPERVISION(communityId));
+  },
+  addCustomerCareLog: async (communityId: string, data: any) => {
+    return api.post(API_ENDPOINTS.COMMUNITIES.CUSTOMER_CARE_LOG(communityId), data);
+  },
   getCommunityEvents: async (communityId: string, tab: "upcoming" | "registered" = "upcoming") => {
     return api.get<B2BEvent[]>(`${API_ENDPOINTS.COMMUNITIES.EVENTS(communityId)}?tab=${tab}`);
   },
@@ -307,6 +336,18 @@ export const communityApi = {
   },
   createCommunityOpportunity: async (communityId: string, data: any) => {
     return api.post(API_ENDPOINTS.COMMUNITIES.OPPORTUNITIES(communityId), data);
+  },
+  getCommunityNews: async (communityId: string) => {
+    return api.get<any[]>(API_ENDPOINTS.COMMUNITIES.NEWS(communityId));
+  },
+  createCommunityNews: async (communityId: string, data: any) => {
+    return api.post<any>(API_ENDPOINTS.COMMUNITIES.NEWS(communityId), data);
+  },
+  getCommunityInvites: async (communityId: string) => {
+    return api.get<any>(API_ENDPOINTS.COMMUNITIES.INVITES(communityId));
+  },
+  createCommunityInvite: async (communityId: string, data?: any) => {
+    return api.post<any>(API_ENDPOINTS.COMMUNITIES.INVITES(communityId), data || {});
   },
 };
 
@@ -350,6 +391,20 @@ export const operationsApi = {
   // Attendance & AI FaceID
   getAttendanceLogs: async () => {
     return api.get<{ success: boolean; data: any }>(API_ENDPOINTS.OPERATIONS.ATTENDANCE);
+  },
+  getCompanyAttendanceSummary: async (userId?: string) => {
+    const query = userId ? `?userId=${encodeURIComponent(userId)}` : "";
+    return api.get<{ success: boolean; data: any }>(`${API_ENDPOINTS.OPERATIONS.ATTENDANCE_COMPANY_SUMMARY}${query}`);
+  },
+  getExecutiveSchedule: async (userId?: string) => {
+    const query = userId ? `?userId=${encodeURIComponent(userId)}` : "";
+    return api.get<{ success: boolean; data: any }>(`${API_ENDPOINTS.OPERATIONS.EXECUTIVE_SCHEDULE}${query}`);
+  },
+  aiOptimizeSchedule: async (dto?: any) => {
+    return api.post<{ success: boolean; data: any; message: string }>(API_ENDPOINTS.OPERATIONS.AI_OPTIMIZE_SCHEDULE, dto || {});
+  },
+  createExecutiveTask: async (dto: any) => {
+    return api.post<{ success: boolean; data: any; message: string }>(API_ENDPOINTS.OPERATIONS.CREATE_EXECUTIVE_TASK, dto);
   },
   recordCheckIn: async (dto: {
     employeeName: string;
@@ -485,5 +540,11 @@ export const businessCardApi = {
 export const aiApi = {
   chat: async (message: string, conversationId?: string) => {
     return api.post<any>(API_ENDPOINTS.AI.CHAT, { message, conversationId });
+  },
+  sendMessage: async (recipientQuery: string, message: string, voiceTranscript?: string) => {
+    return api.post<any>("/connect-app/ai/send-message", { recipientQuery, message, voiceTranscript });
+  },
+  expressOpportunityVoice: async (opportunityId: string, customGreeting?: string, voiceTranscript?: string) => {
+    return api.post<any>("/connect-app/ai/express-opportunity-voice", { opportunityId, customGreeting, voiceTranscript });
   },
 };

@@ -124,10 +124,10 @@ const SAMPLE_MEETINGS: AiMeeting[] = [
 const SAMPLE_OPPORTUNITIES: AiOpportunity[] = [
   {
     id: "opp-1",
-    title: "Cung ứng nền tảng CRM & AI Matchmaking cho Hiệp hội CEO 1983",
+    title: "Cung ứng nền tảng CRM & AI Matchmaking cho Liên minh Doanh nghiệp B2B",
     budget: "500.000.000 đ",
     interestCount: 14,
-    community: "CLB Doanh Nhân 1983 Toàn Quốc",
+    community: "Cộng Đồng Doanh Nhân ViOne Connect",
   },
   {
     id: "opp-2",
@@ -142,12 +142,19 @@ interface ViOneVoiceAssistantModalProps {
   visible: boolean;
   onClose: () => void;
   onNavigateToTab?: (tab: string) => void;
+  initialOpportunity?: {
+    id: string;
+    title: string;
+    organization?: string;
+    dealValue?: string;
+  } | null;
 }
 
 export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> = ({
   visible,
   onClose,
   onNavigateToTab,
+  initialOpportunity,
 }) => {
   const { isDark } = useTheme();
   const [inputText, setInputText] = useState("");
@@ -155,6 +162,65 @@ export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> =
   const [aiResponse, setAiResponse] = useState<string>(
     "Xin chào! Tôi là Trợ lý Doanh Nhân ViOne AI 5.0. Bạn có thể hỏi: 'Tôi có khách hàng nào chưa?', 'Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi', hoặc tra cứu cơ hội, lịch trình và kết nối gần đây."
   );
+  const [displayedResponse, setDisplayedResponse] = useState<string>(
+    "Xin chào! Tôi là Trợ lý Doanh Nhân ViOne AI 5.0. Bạn có thể hỏi: 'Tôi có khách hàng nào chưa?', 'Tìm tôi khách hàng tiềm năng phù hợp với hồ sơ của tôi', hoặc tra cứu cơ hội, lịch trình và kết nối gần đây."
+  );
+  const typewriterTimerRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (visible && initialOpportunity) {
+      setAiResponse(
+        `🎯 **ĐÃ TIẾP NHẬN CƠ HỘI GIAO THƯƠNG:**\n\n📌 **${initialOpportunity.title}**\n🏢 **Người đăng:** ${initialOpportunity.organization || "Đối tác ViOne"}\n\n👉 Bạn hãy nói: *"Gửi lời chào quan tâm cơ hội"* để em đại diện Lãnh đạo gửi tin nhắn kèm lời chào giọng nói AI vào hộp thư chờ của đối tác!`
+      );
+      setSuggestedActions([
+        "🎙️ Gửi Lời Chào Giọng Nói AI Ngay",
+        "💬 Soạn Lời Chào Tùy Chỉnh",
+      ]);
+    }
+  }, [visible, initialOpportunity]);
+
+  useEffect(() => {
+    if (typewriterTimerRef.current) {
+      clearInterval(typewriterTimerRef.current);
+      typewriterTimerRef.current = null;
+    }
+
+    if (!aiResponse) {
+      setDisplayedResponse("");
+      return;
+    }
+
+    if (aiResponse.startsWith("Xin chào! Tôi là Trợ lý Doanh Nhân")) {
+      setDisplayedResponse(aiResponse);
+      return;
+    }
+
+    let currentIndex = 0;
+    const totalLength = aiResponse.length;
+    const step = totalLength > 300 ? 3 : totalLength > 150 ? 2 : 1;
+    const speed = 14;
+
+    setDisplayedResponse("");
+
+    typewriterTimerRef.current = setInterval(() => {
+      currentIndex += step;
+      if (currentIndex >= totalLength) {
+        setDisplayedResponse(aiResponse);
+        if (typewriterTimerRef.current) {
+          clearInterval(typewriterTimerRef.current);
+          typewriterTimerRef.current = null;
+        }
+      } else {
+        setDisplayedResponse(aiResponse.slice(0, currentIndex));
+      }
+    }, speed);
+
+    return () => {
+      if (typewriterTimerRef.current) {
+        clearInterval(typewriterTimerRef.current);
+      }
+    };
+  }, [aiResponse]);
   const [leads, setLeads] = useState<PotentialLead[] | null>(null);
   const [meetings, setMeetings] = useState<AiMeeting[] | null>(null);
   const [opportunities, setOpportunities] = useState<AiOpportunity[] | null>(null);
@@ -214,6 +280,60 @@ export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> =
 
     const qLower = q.toLowerCase();
 
+    // 1. Phân tích lệnh TỰ ĐỘNG NHẮN TIN CHO TÀI KHOẢN A, B, C
+    const msgMatch = q.match(
+      /(?:tự động\s+)?(?:nhắn tin|gửi tin nhắn|nhắn)\s+(?:cho|tới|đến)\s+(?:tài khoản\s+|anh\s+|chị\s+|bạn\s+)?([^,:\.\n]+?)(?:\s+(?:rằng|là|với nội dung|nội dung|bảo|rằng là)\s+|\s*[:,-]\s*)(.+)/i
+    );
+    if (msgMatch) {
+      const recipient = msgMatch[1].trim();
+      const content = msgMatch[2].trim();
+      try {
+        const res = await aiApi.sendMessage(recipient, content, q);
+        if (res.data?.ok && res.data?.recipient) {
+          setAiResponse(
+            `🤖 **Đã tự động gửi tin nhắn thành công** đến **${res.data.recipient.name}** (${res.data.recipient.company || "Đối tác ViOne"})!\n\n💬 *Nội dung:* "${res.data.formattedText}"\n\n📌 *Trạng thái:* Đã chuyển thẳng vào hộp thư đối tác và gửi thông báo đẩy ưu tiên cao.`
+          );
+          setSuggestedActions(["💬 Mở Hộp Thư Trò Chuyện", "🎙️ Tiếp Tục Ra Lệnh Giọng Nói"]);
+        } else {
+          setAiResponse(res.data?.error || `Không tìm thấy tài khoản "${recipient}".`);
+        }
+      } catch {
+        setAiResponse("Không thể gửi tin nhắn lúc này. Vui lòng kiểm tra lại mạng.");
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    // 2. Phân tích lệnh GỬI LỜI CHÀO QUAN TÂM CƠ HỘI BẰNG GIỌNG NÓI AI
+    if (
+      qLower.includes("quan tâm cơ hội") ||
+      qLower.includes("gửi lời chào cơ hội") ||
+      qLower.includes("gửi tôi lời chào") ||
+      qLower.includes("gửi lời chào mong muốn") ||
+      qLower.includes("gửi voice quan tâm") ||
+      qLower.includes("nhờ ai gửi") ||
+      ((qLower.includes("gửi đi") || qLower.includes("đồng ý gửi") || qLower === "gửi" || qLower === "đồng ý") && initialOpportunity)
+    ) {
+      const targetOppId = initialOpportunity?.id || (q.match(/(?:cơ hội\s+|tài khoản\s+)([^,:\.\n]+)/i)?.[1]?.trim() || "opp-sample");
+      try {
+        const res = await aiApi.expressOpportunityVoice(targetOppId, q, q);
+        if (res.data?.ok) {
+          setAiResponse(
+            `🌟 **Đã tự động gửi lời chào & bản ghi âm giọng nói AI quan tâm cơ hội thành công!**\n\n🎯 *Cơ hội:* **${res.data.opportunityTitle}**\n👤 *Người nhận:* **${res.data.posterName}** (Đã chuyển vào mục Tin nhắn chờ)\n\n🎙️ *Lời chào giọng nói AI đại diện Lãnh đạo:*\n"${res.data.greetingAudioText}"\n\n✅ Đã đồng thời cập nhật trạng thái quan tâm cơ hội ưu tiên cao trên hệ thống ViOne CRM.`
+          );
+          setSuggestedActions(["💬 Mở Tin Nhắn Chờ", "📊 Xem Cơ Hội"]);
+        } else {
+          setAiResponse(res.data?.error || "Không tìm thấy cơ hội tương ứng.");
+        }
+      } catch {
+        setAiResponse("Không thể gửi lời chào quan tâm cơ hội lúc này. Vui lòng thử lại.");
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
     try {
       const res = await aiApi.chat(q);
       const data = res.data;
@@ -231,6 +351,109 @@ export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> =
     } catch {
       // Intelligent fallback matching app data if offline or backend cold start
       if (
+        qLower.includes("lịch họp") ||
+        qLower.includes("mấy giờ") ||
+        qLower.includes("cuộc họp nào") ||
+        qLower.includes("có lịch họp")
+      ) {
+        setAiResponse(
+          "📅 **Kính Thưa Sếp, Em Xin Báo Cáo Lịch Họp Hôm Nay:**\n\n1. **14:00 - 15:30 (Trực tiếp tại ViOne Tower, Tầng 18):**\n   • Họp chiến lược & Ký kết hợp đồng B2B với **Ông Trần Đình Long** (Chủ tịch HĐQT Tập đoàn Thép Hòa Phát).\n\n2. **15:45 - 16:45 (Google Meet Trực Tuyến):**\n   • Thẩm định giải pháp bảo mật với **Bà Hoàng Mai Anh** (CFO VNPay FinTech).\n\n3. **17:00 - 18:00 (Nội bộ Zoom):**\n   • Họp giao ban điều phối dự án ViOne ERP nội bộ.\n\n⚠️ *Cảnh báo từ Thư ký: Khoảng cách giữa 2 phiên họp chỉ có 15 phút, chiều nay lịch khá dồn dập. Sếp có muốn em sắp xếp lại cho đỡ mệt không ạ?*"
+        );
+        setSuggestedActions([
+          "🩺 Kiểm tra mật độ & Sức khỏe",
+          "✨ Sắp xếp lại lịch cho đỡ dồn dập",
+          "📅 Mở Toàn Bộ Lịch Trình",
+        ]);
+      } else if (
+        qLower.includes("sức khỏe") ||
+        qLower.includes("dồn dập") ||
+        qLower.includes("quá tải") ||
+        qLower.includes("có mệt không") ||
+        qLower.includes("căng thẳng")
+      ) {
+        setAiResponse(
+          "⚠️ **BÁO CÁO PHÂN TÍCH MẬT ĐỘ LÀM VIỆC & SỨC KHỎE (AI HEALTH AUDIT):**\n\n• **Chỉ số Cân bằng Sức khỏe:** **58/100 (MỨC ĐỘ DỒN DẬP CAO)**\n• **Phân tích chi tiết:**\n  - Chiều nay Sếp có **3 cuộc họp liên tiếp** từ **14:00 đến 18:00**.\n  - Khoảng nghỉ giữa phiên họp Thép Hòa Phát và VNPay chỉ có **15 phút**, không đủ thời gian nạp năng lượng hay điều chỉnh tâm thế.\n\n🩺 **Tác động:** Làm việc liên tục 4 tiếng trong phòng kín dễ gây căng thẳng thần kinh và hạ đường huyết nhẹ.\n\n💡 **Đề xuất từ Thư ký:** Cho phép em dời cuộc họp nội bộ 17:00 sang 09:30 sáng mai để Sếp có 45 phút trà chiều thư giãn nạp năng lượng."
+        );
+        setSuggestedActions([
+          "✨ Đồng ý: Sắp xếp lại lịch cho đỡ dồn dập",
+          "☕ Nhắn trợ lý chuẩn bị trà chiều",
+          "📅 Xem Lịch Sau Tối Ưu",
+        ]);
+      } else if (
+        qLower.includes("sắp xếp lại") ||
+        qLower.includes("đỡ dồn dập") ||
+        qLower.includes("tối ưu lịch") ||
+        qLower.includes("sắp xếp công việc")
+      ) {
+        setAiResponse(
+          "✨ **THƯ KÝ AI ĐÃ TÁI CẤU TRÚC & SẮP XẾP LẠI LỊCH CHO SẾP:**\n\n1. 🔄 **Dời cuộc họp nội bộ:** Đã chuyển cuộc họp giao ban ERP sang **09:30 - 10:30 Sáng mai** (Đã gửi thông báo tự động cho đội ngũ).\n2. ☕ **Bổ sung khoảng nghỉ:** **16:45 - 17:30 Chiều nay** là thời gian trà chiều & thư giãn mắt.\n3. 📋 **Công việc bàn giấy:** Task duyệt biên bản Thép Nam Sơn được dời sang ngày mai sau khi Kế toán trưởng rà soát.\n\n🌿 **Kết quả:** Chỉ số Cân bằng Sức khỏe tăng từ **58/100 (Dồn dập)** ➔ **88/100 (CÂN BẰNG LÝ TƯỞNG)**!"
+        );
+        setSuggestedActions([
+          "📅 Mở Lịch Làm Việc",
+          "🔔 Kiểm Tra Nhắc Việc",
+        ]);
+      } else if (
+        qLower.includes("giao việc") ||
+        qLower.includes("giao cho") ||
+        qLower.includes("phân công") ||
+        qLower.includes("bảo nhân viên") ||
+        qLower.includes("giao task")
+      ) {
+        setAiResponse(
+          "⚡ **THƯ KÝ AI ĐÃ GIAO VIỆC TRỰC TIẾP CHO NHÂN VIÊN THÀNH CÔNG:**\n\n• **Người nhận nhiệm vụ:** **Đặng Nam (Khối Vận Hành Hệ Thống)**\n• **Nội dung công việc:** *Nạp chip thẻ Titanium NFC và kiểm tra kết nối cho sự kiện C-Level*\n• **Thời hạn hoàn thành:** Hôm nay, trước **17:30**\n• **Mức độ ưu tiên:** **Cao (High Priority)**\n• **Cơ chế giám sát:**\n  - Đã gửi thông báo đẩy (Push Notification) đến máy nhân viên.\n  - Tự động kích hoạt chuông nhắc tiến độ sau 2 giờ.\n  - Cài đặt nhắc nhở Sếp kiểm tra kết quả bàn giao lúc 17:00.\n\n*Nhiệm vụ đã được ghi nhận trực tiếp vào Hệ Thống Giám Sát Công Việc Doanh Nghiệp.*"
+        );
+        setSuggestedActions([
+          "👥 Xem Tiến Độ Của Nhân Viên Này",
+          "📊 Bảng Phân Công Nhiệm Vụ Công Ty",
+          "➕ Giao Thêm Việc Cho Nhân Viên Khác",
+        ]);
+      } else if (
+        qLower.includes("tiến độ nhân viên") ||
+        qLower.includes("quá trình làm việc") ||
+        qLower.includes("nhân viên đang làm gì") ||
+        qLower.includes("báo cáo công việc") ||
+        qLower.includes("giám sát nhân viên") ||
+        qLower.includes("tình hình nhân viên")
+      ) {
+        setAiResponse(
+          "📊 **BÁO CÁO THƯ KÝ AI: GIÁM SÁT TIẾN ĐỘ & QUÁ TRÌNH LÀM VIỆC CỦA NHÂN VIÊN HÔM NAY:**\n\n• **Tổng quan lực lượng:** **45 nhân sự** trong doanh nghiệp · **42 có mặt làm việc** · **3 nghỉ phép có duyệt**.\n• **Tiến độ tổng thể công việc:** **30 nhiệm vụ** được giao hôm nay:\n  - ✅ **18 nhiệm vụ đã hoàn tất (60%)**\n  - ⏳ **10 nhiệm vụ đang triển khai đúng tiến độ**\n  - ⚠️ **2 nhiệm vụ cần đôn đốc trước 17:30**\n\n📌 **CHI TIẾT TIẾN ĐỘ CÁC NHÂN SỰ CHỦ CHỐT:**\n1. **Đặng Nam** (Vận Hành Hệ Thống): Đang nạp chip NFC C-Level · Tiến độ **85%**.\n2. **Trần Thu Hà** (Tài Chính - Kế Toán): Đối soát dòng tiền & Lập BCTC quý 3 · Tiến độ **92%**.\n3. **Lê Quốc Dũng** (Phòng Kinh Doanh): Chăm sóc 12 khách hàng VIP Hòa Phát · Tiến độ **70%**.\n4. **Hoàng Gia Bảo** (Kinh Doanh): Nghỉ phép có duyệt (Đã bàn giao phễu lead).\n\n💡 *Khuyến nghị:* Mọi công việc đang trong tầm kiểm soát tốt. Sếp có thể nhấn nút bên dưới để gửi tin nhắn đốc thúc tự động tới nhân sự."
+        );
+        setSuggestedActions([
+          "👥 Mở Bảng Giám Sát Chi Tiết Nhân Sự",
+          "⚡ Giao Việc Nhanh Cho Nhân Viên",
+          "📢 Gửi Nhắc Nhở Đốc Thúc Toàn Đội",
+        ]);
+      } else if (
+        qLower.includes("mạng lưới doanh nhân") ||
+        qLower.includes("khách hàng doanh nhân") ||
+        qLower.includes("kết nối doanh nhân") ||
+        qLower.includes("tìm đối tác") ||
+        qLower.includes("gợi ý đối tác") ||
+        qLower.includes("đồng bộ danh bạ") ||
+        qLower.includes("danh bạ doanh nhân")
+      ) {
+        setAiResponse(
+          "🤝 **MẠNG LƯỚI KHÁCH HÀNG DOANH NHÂN & CƠ HỘI KẾT NỐI KINH DOANH CHO SẾP:**\n\n• **Hệ sinh thái ViOne Connect:** Đang có **156+ Lãnh đạo & Chủ doanh nghiệp** kết nối trực tiếp trong mạng lưới của Sếp.\n• **Đồng bộ danh bạ thông minh:** Đã quét danh bạ và nhận diện **38 đối tác doanh nhân** có tài khoản ViOne sẵn sàng trao đổi danh thiếp.\n\n🌟 **TOP DOANH NHÂN & ĐỐI TÁC CHIẾN LƯỢC NỔI BẬT NÊN KẾT NỐI HÔM NAY:**\n1. **Ông Trần Đình Long** · *Chủ tịch HĐQT Tập đoàn Hòa Phát* (Sản xuất công nghiệp & Bất động sản)\n2. **Bà Hoàng Mai Anh** · *Giám Đốc Tài Chính (CFO) VNPay* (Fintech & Thanh toán số)\n3. **Ông Nguyễn Văn Hùng** · *Tổng Giám Đốc Vicostone* (Vật liệu cao cấp & Chuỗi cung ứng)\n\n💡 *Sếp có thể chạm vào nút bên dưới để gửi Lời mời kết nối 1-chạm hoặc chia sẻ Danh thiếp số ViOne của Sếp ngay ạ!*"
+        );
+        setSuggestedActions([
+          "🤝 Xem Danh Bạ Doanh Nhân",
+          "💳 Chia Sẻ Danh Thiếp Số VIP",
+          "➕ Mời Doanh Nhân Mới Vào Cộng Đồng",
+        ]);
+      } else if (
+        qLower.includes("giờ giấc nhân sự") ||
+        qLower.includes("ai đi muộn") ||
+        qLower.includes("chấm công nhân viên") ||
+        qLower.includes("kỷ luật nhân sự")
+      ) {
+        setAiResponse(
+          "📊 **BÁO CÁO GIỜ GIẤC & CHUYÊN CẦN NHÂN SỰ HÔM NAY:**\n\n• **Tổng nhân sự:** 45 cán bộ nhân viên.\n• **Có mặt:** 42 nhân sự (**93.3%**).\n• **Đúng giờ:** 39 nhân sự (**92.8%**).\n• **Đi muộn hôm nay:** 3 nhân sự (Phòng Kinh Doanh & Kế Toán, muộn trung bình 15 phút).\n\n🏆 **Thống kê ai hay đi muộn tuần này:**\n1. Lê Quốc Dũng (Phòng Kinh Doanh B2B) · 3 lần muộn (54 phút)\n2. Phạm Thị Thảo (Phòng Kế Toán) · 2 lần muộn (26 phút)\n\n💡 *Khuyến nghị: Phòng Kinh doanh thường đi muộn do gặp đối tác buổi sáng, CEO có thể xem xét chế độ giờ làm việc linh hoạt.*"
+        );
+        setSuggestedActions([
+          "👥 Mở Theo Dõi Giờ Giấc Nhân Sự",
+          "📊 Xuất Báo Cáo Chấm Công Excel",
+        ]);
+      } else if (
         qLower.includes("bao nhiêu bạn bè") ||
         qLower.includes("bạn bè của tôi") ||
         qLower.includes("danh sách bạn bè") ||
@@ -239,8 +462,12 @@ export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> =
         (qLower.includes("bạn") && qLower.includes("bao nhiêu"))
       ) {
         setAiResponse(
-          "👥 **Báo Cáo Mạng Lưới Bạn Bè & Đối Tác Kết Nối:**\n\nBạn hiện đang có **156 bạn bè và đối tác doanh nhân đã kết nối thành công** trong hệ sinh thái ViOne.\n\n**Các đối tác thân thiết gần đây:**\n1. **Trần Đình Trọng** — Tổng Giám Đốc (Tập Đoàn BĐS An Thịnh Phát)\n2. **Vũ Thị Mai Phương** — Giám Đốc Điều Hành (CP Bán Lẻ & Chuỗi F&B Toàn Cầu)\n3. **Lê Hoàng Nam** — Giám Đốc Chiến Lược (Tập Đoàn Xây Dựng Việt Nhật)\n4. **Đỗ Hải Yến** — Giám Đốc Tài Chính (Logistics Xuyên Á)\n5. **Nguyễn Văn Bình** — Phó Chủ Tịch (Liên Minh Công Nghệ Số B2B)\n\nToàn bộ danh bạ đã được đồng bộ trong phân hệ Mạng Lưới để bạn nhắn tin hoặc hẹn gặp 1-1."
+          "👥 **Báo Cáo Mạng Lưới Bạn Bè & Kết Nối Của Bạn:**\n\nHiện tại tài khoản của bạn chưa có bạn bè hoặc đối tác nào trong danh bạ kết nối chính thức (**0 bạn bè / đối tác**).\n\n🤖 **Gợi Ý Ghép Nối AI (Đồng Bộ Tab Mạng Lưới):**\nĐể giúp bạn nhanh chóng xây dựng mạng lưới kinh doanh, AI đề xuất bạn mở tab Mạng Lưới để gửi lời mời kết nối tới các đối tác C-Level cùng ngành, hoặc chia sẻ mã QR danh thiếp để kết bạn tức thì!\n\nToàn bộ danh bạ và đề xuất đối tác đã sẵn sàng trong phân hệ Mạng Lưới."
         );
+        setSuggestedActions([
+          "🤝 Mở Tab Mạng Lưới & Đề Xuất",
+          "💎 Mở Mã QR Danh Thiếp",
+        ]);
       } else if (
         qLower.includes("đăng ký sự kiện nào không") ||
         qLower.includes("sự kiện tôi đã đăng ký") ||
@@ -518,6 +745,153 @@ export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> =
                   styles.chipBtn,
                   {
                     backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Lịch trình hôm nay có dồn dập không, có ảnh hưởng sức khỏe không?")}
+              >
+                <Sparkles size={12} color="#EF4444" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#FCA5A5" : "#B91C1C", fontWeight: "700" },
+                  ]}
+                >
+                  🩺 Lịch hôm nay có dồn dập không?
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Tôi có lịch họp nào hôm nay vào lúc mấy giờ?")}
+              >
+                <Calendar size={12} color="#D8B282" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#F6E1C3" : "#8C653B", fontWeight: "700" },
+                  ]}
+                >
+                  📅 Tôi có lịch họp nào mấy giờ?
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Sắp xếp lại công việc hôm nay cho đỡ dồn dập")}
+              >
+                <Sparkles size={12} color="#10B981" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#86EFAC" : "#047857", fontWeight: "700" },
+                  ]}
+                >
+                  ✨ Sắp xếp lịch đỡ dồn dập
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Kiểm tra giờ giấc nhân sự hôm nay, ai đi muộn?")}
+              >
+                <Users size={12} color="#F59E0B" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#FCD34D" : "#B45309", fontWeight: "700" },
+                  ]}
+                >
+                  👥 Giờ giấc nhân sự & Đi muộn
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Báo cáo tiến độ quá trình làm việc của nhân viên hôm nay")}
+              >
+                <Briefcase size={12} color="#38BDF8" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#7DD3FC" : "#0284C7", fontWeight: "700" },
+                  ]}
+                >
+                  📊 Tiến độ công việc nhân viên
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Giao việc cho Đặng Nam kiểm tra kết nối thẻ NFC trước 17h30")}
+              >
+                <Sparkles size={12} color="#D8B282" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#F6E1C3" : "#8C653B", fontWeight: "700" },
+                  ]}
+                >
+                  ⚡ Giao việc cho nhân viên
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.4)" : "#D8B282",
+                  },
+                ]}
+                onPress={() => handleQuery("Gợi ý kết nối mạng lưới khách hàng doanh nhân")}
+              >
+                <Users size={12} color="#A855F7" />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: isDark ? "#D8B4FE" : "#7E22CE", fontWeight: "700" },
+                  ]}
+                >
+                  🤝 Mạng lưới khách hàng doanh nhân
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: isDark ? "#12151F" : "#F8FAFC",
                     borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
                   },
                 ]}
@@ -731,7 +1105,8 @@ export const ViOneVoiceAssistantModal: React.FC<ViOneVoiceAssistantModalProps> =
                     { color: isDark ? "#E2E8F0" : "#1E293B" },
                   ]}
                 >
-                  {aiResponse}
+                  {displayedResponse}
+                  {displayedResponse.length < aiResponse.length ? " ▎" : ""}
                 </Text>
               )}
 

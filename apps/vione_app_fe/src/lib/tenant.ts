@@ -9,6 +9,7 @@ export function hostIsAppDomain(hostname: string): boolean {
   const h = hostname.split(":")[0].toLowerCase();
   if (!h || h === "localhost" || /^[\d.]+$/.test(h)) return true;
   if (h.endsWith(".lovable.app") || h === "lovable.app") return true;
+  if (h.includes("sslip.io") || h.includes("viconnect.vn") || h.includes("vione") || h.includes("crm")) return true;
   if (PLATFORM_APP_HOSTS.includes(h)) return true;
   return false;
 }

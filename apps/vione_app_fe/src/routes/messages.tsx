@@ -419,7 +419,7 @@ function OmnichannelMessagesPage() {
             <button
               type="button"
               onClick={() => setIsCreateGroupOpen(true)}
-              className="flex items-center gap-2 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] px-4 py-2 text-xs font-bold text-black shadow-md transition hover:opacity-95 cursor-pointer"
+              className="flex items-center gap-2 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] border border-[#f0d499]/80 px-4 py-2 text-xs font-bold text-slate-950 shadow-md transition cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               <span>Tạo Nhóm Nội Bộ / Phòng Ban</span>
@@ -655,7 +655,7 @@ function OmnichannelMessagesPage() {
                           <div
                             className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
                               msg.isFromMe
-                                ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-black font-medium shadow-xs"
+                                ? "bg-amber-100 dark:bg-amber-900/40 text-slate-900 dark:text-amber-100 font-medium border border-amber-300 dark:border-amber-700/50 shadow-xs"
                                 : "bg-white dark:bg-[#131c31] text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-800 shadow-xs"
                             }`}
                           >
@@ -714,7 +714,7 @@ function OmnichannelMessagesPage() {
                       type="button"
                       onClick={handleSendMessage}
                       disabled={!replyText.trim()}
-                      className="flex h-8 w-8 items-center justify-center rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-black transition hover:opacity-90 disabled:opacity-40 cursor-pointer"
+                      className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] border border-[#f0d499]/80 text-slate-950 transition disabled:opacity-40 cursor-pointer"
                     >
                       <Send className="h-4 w-4" />
                     </button>
@@ -892,7 +892,7 @@ function OmnichannelMessagesPage() {
               <button
                 type="button"
                 onClick={handleCreateGroup}
-                className="rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] px-5 py-2 text-xs font-bold text-black shadow-md hover:opacity-95 transition"
+                className="rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] border border-[#f0d499]/80 px-5 py-2 text-xs font-bold text-slate-950 shadow-md transition cursor-pointer"
               >
                 Tạo Nhóm Ngay
               </button>

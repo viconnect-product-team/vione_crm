@@ -21,6 +21,9 @@ import { ScanQrModal } from "../screens/quick-connect/ScanQrModal";
 import { AttendanceModal } from "../components/AttendanceModal";
 import { WorkflowModal } from "../components/WorkflowModal";
 import { ApprovalsModal } from "../components/ApprovalsModal";
+import { AssignTaskModal } from "../components/AssignTaskModal";
+import { StaffDailyActivityModal } from "../components/StaffDailyActivityModal";
+import { ViOneVoiceAssistantModal } from "../components/ai/ViOneVoiceAssistantModal";
 import { CardScanReviewModal } from "../components/CardScanReviewModal";
 import {
   IncomingQrConnectionModal,
@@ -73,6 +76,9 @@ export const AppNavigator: React.FC = () => {
   const [attendanceVisible, setAttendanceVisible] = useState(false);
   const [workflowVisible, setWorkflowVisible] = useState(false);
   const [approvalsVisible, setApprovalsVisible] = useState(false);
+  const [assignTaskVisible, setAssignTaskVisible] = useState(false);
+  const [staffActivityVisible, setStaffActivityVisible] = useState(false);
+  const [aiAssistantVisible, setAiAssistantVisible] = useState(false);
   const [incomingRequester, setIncomingRequester] = useState<QrRequesterProfile | null>(null);
 
   if (isLoading) {
@@ -105,6 +111,9 @@ export const AppNavigator: React.FC = () => {
         onOpenAttendance={() => setAttendanceVisible(true)}
         onOpenWorkflow={() => setWorkflowVisible(true)}
         onOpenApprovals={() => setApprovalsVisible(true)}
+        onOpenAssignTask={() => setAssignTaskVisible(true)}
+        onOpenStaffActivity={() => setStaffActivityVisible(true)}
+        onOpenAiAssistant={() => setAiAssistantVisible(true)}
       />
 
       <MyQrModal visible={myQrVisible} onClose={() => setMyQrVisible(false)} />
@@ -117,6 +126,19 @@ export const AppNavigator: React.FC = () => {
       <AttendanceModal visible={attendanceVisible} onClose={() => setAttendanceVisible(false)} />
       <WorkflowModal visible={workflowVisible} onClose={() => setWorkflowVisible(false)} />
       <ApprovalsModal visible={approvalsVisible} onClose={() => setApprovalsVisible(false)} />
+      <AssignTaskModal
+        visible={assignTaskVisible}
+        onClose={() => setAssignTaskVisible(false)}
+        communityId="c-vione-internal"
+      />
+      <StaffDailyActivityModal
+        visible={staffActivityVisible}
+        onClose={() => setStaffActivityVisible(false)}
+      />
+      <ViOneVoiceAssistantModal
+        visible={aiAssistantVisible}
+        onClose={() => setAiAssistantVisible(false)}
+      />
 
       {/* Bilateral QR Handshake Incoming Connection Modal */}
       <IncomingQrConnectionModal

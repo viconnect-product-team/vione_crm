@@ -866,6 +866,28 @@ const appSections = [
       { step: '03', action: 'Hiển Thị Trực Quan', ui: 'Evidence Cards & Action Chips', input: 'Response Markdown & Chips', output: 'Trả lời thông thái không rập khuôn' },
       { step: '04', action: 'Chỉnh Sửa Hồ Sơ', ui: 'EditProfileModal Native', input: 'Form 8 trường thông tin', output: 'Lưu CSDL & Cập nhật danh thiếp' }
     ]
+  },
+  {
+    tag: 'APP · 5 PHÂN HỆ NÂNG CẤP',
+    title: 'Hoàn Thiện 5 Phân Hệ Trọng Yếu: AI Copilot Typewriter, Đăng Tin & Khoảnh Khắc, Hộp Thư, Thẻ Doanh Nhân & CRM Khách Hàng',
+    subtitle: 'Nâng cấp toàn diện trải nghiệm người dùng với AI trung thực, luồng tạo nội dung linh hoạt, chat liền mạch và quản trị khách hàng C-Level',
+    goal: 'Cung cấp trải nghiệm mượt mà, chính xác và chuyên nghiệp nhất trên toàn bộ hệ sinh thái ứng dụng ViOne.',
+    path: 'Trang Chủ / Mạng Lưới / Đăng Khoảnh Khắc / Hộp Thư / Khách Hàng CRM',
+    steps: [
+      'Bước 1: Trợ lý AI ViOne Copilot: Khi hỏi về bạn bè kết nối ("tôi có bao nhiêu bạn bè"), AI truy vấn CSDL PostgreSQL thực tế, báo trung thực số 0 nếu chưa có kết nối, loại bỏ triệt để ảo giác 156 bạn bè; đồng thời chữ hiển thị mượt mà theo hiệu ứng máy đánh chữ Typewriter Streaming với con trỏ nhấp nháy.',
+      'Bước 2: Đăng Tin & Khoảnh Khắc: Chủ đề/chuyên mục hoàn toàn không bắt buộc (chạm để chọn hoặc bỏ chọn qua nút "[Bỏ chọn chủ đề]"), ảnh mẫu được gỡ bỏ để người dùng đăng bài chữ thuần túy hoặc ảnh thực tế từ camera/thư viện mà không bị mất ảnh sau khi xuất bản.',
+      'Bước 3: Hộp Thư Tin Nhắn: Danh sách hiển thị đầy đủ mọi tài khoản đã từng nhắn tin qua lại, hệ thống tự động bóc tách tiền tố "th-" và tự khởi tạo luồng chat với người dùng mới mà không phát sinh lỗi UUID.',
+      'Bước 4: Thẻ Doanh Nhân Trang Chủ: Ảnh bìa và ảnh đại diện tự động đồng bộ từ dữ liệu danh tính người dùng; modal chỉnh sửa nhanh được tối ưu chỉ còn đúng 1 nút tải ảnh bìa và 1 nút tải avatar tinh gọn.',
+      'Bước 5: Quản Trị Khách Hàng CRM: Tab Khách hàng trang bị 4 thẻ chỉ số Pipeline (Quy mô cơ hội, Đang đàm phán, Tỷ lệ chốt deal, Lịch chăm sóc tuần), kèm stepper tiến trình 4 giai đoạn, bộ chọn Deal Health và dòng thời gian ghi nhật ký chăm sóc đa kênh.'
+    ],
+    noteRed: 'DỮ LIỆU CHÍNH XÁC & MINH BẠCH: Toàn bộ thông tin hiển thị từ AI, danh bạ đến CRM đều được đối soát trực tiếp từ CSDL thực, đảm bảo sự trung thực tuyệt đối cho lãnh đạo.',
+    noteBlue: 'MẸO SỬ DỤNG: Dùng nút chuyển giai đoạn 1-chạm trong chi tiết khách hàng CRM để cập nhật tức thì trạng thái đàm phán hợp đồng cho toàn bộ đội ngũ bán hàng.',
+    workflow: [
+      { step: '01', action: 'AI Typewriter Streaming', ui: 'ViOneVoiceAssistantModal', input: 'Câu hỏi người dùng', output: 'Gõ chữ từng ký tự kèm con trỏ nhấp nháy' },
+      { step: '02', action: 'Đăng Tin Tự Do', ui: 'PostMomentModal / CreateNews', input: 'Tùy chọn chủ đề & ảnh', output: 'Lưu bền vững storage_path media' },
+      { step: '03', action: 'Nhắn Tin Liền Mạch', ui: 'Hộp thư Messenger', input: 'Bóc tách tiền tố th-', output: 'Mở kênh chat 1-1 không lỗi UUID' },
+      { step: '04', action: 'CRM Pipeline Stepper', ui: 'CustomerDetailModal', input: 'Chạm chuyển 4 giai đoạn deal', output: 'Cập nhật realtime phễu bán hàng' }
+    ]
   }
 ];
 
@@ -1329,11 +1351,11 @@ async function buildAllDocs() {
   });
   fs.copyFileSync(appDocxPath, path.join(publicDocsDir, 'HDSD_APP_VIONE_CONNECT.docx'));
 
-  console.log('>>> [3/3] Xuat ban Tai Lieu Hop Nhat Toan Dien (39 Chuong)...');
+  console.log(`>>> [3/3] Xuat ban Tai Lieu Hop Nhat Toan Dien (${allSections.length} Chuong)...`);
   const allHtml = generateHtmlDoc({
     docCode: 'HDSD-VIONE-ENTERPRISE-MASTER-6.0',
     title: 'HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE TOÀN DIỆN',
-    subtitle: 'Bộ tài liệu chuẩn hóa 39 chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động',
+    subtitle: `Bộ tài liệu chuẩn hóa ${allSections.length} chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động`,
     targetAudience: 'Toàn Thể Ban Lãnh Đạo, Nhân Sự Doanh Nghiệp & Mạng Lưới Đối Tác Doanh Nhân B2B',
     sections: allSections
   });
@@ -1345,7 +1367,7 @@ async function buildAllDocs() {
   await generateDocxFile({
     docCode: 'HDSD-VIONE-ENTERPRISE-MASTER-6.0',
     title: 'HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE TOÀN DIỆN',
-    subtitle: 'Bộ tài liệu chuẩn hóa 39 chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động',
+    subtitle: `Bộ tài liệu chuẩn hóa ${allSections.length} chuyên đề bao quát trọn vẹn mọi luồng nghiệp vụ trên Web và Di động`,
     targetAudience: 'Toàn Thể Ban Lãnh Đạo, Nhân Sự Doanh Nghiệp & Mạng Lưới Đối Tác Doanh Nhân B2B',
     sections: allSections,
     outputPath: allDocxPath
@@ -1353,9 +1375,9 @@ async function buildAllDocs() {
   fs.copyFileSync(allDocxPath, path.join(publicDocsDir, 'HDSD_HE_THONG_VA_APP_VIONE_TOAN_DIEN.docx'));
 
   // Tạo thêm bản Markdown tóm tắt hợp nhất
-  let mdSummary = `# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (39 CHUYÊN ĐỀ)\n\n`;
-  mdSummary += `**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 07/10/2026 | **Phiên bản:** 6.0 Enterprise\n\n---\n\n`;
-  mdSummary += `### DANH MỤC 39 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)\n\n`;
+  let mdSummary = `# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (${allSections.length} CHUYÊN ĐỀ)\n\n`;
+  mdSummary += `**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 08/10/2026 | **Phiên bản:** 6.0 Enterprise\n\n---\n\n`;
+  mdSummary += `### DANH MỤC ${allSections.length} CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)\n\n`;
   allSections.forEach((s, i) => {
     const num = (i + 1).toString().padStart(2, '0');
     mdSummary += `#### ${num}. [${s.tag}] ${s.title}\n`;

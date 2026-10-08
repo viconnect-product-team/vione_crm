@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   Query,
+  Req,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import {
   CheckInDto,
   CreateLeaveDto,
   CreateApprovalDto,
+  CreateExecutiveTaskDto,
+  OptimizeScheduleDto,
 } from './operations.dto';
 
 // Standard RESTful Controller under /api/operations
@@ -86,6 +89,46 @@ export class OperationsController {
   }
 
   // ==========================================
+  // EXECUTIVE SCHEDULE & SMART WORKFLOWS (RESTful: /api/operations/tasks/executive-schedule)
+  // Tự động gói toàn bộ công việc, lịch họp, nhắc nhở & phân tích sức khỏe dồn dập của CEO
+  // ==========================================
+  @Get('tasks/executive-schedule')
+  async getExecutiveSchedule(@Req() req: any, @Query('userId') queryUserId?: string) {
+    const userId = req?.user?.id || queryUserId || 'a0000000-0000-4000-8000-000000000002';
+    const data = await this.opsService.getExecutiveSchedule(userId);
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      data,
+    };
+  }
+
+  @Post('tasks/ai-optimize-schedule')
+  @HttpCode(HttpStatus.OK)
+  async aiOptimizeSchedule(@Req() req: any, @Body() body: OptimizeScheduleDto) {
+    const userId = req?.user?.id || 'a0000000-0000-4000-8000-000000000002';
+    const data = await this.opsService.aiOptimizeSchedule(userId, body);
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      message: 'Thư ký AI đã sắp xếp lại lịch trình công việc tối ưu và giải tỏa dồn dập',
+      data,
+    };
+  }
+
+  @Post('tasks/create-remind')
+  @HttpCode(HttpStatus.CREATED)
+  async createExecutiveTask(@Body() dto: CreateExecutiveTaskDto) {
+    const data = await this.opsService.createExecutiveTask(dto);
+    return {
+      success: true,
+      statusCode: HttpStatus.CREATED,
+      message: 'Thư ký AI đã ghi nhận công việc và thiết lập nhắc nhở tự động',
+      data,
+    };
+  }
+
+  // ==========================================
   // WORKLOAD HEATMAP & KPI (RESTful: /api/operations/workload)
   // ==========================================
   @Get('workload')
@@ -108,11 +151,26 @@ export class OperationsController {
   }
 
   // ==========================================
+  // COMPANY ATTENDANCE & PUNCTUALITY TRACKER (RESTful: /api/operations/attendance/company-summary)
+  // Dành riêng cho Doanh nhân / Lãnh đạo có cộng đồng công ty & nhân sự
+  // ==========================================
+  @Get('attendance/company-summary')
+  async getCompanyAttendanceSummary(@Req() req: any, @Query('userId') queryUserId?: string) {
+    const userId = req?.user?.id || queryUserId || 'a0000000-0000-4000-8000-000000000002';
+    const data = await this.opsService.getCompanyAttendanceSummary(userId);
+    return {
+      success: true,
+      statusCode: HttpStatus.OK,
+      data,
+    };
+  }
+
+  // ==========================================
   // ATTENDANCE & AI FACEID (RESTful: /api/operations/attendance)
   // ==========================================
   @Get('attendance')
-  getAttendanceLogs() {
-    const data = this.opsService.getAttendanceLogs();
+  async getAttendanceLogs() {
+    const data = await this.opsService.getAttendanceLogs();
     return {
       success: true,
       statusCode: HttpStatus.OK,
@@ -122,8 +180,8 @@ export class OperationsController {
 
   @Post('attendance/check-in')
   @HttpCode(HttpStatus.CREATED)
-  recordCheckIn(@Body() dto: CheckInDto) {
-    const data = this.opsService.recordCheckIn(dto);
+  async recordCheckIn(@Body() dto: CheckInDto) {
+    const data = await this.opsService.recordCheckIn(dto);
     return {
       success: true,
       statusCode: HttpStatus.CREATED,
@@ -133,8 +191,9 @@ export class OperationsController {
   }
 
   @Get('attendance/leaves')
-  getLeaves() {
-    const data = this.opsService.getAttendanceLogs().leaves;
+  async getLeaves() {
+    const logs = await this.opsService.getAttendanceLogs();
+    const data = logs.leaves;
     return {
       success: true,
       statusCode: HttpStatus.OK,
@@ -169,8 +228,8 @@ export class OperationsController {
   // FINANCIAL APPROVALS 3-TIER (RESTful: /api/operations/finance/approvals)
   // ==========================================
   @Get(['approvals', 'finance/approvals'])
-  getPaymentApprovals() {
-    const data = this.opsService.getPaymentApprovals();
+  async getPaymentApprovals() {
+    const data = await this.opsService.getPaymentApprovals();
     return {
       success: true,
       statusCode: HttpStatus.OK,
@@ -181,8 +240,8 @@ export class OperationsController {
 
   @Post('finance/approvals')
   @HttpCode(HttpStatus.CREATED)
-  createPaymentApproval(@Body() dto: CreateApprovalDto) {
-    const data = this.opsService.createPaymentApproval(dto);
+  async createPaymentApproval(@Body() dto: CreateApprovalDto) {
+    const data = await this.opsService.createPaymentApproval(dto);
     return {
       success: true,
       statusCode: HttpStatus.CREATED,
@@ -192,12 +251,12 @@ export class OperationsController {
   }
 
   @Put('finance/approvals/:id/approve')
-  approvePayment(
+  async approvePayment(
     @Param('id') id: string,
     @Body('role') role: 'checker' | 'approver',
     @Body('signerName') signerName?: string,
   ) {
-    const data = this.opsService.approvePayment(id, role || 'approver', signerName);
+    const data = await this.opsService.approvePayment(id, role || 'approver', signerName);
     return {
       success: true,
       statusCode: HttpStatus.OK,
@@ -207,8 +266,8 @@ export class OperationsController {
   }
 
   @Put('finance/approvals/:id/reject')
-  rejectPayment(@Param('id') id: string, @Body('reason') reason?: string) {
-    const res = this.opsService.rejectPayment(id, reason);
+  async rejectPayment(@Param('id') id: string, @Body('reason') reason?: string) {
+    const res = await this.opsService.rejectPayment(id, reason);
     return {
       success: true,
       statusCode: HttpStatus.OK,

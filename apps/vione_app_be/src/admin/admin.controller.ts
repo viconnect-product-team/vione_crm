@@ -177,6 +177,24 @@ export class AdminController {
   async deleteTransaction(@Param('id') id: string) {
     return this.adminService.deleteTransaction(id);
   }
+
+  // ── TRAFFIC ANALYTICS (REAL DATABASE STATS) ──────────────────────────
+  @Get('traffic-analytics')
+  async getTrafficAnalytics() {
+    return this.adminService.getTrafficAnalytics();
+  }
+
+  // ── FINANCIAL OVERVIEW (THU - CHI REAL DATABASE STATS) ────────────────
+  @Get('financial-overview')
+  async getFinancialOverview() {
+    return this.adminService.getFinancialOverview();
+  }
+
+  // ── LANDING VISIT TRACKING ──────────────────────────────────────────
+  @Post('track-visit')
+  async trackVisit(@Body() body: any) {
+    return this.adminService.recordLandingVisit(body);
+  }
 }
 
 

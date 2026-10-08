@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -19,17 +19,20 @@ import {
   CheckCheck,
   ChevronRight,
   Clock,
+  Briefcase,
 } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
+import { meApi } from "../api/services";
 
 export interface BusinessNotificationItem {
   id: string;
-  type: "connection" | "meeting" | "opportunity" | "event" | "approval";
+  type: "connection" | "meeting" | "opportunity" | "event" | "approval" | "task";
   title: string;
   description: string;
   timeAgo: string;
   isRead: boolean;
   actionText?: string;
+  metadata?: any;
 }
 
 const INITIAL_NOTIFICATIONS: BusinessNotificationItem[] = [
@@ -82,28 +85,104 @@ const INITIAL_NOTIFICATIONS: BusinessNotificationItem[] = [
 interface BusinessNotificationsModalProps {
   visible: boolean;
   onClose: () => void;
-  onNavigateToTab?: (tab: string) => void;
+  onNavigateToTab?: (tab: string, params?: any) => void;
+  navigation?: any;
 }
 
 export const BusinessNotificationsModal: React.FC<BusinessNotificationsModalProps> = ({
   visible,
   onClose,
   onNavigateToTab,
+  navigation,
 }) => {
   const { isDark } = useTheme();
   const [notifications, setNotifications] = useState<BusinessNotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [activeFilter, setActiveFilter] = useState<"all" | "unread">("all");
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  useEffect(() => {
+    if (visible) {
+      loadNotifications();
+    }
+  }, [visible]);
 
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+  const loadNotifications = async () => {
+    try {
+      const res = await meApi.getNotifications(30);
+      const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+      if (list.length > 0) {
+        const mappedList: BusinessNotificationItem[] = list.map((item: any) => {
+          let itemType: BusinessNotificationItem["type"] = "event";
+          if (item.sourceDomain === "company_task" || item.notificationKind === "company_task_assigned") {
+            itemType = "task";
+          } else if (item.sourceDomain === "connection" || item.notificationKind?.includes("connection")) {
+            itemType = "connection";
+          } else if (item.sourceDomain === "meeting" || item.notificationKind?.includes("meeting")) {
+            itemType = "meeting";
+          } else if (item.sourceDomain === "opportunity" || item.notificationKind?.includes("opportunity")) {
+            itemType = "opportunity";
+          } else if (item.sourceDomain === "approval" || item.notificationKind?.includes("approval")) {
+            itemType = "approval";
+          }
+
+          const title = item.safeDisplayData?.title || item.titleKey || "Thông báo hệ thống";
+          const desc = item.safeDisplayData?.description || item.bodyKey || "";
+          const isRead = item.status === "read" || !!item.readAt;
+
+          return {
+            id: item.id,
+            type: itemType,
+            title,
+            description: desc,
+            timeAgo: item.createdAt ? new Date(item.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "Gần đây",
+            isRead,
+            actionText: itemType === "task" ? "Xem việc của tôi" : undefined,
+            metadata: item.safeDisplayData || item.action?.targetParams,
+          };
+        });
+        setNotifications(mappedList);
+      }
+    } catch {
+      // Giữ danh sách ban đầu nếu offline
+    }
   };
 
-  const markItemAsRead = (id: string) => {
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
+  const markAllAsRead = async () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    try {
+      await meApi.markNotificationsRead();
+    } catch {}
+  };
+
+  const markItemAsRead = async (id: string) => {
     setNotifications((prev) =>
       prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
     );
+    try {
+      await meApi.markNotificationsRead([id]);
+    } catch {}
+  };
+
+  const handleItemPress = (item: BusinessNotificationItem) => {
+    markItemAsRead(item.id);
+    if (item.type === "task") {
+      onClose();
+      const communityId = item.metadata?.communityId || "c-vione-internal";
+      if (navigation?.navigate) {
+        navigation.navigate("Community", {
+          communityId,
+          tab: "tasks",
+          filter: "my_tasks",
+        });
+      } else if (onNavigateToTab) {
+        onNavigateToTab("Community", {
+          communityId,
+          tab: "tasks",
+          filter: "my_tasks",
+        });
+      }
+    }
   };
 
   const filteredList = notifications.filter((item) => {
@@ -113,6 +192,8 @@ export const BusinessNotificationsModal: React.FC<BusinessNotificationsModalProp
 
   const getIcon = (type: BusinessNotificationItem["type"]) => {
     switch (type) {
+      case "task":
+        return <Briefcase size={18} color="#DFB76C" strokeWidth={2} />;
       case "opportunity":
         return <TrendingUp size={18} color="#D8B282" strokeWidth={2} />;
       case "meeting":
@@ -289,7 +370,7 @@ export const BusinessNotificationsModal: React.FC<BusinessNotificationsModalProp
                           : "#E2E8F0",
                     },
                   ]}
-                  onPress={() => markItemAsRead(item.id)}
+                  onPress={() => handleItemPress(item)}
                   activeOpacity={0.75}
                 >
                   <View style={styles.itemIconCol}>

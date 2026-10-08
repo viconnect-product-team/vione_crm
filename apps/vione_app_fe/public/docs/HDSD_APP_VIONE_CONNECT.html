@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VIONE · HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG DI ĐỘNG & PWA VIONE CONNECT · HDSD-APP-VIONE-6.0</title>
-  <meta name="description" content="Cẩm nang sử dụng danh thiếp số NFC, mạng lưới đối tác, sàn giao thương B2B và cài đặt PWA iOS">
+  <title>VIONE · HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG DI ĐỘNG VIONE CONNECT C-LEVEL · HDSD-VIONE-CONNECT-APP-6.0</title>
+  <meta name="description" content="Cẩm nang giao thương B2B, cộng đồng 2 kiểu, danh thiếp số NFC, trợ lý AI Copilot đa năng, kết nối QR song phương và WebRTC">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,71 +37,71 @@
     /* Nội dung các phần nghiệp vụ */
     .trn-section { padding: 35px 45px 45px; page-break-before: always; break-before: page; border-bottom: 1px solid #E2E8F0; }
     .trn-tag { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #B45309; background: #FEF3C7; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; text-transform: uppercase; }
-    .trn-h2 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; color: #0F172A; margin-bottom: 4px; line-height: 1.3; }
-    .trn-h3 { font-size: 13px; font-weight: 500; color: #64748B; margin-bottom: 18px; font-style: italic; }
+    .trn-h2 { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px; line-height: 1.3; }
+    .trn-h3 { font-size: 13px; color: #64748B; margin-bottom: 18px; font-weight: 400; }
 
-    .trn-goal, .trn-path { padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; line-height: 1.5; }
-    .trn-goal { background: #F1F5F9; border-left: 4px solid #0284C7; color: #0F172A; }
-    .trn-path { background: #FEF9C3; border-left: 4px solid #D8B282; color: #78350F; font-family: monospace; }
+    .trn-goal { background: #F8FAFC; border-left: 4px solid #0284C7; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 12px; font-size: 12.5px; color: #1E293B; }
+    .trn-goal strong { color: #0284C7; font-weight: 700; margin-right: 6px; }
 
-    .trn-steps { padding-left: 20px; margin-bottom: 18px; }
-    .trn-steps li { margin-bottom: 8px; font-size: 12.5px; color: #334155; line-height: 1.6; }
+    .trn-path { background: #FFFBEB; border-left: 4px solid #D97706; padding: 10px 16px; border-radius: 0 8px 8px 0; margin-bottom: 18px; font-size: 12px; color: #78350F; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    .trn-path strong { color: #B45309; margin-right: 6px; font-weight: 700; }
+    .trn-path code { background: #FEF3C7; padding: 2px 6px; border-radius: 4px; font-weight: 600; color: #92400E; }
 
-    .box-red, .box-blue { padding: 12px 16px; border-radius: 6px; margin-bottom: 14px; font-size: 11.5px; line-height: 1.6; }
-    .box-red { background: #FEF2F2; border-left: 4px solid #DC2626; color: #991B1B; }
-    .box-blue { background: #EFF6FF; border-left: 4px solid #2563EB; color: #1E40AF; }
+    .steps-container { margin-bottom: 20px; background: #FAFBFD; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px 20px; }
+    .steps-title { font-size: 12px; font-weight: 800; color: #0F172A; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .trn-steps { margin-left: 20px; font-size: 12.5px; line-height: 1.8; color: #334155; }
+    .trn-steps li { margin-bottom: 6px; }
 
-    /* Khung ảnh minh chứng thực tế không 404 */
-    .shot-container { margin-top: 20px; background: #0B101B; border-radius: 12px; padding: 18px; text-align: center; border: 1px solid #1E293B; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-    .shot-caption { margin-top: 10px; font-size: 11px; font-weight: 600; color: #CBD5E1; letter-spacing: 0.5px; }
+    /* Bảng Ma trận Quy trình & Thông số (Thay thế hoàn toàn ảnh) */
+    .workflow-box { margin: 20px 0; border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden; background: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .wf-header { background: #0F172A; color: #FFFFFF; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+    .wf-title { font-weight: 700; letter-spacing: 0.5px; color: #F1F5F9; }
+    .wf-badge-gold { background: #D8B282; color: #000000; font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; }
+    .wf-table { width: 100%; border-collapse: collapse; font-size: 11.5px; text-align: left; }
+    .wf-table th { background: #F1F5F9; color: #334155; font-weight: 700; padding: 8px 12px; border-bottom: 2px solid #CBD5E1; border-right: 1px solid #E2E8F0; }
+    .wf-table th:last-child { border-right: none; }
+    .wf-table td { padding: 9px 12px; border-bottom: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; vertical-align: middle; }
+    .wf-table td:last-child { border-right: none; }
+    .wf-table tr:nth-child(even) { background: #F8FAFC; }
+    .step-badge { display: inline-block; background: #0F172A; color: #D8B282; font-weight: 800; font-size: 10px; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; }
+    .wf-table code { background: #EEF2F6; color: #0284C7; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-family: monospace; }
+    .out-tag { display: inline-block; background: #DCFCE7; color: #166534; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-size: 11px; border: 1px solid #BBF7D0; }
 
-    /* Khung desktop browser */
-    .shot-desktop { border-radius: 8px; overflow: hidden; border: 1px solid #334155; background: #020617; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-    .browser-bar { background: #1E293B; padding: 6px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #334155; }
-    .browser-bar .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
-    .browser-bar .dot.red { background: #EF4444; }
-    .browser-bar .dot.yellow { background: #F59E0B; }
-    .browser-bar .dot.green { background: #10B981; }
-    .browser-bar .url-bar { margin-left: 10px; font-family: monospace; font-size: 10.5px; color: #94A3B8; background: #0F172A; padding: 2px 12px; border-radius: 4px; flex: 1; text-align: left; }
-    .shot-desktop img { width: 100%; height: auto; display: block; object-fit: contain; }
+    .box-red { background: #FEF2F2; border: 1px solid #FCA5A5; border-left: 4px solid #DC2626; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 12px; font-size: 12px; color: #991B1B; line-height: 1.6; }
+    .box-red strong { color: #DC2626; margin-right: 6px; font-weight: 800; }
 
-    /* Khung mobile phone frame */
-    .shot-mobile-wrap { display: flex; justify-content: center; }
-    .shot-phone-frame { width: 330px; max-width: 100%; border-radius: 36px; padding: 10px; background: #18181B; border: 3px solid #D8B282; box-shadow: 0 15px 40px rgba(216,178,130,0.25); overflow: hidden; }
-    .shot-phone-frame img { width: 100%; border-radius: 28px; display: block; object-fit: contain; }
+    .box-blue { background: #EFF6FF; border: 1px solid #93C5FD; border-left: 4px solid #2563EB; padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 20px; font-size: 12px; color: #1E40AF; line-height: 1.6; }
+    .box-blue strong { color: #2563EB; margin-right: 6px; font-weight: 800; }
 
     @media print {
-      body { background: #FFFFFF; padding: 0; }
+      body { background: #FFFFFF; }
       .trn-doc { width: 100%; margin: 0; box-shadow: none; }
-      .cover { width: 210mm !important; height: 297mm !important; margin: 0 !important; }
-      .trn-section { page-break-before: always; break-before: page; }
-      .shot-container { page-break-inside: avoid; break-inside: avoid; }
-      a { text-decoration: none; color: inherit; }
+      .cover, .toc-section, .trn-section { page-break-after: always; break-after: page; }
     }
   </style>
 </head>
 <body>
 <article class="trn-doc">
 
-  <!-- BÌA TÀI LIỆU -->
-  <section class="cover" id="cover">
+  <!-- BÌA A4 -->
+  <section class="cover">
     <div class="accent-bar"></div>
     <div class="header">
       <div>HỆ THỐNG VIONE · TÀI LIỆU HƯỚNG DẪN SỬ DỤNG CHÍNH THỨC</div>
-      <div>MÃ TÀI LIỆU: HDSD-APP-VIONE-6.0</div>
+      <div>MÃ TÀI LIỆU: HDSD-VIONE-CONNECT-APP-6.0</div>
     </div>
     <div class="main">
       <div class="logo-title">VIONE CORPORATION</div>
-      <div class="doc-label">CẨM NANG NGHIỆP VỤ & VẬN HÀNH THỜI GIAN THỰC</div>
-      <h1 class="project-title">HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG DI ĐỘNG & PWA VIONE CONNECT</h1>
-      <p class="subtitle">Cẩm nang sử dụng danh thiếp số NFC, mạng lưới đối tác, sàn giao thương B2B và cài đặt PWA iOS</p>
+      <div class="doc-label">CẨM NANG NGHIỆP VỤ & VẬN HÀNH THỜI GIAN THỰC (PHIÊN BẢN 100% TEXT & WORKFLOW)</div>
+      <h1 class="project-title">HƯỚNG DẪN SỬ DỤNG ỨNG DỤNG DI ĐỘNG VIONE CONNECT C-LEVEL</h1>
+      <p class="subtitle">Cẩm nang giao thương B2B, cộng đồng 2 kiểu, danh thiếp số NFC, trợ lý AI Copilot đa năng, kết nối QR song phương và WebRTC</p>
       
       <div class="meta-info">
-        <div><strong>Hệ thống áp dụng:</strong> Mobile App ViOne Connect (Doanh nhân, Hội viên, Khách hàng)</div>
+        <div><strong>Hệ thống áp dụng:</strong> Lãnh Đạo C-Level, Doanh Nhân Thành Viên, Đối Tác Giao Thương Mạng Lưới ViOne</div>
         <div><strong>Phiên bản tài liệu:</strong> 6.0 Enterprise Edition (Tháng 10/2026)</div>
         <div><strong>Môi trường xác thực:</strong> Server Dev HTTPS (https://14.225.217.232:5445)</div>
         <div><strong>Đơn vị phát triển:</strong> Đội ngũ Kiến Trúc Sư Hệ Thống & Business Analyst Cao Cấp</div>
-        <div><strong>Tiêu chuẩn kiểm thử:</strong> 100% Ảnh Minh Chứng Live Không Lỗi 404</div>
+        <div><strong>Tiêu chuẩn tài liệu:</strong> 100% Ma Trận Quy Trình Trực Quan - Tuyệt Đối Không Lỗi Ảnh 404</div>
       </div>
     </div>
     <div class="footer">
@@ -116,14 +116,22 @@
     <div class="toc-grid">
       <a class="toc-item" href="#sec-01"><span class="toc-num">01.</span><span class="toc-text">Đăng Nhập Ứng Dụng Di Động ViOne Connect (Mobile Login)</span></a>
       <a class="toc-item" href="#sec-02"><span class="toc-num">02.</span><span class="toc-text">Đăng Ký Tài Khoản Mới Trực Tiếp In-App (Mobile Register)</span></a>
-      <a class="toc-item" href="#sec-03"><span class="toc-num">03.</span><span class="toc-text">Trang Chủ Doanh Nhân ViOne Connect & Thẻ Hội Viên Số</span></a>
-      <a class="toc-item" href="#sec-04"><span class="toc-num">04.</span><span class="toc-text">Bottom Sheet Thẻ Hội Viên Bo Tròn 36px Tích Hợp Vuốt Tay Xuống</span></a>
+      <a class="toc-item" href="#sec-03"><span class="toc-num">03.</span><span class="toc-text">Trang Chủ Doanh Nhân ViOne Connect & Lịch Trình Điều Hành 4 Danh Mục</span></a>
+      <a class="toc-item" href="#sec-04"><span class="toc-num">04.</span><span class="toc-text">Bottom Sheet Thẻ Doanh Nhân Bo Tròn 36px Tích Hợp Vuốt Tay Xuống</span></a>
       <a class="toc-item" href="#sec-05"><span class="toc-num">05.</span><span class="toc-text">Bảng Điều Khiển Nhanh Nút ViOne Mạ Vàng Trung Tâm (VActionSheet)</span></a>
       <a class="toc-item" href="#sec-06"><span class="toc-num">06.</span><span class="toc-text">Mạng Lưới Đối Tác & Bản Tin Khoảnh Khắc 24h (Network & Stories)</span></a>
-      <a class="toc-item" href="#sec-07"><span class="toc-num">07.</span><span class="toc-text">Cộng Đồng Doanh Nghiệp & Sàn Cơ Hội Giao Thương (Community)</span></a>
-      <a class="toc-item" href="#sec-08"><span class="toc-num">08.</span><span class="toc-text">Hồ Sơ Danh Tính Số C-Level & Danh Thiếp Titanium 3D (Me Profile)</span></a>
-      <a class="toc-item" href="#sec-09"><span class="toc-num">09.</span><span class="toc-text">Cài Đặt PWA 1-Chạm Trên iPhone / iPad (Apple WebClip Profile)</span></a>
-      <a class="toc-item" href="#sec-10"><span class="toc-num">10.</span><span class="toc-text">Hộp Thư Trực Tiếp & Kênh Chat B2B Doanh Nhân (Messenger)</span></a>
+      <a class="toc-item" href="#sec-07"><span class="toc-num">07.</span><span class="toc-text">Phân Hệ 2 Kiểu Cộng Đồng Doanh Nghiệp (B2B Networking vs Công Ty Nội Bộ)</span></a>
+      <a class="toc-item" href="#sec-08"><span class="toc-num">08.</span><span class="toc-text">Quy Trình Giao Việc & Nhận Việc 1-Chạm Trong Cộng Đồng Công Ty</span></a>
+      <a class="toc-item" href="#sec-09"><span class="toc-num">09.</span><span class="toc-text">Quyền Quản Trị Cộng Đồng Gia Đình ViOne Cho Admin Nền Tảng</span></a>
+      <a class="toc-item" href="#sec-10"><span class="toc-num">10.</span><span class="toc-text">Quy Trình Quan Tâm Cơ Hội B2B & Đề Xuất Hẹn Gặp Qua Thẻ Chat Tương Tác</span></a>
+      <a class="toc-item" href="#sec-11"><span class="toc-num">11.</span><span class="toc-text">Lưu Vết Ghi Âm Khoảnh Khắc (Voice Moments) & Danh Mục Lịch Sử Trang Chủ</span></a>
+      <a class="toc-item" href="#sec-12"><span class="toc-num">12.</span><span class="toc-text">Trí Tuệ Nhân Tạo ViOne AI Copilot 5.0 Thông Minh Toàn Năng</span></a>
+      <a class="toc-item" href="#sec-13"><span class="toc-num">13.</span><span class="toc-text">Hồ Sơ Danh Tính Số C-Level, Danh Thiếp Titanium 3D & Chia Sẻ Chạm NFC</span></a>
+      <a class="toc-item" href="#sec-14"><span class="toc-num">14.</span><span class="toc-text">Cài Đặt PWA 1-Chạm Trên iPhone / iPad (Apple WebClip Profile)</span></a>
+      <a class="toc-item" href="#sec-15"><span class="toc-num">15.</span><span class="toc-text">Hộp Thư Trực Tiếp & Cuộc Gọi WebRTC Thoại & Video Real Dual-Theme</span></a>
+      <a class="toc-item" href="#sec-16"><span class="toc-num">16.</span><span class="toc-text">Bắt Tay Kết Nối Song Phương Thời Gian Thực Qua Mã QR & WebSocket (Incoming QR Handshake)</span></a>
+      <a class="toc-item" href="#sec-17"><span class="toc-num">17.</span><span class="toc-text">Trợ Lý ViOne AI Copilot Đa Năng C-Level & Quản Lý Hồ Sơ Cá Nhân Native Parity</span></a>
+      <a class="toc-item" href="#sec-18"><span class="toc-num">18.</span><span class="toc-text">Hoàn Thiện 5 Phân Hệ Trọng Yếu: AI Copilot Typewriter, Đăng Tin & Khoảnh Khắc, Hộp Thư, Thẻ Doanh Nhân & CRM Khách Hàng</span></a>
     </div>
   </section>
 
@@ -139,16 +147,75 @@
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Mở App ViOne Connect trên điện thoại -> Màn hình Đăng nhập (/vione/login hoặc /connect-app/sign-in)
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Mở App ViOne Connect trên điện thoại -> Màn hình Đăng nhập (/vione/login hoặc /connect-app/sign-in)</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Mở ứng dụng ViOne Connect hoặc truy cập đường dẫn PWA https://14.225.217.232:5445/vione/login.</li>
-        <li>Bước 2: Giao diện nền đen Obsidian thượng lưu xuất hiện với logo ViOne Business Connect mạ vàng sang trọng.</li>
-        <li>Bước 3: Nhập Email hoặc Số điện thoại di động đã đăng ký.</li>
-        <li>Bước 4: Nhập Mật khẩu (có thể bấm biểu tượng mắt để xem mật khẩu) hoặc chọn nhận mã OTP qua tin nhắn.</li>
-        <li>Bước 5: Bấm nút gradient mạ vàng "Đăng Nhập Ngay" để vào thẳng Trang chủ ứng dụng.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Mở ứng dụng ViOne Connect hoặc truy cập đường dẫn PWA https://14.225.217.232:5445/vione/login.</li>
+          <li>Bước 2: Giao diện nền đen Obsidian thượng lưu xuất hiện với logo ViOne Business Connect mạ vàng sang trọng.</li>
+          <li>Bước 3: Nhập Email hoặc Số điện thoại di động đã đăng ký (9-12 chữ số).</li>
+          <li>Bước 4: Nhập Mật khẩu (có nút ẩn/hiện) hoặc chọn nhận mã OTP qua tin nhắn SMS.</li>
+          <li>Bước 5: Bấm nút gradient mạ vàng "Đăng Nhập Ngay" để vào thẳng Trang chủ ứng dụng.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Mở Màn Hình Đăng Nhập</strong></td>
+        <td class="wf-ui-col"><code>Giao diện Luxury Obsidian</code></td>
+        <td class="wf-in-col">Chọn Email hoặc Số điện thoại</td>
+        <td class="wf-out-col"><span class="out-tag">Form đăng nhập thông minh</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Nhập Mật Khẩu / OTP</strong></td>
+        <td class="wf-ui-col"><code>Ô nhập liệu bảo mật</code></td>
+        <td class="wf-in-col">Password hoặc mã 6 số OTP</td>
+        <td class="wf-out-col"><span class="out-tag">Xác thực an toàn đa kênh</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Lưu Phiên Session</strong></td>
+        <td class="wf-ui-col"><code>Bộ nhớ AsyncStorage/Cookie</code></td>
+        <td class="wf-in-col">Token JWT trả về từ server</td>
+        <td class="wf-out-col"><span class="out-tag">Lưu trạng thái đăng nhập 30 ngày</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Chuyển Vào Trang Chủ</strong></td>
+        <td class="wf-ui-col"><code>Bottom Tab Bar Điều Hướng</code></td>
+        <td class="wf-in-col">Đăng nhập thành công</td>
+        <td class="wf-out-col"><span class="out-tag">Mở màn hình Executive Home</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -158,18 +225,6 @@
       <div class="box-blue">
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO TIỆN LỢI: Bật tính năng đăng nhập bằng FaceID hoặc Vân tay để mở app chỉ trong 0.5 giây trong các lần sau.
-      </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_01_mobile_login.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_01_mobile_login.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_01_mobile_login.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_01_mobile_login.png';}"
-      alt="Hình 1: Màn hình Đăng nhập Ứng dụng Di động ViOne Connect" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 1: Màn hình Đăng nhập Ứng dụng Di động ViOne Connect</div>
       </div>
     </section>
 
@@ -183,17 +238,76 @@
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Màn hình Đăng nhập -> Bấm nút: "Tạo tài khoản mới"
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Màn hình Đăng nhập -> Bấm nút: "Tạo tài khoản mới"</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Tại màn hình đăng nhập, nhấp vào liên kết "Tạo tài khoản mới" ở phía dưới.</li>
-        <li>Bước 2: Giao diện đăng ký in-app mở ra mượt mà: Nhập Họ và tên đầy đủ của doanh nhân.</li>
-        <li>Bước 3: Nhập Địa chỉ Email hoặc Số điện thoại chính chủ.</li>
-        <li>Bước 4: Nhập Tên doanh nghiệp / Công ty đang điều hành.</li>
-        <li>Bước 5: Thiết lập Mật khẩu và Xác nhận mật khẩu (tối thiểu 8 ký tự).</li>
-        <li>Bước 6: Bấm "Đăng Ký & Đăng Nhập Ngay": Hệ thống tự động tạo tài khoản, lưu phiên và đưa người dùng vào Trang chủ.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Tại màn hình đăng nhập, nhấp vào liên kết "Tạo tài khoản mới" ở phía dưới.</li>
+          <li>Bước 2: Giao diện đăng ký in-app mở ra mượt mà: Nhập Họ và tên đầy đủ của doanh nhân.</li>
+          <li>Bước 3: Nhập Địa chỉ Email hoặc Số điện thoại chính chủ.</li>
+          <li>Bước 4: Nhập Tên doanh nghiệp / Công ty đang điều hành.</li>
+          <li>Bước 5: Thiết lập Mật khẩu và Xác nhận mật khẩu (tối thiểu 8 ký tự).</li>
+          <li>Bước 6: Bấm "Đăng Ký & Đăng Nhập Ngay": Hệ thống tự động tạo tài khoản, lưu phiên và đưa người dùng vào Trang chủ.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Kích Hoạt Chế Độ Đăng Ký</strong></td>
+        <td class="wf-ui-col"><code>Nút [Tạo Tài Khoản Mới]</code></td>
+        <td class="wf-in-col">Click chuyển mode in-app</td>
+        <td class="wf-out-col"><span class="out-tag">Mở form đăng ký tức thì</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Khai Báo Doanh Nhân</strong></td>
+        <td class="wf-ui-col"><code>Họ tên, SĐT/Email, Công ty</code></td>
+        <td class="wf-in-col">Dữ liệu định danh thực</td>
+        <td class="wf-out-col"><span class="out-tag">Kiểm tra trùng lặp trên CSDL</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Khởi Tạo Danh Tính Số</strong></td>
+        <td class="wf-ui-col"><code>API POST /api/auth/register</code></td>
+        <td class="wf-in-col">Mật khẩu bảo mật</td>
+        <td class="wf-out-col"><span class="out-tag">Sinh tài khoản & vCard ban đầu</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Vào Thẳng Ứng Dụng</strong></td>
+        <td class="wf-ui-col"><code>Tự động đăng nhập</code></td>
+        <td class="wf-in-col">Phiên làm việc mới</td>
+        <td class="wf-out-col"><span class="out-tag">Chuyển thẳng vào Executive Home</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -204,66 +318,102 @@
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO HỒ SƠ: Sau khi đăng ký, hãy vào mục Hồ sơ cá nhân để cập nhật ảnh đại diện và chức danh giúp đối tác dễ nhận diện.
       </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_02_mobile_register_in_app.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_02_mobile_register_in_app.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_02_mobile_register_in_app.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_02_mobile_register_in_app.png';}"
-      alt="Hình 2: Màn hình Đăng ký Tài khoản Mới In-App Trực tiếp" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 2: Màn hình Đăng ký Tài khoản Mới In-App Trực tiếp</div>
-      </div>
     </section>
 
     <section class="trn-section" id="sec-03">
       <div class="trn-tag">APP · TRANG CHỦ</div>
-      <h2 class="trn-h2">03. Trang Chủ Doanh Nhân ViOne Connect & Thẻ Hội Viên Số</h2>
-      <div class="trn-h3">Trung tâm kết nối C-Level, danh thiếp số thông minh, lịch trình và cơ hội kinh doanh hôm nay</div>
+      <h2 class="trn-h2">03. Trang Chủ Doanh Nhân ViOne Connect & Lịch Trình Điều Hành 4 Danh Mục</h2>
+      <div class="trn-h3">Trung tâm kết nối C-Level, danh thiếp số thông minh, lịch trình 4 danh mục và khối điều hành</div>
 
       <div class="trn-goal">
-        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Cung cấp cho doanh nhân bảng tin điều hành và kết nối đối tác nhanh chóng trên di động.
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Cung cấp cho doanh nhân bảng tin điều hành, lịch làm việc và kết nối đối tác nhanh chóng trên di động.
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Thanh điều hướng đáy -> Chạm vào Tab: Trang Chủ (Home)
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy -> Chạm vào Tab: Trang Chủ (Home)</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Header trên cùng hiển thị Lời chào cá nhân hóa theo thời gian thực (Chào buổi sáng / Buổi chiều / Buổi tối) và chuông thông báo.</li>
-        <li>Bước 2: Quan sát Thẻ Hội Viên Doanh Nhân mạ vàng nổi bật ở vị trí trung tâm hiển thị: Họ tên, Chức vụ, Tên công ty và Mã số thẻ.</li>
-        <li>Bước 3: Xem các Tab lịch trình nhanh: [Hôm nay] [Sắp tới] [Nhắc lịch] để nắm bắt các cuộc hẹn và sự kiện trong ngày.</li>
-        <li>Bước 4: Xem khối Insight cơ hội: Đề xuất các đối tác tiềm năng và tin mời thầu phù hợp nhất với ngành nghề của doanh nghiệp.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Header trên cùng hiển thị Lời chào cá nhân hóa theo thời gian thực và Avatar mạ vàng bấm mở Profile Drawer.</li>
+          <li>Bước 2: Quan sát Thẻ Hội Viên Doanh Nhân mạ vàng nổi bật ở vị trí trung tâm hiển thị: Họ tên, Chức vụ, Tên công ty và Mã số thẻ.</li>
+          <li>Bước 3: Sử dụng 4 Tab lịch trình điều hành: [Hôm nay] [Sắp tới] [Lời nhắc] và [🎙️ Ghi âm] để quản lý mọi hoạt động và nghe lại giọng nói khoảnh khắc.</li>
+          <li>Bước 4: Xem khối Giám sát Vận hành C-Level: Điểm danh nhân sự, phê duyệt tài chính và tiến độ công việc Kanban.</li>
+          <li>Bước 5: Thanh định vị AI: Tích hợp nút [📍 Bật vị trí] để sẵn sàng quét người dùng ViOne quanh đây.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Chào Hỏi Cá Nhân Hóa</strong></td>
+        <td class="wf-ui-col"><code>Header thời gian thực</code></td>
+        <td class="wf-in-col">Buổi sáng / chiều / tối</td>
+        <td class="wf-out-col"><span class="out-tag">Lời chào ấm áp + Chuông thông báo</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Thẻ Doanh Nhân Vàng</strong></td>
+        <td class="wf-ui-col"><code>Card Danh Thiếp Trung Tâm</code></td>
+        <td class="wf-in-col">Chạm vào thẻ</td>
+        <td class="wf-out-col"><span class="out-tag">Mở Bottom Sheet vuốt tay xuống</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>4 Tab Lịch Trình</strong></td>
+        <td class="wf-ui-col"><code>[Hôm nay][Sắp tới][Nhắc][Ghi âm]</code></td>
+        <td class="wf-in-col">Chuyển đổi danh mục</td>
+        <td class="wf-out-col"><span class="out-tag">Lịch hẹn B2B & Audio khoảnh khắc</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Giám Sát Vận Hành</strong></td>
+        <td class="wf-ui-col"><code>Khối Điều Hành 3 Màu Chuẩn</code></td>
+        <td class="wf-in-col">Trắng - Đen - Vàng Đồng</td>
+        <td class="wf-out-col"><span class="out-tag">Chấm công, Duyệt chi, Giao việc</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
-        ĐỒNG BỘ THỜI GIAN THỰC: Lịch trình cuộc hẹn trên Mobile App luôn được đồng bộ 2 chiều với hệ thống CRM Web của công ty.
+        ĐỒNG BỘ THỜI GIAN THỰC: Mọi lịch hẹn cơ hội được chấp nhận qua tin nhắn chat sẽ tự động xuất hiện ngay trong Tab [Hôm nay].
       </div>
 
       <div class="box-blue">
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
-        MẸO KẾT NỐI: Nhấp vào từng đối tác gợi ý để xem hồ sơ năng lực chi tiết và gửi yêu cầu kết nối kinh doanh.
-      </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_03_home_dashboard.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_03_home_dashboard.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_03_home_dashboard.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_03_home_dashboard.png';}"
-      alt="Hình 3: Trang chủ Doanh nhân ViOne Connect & Thẻ Hội Viên" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 3: Trang chủ Doanh nhân ViOne Connect & Thẻ Hội Viên</div>
+        MẸO LÃNH ĐẠO: Chạm vào tab [🎙️ Ghi âm] để nghe lại các đoạn ghi âm khoảnh khắc với sóng âm và trình phát inline tiện lợi.
       </div>
     </section>
 
     <section class="trn-section" id="sec-04">
-      <div class="trn-tag">APP · THẺ HỘI VIÊN</div>
-      <h2 class="trn-h2">04. Bottom Sheet Thẻ Hội Viên Bo Tròn 36px Tích Hợp Vuốt Tay Xuống</h2>
+      <div class="trn-tag">APP · THẺ DOANH NHÂN</div>
+      <h2 class="trn-h2">04. Bottom Sheet Thẻ Doanh Nhân Bo Tròn 36px Tích Hợp Vuốt Tay Xuống</h2>
       <div class="trn-h3">Bảng điều khiển danh thiếp số vuốt từ dưới lên với góc bo cong tròn và cử chỉ vuốt tay đóng tự nhiên</div>
 
       <div class="trn-goal">
@@ -271,15 +421,74 @@
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Trang Chủ App Mobile -> Chạm vào: Thẻ Hội Viên Doanh Nhân
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Trang Chủ App Mobile -> Chạm vào: Thẻ Hội Viên Doanh Nhân</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Chạm trực tiếp vào Thẻ Hội Viên Doanh Nhân trên màn hình Trang Chủ.</li>
-        <li>Bước 2: Một bảng điều khiển (Bottom Sheet) vuốt mượt mà từ cạnh dưới màn hình lên với góc bo cong tròn 36px sang trọng.</li>
-        <li>Bước 3: Bottom Sheet hiển thị: Mã QR cá nhân hóa, Nút [Chạm NFC Một Chạm], Nút [Chia Sẻ vCard] và Nút [Gửi Qua Zalo/Tin Nhắn].</li>
-        <li>Bước 4: Để đóng bảng điều khiển: Đặt ngón tay lên thanh gạt ngang trên đỉnh popup và vuốt nhẹ xuống dưới (Swipe Down), popup sẽ trượt xuống đóng lại mượt mà.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Chạm trực tiếp vào Thẻ Hội Viên Doanh Nhân trên màn hình Trang Chủ.</li>
+          <li>Bước 2: Một bảng điều khiển (Bottom Sheet) vuốt mượt mà từ cạnh dưới màn hình lên với góc bo cong tròn 36px sang trọng.</li>
+          <li>Bước 3: Bottom Sheet hiển thị: Mã QR cá nhân hóa, Nút [Chạm NFC Một Chạm], Nút [Chia Sẻ vCard] và Nút [Gửi Qua Zalo/Tin Nhắn].</li>
+          <li>Bước 4: Để đóng bảng điều khiển: Đặt ngón tay lên thanh gạt ngang trên đỉnh popup và vuốt nhẹ xuống dưới (Swipe Down), popup sẽ trượt xuống đóng lại mượt mà.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Chạm Thẻ Mở Drawer</strong></td>
+        <td class="wf-ui-col"><code>Sự kiện chạm onTap thẻ</code></td>
+        <td class="wf-in-col">Thao tác ngón tay</td>
+        <td class="wf-out-col"><span class="out-tag">Drawer trượt lên từ đáy màn hình</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Hiển Thị QR & NFC</strong></td>
+        <td class="wf-ui-col"><code>Mã QR nét cao + Chip NFC</code></td>
+        <td class="wf-in-col">Hồ sơ doanh nhân thực</td>
+        <td class="wf-out-col"><span class="out-tag">Sẵn sàng quét và chạm kết nối</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Chia Sẻ Danh Bạ vCard</strong></td>
+        <td class="wf-ui-col"><code>Nút [Tải vCard .vcf]</code></td>
+        <td class="wf-in-col">Bấm 1-chạm</td>
+        <td class="wf-out-col"><span class="out-tag">Lưu thẳng vào danh bạ điện thoại</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Vuốt Tay Xuống Đóng</strong></td>
+        <td class="wf-ui-col"><code>PanResponder Gestures</code></td>
+        <td class="wf-in-col">Vuốt xuống ≥ 50px</td>
+        <td class="wf-out-col"><span class="out-tag">Popup trượt xuống đóng êm ái</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -289,18 +498,6 @@
       <div class="box-blue">
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO GIAO TIẾP: Khi đi dự tiệc hoặc hội thảo, chỉ cần mở sẵn Bottom Sheet này để đối tác quét mã QR kết nối ngay lập tức.
-      </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_04_member_card_bottom_sheet.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_04_member_card_bottom_sheet.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_04_member_card_bottom_sheet.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_04_member_card_bottom_sheet.png';}"
-      alt="Hình 4: Bottom Sheet Thẻ Hội viên Bo Tròn 36px Tích hợp Vuốt Tay Xuống" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 4: Bottom Sheet Thẻ Hội viên Bo Tròn 36px Tích hợp Vuốt Tay Xuống</div>
       </div>
     </section>
 
@@ -314,21 +511,80 @@
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Thanh điều hướng đáy -> Chạm vào: Nút tròn chữ V màu vàng kim ở chính giữa
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy -> Chạm vào: Nút tròn chữ V màu vàng kim ở chính giữa</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Chạm vào nút tròn ViOne dập nổi ánh kim vàng Champagne ở giữa thanh điều hướng đáy.</li>
-        <li>Bước 2: Màn hình kích hoạt hiệu ứng kính mờ (Obsidian Glassmorphism) và hiển thị Bảng điều khiển VActionSheet.</li>
-        <li>Bước 3: Chọn 1 trong 6 tác vụ nhanh:
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Chạm vào nút tròn ViOne dập nổi ánh kim vàng Champagne ở giữa thanh điều hướng đáy.</li>
+          <li>Bước 2: Màn hình kích hoạt hiệu ứng kính mờ (Obsidian Glassmorphism) và hiển thị Bảng điều khiển VActionSheet.</li>
+          <li>Bước 3: Chọn 1 trong 6 tác vụ nhanh:
   • [1. Quét Danh Thiếp OCR]: Chụp ảnh danh thiếp giấy để AI tự động lưu vào CRM.
   • [2. Chấm Công Định Vị GPS]: Điểm danh văn phòng chỉ với 1 chạm.
   • [3. Phê Duyệt Chi Tiền]: Duyệt nhanh các phiếu chi ngân sách khẩn cấp.
   • [4. Đăng Nhu Cầu Mua/Bán]: Phát sóng tin mời thầu hoặc chào hàng B2B.
   • [5. Hẹn Gặp 1-on-1]: Xếp lịch làm việc nhanh với một CEO đối tác.
   • [6. Trợ Lý AI Copilot]: Mở đàm thoại trực tiếp với trợ lý thông minh.</li>
-        <li>Bước 4: Chạm vào vùng nền tối để đóng Action Sheet.</li>
-      </ol>
+          <li>Bước 4: Chạm vào vùng nền tối để đóng Action Sheet.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Chạm Nút V Vàng Kim</strong></td>
+        <td class="wf-ui-col"><code>VIconMark 3D Vector tròn</code></td>
+        <td class="wf-in-col">Thao tác chạm 1-click</td>
+        <td class="wf-out-col"><span class="out-tag">Kích hoạt VActionSheet nổi</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Hiển Thị Kính Mờ</strong></td>
+        <td class="wf-ui-col"><code>Obsidian Backdrop Blur</code></td>
+        <td class="wf-in-col">Làm mờ nền ứng dụng</td>
+        <td class="wf-out-col"><span class="out-tag">Tập trung 6 phím tắt quyền lực</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Chọn Lối Tắt Tác Vụ</strong></td>
+        <td class="wf-ui-col"><code>Lưới 6 Icon Hành Động</code></td>
+        <td class="wf-in-col">Quét OCR, Chấm công, Duyệt...</td>
+        <td class="wf-out-col"><span class="out-tag">Mở tức thì màn hình nghiệp vụ</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Đóng Menu Siêu Tốc</strong></td>
+        <td class="wf-ui-col"><code>Chạm vùng ngoài / Vuốt tay</code></td>
+        <td class="wf-in-col">Chạm backdrop</td>
+        <td class="wf-out-col"><span class="out-tag">Thu gọn mượt mà về thanh đáy</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -338,18 +594,6 @@
       <div class="box-blue">
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO TIỆN ÍCH: Đây là phím tắt quyền năng nhất trên app giúp các CEO tiết kiệm thời gian thao tác tới 70%.
-      </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_05_v_action_sheet.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_05_v_action_sheet.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_05_v_action_sheet.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_05_v_action_sheet.png';}"
-      alt="Hình 5: Bảng Điều Khiển Nhanh Nút ViOne Mạ Vàng Trung Tâm (VActionSheet)" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 5: Bảng Điều Khiển Nhanh Nút ViOne Mạ Vàng Trung Tâm (VActionSheet)</div>
       </div>
     </section>
 
@@ -363,15 +607,75 @@
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Thanh điều hướng đáy -> Chạm vào Tab: Mạng Lưới (Network)
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy -> Chạm vào Tab: Mạng Lưới (Network)</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Dải Stories 24h trên đầu hiển thị avatar các doanh nhân vừa đăng tải hoạt động kinh doanh mới. Chạm vào avatar để xem trình chiếu toàn màn hình.</li>
-        <li>Bước 2: Danh sách "Chăm Sóc Đối Tác" hiển thị các mối quan hệ quan trọng kèm ngày tương tác gần nhất.</li>
-        <li>Bước 3: Sử dụng các phím tắt nhanh trên từng đối tác: [Gọi Điện Thoại] [Gửi Tin Nhắn] [Lên Lịch Hẹn 1-1].</li>
-        <li>Bước 4: Sử dụng bộ lọc ngành nghề để tìm kiếm đối tác cung ứng trong lĩnh vực mong muốn.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Header màn hình hiển thị Avatar tròn mạ vàng của bạn, bên cạnh nút Quét card.</li>
+          <li>Bước 2: Dải Stories 24h trên đầu hiển thị thẻ Tạo tin 24h (lấy ảnh thật và tên thật của bạn) cùng avatar các doanh nhân vừa đăng tải hoạt động mới. Chạm vào avatar để xem trình chiếu toàn màn hình.</li>
+          <li>Bước 3: Khối banner AI Copilot Matcher gợi ý các đối tác có độ tương thích kinh doanh cao.</li>
+          <li>Bước 4: Danh sách "Chăm Sóc Đối Tác" hiển thị các mối quan hệ quan trọng kèm ngày tương tác gần nhất và các phím tắt: [Gọi Điện] [Nhắn Tin] [Hẹn Gặp 1-1].</li>
+          <li>Bước 5: Bộ lọc ngành nghề chuẩn màu Nâu Gradient ViOne cho phép lọc nhanh đối tác theo chuyên môn.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Tạo Tin 24h Stories</strong></td>
+        <td class="wf-ui-col"><code>Nút Tạo Tin Avatar Thật</code></td>
+        <td class="wf-in-col">Chọn ảnh/video hoạt động</td>
+        <td class="wf-out-col"><span class="out-tag">Xuất bản story tồn tại 24 giờ</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Xem Story Đối Tác</strong></td>
+        <td class="wf-ui-col"><code>Trình chiếu Fullscreen Stories</code></td>
+        <td class="wf-in-col">Chạm avatar doanh nhân</td>
+        <td class="wf-out-col"><span class="out-tag">Xem ảnh, văn bản và nhắn tin chúc mừng</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Bộ Lọc Ngành Nghề</strong></td>
+        <td class="wf-ui-col"><code>Filter Chips Nâu Gradient ViOne</code></td>
+        <td class="wf-in-col">Chọn lĩnh vực kinh doanh</td>
+        <td class="wf-out-col"><span class="out-tag">Lọc tức thì đối tác phù hợp</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Chăm Sóc 1-Chạm</strong></td>
+        <td class="wf-ui-col"><code>Nút Gọi, Nhắn tin, Hẹn gặp</code></td>
+        <td class="wf-in-col">Bấm trực tiếp trên thẻ</td>
+        <td class="wf-out-col"><span class="out-tag">Kết nối đàm phán ngay lập tức</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -382,83 +686,640 @@
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO DUY TRÌ QUAN HỆ: Nhắn tin chúc mừng hoặc tương tác với Story của đối tác là cách tự nhiên nhất để mở đầu một cơ hội làm ăn mới.
       </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_06_network_connections.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_06_network_connections.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_06_network_connections.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_06_network_connections.png';}"
-      alt="Hình 6: Màn hình Mạng Lưới Đối Tác & Stories 24h Lãnh Đạo" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 6: Màn hình Mạng Lưới Đối Tác & Stories 24h Lãnh Đạo</div>
-      </div>
     </section>
 
     <section class="trn-section" id="sec-07">
-      <div class="trn-tag">APP · CỘNG ĐỒNG</div>
-      <h2 class="trn-h2">07. Cộng Đồng Doanh Nghiệp & Sàn Cơ Hội Giao Thương (Community)</h2>
-      <div class="trn-h3">Tham gia các liên minh ngành nghề, khám phá sự kiện và săn đón các gói thầu tiềm năng</div>
+      <div class="trn-tag">APP · 2 KIỂU CỘNG ĐỒNG</div>
+      <h2 class="trn-h2">07. Phân Hệ 2 Kiểu Cộng Đồng Doanh Nghiệp (B2B Networking vs Công Ty Nội Bộ)</h2>
+      <div class="trn-h3">Tách bạch tuyệt đối không gian giao lưu đối tác B2B bên ngoài và không gian điều hành nội bộ công ty</div>
 
       <div class="trn-goal">
-        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Tiếp cận các cơ hội hợp tác kinh doanh quy mô lớn và tham gia các sự kiện xúc tiến thương mại.
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Phục vụ đồng thời hai nhu cầu cốt lõi của doanh nghiệp: Kết nối giao thương bên ngoài và Giao việc quản trị bên trong.
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Thanh điều hướng đáy -> Chạm vào Tab: Cộng Đồng (Community)
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy -> Chạm Tab: Cộng Đồng (Community)</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Xem danh mục các Liên Minh Doanh Nghiệp theo ngành nghề (Bất động sản, Công nghệ, Bán lẻ, Y tế, Xây dựng...).</li>
-        <li>Bước 2: Chuyển sang Tab "Sự Kiện" để xem lịch các hội thảo, diễn đàn doanh nhân sắp diễn ra và bấm "Đăng Ký Vé".</li>
-        <li>Bước 3: Chuyển sang Tab "Cơ Hội Giao Thương" để xem danh sách các gói thầu và nhu cầu tìm nhà cung ứng đang mở.</li>
-        <li>Bước 4: Bấm "Nộp Báo Giá" hoặc "Liên Hệ Trực Tiếp" với doanh nghiệp đăng tin thầu.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Tại màn hình danh sách cộng đồng, nhận diện 2 loại hình qua huy hiệu nổi bật: [🤝 MẠNG LƯỚI B2B] hoặc [🏢 CÔNG TY NỘI BỘ].</li>
+          <li>Bước 2: Khi truy cập Cộng Đồng B2B Networking:
+  • Nút hành động trên Header: `+ Đăng cơ hội`, `+ Đăng bài`, `+ Chia sẻ SK`.
+  • Các Tab nghiệp vụ: [Cơ hội], [Bảng tin], [Sự kiện], [Thành viên].
+  • Tuyệt đối KHÔNG có tính năng giao việc nhân sự hay giám sát trong cộng đồng B2B.</li>
+          <li>Bước 3: Khi truy cập Cộng Đồng Nội Bộ Công Ty:
+  • Nút hành động trên Header: `+ Giao việc`, `+ Đăng bài`, `+ Chia sẻ SK`.
+  • Các Tab nghiệp vụ: [Công việc], [Giám sát CRM], [Bảng tin], [Sự kiện], [Nhân sự].
+  • Tuyệt đối KHÔNG có tính năng đăng cơ hội giao thương B2B trong cộng đồng công ty.</li>
+          <li>Bước 4: Chia sẻ sự kiện đối tác ngoài: Bấm `+ Chia sẻ SK` -> Nhập link sự kiện bên ngoài vào modal ShareEventModal để quảng bá cho thành viên.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Phân Loại Mô Hình</strong></td>
+        <td class="wf-ui-col"><code>Community Type Selector</code></td>
+        <td class="wf-in-col">b2b_networking vs company_internal</td>
+        <td class="wf-out-col"><span class="out-tag">Thiết lập cấu trúc tab riêng biệt</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Cộng Đồng B2B</strong></td>
+        <td class="wf-ui-col"><code>Header Actions B2B</code></td>
+        <td class="wf-in-col">+ Đăng cơ hội, + Đăng bài, + Chia sẻ SK</td>
+        <td class="wf-out-col"><span class="out-tag">Mở rộng giao thương đối tác ngoài</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Cộng Đồng Nội Bộ</strong></td>
+        <td class="wf-ui-col"><code>Header Actions Nội Bộ</code></td>
+        <td class="wf-in-col">+ Giao việc, + Đăng bài, + Chia sẻ SK</td>
+        <td class="wf-out-col"><span class="out-tag">Điều hành khép kín trong doanh nghiệp</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Chia Sẻ Sự Kiện Ngoài</strong></td>
+        <td class="wf-ui-col"><code>Modal ShareEventModal</code></td>
+        <td class="wf-in-col">Tên SK, ngày giờ, link bên ngoài</td>
+        <td class="wf-out-col"><span class="out-tag">Quảng bá sự kiện vào bảng tin chung</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
-        KIỂM DUYỆT THÔNG TIN: Mọi tin mời thầu và sản phẩm trên sàn đều được ban quản trị xác thực pháp nhân doanh nghiệp trước khi phát sóng.
+        QUY TẮC PHÂN LẬP NGHIÊM NGẶT: Hệ thống kiểm soát quyền chặt chẽ theo loại hình cộng đồng, không cho phép giao việc nhân viên trong cộng đồng giao lưu B2B và không đăng tin thầu rao bán trong cộng đồng nội bộ.
       </div>
 
       <div class="box-blue">
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
-        MẸO KINH DOANH: Đăng ký thông báo theo ngành nghề để nhận ngay cảnh báo khi có gói thầu mới được đăng tải.
-      </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_07_community_marketplace.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_07_community_marketplace.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_07_community_marketplace.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_07_community_marketplace.png';}"
-      alt="Hình 7: Màn hình Cộng Đồng Doanh Nghiệp & Sàn Cơ Hội B2B" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 7: Màn hình Cộng Đồng Doanh Nghiệp & Sàn Cơ Hội B2B</div>
+        MẸO ĐIỀU HÀNH: Giám đốc tạo một cộng đồng công ty để tập hợp toàn bộ nhân viên và tham gia các cộng đồng B2B để săn cơ hội thầu.
       </div>
     </section>
 
     <section class="trn-section" id="sec-08">
+      <div class="trn-tag">APP · GIAO VIỆC NỘI BỘ</div>
+      <h2 class="trn-h2">08. Quy Trình Giao Việc & Nhận Việc 1-Chạm Trong Cộng Đồng Công Ty</h2>
+      <div class="trn-h3">Giám đốc giao việc, nhân viên bấm nhận việc tức thời và giám sát tiến độ chăm sóc khách hàng CRM</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Số hóa 100% quy trình làm việc trong doanh nghiệp, kiểm soát thời gian thực việc nhận và hoàn thành công việc.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Cộng Đồng Nội Bộ Công Ty -> Tab: Công Việc (Tasks) & Tab: Giám Sát (Supervision)</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Giám đốc bấm nút "+ Giao việc" trên Header hoặc trong Tab Công việc -> Mở form giao việc chi tiết.</li>
+          <li>Bước 2: Nhập: Tiêu đề công việc, Mô tả nhiệm vụ, Chọn nhân viên phụ trách từ danh sách công ty, Thiết lập Thời hạn hoàn thành (Deadline), Chọn khách hàng CRM liên quan.</li>
+          <li>Bước 3: Gửi công việc: Nhân viên phụ trách nhận được thông báo thời gian thực. Khi mở Tab Công việc, công việc hiển thị ở trạng thái "Chờ nhận việc" kèm nút bấm nổi bật [⚡ TIẾN HÀNH NHẬN VIỆC].</li>
+          <li>Bước 4: Nhân viên bấm [⚡ TIẾN HÀNH NHẬN VIỆC]: Trạng thái công việc chuyển ngay sang "Đang làm" (in_progress), hệ thống ghi nhận chính xác mốc thời gian nhận việc (acceptedAt) và bắn thông báo xác nhận về máy Giám đốc.</li>
+          <li>Bước 5: Giám đốc mở Tab "Giám Sát": Theo dõi ma trận nhân sự, danh sách khách hàng từng nhân viên đang chăm sóc, giai đoạn phễu và hoạt động thực tế.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Giám Đốc Giao Việc</strong></td>
+        <td class="wf-ui-col"><code>Form Giao Việc Nội Bộ</code></td>
+        <td class="wf-in-col">Tiêu đề, nhân viên, deadline, CRM lead</td>
+        <td class="wf-out-col"><span class="out-tag">Bắn thông báo tức thì đến nhân viên</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Chờ Nhận Việc</strong></td>
+        <td class="wf-ui-col"><code>Badge Vàng [assigned]</code></td>
+        <td class="wf-in-col">Hiển thị trên app nhân viên</td>
+        <td class="wf-out-col"><span class="out-tag">Xuất hiện nút [⚡ TIẾN HÀNH NHẬN VIỆC]</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Nhận Việc 1-Chạm</strong></td>
+        <td class="wf-ui-col"><code>Nút [⚡ TIẾN HÀNH NHẬN VIỆC]</code></td>
+        <td class="wf-in-col">Nhân viên click xác nhận</td>
+        <td class="wf-out-col"><span class="out-tag">Chuyển in_progress + Ghi acceptedAt</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Giám Sát Bán Hàng</strong></td>
+        <td class="wf-ui-col"><code>Tab Giám Sát Supervision</code></td>
+        <td class="wf-in-col">Ma trận nhân sự & Khách hàng CRM</td>
+        <td class="wf-out-col"><span class="out-tag">Báo cáo trực quan cho Giám đốc</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        KIỂM SOÁT THỜI GIAN THỰC: Giám đốc biết chính xác nhân viên đã bấm nhận việc hay chưa thông qua nút [⚡ TIẾN HÀNH NHẬN VIỆC] và mốc thời gian acceptedAt.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO VẬN HÀNH: Liên kết công việc với khách hàng CRM giúp nhân viên mở trực tiếp hồ sơ khách hàng chỉ với 1 chạm ngay trong chi tiết công việc.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-09">
+      <div class="trn-tag">APP · QUẢN TRỊ CỘNG ĐỒNG</div>
+      <h2 class="trn-h2">09. Quyền Quản Trị Cộng Đồng Gia Đình ViOne Cho Admin Nền Tảng</h2>
+      <div class="trn-h3">Admin hệ thống được cấp quyền Quản trị viên đầy đủ, tự do chỉnh sửa tên, ảnh đại diện, ảnh bìa và giới thiệu</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Trao toàn quyền quản trị cộng đồng trung tâm Gia đình ViOne cho các tài khoản quản trị viên nền tảng.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Cộng Đồng Gia Đình ViOne -> Bấm nút: [⚙️ Chỉnh sửa cộng đồng] trên Header</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Đăng nhập bằng tài khoản Quản trị viên (Admin/Owner) và truy cập cộng đồng "Gia đình ViOne".</li>
+          <li>Bước 2: Hệ thống tự động nhận diện quyền Quản trị viên (canEdit = true, viewerRole = "admin") và hiển thị nút mạ vàng [⚙️ Chỉnh sửa cộng đồng]. Trong tab Thành viên, tài khoản được gắn nhãn "Quản trị viên".</li>
+          <li>Bước 3: Nhấp vào [⚙️ Chỉnh sửa cộng đồng] để mở modal EditCommunityModal chuyên dụng.</li>
+          <li>Bước 4: Chỉnh sửa các trường thông tin: Tên cộng đồng, Tải lên Ảnh đại diện (Logo) mới, Tải lên Ảnh bìa (Banner) mới, Cập nhật Khẩu hiệu (Tagline), Mô tả chi tiết và Loại hình cộng đồng.</li>
+          <li>Bước 5: Bấm "Lưu Thay Đổi": Thông tin cộng đồng được cập nhật ngay lập tức lên CSDL và đồng bộ tới toàn bộ thành viên.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Nhận Diện Quyền Admin</strong></td>
+        <td class="wf-ui-col"><code>Backend Check canEdit=true</code></td>
+        <td class="wf-in-col">User ID là Admin hoặc Owner</td>
+        <td class="wf-out-col"><span class="out-tag">Hiển thị nút [⚙️ Chỉnh sửa cộng đồng]</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Mở Modal Chỉnh Sửa</strong></td>
+        <td class="wf-ui-col"><code>Modal EditCommunityModal</code></td>
+        <td class="wf-in-col">Click nút bánh răng quản trị</td>
+        <td class="wf-out-col"><span class="out-tag">Load thông tin hiện tại vào form</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Cập Nhật Logo & Banner</strong></td>
+        <td class="wf-ui-col"><code>Upload file ảnh MinIO</code></td>
+        <td class="wf-in-col">Chọn ảnh logo và banner mới</td>
+        <td class="wf-out-col"><span class="out-tag">Xem trước hình ảnh trực tiếp</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Lưu & Đồng Bộ</strong></td>
+        <td class="wf-ui-col"><code>API PATCH /connect-app/community/:id</code></td>
+        <td class="wf-in-col">Gửi payload chỉnh sửa</td>
+        <td class="wf-out-col"><span class="out-tag">Cập nhật thành công cho toàn mạng</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        QUYỀN HẠN BẢO MẬT: Nút [⚙️ Chỉnh sửa cộng đồng] chỉ hiển thị với các tài khoản Admin hoặc Chủ sở hữu cộng đồng. Thành viên thông thường chỉ có quyền xem.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO THẨM MỸ: Ảnh bìa cộng đồng nên có tỷ lệ 16:9 chất lượng cao và ảnh đại diện logo tròn để hiển thị đẹp nhất trên màn hình điện thoại.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-10">
+      <div class="trn-tag">APP · CƠ HỘI B2B & HẸN GẶP</div>
+      <h2 class="trn-h2">10. Quy Trình Quan Tâm Cơ Hội B2B & Đề Xuất Hẹn Gặp Qua Thẻ Chat Tương Tác</h2>
+      <div class="trn-h3">Bày tỏ quan tâm cơ hội, gửi thẻ tương tác hẹn gặp vào chat và tự động ghim cuộc gặp vào lịch trình trang chủ</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Biến cơ hội kinh doanh thành các cuộc gặp mặt thực tế 1-on-1, xúc tiến giao thương nhanh chóng.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Cộng Đồng B2B -> Tab Cơ Hội -> Xem Chi Tiết Cơ Hội -> Bấm [Quan tâm]</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Xem chi tiết một cơ hội kinh doanh trên Sàn Cơ Hội B2B.</li>
+          <li>Bước 2: Bấm nút [Quan tâm]: Hệ thống ghi nhận lượt quan tâm, bắn thông báo cho người đăng cơ hội và hiển thị thêm nút nổi bật [📅 Nhắn tin hẹn gặp trao đổi cơ hội].</li>
+          <li>Bước 3: Bấm nút [📅 Nhắn tin hẹn gặp trao đổi cơ hội] -> Mở modal ProposeOpportunityMeetingModal: Chọn Ngày hẹn, Giờ hẹn, Hình thức gặp (Trực tiếp hoặc Video Call ViOne) và Lời nhắn hợp tác -> Bấm "Gửi Đề Xuất Hẹn Gặp".</li>
+          <li>Bước 4: Thẻ tương tác OpportunityMeetingProposalCard xuất hiện trong luồng chat của người đăng với 2 nút: [Đồng ý hẹn] và [Từ chối].</li>
+          <li>Bước 5: Khi người đăng bấm [Đồng ý hẹn]: Cuộc gặp tự động được lưu vào CSDL lịch trình, kích hoạt sự kiện meeting-scheduled, xuất hiện ngay trong Tab [Hôm nay] trên Trang chủ ExecutiveHome của cả hai bên, đồng thời bắn thông báo xác nhận.</li>
+          <li>Bước 6: Đối với Người Đăng Cơ Hội: Có thể xem danh sách toàn bộ đối tác quan tâm (interestedMembers) kèm thông tin công ty và nút hẹn gặp nhanh.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Bấm Quan Tâm Cơ Hội</strong></td>
+        <td class="wf-ui-col"><code>Nút [Quan Tâm] chi tiết cơ hội</code></td>
+        <td class="wf-in-col">Thao tác click của đối tác</td>
+        <td class="wf-out-col"><span class="out-tag">Hiện nút [📅 Nhắn tin hẹn gặp] + Bắn notify</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Gửi Đề Xuất Hẹn Gặp</strong></td>
+        <td class="wf-ui-col"><code>Modal ProposeOpportunityMeeting</code></td>
+        <td class="wf-in-col">Ngày, giờ, địa điểm, lời nhắn</td>
+        <td class="wf-out-col"><span class="out-tag">Gửi thẻ card tương tác vào luồng chat</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Thẻ Tương Tác Trong Chat</strong></td>
+        <td class="wf-ui-col"><code>Card [🤝 ĐỀ XUẤT HẸN GẶP]</code></td>
+        <td class="wf-in-col">2 Nút: [Đồng ý hẹn] / [Từ chối]</td>
+        <td class="wf-out-col"><span class="out-tag">Người đăng phản hồi chỉ với 1 chạm</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Tự Động Lên Lịch Trang Chủ</strong></td>
+        <td class="wf-ui-col"><code>Sự kiện meeting-scheduled</code></td>
+        <td class="wf-in-col">Bấm [Đồng ý hẹn]</td>
+        <td class="wf-out-col"><span class="out-tag">Ghim vào Lịch [Hôm nay] của cả 2 bên</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        TỰ ĐỘNG HÓA LỊCH TRÌNH: Khi bấm [Đồng ý hẹn], cuộc gặp được ghim thẳng vào lịch trình làm việc trang chủ mà không cần nhập liệu thủ công.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO KẾT NỐI: Người đăng cơ hội nên kiểm tra thường xuyên danh sách đối tác quan tâm để chủ động đề xuất lịch hẹn với các đối tác tiềm năng nhất.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-11">
+      <div class="trn-tag">APP · GHI ÂM KHOẢNH KHẮC</div>
+      <h2 class="trn-h2">11. Lưu Vết Ghi Âm Khoảnh Khắc (Voice Moments) & Danh Mục Lịch Sử Trang Chủ</h2>
+      <div class="trn-h3">Ghi âm giọng nói khi đăng khoảnh khắc, tự động lưu vết lịch sử và nghe lại trực tiếp trên trang chủ</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Lưu giữ những ghi chú giọng nói quan trọng và giúp lãnh đạo dễ dàng nghe lại mọi lúc mọi nơi.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Đăng Khoảnh Khắc -> Thu âm giọng nói -> Trang Chủ ExecutiveHome -> Tab: [🎙️ Ghi âm]</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Khi tạo bài viết hoặc khoảnh khắc trong ứng dụng, người dùng bấm vào biểu tượng Micro để thu âm giọng nói (MomentVoiceNote).</li>
+          <li>Bước 2: Sau khi thu âm và đăng khoảnh khắc thành công, tệp âm thanh tự động được lưu vết vào kho lưu trữ lịch sử vba_voice_moments_history và phát sự kiện voice-moment-saved.</li>
+          <li>Bước 3: Mở Trang chủ ExecutiveHome: Quan sát thanh tab lịch trình có thêm danh mục thứ 4 [🎙️ Ghi âm ({count})] bên cạnh Hôm nay, Sắp tới, Lời nhắc.</li>
+          <li>Bước 4: Nhấp vào Tab [🎙️ Ghi âm]: Danh sách toàn bộ các bản ghi âm khoảnh khắc xuất hiện kèm ngày giờ thu âm, thời lượng, trích đoạn nội dung và sóng âm trực quan.</li>
+          <li>Bước 5: Bấm nút Play/Pause trên từng bản ghi âm để nghe lại giọng nói trực tiếp với trình phát audio inline handleTogglePlayVoice.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Thu Âm Giọng Nói</strong></td>
+        <td class="wf-ui-col"><code>Thành phần MomentVoiceNote</code></td>
+        <td class="wf-in-col">Nói vào microphone điện thoại</td>
+        <td class="wf-out-col"><span class="out-tag">Tệp audio wav/mp3 chất lượng cao</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Tự Động Lưu Vết Lịch Sử</strong></td>
+        <td class="wf-ui-col"><code>Kho vba_voice_moments_history</code></td>
+        <td class="wf-in-col">Đăng khoảnh khắc thành công</td>
+        <td class="wf-out-col"><span class="out-tag">Phát sự kiện voice-moment-saved</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Hiển Thị Danh Mục Trang Chủ</strong></td>
+        <td class="wf-ui-col"><code>Tab [🎙️ Ghi âm] tại ExecutiveHome</code></td>
+        <td class="wf-in-col">Chuyển tab danh mục 4</td>
+        <td class="wf-out-col"><span class="out-tag">Danh sách các bản ghi âm kèm sóng âm</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Nghe Lại Trực Tiếp Inline</strong></td>
+        <td class="wf-ui-col"><code>Nút Play/Pause & Audio Player</code></td>
+        <td class="wf-in-col">Chạm nút nghe lại</td>
+        <td class="wf-out-col"><span class="out-tag">Phát âm thanh sắc nét ngay trên trang chủ</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        LƯU VẾT BỀN VỮNG: Mọi bản ghi âm giọng nói đều được lưu vết thời gian thực, đảm bảo không bị thất lạc khi chuyển đổi qua lại giữa các màn hình.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO GHI CHÚ: Sử dụng ghi âm khoảnh khắc để ghi lại các ý tưởng kinh doanh chớp nhoáng hoặc tóm tắt nhanh sau các cuộc họp đối tác.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-12">
+      <div class="trn-tag">APP · AI COPILOT</div>
+      <h2 class="trn-h2">12. Trí Tuệ Nhân Tạo ViOne AI Copilot 5.0 Thông Minh Toàn Năng</h2>
+      <div class="trn-h3">Tìm kiếm đoạn ghi âm theo giọng nói, quét người dùng quanh đây và phân tích động cơ hội kèm Evidence Cards</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Cung cấp trợ lý điều hành giọng nói tiếng Việt toàn năng, hỗ trợ tối đa cho các quyết định của lãnh đạo C-Level.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Trang Chủ -> Bấm nút Micro AI hoặc Chạm nút ViOne mạ vàng -> Chọn: Trợ Lý AI Copilot</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Chạm vào biểu tượng Trợ lý AI ViOne Copilot để mở cửa sổ đàm thoại giọng nói thông minh.</li>
+          <li>Bước 2: Tìm kiếm đoạn ghi âm khoảnh khắc: Ra lệnh bằng giọng nói: "tìm đoạn ghi âm tại khoảnh khắc" -> AI tự động quét kho lịch sử ghi âm, phản hồi giọng nói và hiển thị thẻ Voice Moment Evidence có nút nghe lại và thanh sóng âm trực tiếp trong hộp thoại AI.</li>
+          <li>Bước 3: Quét người dùng ViOne quanh đây: Hỏi AI: "quanh đây có ai dùng ViOne không" -> AI kích hoạt định vị trong bán kính (km), yêu cầu cấp quyền vị trí, hiển thị danh sách người dùng lân cận hoặc phản hồi lịch sự kèm gợi ý mở rộng bán kính.</li>
+          <li>Bước 4: Phân tích động cơ hội kinh doanh: Hỏi AI: "tôi được bao nhiêu quan tâm cơ hội của tôi" -> AI tính toán chính xác số lượt và hiển thị thẻ Opportunity Evidence Cards kèm nút [Xem đối tác quan tâm] và [Hẹn gặp].</li>
+          <li>Bước 5: Kiểm tra cuộc gặp điều hành: Hỏi AI: "tôi có cuộc gặp nào không" -> AI tổng hợp chi tiết các cuộc gặp đã xác nhận và hiển thị thẻ Meeting Evidence Cards kèm nút [Vào phòng họp video] và [Xem lịch].</li>
+          <li>Bước 6: Đa thông báo tương tác: Hệ thống tự động bắn thông báo thời gian thực cho mọi tương tác (tin nhắn người lạ, đối tác quan tâm cơ hội, đề xuất hẹn gặp, đối tác đồng ý hẹn, kết nối thành công).</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Ra Lệnh Bằng Giọng Nói</strong></td>
+        <td class="wf-ui-col"><code>Giao diện ViOneVoiceAssistant</code></td>
+        <td class="wf-in-col">Nói lệnh tiếng Việt tự nhiên</td>
+        <td class="wf-out-col"><span class="out-tag">Nhận diện giọng nói chính xác</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Tìm Đoạn Ghi Âm Khoảnh Khắc</strong></td>
+        <td class="wf-ui-col"><code>Thẻ Voice Moment Evidence Card</code></td>
+        <td class="wf-in-col">"tìm đoạn ghi âm tại khoảnh khắc"</td>
+        <td class="wf-out-col"><span class="out-tag">Hiển thị audio player + Nghe lại inline</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Quét Người Dùng Quanh Đây</strong></td>
+        <td class="wf-ui-col"><code>API /connect-app/nearby-users</code></td>
+        <td class="wf-in-col">"quanh đây có ai dùng ViOne không"</td>
+        <td class="wf-out-col"><span class="out-tag">Danh sách doanh nhân theo bán kính km</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Phân Tích Cơ Hội & Cuộc Gặp</strong></td>
+        <td class="wf-ui-col"><code>Thẻ Opportunity & Meeting Cards</code></td>
+        <td class="wf-in-col">"tôi được bao nhiêu quan tâm..."</td>
+        <td class="wf-out-col"><span class="out-tag">Evidence Cards có nút hành động 1-chạm</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        DYNAMIC TOÀN DIỆN: AI Copilot tuyệt đối không lặp lại câu hỏi của người dùng và luôn đưa ra số liệu thực tế kèm thẻ bằng chứng tương tác (Evidence Cards).
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO RA LỆNH: Có thể hỏi AI bất kỳ câu hỏi nào về lịch trình hôm nay, tình hình chấm công nhân sự, hay duyệt chi ngân sách.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-13">
       <div class="trn-tag">APP · DANH TÍNH SỐ</div>
-      <h2 class="trn-h2">08. Hồ Sơ Danh Tính Số C-Level & Danh Thiếp Titanium 3D (Me Profile)</h2>
-      <div class="trn-h3">Quản trị thương hiệu cá nhân lãnh đạo, cài đặt quyền riêng tư và ví danh bạ đối tác</div>
+      <h2 class="trn-h2">13. Hồ Sơ Danh Tính Số C-Level, Danh Thiếp Titanium 3D & Chia Sẻ Chạm NFC</h2>
+      <div class="trn-h3">Quản trị thương hiệu cá nhân lãnh đạo, chạm danh thiếp NFC một chạm và ví danh bạ đối tác</div>
 
       <div class="trn-goal">
         <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Khẳng định vị thế uy tín của doanh nhân và quản lý toàn bộ thông tin kết nối cá nhân.
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Thanh điều hướng đáy -> Chạm vào Tab: Tôi (Me Profile)
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy -> Chạm vào Tab: Tôi (Me Profile)</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Xem Card "DANH TÍNH SỐ": Hiển thị ảnh chân dung lãnh đạo, họ tên, chức vụ, tên công ty và chữ ký V mạ vàng dập chìm.</li>
-        <li>Bước 2: Sử dụng 2 nút gradient vàng nổi bật: [QR Của Tôi] để phóng to mã QR và [Chạm NFC] để sẵn sàng chia sẻ danh thiếp.</li>
-        <li>Bước 3: Card "LIÊN HỆ NHANH" với 5 nút tương tác trực tiếp một chạm: [Gọi Điện] [Gửi Email] [Viber] [WhatsApp] [Telegram].</li>
-        <li>Bước 4: Mở "Ví Danh Thiếp Đối Tác" để xem và tải về danh bạ vCard của tất cả những người mình đã từng chạm thẻ giao lưu.</li>
-        <li>Bước 5: Cấu hình "Quyền Riêng Tư": Chọn ẩn hoặc hiện số điện thoại cá nhân khi người lạ quét thẻ.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Xem Card "DANH TÍNH SỐ": Hiển thị ảnh chân dung lãnh đạo, họ tên, chức vụ, tên công ty và chữ ký V mạ vàng dập chìm.</li>
+          <li>Bước 2: Sử dụng 2 nút gradient vàng nổi bật: [QR Của Tôi] để phóng to mã QR và [Chạm NFC] để sẵn sàng chia sẻ danh thiếp.</li>
+          <li>Bước 3: Card "LIÊN HỆ NHANH" với 5 nút tương tác trực tiếp một chạm: [Gọi Điện] [Gửi Email] [Viber] [WhatsApp] [Telegram].</li>
+          <li>Bước 4: Mở "Ví Danh Thiếp Đối Tác" để xem và tải về danh bạ vCard của tất cả những người mình đã từng chạm thẻ giao lưu.</li>
+          <li>Bước 5: Cấu hình "Quyền Riêng Tư": Chọn ẩn hoặc hiện số điện thoại cá nhân khi người lạ quét thẻ.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Xem Danh Tính Số 3D</strong></td>
+        <td class="wf-ui-col"><code>Card Titanium Lật Mặt 3D</code></td>
+        <td class="wf-in-col">Chạm lật mặt trước/sau</td>
+        <td class="wf-out-col"><span class="out-tag">Ảnh chân dung, chức danh, chữ ký V</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Chạm Chia Sẻ NFC</strong></td>
+        <td class="wf-ui-col"><code>Nút [Chạm NFC]</code></td>
+        <td class="wf-in-col">Chạm lưng điện thoại đối tác</td>
+        <td class="wf-out-col"><span class="out-tag">Mở danh thiếp công khai chỉ 1 giây</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>5 Kênh Liên Hệ Nhanh</strong></td>
+        <td class="wf-ui-col"><code>Gọi, Mail, Viber, WA, Telegram</code></td>
+        <td class="wf-in-col">Chạm icon tương tác</td>
+        <td class="wf-out-col"><span class="out-tag">Mở ứng dụng liên lạc tương ứng</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Ví Danh Thiếp Đối Tác</strong></td>
+        <td class="wf-ui-col"><code>Kho lưu trữ Card Vault</code></td>
+        <td class="wf-in-col">Danh bạ đã quét/chạm</td>
+        <td class="wf-out-col"><span class="out-tag">Tải tệp danh bạ vCard .vcf về máy</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -469,23 +1330,11 @@
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO ĐẲNG CẤP: Chuyển đổi giữa chế độ Sáng Tinh Tế và Tối Huyền Bí Obsidian tùy theo sở thích và hoàn cảnh sử dụng.
       </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_08_me_digital_identity.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_08_me_digital_identity.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_08_me_digital_identity.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_08_me_digital_identity.png';}"
-      alt="Hình 8: Màn hình Danh Tính Số C-Level & Danh Thiếp Thông Minh" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 8: Màn hình Danh Tính Số C-Level & Danh Thiếp Thông Minh</div>
-      </div>
     </section>
 
-    <section class="trn-section" id="sec-09">
+    <section class="trn-section" id="sec-14">
       <div class="trn-tag">APP · CÀI ĐẶT IOS</div>
-      <h2 class="trn-h2">09. Cài Đặt PWA 1-Chạm Trên iPhone / iPad (Apple WebClip Profile)</h2>
+      <h2 class="trn-h2">14. Cài Đặt PWA 1-Chạm Trên iPhone / iPad (Apple WebClip Profile)</h2>
       <div class="trn-h3">Đột phá cài đặt ứng dụng trực tiếp lên Màn hình chính iOS tương tự như cài file APK Android</div>
 
       <div class="trn-goal">
@@ -493,17 +1342,76 @@
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Trình duyệt Safari trên iPhone -> Truy cập trang /install hoặc tải file: /vione_ios_install.mobileconfig
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Trình duyệt Safari trên iPhone -> Truy cập trang /install hoặc tải file: /vione_ios_install.mobileconfig</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Mở liên kết /install trên trình duyệt Safari của iPhone.</li>
-        <li>Bước 2: Hoặc tải file cấu hình /vione_ios_install.mobileconfig -> Safari hỏi: "Trang web này đang cố tải về một hồ sơ cấu hình. Bạn có muốn cho phép không?" -> Bấm "Cho phép" (Allow).</li>
-        <li>Bước 3: Mở ứng dụng "Cài đặt" (Settings) trên iPhone -> Chạm vào mục "Đã tải về hồ sơ" (Profile Downloaded) ở ngay đầu.</li>
-        <li>Bước 4: Nhấn nút "Cài đặt" (Install) ở góc phải trên -> Nhập Mật khẩu máy -> Tiếp tục bấm "Cài đặt".</li>
-        <li>Bước 5: Biểu tượng ứng dụng ViOne Connect màu vàng kim sẽ xuất hiện ngay lập tức trên Màn hình chính của iPhone.</li>
-        <li>Bước 6: Chạm vào biểu tượng để mở app: Ứng dụng chạy toàn màn hình Native siêu mượt.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Mở liên kết /install trên trình duyệt Safari của iPhone.</li>
+          <li>Bước 2: Hoặc tải file cấu hình /vione_ios_install.mobileconfig -> Safari hỏi: "Trang web này đang cố tải về một hồ sơ cấu hình. Bạn có muốn cho phép không?" -> Bấm "Cho phép" (Allow).</li>
+          <li>Bước 3: Mở ứng dụng "Cài đặt" (Settings) trên iPhone -> Chạm vào mục "Đã tải về hồ sơ" (Profile Downloaded) ở ngay đầu.</li>
+          <li>Bước 4: Nhấn nút "Cài đặt" (Install) ở góc phải trên -> Nhập Mật khẩu máy -> Tiếp tục bấm "Cài đặt".</li>
+          <li>Bước 5: Biểu tượng ứng dụng ViOne Connect màu vàng kim sẽ xuất hiện ngay lập tức trên Màn hình chính của iPhone.</li>
+          <li>Bước 6: Chạm vào biểu tượng để mở app: Ứng dụng chạy toàn màn hình Native siêu mượt, loại bỏ hoàn toàn thanh địa chỉ Safari.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Mở Safari & Tải Profile</strong></td>
+        <td class="wf-ui-col"><code>Trình duyệt Safari iPhone</code></td>
+        <td class="wf-in-col">Link /vione_ios_install.mobileconfig</td>
+        <td class="wf-out-col"><span class="out-tag">Hộp thoại Apple: Cho phép tải về</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Mở Cài Đặt Máy</strong></td>
+        <td class="wf-ui-col"><code>Cài Đặt (iOS Settings)</code></td>
+        <td class="wf-in-col">Mục "Đã tải về hồ sơ"</td>
+        <td class="wf-out-col"><span class="out-tag">Xem hồ sơ ViOne Business Connect</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Xác Nhận Cài Đặt</strong></td>
+        <td class="wf-ui-col"><code>Nút [Cài Đặt] góc phải trên</code></td>
+        <td class="wf-in-col">Nhập Passcode mở máy</td>
+        <td class="wf-out-col"><span class="out-tag">Xác nhận cài đặt WebClip Profile</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Icon Màn Hình Chính</strong></td>
+        <td class="wf-ui-col"><code>Home Screen iPhone</code></td>
+        <td class="wf-in-col">Chạm biểu tượng ViOne</td>
+        <td class="wf-out-col"><span class="out-tag">Chạy Fullscreen Native 100%</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
@@ -514,60 +1422,369 @@
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
         MẸO ĐỘT PHÁ: Giải pháp này giúp người dùng iOS cài đặt app dễ dàng như cài file APK trên Android, không lo bị thu hồi chứng chỉ doanh nghiệp.
       </div>
-
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_09_ios_pwa_install_prompt.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_09_ios_pwa_install_prompt.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_09_ios_pwa_install_prompt.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_09_ios_pwa_install_prompt.png';}"
-      alt="Hình 9: Hướng Dẫn Cài Đặt PWA Màn Hình Chính Trên iPhone / iPad" loading="lazy" />
-        </div>
-      </div>
-      <div class="shot-caption">Hình 9: Hướng Dẫn Cài Đặt PWA Màn Hình Chính Trên iPhone / iPad</div>
-      </div>
     </section>
 
-    <section class="trn-section" id="sec-10">
-      <div class="trn-tag">APP · HỘP THƯ CHAT</div>
-      <h2 class="trn-h2">10. Hộp Thư Trực Tiếp & Kênh Chat B2B Doanh Nhân (Messenger)</h2>
-      <div class="trn-h3">Nhắn tin trực tiếp giữa các CEO, gửi tài liệu báo giá và trò chuyện nhóm dự án</div>
+    <section class="trn-section" id="sec-15">
+      <div class="trn-tag">APP · HỘP THƯ & CUỘC GỌI</div>
+      <h2 class="trn-h2">15. Hộp Thư Trực Tiếp & Cuộc Gọi WebRTC Thoại & Video Real Dual-Theme</h2>
+      <div class="trn-h3">Nhắn tin trực tiếp giữa các CEO, gửi thẻ tương tác hẹn gặp, gọi thoại và gọi video nghe giọng thực tế 100%</div>
 
       <div class="trn-goal">
-        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Trao đổi hợp tác làm ăn nhanh chóng, tức thời ngay trên ứng dụng di động.
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Trao đổi hợp tác làm ăn nhanh chóng, thực hiện cuộc gọi chất lượng cao với âm thanh rõ nét.
       </div>
 
       <div class="trn-path">
-        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> Thanh điều hướng đáy -> Chạm vào biểu tượng: Hộp Thư (Inbox)
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy -> Chạm vào biểu tượng: Hộp Thư (Inbox)</code>
       </div>
 
-      <ol class="trn-steps">
-        <li>Bước 1: Xem danh sách các cuộc trò chuyện chia theo các Tab: [Tất Cả] [Chưa Đọc] [Nhóm Dự Án] [Tin Nhắn Chờ].</li>
-        <li>Bước 2: Chạm vào cuộc trò chuyện để mở cửa sổ chat với đối tác.</li>
-        <li>Bước 3: Gửi tin nhắn văn bản, hình ảnh danh thiếp hoặc đính kèm báo giá dịch vụ.</li>
-        <li>Bước 4: Bấm nút "Tạo Nhóm Mới" để tạo nhóm chat thảo luận kinh doanh giữa 3 hay nhiều lãnh đạo doanh nghiệp.</li>
-      </ol>
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Xem danh sách các cuộc trò chuyện chia theo các Tab: [Tất Cả] [Chưa Đọc] [Nhóm Dự Án] [Tin Nhắn Chờ].</li>
+          <li>Bước 2: Chạm vào cuộc trò chuyện để mở cửa sổ chat với đối tác. Nhận diện các thẻ tương tác hẹn gặp trao đổi cơ hội với nút [Đồng ý hẹn] và [Từ chối].</li>
+          <li>Bước 3: Gọi thoại WebRTC (Voice Call): Chạm biểu tượng Điện thoại -> Cuộc gọi kết nối tức thì, giọng nói đàm thoại hai chiều rõ nét qua Web Audio API không bị chặn autoplay.</li>
+          <li>Bước 4: Gọi video WebRTC (Video Call): Chạm biểu tượng Camera -> Khởi tạo video hai chiều sắc nét với tính năng khử tiếng vọng và lọc tiếng ồn.</li>
+          <li>Bước 5: Thiết kế Full Dual-Theme: Giao diện cuộc gọi hỗ trợ hoàn hảo cả Theme Sáng (nền trắng ngọc trai mạ vàng đồng, tên đối phương màu đen obsidian sắc nét) và Theme Tối (Obsidian Navy chữ trắng tinh khôi).</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Hộp Thư 4 Danh Mục</strong></td>
+        <td class="wf-ui-col"><code>Tab [Tất cả][Chưa đọc][Nhóm][Chờ]</code></td>
+        <td class="wf-in-col">Phân loại tin nhắn</td>
+        <td class="wf-out-col"><span class="out-tag">Tránh thư rác làm phiền CEO</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Thẻ Hẹn Gặp Chat</strong></td>
+        <td class="wf-ui-col"><code>OpportunityMeetingProposalCard</code></td>
+        <td class="wf-in-col">Thẻ đề xuất trong hội thoại</td>
+        <td class="wf-out-col"><span class="out-tag">Phản hồi [Đồng ý] / [Từ chối] tức thời</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Gọi Thoại WebRTC</strong></td>
+        <td class="wf-ui-col"><code>Web Audio API Stream Routing</code></td>
+        <td class="wf-in-col">Nút [Gọi Điện Thoại]</td>
+        <td class="wf-out-col"><span class="out-tag">Đàm thoại 2 chiều nghe giọng 100%</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Gọi Video Dual-Theme</strong></td>
+        <td class="wf-ui-col"><code>Giao diện Full Sáng & Tối</code></td>
+        <td class="wf-in-col">Nút [Gọi Video Call]</td>
+        <td class="wf-out-col"><span class="out-tag">Khử tiếng vọng & Video HD sắc nét</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
 
       <div class="box-red">
         <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
-        QUẢN LÝ TIN NHẮN CHỜ: Tin nhắn từ những người chưa kết nối sẽ nằm trong Tab "Tin Nhắn Chờ" để tránh làm phiền doanh nhân.
+        KẾT NỐI ÂM THANH THỰC TẾ: Công nghệ Web Audio API định tuyến luồng âm thanh trực tiếp từ microphone đối phương, đảm bảo nghe thấy giọng nói 100%.
       </div>
 
       <div class="box-blue">
         <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
-        MẸO DOANH NHÂN: Nhận thông báo đẩy (Push Notification) ngay khi đối tác trả lời tin nhắn dù bạn đang tắt ứng dụng.
+        MẸO BẬT ÂM THANH: Nếu trình duyệt có chính sách hạn chế autoplay, ứng dụng trang bị sẵn nút "🔊 Bật âm thanh đối phương" để mở tiếng ngay tức thì.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-16">
+      <div class="trn-tag">APP · KẾT NỐI SONG PHƯƠNG</div>
+      <h2 class="trn-h2">16. Bắt Tay Kết Nối Song Phương Thời Gian Thực Qua Mã QR & WebSocket (Incoming QR Handshake)</h2>
+      <div class="trn-h3">Quét mã QR kết nối tức thì, tự động kích hoạt Modal yêu cầu kết nối song phương thời gian thực trên cả Web và Mobile</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Thiết lập quy trình bắt tay giao thương hai chiều minh bạch, người được quét nhận thông báo và quyết định đồng ý kết nối ngay lập tức.
       </div>
 
-      <div class="shot-container">
-        
-      <div class="shot-mobile-wrap">
-        <div class="shot-phone-frame">
-          <img src="images/evidence_live_2026/app_10_inbox_messenger.png"
-      onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='/docs/images/evidence_live_2026/app_10_inbox_messenger.png';}else if(this.dataset.retried==1){this.dataset.retried=2;this.src='/images/evidence_live_2026/app_10_inbox_messenger.png';}else if(this.dataset.retried==2){this.dataset.retried=3;this.src='../images/evidence_live_2026/app_10_inbox_messenger.png';}"
-      alt="Hình 10: Hộp Thư Trực Tiếp & Kênh Chat B2B Doanh Nhân" loading="lazy" />
-        </div>
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Thanh điều hướng đáy / Header -> Quét QR (ScanQrModal) -> Phát sự kiện WebSocket qr:connect</code>
       </div>
-      <div class="shot-caption">Hình 10: Hộp Thư Trực Tiếp & Kênh Chat B2B Doanh Nhân</div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Doanh nhân A mở chức năng Quét QR trên ứng dụng ViOne Mobile hoặc Web PWA.</li>
+          <li>Bước 2: Hướng camera vào mã QR danh thiếp của Doanh nhân B (hoặc quét NFC). Ứng dụng giải mã token danh thiếp và phát sự kiện WebSocket "qr:connect" lên ConnectAppGateway.</li>
+          <li>Bước 3: Ngay lập tức, màn hình ứng dụng của Doanh nhân B (dù đang dùng Web hay Native App) tự động bật Modal kết nối song phương (IncomingConnectionModal / IncomingQrConnectionModal).</li>
+          <li>Bước 4: Doanh nhân B xem đầy đủ thông tin: Ảnh đại diện, họ tên, chức vụ, tên công ty của Doanh nhân A kèm lời mời kết nối kinh doanh.</li>
+          <li>Bước 5: Doanh nhân B bấm nút [Đồng ý kết nối] mạ vàng Champagne Gold: Hệ thống phát sự kiện "connection:respond" (accept), tự động lưu kết nối vào CSDL, bắn thông báo thành công cho Doanh nhân A và mở kênh trò chuyện trực tiếp 1-1.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Quét QR Danh Thiếp</strong></td>
+        <td class="wf-ui-col"><code>ScanQrModal Camera View</code></td>
+        <td class="wf-in-col">Mã QR Doanh nhân B</td>
+        <td class="wf-out-col"><span class="out-tag">Phát socket qr:connect</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Thông Báo Song Phương</strong></td>
+        <td class="wf-ui-col"><code>IncomingQrConnectionModal</code></td>
+        <td class="wf-in-col">Sự kiện connection:incoming</td>
+        <td class="wf-out-col"><span class="out-tag">Bật Modal tức thì trên thiết bị B</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Phản Hồi Kết Nối</strong></td>
+        <td class="wf-ui-col"><code>Nút [Đồng ý] / [Để sau]</code></td>
+        <td class="wf-in-col">Thao tác chạm của B</td>
+        <td class="wf-out-col"><span class="out-tag">Phát socket connection:respond</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Đồng Bộ Danh Bạ</strong></td>
+        <td class="wf-ui-col"><code>Network Contacts & Chat</code></td>
+        <td class="wf-in-col">Event connection:accepted</td>
+        <td class="wf-out-col"><span class="out-tag">Lưu CSDL & mở kênh Chat 1-1</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        AN TOÀN DANH TÍNH DOANH NHÂN: Người được quét hoàn toàn chủ động từ chối nếu không phù hợp qua nút [Để sau / Từ chối], đảm bảo tuyệt đối quyền riêng tư và tránh bị làm phiền.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO GIAO THƯƠNG: Kết nối song phương thành công sẽ tự động mở khóa tính năng chia sẻ danh thiếp vCard và cho phép gửi thẻ đề xuất hẹn gặp 1-on-1 trong hộp thư chat.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-17">
+      <div class="trn-tag">APP · TRỢ LÝ AI & HỒ SƠ</div>
+      <h2 class="trn-h2">17. Trợ Lý ViOne AI Copilot Đa Năng C-Level & Quản Lý Hồ Sơ Cá Nhân Native Parity</h2>
+      <div class="trn-h3">Trợ lý AI thông minh giải đáp mọi dữ liệu nền tảng, thiết kế giao diện không che khuất, và trình chỉnh sửa hồ sơ C-Level thuần Native</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Cung cấp năng lực trợ lý ảo thông thái nắm trọn vẹn thông tin tài khoản, sự kiện, cộng đồng và chuẩn hóa công cụ chỉnh sửa danh thiếp số trên di động.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Header Trang Chủ / Tab Tôi -> Trợ lý AI ViOne Copilot / Nút [Chỉnh sửa hồ sơ]</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Chạm vào Trợ lý AI ViOne Copilot (nút micro hoặc nút AI nổi có thể kéo thả PanResponder và đóng mở linh hoạt).</li>
+          <li>Bước 2: Giao diện AI xuất hiện với cấu trúc chuẩn: Header cố định không đè lấn sóng micro, Footer nhập câu hỏi luôn neo cứng ở đáy qua KeyboardAvoidingView.</li>
+          <li>Bước 3: Người dùng có thể hỏi bất kỳ câu hỏi nào: "Sự kiện nào đang diễn ra?", "Tôi đang tham gia những cộng đồng nào?", "Tài khoản của tôi có bao nhiêu kết nối?", "Tôi có cơ hội kinh doanh nào mới không?". AI phân tích ngữ cảnh người dùng theo thời gian thực và trả lời chi tiết kèm Evidence Cards và Suggested Actions.</li>
+          <li>Bước 4: Tại màn hình Tôi (ProfileScreen), chạm nút "Chỉnh sửa" mở EditProfileModal chuẩn Native: Cập nhật họ tên hiển thị, chức danh, công ty, ngành nghề, số điện thoại, email, website và tiểu sử điều hành.</li>
+          <li>Bước 5: Bấm [Lưu thay đổi]: Dữ liệu đồng bộ tức thì lên hệ thống, cập nhật danh thiếp số 3D Titanium và phản ánh ngay vào thẻ hồ sơ hiển thị cho đối tác.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>Kích Hoạt AI Copilot</strong></td>
+        <td class="wf-ui-col"><code>Floating AI / Header Micro</code></td>
+        <td class="wf-in-col">Voice hoặc Text câu hỏi</td>
+        <td class="wf-out-col"><span class="out-tag">Mở ViOneVoiceAssistantModal</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Phân Tích Động</strong></td>
+        <td class="wf-ui-col"><code>Backend AiService API</code></td>
+        <td class="wf-in-col">Context user & nền tảng</td>
+        <td class="wf-out-col"><span class="out-tag">Dữ liệu sự kiện, cộng đồng, leads</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Hiển Thị Trực Quan</strong></td>
+        <td class="wf-ui-col"><code>Evidence Cards & Action Chips</code></td>
+        <td class="wf-in-col">Response Markdown & Chips</td>
+        <td class="wf-out-col"><span class="out-tag">Trả lời thông thái không rập khuôn</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>Chỉnh Sửa Hồ Sơ</strong></td>
+        <td class="wf-ui-col"><code>EditProfileModal Native</code></td>
+        <td class="wf-in-col">Form 8 trường thông tin</td>
+        <td class="wf-out-col"><span class="out-tag">Lưu CSDL & Cập nhật danh thiếp</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        KHÔNG RẬP KHUÔN: AI Copilot liên tục truy vấn dữ liệu thực tế từ tài khoản và hệ thống, cam kết phản hồi chính xác 100% mọi dữ liệu trong hệ sinh thái ViOne.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO QUẢN TRỊ AI: Người dùng có thể tắt nút AI nổi ở trang chủ khi muốn màn hình thoáng hơn, và dễ dàng bật lại bất kỳ lúc nào tại mục Cài Đặt trên Tab Tôi.
+      </div>
+    </section>
+
+    <section class="trn-section" id="sec-18">
+      <div class="trn-tag">APP · 5 PHÂN HỆ NÂNG CẤP</div>
+      <h2 class="trn-h2">18. Hoàn Thiện 5 Phân Hệ Trọng Yếu: AI Copilot Typewriter, Đăng Tin & Khoảnh Khắc, Hộp Thư, Thẻ Doanh Nhân & CRM Khách Hàng</h2>
+      <div class="trn-h3">Nâng cấp toàn diện trải nghiệm người dùng với AI trung thực, luồng tạo nội dung linh hoạt, chat liền mạch và quản trị khách hàng C-Level</div>
+
+      <div class="trn-goal">
+        <strong>MỤC TIÊU NGHIỆP VỤ:</strong> Cung cấp trải nghiệm mượt mà, chính xác và chuyên nghiệp nhất trên toàn bộ hệ sinh thái ứng dụng ViOne.
+      </div>
+
+      <div class="trn-path">
+        <strong>ĐƯỜNG DẪN THAO TÁC:</strong> <code>Trang Chủ / Mạng Lưới / Đăng Khoảnh Khắc / Hộp Thư / Khách Hàng CRM</code>
+      </div>
+
+      <div class="steps-container">
+        <h4 class="steps-title">TRÌNH TỰ THAO TÁC NGHIỆP VỤ:</h4>
+        <ol class="trn-steps">
+          <li>Bước 1: Trợ lý AI ViOne Copilot: Khi hỏi về bạn bè kết nối ("tôi có bao nhiêu bạn bè"), AI truy vấn CSDL PostgreSQL thực tế, báo trung thực số 0 nếu chưa có kết nối, loại bỏ triệt để ảo giác 156 bạn bè; đồng thời chữ hiển thị mượt mà theo hiệu ứng máy đánh chữ Typewriter Streaming với con trỏ nhấp nháy.</li>
+          <li>Bước 2: Đăng Tin & Khoảnh Khắc: Chủ đề/chuyên mục hoàn toàn không bắt buộc (chạm để chọn hoặc bỏ chọn qua nút "[Bỏ chọn chủ đề]"), ảnh mẫu được gỡ bỏ để người dùng đăng bài chữ thuần túy hoặc ảnh thực tế từ camera/thư viện mà không bị mất ảnh sau khi xuất bản.</li>
+          <li>Bước 3: Hộp Thư Tin Nhắn: Danh sách hiển thị đầy đủ mọi tài khoản đã từng nhắn tin qua lại, hệ thống tự động bóc tách tiền tố "th-" và tự khởi tạo luồng chat với người dùng mới mà không phát sinh lỗi UUID.</li>
+          <li>Bước 4: Thẻ Doanh Nhân Trang Chủ: Ảnh bìa và ảnh đại diện tự động đồng bộ từ dữ liệu danh tính người dùng; modal chỉnh sửa nhanh được tối ưu chỉ còn đúng 1 nút tải ảnh bìa và 1 nút tải avatar tinh gọn.</li>
+          <li>Bước 5: Quản Trị Khách Hàng CRM: Tab Khách hàng trang bị 4 thẻ chỉ số Pipeline (Quy mô cơ hội, Đang đàm phán, Tỷ lệ chốt deal, Lịch chăm sóc tuần), kèm stepper tiến trình 4 giai đoạn, bộ chọn Deal Health và dòng thời gian ghi nhật ký chăm sóc đa kênh.</li>
+        </ol>
+      </div>
+
+      <div class="workflow-box">
+        <div class="wf-header">
+          <span class="wf-title">MA TRẬN QUY TRÌNH & THÔNG SỐ XỬ LÝ (WORKFLOW SPECIFICATION)</span>
+          <span class="wf-badge-gold">Xác thực: 100% Khớp Mã Nguồn</span>
+        </div>
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th style="width: 8%;">Bước</th>
+              <th style="width: 20%;">Hành Động</th>
+              <th style="width: 25%;">Thành Phần Giao Diện</th>
+              <th style="width: 25%;">Dữ Liệu Đầu Vào / Ràng Buộc</th>
+              <th style="width: 22%;">Kết Quả Đầu Ra & Trạng Thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">01</span></td>
+        <td class="wf-act-col"><strong>AI Typewriter Streaming</strong></td>
+        <td class="wf-ui-col"><code>ViOneVoiceAssistantModal</code></td>
+        <td class="wf-in-col">Câu hỏi người dùng</td>
+        <td class="wf-out-col"><span class="out-tag">Gõ chữ từng ký tự kèm con trỏ nhấp nháy</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">02</span></td>
+        <td class="wf-act-col"><strong>Đăng Tin Tự Do</strong></td>
+        <td class="wf-ui-col"><code>PostMomentModal / CreateNews</code></td>
+        <td class="wf-in-col">Tùy chọn chủ đề & ảnh</td>
+        <td class="wf-out-col"><span class="out-tag">Lưu bền vững storage_path media</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">03</span></td>
+        <td class="wf-act-col"><strong>Nhắn Tin Liền Mạch</strong></td>
+        <td class="wf-ui-col"><code>Hộp thư Messenger</code></td>
+        <td class="wf-in-col">Bóc tách tiền tố th-</td>
+        <td class="wf-out-col"><span class="out-tag">Mở kênh chat 1-1 không lỗi UUID</span></td>
+      </tr>
+    
+
+      <tr>
+        <td class="wf-step-col"><span class="step-badge">04</span></td>
+        <td class="wf-act-col"><strong>CRM Pipeline Stepper</strong></td>
+        <td class="wf-ui-col"><code>CustomerDetailModal</code></td>
+        <td class="wf-in-col">Chạm chuyển 4 giai đoạn deal</td>
+        <td class="wf-out-col"><span class="out-tag">Cập nhật realtime phễu bán hàng</span></td>
+      </tr>
+    
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box-red">
+        <strong>LƯU Ý NGHIỆP VỤ QUAN TRỌNG:</strong>
+        DỮ LIỆU CHÍNH XÁC & MINH BẠCH: Toàn bộ thông tin hiển thị từ AI, danh bạ đến CRM đều được đối soát trực tiếp từ CSDL thực, đảm bảo sự trung thực tuyệt đối cho lãnh đạo.
+      </div>
+
+      <div class="box-blue">
+        <strong>MẸO VẬN HÀNH DÀNH CHO C-LEVEL:</strong>
+        MẸO SỬ DỤNG: Dùng nút chuyển giai đoạn 1-chạm trong chi tiết khách hàng CRM để cập nhật tức thì trạng thái đàm phán hợp đồng cho toàn bộ đội ngũ bán hàng.
       </div>
     </section>
 

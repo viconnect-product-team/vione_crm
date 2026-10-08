@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -22,8 +22,9 @@ import {
   Target,
   Phone,
   AlertTriangle,
+  Check,
 } from "lucide-react-native";
-import { apiRequest } from "../api/client";
+import { communityApi } from "../api/services";
 
 export interface AssignTaskModalProps {
   visible: boolean;
@@ -40,13 +41,40 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [assigneeName, setAssigneeName] = useState("Nguyễn Thị Mai");
+  const [assigneeName, setAssigneeName] = useState("Thành viên");
+  const [selectedAssigneeId, setSelectedAssigneeId] = useState("");
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [priority, setPriority] = useState<"urgent" | "high" | "medium">("high");
   const [deadline, setDeadline] = useState("Hôm nay, 17:30");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerRequirements, setCustomerRequirements] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Tải danh sách thành viên thực tế của cộng đồng
+  useEffect(() => {
+    if (visible && communityId) {
+      loadEmployees();
+    }
+  }, [visible, communityId]);
+
+  const loadEmployees = async () => {
+    setLoadingEmployees(true);
+    try {
+      const res = await communityApi.getCommunityEmployees(communityId);
+      if (res?.data?.employees && res.data.employees.length > 0) {
+        setEmployees(res.data.employees);
+        const first = res.data.employees[0];
+        setSelectedAssigneeId(first.id || first.userId);
+        setAssigneeName(first.fullName);
+      }
+    } catch (e) {
+      console.warn("Failed to load community employees:", e);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!title.trim()) {
@@ -59,6 +87,7 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
       const payload = {
         title: title.trim(),
         description: description.trim(),
+        assigneeId: selectedAssigneeId || undefined,
         assigneeName: assigneeName.trim() || "Nhân sự",
         priority,
         deadline: deadline.trim() || "Trong hôm nay",
@@ -67,22 +96,14 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
         customerRequirements: customerRequirements.trim() || null,
       };
 
-      const res = await apiRequest(`connect-app/community/${communityId}/tasks`, {
-        method: "POST",
-        body: payload,
-      }).catch(async () => {
-        return await apiRequest(`communities/${communityId}/tasks`, {
-          method: "POST",
-          body: payload,
-        });
-      });
+      const res = await communityApi.createCommunityTask(communityId, payload);
 
       const newTask = res.data?.task || {
         id: `task-${Date.now()}`,
         communityId,
         title: title.trim(),
         description: description.trim(),
-        assigneeId: "emp-new",
+        assigneeId: selectedAssigneeId || "emp-new",
         assigneeName: assigneeName.trim() || "Nhân sự",
         assignerName: "Ban Giám Đốc",
         priority,
@@ -98,7 +119,7 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
 
       Alert.alert(
         "Thành công",
-        `Đã giao việc "${title}" cho ${assigneeName} thành công! Nhân viên sẽ thấy nút [⚡ TIẾN HÀNH NHẬN VIỆC] trên ứng dụng.`
+        `Đã giao việc "${title}" cho ${assigneeName} thành công! Thành viên sẽ nhận thông báo chuông và thấy việc trong mục [Việc của tôi].`
       );
 
       if (onTaskCreated) onTaskCreated(newTask);
@@ -180,28 +201,93 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
               ))}
             </View>
 
-            {/* Nhân viên & Deadline */}
-            <View style={styles.row}>
-              <View style={styles.col}>
-                <Text style={styles.inputLabel}>Nhân viên thực hiện</Text>
-                <TextInput
-                  style={styles.input}
-                  value={assigneeName}
-                  onChangeText={setAssigneeName}
-                  placeholder="Họ tên nhân viên"
-                  placeholderTextColor="#64748B"
-                />
-              </View>
-              <View style={styles.col}>
-                <Text style={styles.inputLabel}>Hạn chót (Deadline)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={deadline}
-                  onChangeText={setDeadline}
-                  placeholder="Hôm nay, 17:30"
-                  placeholderTextColor="#64748B"
-                />
-              </View>
+            {/* Chọn Nhân viên thực hiện */}
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.inputLabel}>Nhân sự được giao việc *</Text>
+              {loadingEmployees && <ActivityIndicator size="small" color="#D8B282" />}
+            </View>
+
+            {employees.length > 0 ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.employeeChipsScroll}
+                contentContainerStyle={styles.employeeChipsContent}
+              >
+                {employees.map((emp) => {
+                  const empId = emp.id || emp.userId;
+                  const isSelected = selectedAssigneeId === empId;
+                  const initials = (emp.fullName || "NV")
+                    .split(" ")
+                    .map((w: string) => w[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase();
+
+                  return (
+                    <TouchableOpacity
+                      key={empId}
+                      style={[
+                        styles.employeeChip,
+                        isSelected && styles.employeeChipSelected,
+                      ]}
+                      onPress={() => {
+                        setSelectedAssigneeId(empId);
+                        setAssigneeName(emp.fullName);
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View
+                        style={[
+                          styles.employeeAvatar,
+                          isSelected && styles.employeeAvatarSelected,
+                        ]}
+                      >
+                        <Text style={styles.employeeAvatarText}>{initials}</Text>
+                      </View>
+                      <View style={styles.employeeInfo}>
+                        <Text
+                          style={[
+                            styles.employeeName,
+                            isSelected && styles.employeeNameSelected,
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {emp.fullName}
+                        </Text>
+                        <Text style={styles.employeeRole} numberOfLines={1}>
+                          {emp.role || "Thành viên"} • {emp.activeTasksCount || 0} việc
+                        </Text>
+                      </View>
+                      {isSelected && (
+                        <View style={styles.checkBadge}>
+                          <Check size={12} color="#050811" strokeWidth={3} />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            ) : (
+              <TextInput
+                style={styles.input}
+                value={assigneeName}
+                onChangeText={setAssigneeName}
+                placeholder="Họ tên nhân viên..."
+                placeholderTextColor="#64748B"
+              />
+            )}
+
+            {/* Hạn chót (Deadline) */}
+            <View style={{ marginTop: 10 }}>
+              <Text style={styles.inputLabel}>Hạn chót (Deadline) *</Text>
+              <TextInput
+                style={styles.input}
+                value={deadline}
+                onChangeText={setDeadline}
+                placeholder="Hôm nay, 17:30"
+                placeholderTextColor="#64748B"
+              />
             </View>
 
             {/* Khách hàng liên kết */}
@@ -330,14 +416,82 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 12,
   },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 10,
+    marginBottom: 6,
+  },
   inputLabel: {
     fontSize: 12,
     fontWeight: "700",
     color: "#D8B282",
-    marginBottom: 6,
-    marginTop: 10,
     textTransform: "uppercase",
     letterSpacing: 0.4,
+  },
+  employeeChipsScroll: {
+    marginBottom: 8,
+  },
+  employeeChipsContent: {
+    gap: 8,
+    paddingVertical: 2,
+  },
+  employeeChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  employeeChipSelected: {
+    backgroundColor: "rgba(216, 178, 130, 0.15)",
+    borderColor: "#D8B282",
+  },
+  employeeAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  employeeAvatarSelected: {
+    backgroundColor: "#D8B282",
+  },
+  employeeAvatarText: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#FFFFFF",
+  },
+  employeeInfo: {
+    maxWidth: 140,
+  },
+  employeeName: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#E2E8F0",
+  },
+  employeeNameSelected: {
+    color: "#D8B282",
+  },
+  employeeRole: {
+    fontSize: 10.5,
+    color: "#94A3B8",
+    marginTop: 1,
+  },
+  checkBadge: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#D8B282",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 4,
   },
   priorityRow: {
     flexDirection: "row",

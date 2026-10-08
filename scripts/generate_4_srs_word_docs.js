@@ -554,6 +554,27 @@ async function buildDoc3_AppViOneConnect() {
     [25, 20, 30, 25]
   ));
 
+  children.push(createHeading1('3. Định Dạng Đóng Gói Ứng Dụng Di Động Android (Dual APK Release)'));
+  children.push(createPara('Hệ thống ViOne Connect phân phối song song 2 phiên bản Android APK độc lập nhằm đáp ứng đa dạng yêu cầu vận hành của doanh nghiệp:'));
+  children.push(createTable(
+    ['Phiên Bản APK', 'Công Nghệ Đóng Gói', 'Dung Lượng & Tệp Xuất Xưởng', 'Đặc Tính Vận Hành & Khả Năng Khả Dụng'],
+    [
+      [
+        'ViOne Connect Native Standalone',
+        'React Native 0.76.7\nExpo SDK 52\nHermes Engine',
+        '~81.57 MB\nViOne-Connect-latest.apk',
+        'Trải nghiệm thuần Native 100%, 60-120fps mượt mà, sẵn sàng chạy hoàn toàn độc lập offline với JS bytecode nhúng sẵn, hỗ trợ camera phần cứng quét mã QR/OCR, cảm biến NFC và push notifications ra màn hình khóa.'
+      ],
+      [
+        'ViOne Connect PWA Siêu Tốc',
+        'TanStack React Start\nCapacitor Android 7\nLive Hybrid WebView',
+        '~3.18 MB\nViOne-PWA-latest.apk',
+        'Dung lượng siêu nhẹ (~3.18 MB), tải và cài đặt siêu tốc trong 3 giây, tự động cập nhật tính năng theo thời gian thực từ máy chủ mà không cần tải lại file APK, hỗ trợ đầy đủ WebRTC Video/Voice call 2 chiều.'
+      ]
+    ],
+    [25, 25, 25, 25]
+  ));
+
   const doc = new Document({ sections: [{ properties: {}, headers: hf.headers, footers: hf.footers, children }] });
   await saveDocx(doc, 'SRS_03_App_ViOne_Connect.docx');
 
@@ -578,6 +599,20 @@ ViOne Connect là công cụ hỗ trợ doanh nhân **kết nối không biên g
    - Bảng \`business_card_services\` (các dịch vụ công ty tôi cung cấp).
    - Bảng \`business_card_needs\` (những gì công ty tôi đang cần tìm kiếm thu mua).
    - Ghép nối: Máy tính so khớp từ khóa giữa 2 bảng này để gợi ý 2 doanh nghiệp kết nối với nhau.
+
+---
+
+### 3. Định Dạng Đóng Gói Ứng Dụng Di Động Android (Dual APK Release):
+1. **Bản APK Native Standalone (\`ViOne-Connect-latest.apk\` - ~81.57 MB)**:
+   - Mã nguồn: \`apps/mobile_vione\` (React Native 0.76.7, Expo SDK 52, Hermes Engine).
+   - Quy trình build: Lệnh \`./build-apk.ps1 -Release\` thực thi Gradle \`assembleRelease\`.
+   - Vị trí tệp xuất xưởng: \`release_apk/ViOne-Connect-latest.apk\` và \`apps/vione_app_fe/public/ViOne-Connect-latest.apk\`.
+   - Đặc điểm: Hoạt động thuần Native 100%, hiệu năng 60-120fps, đóng gói sẵn bytecode JS offline, hỗ trợ đầy đủ camera native quét QR/OCR, cảm biến NFC, thông báo đẩy màn hình khóa.
+2. **Bản APK PWA Siêu Tốc (\`ViOne-PWA-latest.apk\` - ~3.18 MB)**:
+   - Mã nguồn: \`apps/vione_app_fe\` (TanStack React Start, Capacitor Android).
+   - Quy trình build: \`npx cap sync android\` và chạy Gradle \`assembleRelease\` tại \`apps/vione_app_fe/android\`.
+   - Vị trí tệp xuất xưởng: \`release_apk/ViOne-PWA-latest.apk\` và \`apps/vione_app_fe/public/ViOne-PWA-latest.apk\`.
+   - Đặc điểm: Kích thước siêu nhẹ (~3.18 MB), tải và cài đặt trong 3 giây, tự động cập nhật giao diện thời gian thực qua server, hỗ trợ WebRTC call 2 chiều.
 `;
   saveMarkdown(mdContent, 'SRS_03_App_ViOne_Connect.md');
 }

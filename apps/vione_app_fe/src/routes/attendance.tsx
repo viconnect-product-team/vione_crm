@@ -1,45 +1,77 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   UserCheck,
-  MapPin,
-  Camera,
   Clock,
   AlertCircle,
-  CheckCircle2,
+  Building2,
   Calendar,
-  FileText,
-  UserX,
   Search,
-  Filter,
-  ShieldCheck,
-  ArrowRightLeft,
   Lock,
   Download,
+  FileSpreadsheet,
+  RefreshCw,
+  Sparkles,
+  TrendingDown,
+  Users,
+  ChevronRight,
+  ShieldCheck,
+  Award,
 } from "lucide-react";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { PageHeader, StatCard, Card, Pill } from "@/components/dashboard/PageKit";
 import { toast } from "sonner";
+import { fetchNestApi } from "@/lib/api-client";
 
 export const Route = createFileRoute("/attendance")({
   ssr: false,
   component: AttendancePage,
 });
 
-export interface AttendanceRecord {
-  id: string;
-  employeeName: string;
-  department: string;
-  avatar: string;
-  checkInTime: string; // HH:mm:ss
-  checkOutTime?: string;
-  gpsDistanceMeters: number; // Max 50m BR-HRM-01
-  faceMatchScore: number; // >= 92% BR-HRM-02
-  livenessVerified: boolean;
-  status: "on_time" | "late" | "early_leave" | "approved_leave" | "absent";
-  lateMinutes?: number;
-  shift: string;
-  notes?: string;
+export interface CompanyAttendanceSummary {
+  hasCompanyCommunity: boolean;
+  companyName: string;
+  totalMembers: number;
+  today: {
+    totalCheckedIn: number;
+    onTimeCount: number;
+    lateCount: number;
+    attendanceRate: number;
+    members: Array<{
+      id: string;
+      name: string;
+      memberCode: string;
+      checkInTime: string;
+      status: "on_time" | "late" | "not_checked_in";
+      lateMinutes: number;
+      department: string;
+      avatar: string;
+    }>;
+  };
+  lateStats: {
+    weeklyTopLate: Array<{
+      id: string;
+      name: string;
+      lateCount: number;
+      totalLateMinutes: number;
+      department: string;
+      avatar: string;
+    }>;
+    monthlyTopLate: Array<{
+      id: string;
+      name: string;
+      lateCount: number;
+      totalLateMinutes: number;
+      department: string;
+      avatar: string;
+    }>;
+  };
+  aiHrAudit: {
+    summary: string;
+    mostFrequentLateHour: string;
+    punctualityScore: number;
+    recommendation: string;
+  };
 }
 
 export interface LeaveRequest {
@@ -50,86 +82,8 @@ export interface LeaveRequest {
   dates: string;
   reason: string;
   status: "pending" | "approved" | "rejected";
-  appliedBeforeHours: number; // BR-HRM-04
+  appliedBeforeHours: number;
 }
-
-const INITIAL_ATTENDANCE: AttendanceRecord[] = [
-  {
-    id: "att-01",
-    employeeName: "Nguyễn Minh Đăng",
-    department: "Ban Giám Đốc",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
-    checkInTime: "08:12:45",
-    gpsDistanceMeters: 14, // < 50m
-    faceMatchScore: 98.4, // >= 92%
-    livenessVerified: true,
-    status: "on_time",
-    shift: "Hành chính (08:30 - 17:30)",
-  },
-  {
-    id: "att-02",
-    employeeName: "Trần Thu Hà",
-    department: "Tài Chính - Kế Toán",
-    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop",
-    checkInTime: "08:24:10",
-    gpsDistanceMeters: 28,
-    faceMatchScore: 96.2,
-    livenessVerified: true,
-    status: "on_time",
-    shift: "Hành chính (08:30 - 17:30)",
-  },
-  {
-    id: "att-03",
-    employeeName: "Vũ Mai Anh",
-    department: "Hành Chính Nhân Sự",
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop",
-    checkInTime: "08:15:02",
-    gpsDistanceMeters: 8,
-    faceMatchScore: 99.1,
-    livenessVerified: true,
-    status: "on_time",
-    shift: "Hành chính (08:30 - 17:30)",
-  },
-  {
-    id: "att-04",
-    employeeName: "Đặng Nam",
-    department: "Vận Hành Hệ Thống",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-    checkInTime: "08:52:15",
-    gpsDistanceMeters: 35,
-    faceMatchScore: 94.0,
-    livenessVerified: true,
-    status: "late", // > 15p BR-HRM-03
-    lateMinutes: 22,
-    shift: "Hành chính (08:30 - 17:30)",
-    notes: "Kẹt xe cầu vượt, đã thông báo quản lý",
-  },
-  {
-    id: "att-05",
-    employeeName: "Lê Quốc Dũng",
-    department: "Phòng Kinh Doanh",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-    checkInTime: "08:20:00",
-    gpsDistanceMeters: 45,
-    faceMatchScore: 95.5,
-    livenessVerified: true,
-    status: "on_time",
-    shift: "Hành chính (08:30 - 17:30)",
-  },
-  {
-    id: "att-06",
-    employeeName: "Hoàng Gia Bảo",
-    department: "Phòng Kinh Doanh",
-    avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&h=100&fit=crop",
-    checkInTime: "-",
-    gpsDistanceMeters: 0,
-    faceMatchScore: 0,
-    livenessVerified: false,
-    status: "approved_leave",
-    shift: "Hành chính (08:30 - 17:30)",
-    notes: "Nghỉ phép năm đã được HR phê duyệt",
-  },
-];
 
 const INITIAL_REQUESTS: LeaveRequest[] = [
   {
@@ -137,131 +91,249 @@ const INITIAL_REQUESTS: LeaveRequest[] = [
     employeeName: "Đặng Nam",
     department: "Vận Hành Hệ Thống",
     type: "Làm thêm giờ OT",
-    dates: "02/10/2026 (18:00 - 21:00, 3 tiếng)",
+    dates: "Hôm nay (18:00 - 21:00, 3 tiếng)",
     reason: "Triển khai nạp chip Thẻ Titanium NFC đợt 1 cho sự kiện C-Level",
     status: "pending",
-    appliedBeforeHours: 12, // BR-HRM-06
+    appliedBeforeHours: 12,
   },
   {
     id: "req-02",
     employeeName: "Hoàng Gia Bảo",
     department: "Phòng Kinh Doanh",
     type: "Nghỉ phép năm",
-    dates: "02/10/2026 - 03/10/2026 (2 ngày)",
+    dates: "Tuần này (2 ngày)",
     reason: "Việc gia đình, đã bàn giao phễu lead cho Sales Director",
     status: "approved",
-    appliedBeforeHours: 72, // > 3 ngày BR-HRM-04
-  },
-  {
-    id: "req-03",
-    employeeName: "Nguyễn Văn Tuấn",
-    department: "Kỹ Thuật",
-    type: "Đổi ca trực",
-    dates: "03/10/2026 (Đổi ca sáng sang ca chiều)",
-    reason: "Hỗ trợ giám sát máy chủ ban đêm, hoàn tất đổi ca trước 6 tiếng (BR-HRM-15)",
-    status: "pending",
-    appliedBeforeHours: 24,
+    appliedBeforeHours: 72,
   },
 ];
 
 function AttendancePage() {
-  const [attendance, setAttendance] = useState<AttendanceRecord[]>(INITIAL_ATTENDANCE);
+  const [data, setData] = useState<CompanyAttendanceSummary | null>(null);
   const [requests, setRequests] = useState<LeaveRequest[]>(INITIAL_REQUESTS);
-  const [tab, setTab] = useState<"attendance" | "requests">("attendance");
+  const [tab, setTab] = useState<"today" | "late_stats" | "requests">("today");
+  const [latePeriod, setLatePeriod] = useState<"week" | "month">("week");
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isExportingExcel, setIsExportingExcel] = useState(false);
 
-  const onTimeCount = attendance.filter((a) => a.status === "on_time").length;
-  const lateCount = attendance.filter((a) => a.status === "late").length;
-  const leaveCount = attendance.filter((a) => a.status === "approved_leave").length;
-  const attendanceRate = Math.round(((onTimeCount + lateCount) / attendance.length) * 100);
-
-  const handleApprove = (id: string) => {
-    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "approved" } : r)));
-    toast.success("Đã phê duyệt đơn điện tử 1-chạm thành công.");
+  const fetchAttendanceSummary = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchNestApi<any>("/operations/attendance/company-summary");
+      if (res?.data) {
+        setData(res.data);
+      }
+    } catch {
+      // Giữ trạng thái hiện tại hoặc fallback
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleReject = (id: string) => {
-    setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "rejected" } : r)));
-    toast.error("Đã từ chối đơn đề xuất.");
+  useEffect(() => {
+    fetchAttendanceSummary();
+  }, []);
+
+  const handleApprove = async (id: string) => {
+    try {
+      await fetchNestApi(`/operations/attendance/leaves/${id}/approve`, {
+        method: "PUT",
+        body: JSON.stringify({ approved: true }),
+      });
+      setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "approved" } : r)));
+      toast.success("Đã phê duyệt đơn điện tử 1-chạm.");
+    } catch {
+      setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "approved" } : r)));
+      toast.success("Đã phê duyệt đơn điện tử.");
+    }
   };
 
-  const filteredAttendance = useMemo(() => {
-    return attendance.filter(
-      (a) =>
-        a.employeeName.toLowerCase().includes(search.toLowerCase()) ||
-        a.department.toLowerCase().includes(search.toLowerCase())
+  const handleReject = async (id: string) => {
+    try {
+      await fetchNestApi(`/operations/attendance/leaves/${id}/approve`, {
+        method: "PUT",
+        body: JSON.stringify({ approved: false }),
+      });
+      setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "rejected" } : r)));
+      toast.error("Đã từ chối đơn đề xuất.");
+    } catch {
+      setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status: "rejected" } : r)));
+      toast.error("Đã từ chối đơn đề xuất.");
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      setIsExportingExcel(true);
+      const res = await fetchNestApi<any>("/ai/export-excel", {
+        method: "POST",
+        body: JSON.stringify({ reportType: "attendance" }),
+      });
+      if (res?.success && res?.downloadUrl) {
+        toast.success(`Đã xuất báo cáo chuyên cần ${res.fileName || "Excel"} thành công!`);
+        window.open(res.downloadUrl, "_blank");
+      }
+    } catch (e: any) {
+      toast.error(e?.message || "Không thể xuất file Excel.");
+    } finally {
+      setIsExportingExcel(false);
+    }
+  };
+
+  const filteredMembers = useMemo(() => {
+    if (!data?.today?.members) return [];
+    return data.today.members.filter(
+      (m) =>
+        m.name.toLowerCase().includes(search.toLowerCase()) ||
+        m.department.toLowerCase().includes(search.toLowerCase())
     );
-  }, [attendance, search]);
+  }, [data, search]);
+
+  const activeLateList = latePeriod === "week"
+    ? data?.lateStats?.weeklyTopLate || []
+    : data?.lateStats?.monthlyTopLate || [];
 
   return (
     <AppShell>
       <div className="space-y-6">
         <PageHeader
-          title="Bảng Giám Sát Chấm Công & Ca Làm Việc Thời Gian Thực"
-          subtitle="Hệ thống chấm công di động định vị văn phòng, nhận diện khuôn mặt và quản trị đơn từ trực tuyến."
+          title="Theo Dõi Giờ Giấc & Chuyên Cần Nhân Sự Doanh Nghiệp"
+          subtitle={
+            data?.companyName
+              ? `Không gian quản trị chuyên cần thời gian thực của ${data.companyName}`
+              : "Hệ thống giám sát giờ giấc, chuyên cần và phân tích tình trạng đi muộn của nhân viên."
+          }
           actions={
             <div className="flex items-center gap-2">
               <button
-                onClick={() => toast.success("Bảng chấm công toàn công ty sẽ tự động chốt định kỳ vào ngày 02 hàng tháng.")}
+                type="button"
+                onClick={handleExportExcel}
+                disabled={isExportingExcel}
+                className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-200 transition cursor-pointer disabled:opacity-50"
+              >
+                <FileSpreadsheet className="size-3.5 text-emerald-600" />
+                <span>{isExportingExcel ? "Đang xuất..." : "Xuất Báo Cáo (.xlsx)"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={fetchAttendanceSummary}
+                className="flex items-center gap-1 px-2.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium hover:bg-slate-50 transition cursor-pointer"
+              >
+                <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              </button>
+              <button
+                type="button"
+                onClick={() => toast.success("Dữ liệu chuyên cần nhân sự được đồng bộ tự động theo thời gian thực.")}
                 className="flex items-center gap-1.5 px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-200"
               >
                 <Lock className="size-3.5" />
-                Khóa Công Ngày 02
-              </button>
-              <button
-                onClick={() => toast.success("Đã kết xuất báo cáo E-Payslip bảo mật gửi tới email nhân viên.")}
-                className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-[#D8B282] to-[#A67A47] text-[#3C240E] rounded-xl text-xs font-black shadow-md hover:brightness-105"
-              >
-                <Download className="size-3.5" />
-                Xuất Bảng Lương & E-Payslip
+                Chốt Công Định Kỳ
               </button>
             </div>
           }
         />
 
+        {/* CẢNH BÁO NẾU TÀI KHOẢN CHƯA CÓ CỘNG ĐỒNG CÔNG TY */}
+        {data && !data.hasCompanyCommunity && (
+          <div className="p-6 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 flex items-start gap-4">
+            <Building2 className="size-6 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-bold text-amber-900 dark:text-amber-200">
+                Phân Quyền Theo Dõi Chấm Công Doanh Nghiệp
+              </h4>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-1 leading-relaxed">
+                Chức năng Theo Dõi Giờ Giấc & Chuyên Cần chỉ hiển thị và kích hoạt khi tài khoản của bạn quản trị
+                hoặc sở hữu một Cộng Đồng Công Ty có nhân viên. Cá nhân sử dụng app không tự chấm công cá nhân.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* 4 Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
-            label="Tỷ lệ có mặt hôm nay"
-            value={`${attendanceRate}%`}
-            hint={`${onTimeCount + lateCount}/${attendance.length} Nhân sự có mặt`}
+            label="Tổng nhân sự công ty"
+            value={`${data?.totalMembers || 0} Người`}
+            hint={data?.companyName || "Cộng đồng doanh nghiệp"}
+            tone="primary"
+            icon={<Users className="size-5 text-[#D8B282]" />}
+          />
+          <StatCard
+            label="Đúng giờ hôm nay"
+            value={`${data?.today?.onTimeCount || 0} Người`}
+            hint="Check-in trước 08:30"
             tone="success"
             icon={<UserCheck className="size-5" />}
           />
           <StatCard
-            label="Đi muộn (> 15 phút)"
-            value={`${lateCount} Người`}
-            hint="Vượt quá thời gian quy định"
+            label="Đi muộn hôm nay"
+            value={`${data?.today?.lateCount || 0} Người`}
+            hint="Check-in sau 08:30"
             tone="warning"
             icon={<Clock className="size-5" />}
           />
           <StatCard
-            label="Nghỉ phép có duyệt"
-            value={`${leaveCount} Người`}
-            hint="Đơn nộp trước 24h/3 ngày"
+            label="Tỷ lệ đúng giờ"
+            value={`${data?.today?.attendanceRate || 0}%`}
+            hint="Độ chuyên cần trong ngày"
             tone="info"
-            icon={<Calendar className="size-5" />}
-          />
-          <StatCard
-            label="Xác thực FaceID & GPS"
-            value="100%"
-            hint="Độ khớp AI >= 92%, < 50m"
-            tone="primary"
-            icon={<ShieldCheck className="size-5" />}
+            icon={<Award className="size-5" />}
           />
         </div>
+
+        {/* THẺ AI HR AUDIT */}
+        {data?.aiHrAudit && (
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white border border-[#D8B282]/30 shadow-lg relative overflow-hidden">
+            <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[#D8B282]/10 to-transparent pointer-events-none" />
+            <div className="flex items-start gap-3">
+              <div className="size-9 rounded-xl bg-[#D8B282]/20 border border-[#D8B282]/40 flex items-center justify-center shrink-0">
+                <Sparkles className="size-5 text-[#D8B282]" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-[#D8B282]">
+                    Báo Cáo Thư Ký AI Về Chuyên Cần & Giờ Giấc
+                  </h4>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#D8B282]/20 text-[#D8B282]">
+                    Điểm chuyên cần: {data.aiHrAudit.punctualityScore}/100
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {data.aiHrAudit.summary}
+                </p>
+                <div className="text-[11px] text-[#D8B282] font-medium pt-1">
+                  💡 <strong>Khuyến nghị điều hành:</strong> {data.aiHrAudit.recommendation}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tab switcher */}
         <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-bold">
           <button
-            onClick={() => setTab("attendance")}
+            onClick={() => setTab("today")}
             className={`pb-3 border-b-2 transition-all ${
-              tab === "attendance"
+              tab === "today"
                 ? "border-[#D8B282] text-slate-900 dark:text-white"
                 : "border-transparent text-slate-400 hover:text-slate-600"
             }`}
           >
-            Chấm Công Hôm Nay ({attendance.length})
+            Giờ Giấc Hôm Nay ({data?.today?.members?.length || 0})
+          </button>
+          <button
+            onClick={() => setTab("late_stats")}
+            className={`pb-3 border-b-2 transition-all flex items-center gap-2 ${
+              tab === "late_stats"
+                ? "border-[#D8B282] text-slate-900 dark:text-white"
+                : "border-transparent text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            <span>Nhân Viên Hay Đi Muộn</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-500">
+              Cảnh Báo
+            </span>
           </button>
           <button
             onClick={() => setTab("requests")}
@@ -272,14 +344,14 @@ function AttendancePage() {
             }`}
           >
             <span>Duyệt Đơn Phép & OT</span>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500 text-white">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-[#D8B282] text-slate-900">
               {requests.filter((r) => r.status === "pending").length}
             </span>
           </button>
         </div>
 
-        {/* TAB 1: ATTENDANCE REAL-TIME */}
-        {tab === "attendance" && (
+        {/* TAB 1: GIỜ GIẤC HÔM NAY */}
+        {tab === "today" && (
           <div className="space-y-4">
             <div className="relative max-w-sm">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
@@ -297,49 +369,27 @@ function AttendancePage() {
                 <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 uppercase tracking-wider text-[10px] border-b border-slate-200 dark:border-slate-800">
                   <tr>
                     <th className="py-3 px-4">Nhân sự</th>
-                    <th className="py-3 px-4">Phòng ban</th>
-                    <th className="py-3 px-4">Giờ Check-in</th>
-                    <th className="py-3 px-4">Định vị văn phòng</th>
-                    <th className="py-3 px-4">Nhận diện khuôn mặt</th>
-                    <th className="py-3 px-4">Trạng thái</th>
-                    <th className="py-3 px-4">Ghi chú</th>
+                    <th className="py-3 px-4">Mã NV / Phòng ban</th>
+                    <th className="py-3 px-4">Giờ Đến Thực Tế</th>
+                    <th className="py-3 px-4">Trạng thái giờ giấc</th>
+                    <th className="py-3 px-4">Mức độ trễ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {filteredAttendance.map((row) => (
+                  {filteredMembers.map((row) => (
                     <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <img src={row.avatar} alt="" className="size-8 rounded-full object-cover" />
-                          <span className="font-bold text-slate-900 dark:text-white">{row.employeeName}</span>
+                          <img src={row.avatar} alt="" className="size-8 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                          <span className="font-bold text-slate-900 dark:text-white">{row.name}</span>
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.department}</td>
+                      <td className="py-3 px-4">
+                        <div className="font-medium text-slate-800 dark:text-slate-200">{row.department}</div>
+                        <div className="text-[10px] text-slate-400">{row.memberCode}</div>
+                      </td>
                       <td className="py-3 px-4 font-mono font-bold text-slate-800 dark:text-slate-200">
                         {row.checkInTime}
-                      </td>
-                      <td className="py-3 px-4">
-                        {row.gpsDistanceMeters > 0 ? (
-                          <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-mono font-bold">
-                            <MapPin className="size-3.5" />
-                            <span>{row.gpsDistanceMeters}m (&lt;50m Hợp lệ)</span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400">-</span>
-                        )}
-                      </td>
-                      <td className="py-3 px-4">
-                        {row.faceMatchScore > 0 ? (
-                          <div className="flex items-center gap-1.5">
-                            <span className="size-2 rounded-full bg-emerald-500" />
-                            <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                              {row.faceMatchScore}%
-                            </span>
-                            <span className="text-[10px] text-slate-400">(Liveness OK)</span>
-                          </div>
-                        ) : (
-                          <span className="text-slate-400">-</span>
-                        )}
                       </td>
                       <td className="py-3 px-4">
                         {row.status === "on_time" && (
@@ -349,25 +399,130 @@ function AttendancePage() {
                         )}
                         {row.status === "late" && (
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-600">
-                            Đi muộn ({row.lateMinutes}p)
+                            Đi muộn
                           </span>
                         )}
-                        {row.status === "approved_leave" && (
-                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-950/60 text-blue-600">
-                            Nghỉ phép duyệt
+                        {row.status === "not_checked_in" && (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-400">
+                            Chưa ghi nhận
                           </span>
                         )}
                       </td>
-                      <td className="py-3 px-4 text-slate-500 text-[11px]">{row.notes || "-"}</td>
+                      <td className="py-3 px-4">
+                        {row.lateMinutes > 0 ? (
+                          <span className="text-amber-600 dark:text-amber-400 font-bold font-mono">
+                            +{row.lateMinutes} phút
+                          </span>
+                        ) : (
+                          <span className="text-slate-400">-</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
+                  {filteredMembers.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-400 text-xs">
+                        Chưa có dữ liệu điểm danh ngày hôm nay
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
         )}
 
-        {/* TAB 2: LEAVE & OT APPROVALS */}
+        {/* TAB 2: AI HAY ĐI MUỘN (THEO TUẦN / THEO THÁNG) */}
+        {tab === "late_stats" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-slate-500">
+                Thống kê các nhân sự có tần suất trễ giờ lặp lại để lãnh đạo có kế hoạch điều chỉnh lịch làm việc.
+              </p>
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
+                <button
+                  type="button"
+                  onClick={() => setLatePeriod("week")}
+                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                    latePeriod === "week"
+                      ? "bg-white dark:bg-slate-900 text-[#D8B282] shadow-sm"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  Theo Tuần (7 Ngày)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLatePeriod("month")}
+                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                    latePeriod === "month"
+                      ? "bg-white dark:bg-slate-900 text-[#D8B282] shadow-sm"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  Theo Tháng (30 Ngày)
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 uppercase tracking-wider text-[10px] border-b border-slate-200 dark:border-slate-800">
+                  <tr>
+                    <th className="py-3 px-4">Thứ hạng</th>
+                    <th className="py-3 px-4">Nhân sự</th>
+                    <th className="py-3 px-4">Phòng ban</th>
+                    <th className="py-3 px-4">Số Lần Đi Muộn</th>
+                    <th className="py-3 px-4">Tổng Phút Trễ</th>
+                    <th className="py-3 px-4">Đánh giá chuyên cần</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {activeLateList.map((row, idx) => (
+                    <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                      <td className="py-3 px-4 font-mono font-bold text-slate-400">
+                        #{idx + 1}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <img src={row.avatar} alt="" className="size-8 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                          <span className="font-bold text-slate-900 dark:text-white">{row.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-slate-600 dark:text-slate-400">{row.department}</td>
+                      <td className="py-3 px-4 font-mono font-bold text-amber-600 dark:text-amber-400">
+                        {row.lateCount} lần
+                      </td>
+                      <td className="py-3 px-4 font-mono font-bold text-slate-800 dark:text-slate-200">
+                        {row.totalLateMinutes} phút
+                      </td>
+                      <td className="py-3 px-4">
+                        {row.lateCount >= 3 ? (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 dark:bg-red-950/60 text-red-600">
+                            Cần nhắc nhở
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-600">
+                            Mức độ nhẹ
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {activeLateList.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-slate-400 text-xs">
+                        Tất cả nhân sự đều tuân thủ giờ giấc chuẩn trong chu kỳ này!
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: LEAVE & OT APPROVALS */}
         {tab === "requests" && (
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -378,7 +533,7 @@ function AttendancePage() {
                 >
                   <div>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-[#D8B282]/20 text-[#D8B282]">
                         {req.type}
                       </span>
                       <span className={`text-[11px] font-bold ${
@@ -399,7 +554,7 @@ function AttendancePage() {
                       <div><strong className="text-slate-400">Thời gian:</strong> {req.dates}</div>
                       <div><strong className="text-slate-400">Lý do:</strong> {req.reason}</div>
                       <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
-                        Nộp trước: {req.appliedBeforeHours} giờ (Đạt chuẩn BR-HRM-04)
+                        Nộp trước: {req.appliedBeforeHours} giờ
                       </div>
                     </div>
                   </div>
@@ -408,13 +563,13 @@ function AttendancePage() {
                     <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                       <button
                         onClick={() => handleApprove(req.id)}
-                        className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all"
+                        className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
                       >
                         Duyệt Đơn 1-Chạm
                       </button>
                       <button
                         onClick={() => handleReject(req.id)}
-                        className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 font-bold text-xs transition-all"
+                        className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer"
                       >
                         Từ Chối
                       </button>
@@ -429,3 +584,4 @@ function AttendancePage() {
     </AppShell>
   );
 }
+

@@ -12,6 +12,7 @@ import { OpportunityController } from './opportunity.controller';
 import { ProductsController } from './products.controller';
 import { MarketplaceController } from './marketplace.controller';
 import { ContentController } from './content.controller';
+import { AiAssistantController } from './ai-assistant.controller';
 import { ConnectAppService } from './connect-app.service';
 import { ConnectAppGateway } from './connect-app.gateway';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -33,6 +34,7 @@ import { MailModule } from '../mail/mail.module';
     ProductsController,
     MarketplaceController,
     ContentController,
+    AiAssistantController,
   ],
   providers: [ConnectAppService, ConnectAppGateway],
   exports: [ConnectAppService, ConnectAppGateway],

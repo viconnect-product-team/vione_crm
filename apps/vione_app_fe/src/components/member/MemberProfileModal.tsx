@@ -210,7 +210,7 @@ export function MemberProfileModal({
                   alt={displayName}
                   className="h-14 w-14 rounded-2xl object-cover ring-2 ring-amber-500/40 shadow-sm"
                   onError={(e) => {
-                    e.currentTarget.src = "/ceo1983-logo.png";
+                    e.currentTarget.src = "/vione-wordmark.png";
                   }}
                 />
               ) : (

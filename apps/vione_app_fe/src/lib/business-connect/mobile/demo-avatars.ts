@@ -43,6 +43,7 @@ export function avatarOrDemo(url: string | null | undefined, seed: string): stri
       resolved.startsWith("/assets/") ||
       resolved.startsWith("/upload/") ||
       resolved.startsWith("/api/upload/") ||
+      resolved.startsWith("/vione-wordmark.png") ||
       resolved.startsWith("/ceo1983-logo.png"))
   ) {
     return resolved;

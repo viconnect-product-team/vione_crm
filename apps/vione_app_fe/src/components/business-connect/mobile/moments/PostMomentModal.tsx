@@ -251,16 +251,27 @@ export function PostMomentModal({
           placeLabel: location.trim() || undefined,
           note: cleanContent,
           photoCount: uploadedUrls.length,
+          photoUrls: uploadedUrls,
           visibility,
         },
       });
 
       if (prepRes.ok) {
+        const photoSlots = prepRes.photos || [];
+        const mediaPaths: Record<string, string> = {};
+        photoSlots.forEach((s, idx) => {
+          if (s.mediaId) {
+            mediaPaths[s.mediaId] = uploadedUrls[idx] || s.storagePath;
+          }
+        });
+
         await bcMobileMomentFinalizeFn({
           data: {
             clientToken,
             momentId: prepRes.momentId,
-            verifiedSlotOrders: (prepRes.photos || []).map((s) => s.sortOrder),
+            verifiedSlotOrders: photoSlots.map((s) => s.sortOrder),
+            uploadedMediaIds: photoSlots.map((s) => s.mediaId),
+            mediaPaths,
           },
         });
       }

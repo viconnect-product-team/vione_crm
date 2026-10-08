@@ -47,6 +47,8 @@ import { CardVaultModal } from "../../components/CardVaultModal";
 import { BusinessNotificationsModal } from "../../components/BusinessNotificationsModal";
 import { ViOneVoiceAssistantModal } from "../../components/ai/ViOneVoiceAssistantModal";
 import { EditProfileModal } from "../../components/EditProfileModal";
+import { AccountSecurityModal } from "../../components/AccountSecurityModal";
+import { NfcTagsModal } from "../../components/NfcTagsModal";
 import { UserProfile } from "../../types";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -72,6 +74,8 @@ export const ProfileScreen: React.FC = () => {
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [aiAssistantVisible, setAiAssistantVisible] = useState(false);
   const [editProfileModalVisible, setEditProfileModalVisible] = useState(false);
+  const [securityModalVisible, setSecurityModalVisible] = useState(false);
+  const [nfcTagsModalVisible, setNfcTagsModalVisible] = useState(false);
 
   const currentUser = activeUser || user;
   const displayName = currentUser?.displayName || currentUser?.name || "Doanh nhân ViOne";
@@ -103,11 +107,7 @@ export const ProfileScreen: React.FC = () => {
   };
 
   const handleNfc = () => {
-    Alert.alert(
-      "Chạm NFC ViOne",
-      "Chạm thẻ danh thiếp thông minh ViOne vào mặt sau điện thoại để truyền danh tính số tức thì.",
-      [{ text: "Đã hiểu", style: "default" }]
-    );
+    setNfcTagsModalVisible(true);
   };
 
   const handleQuickContact = (type: "call" | "email" | "viber" | "whatsapp" | "telegram") => {
@@ -992,6 +992,43 @@ export const ProfileScreen: React.FC = () => {
             </View>
             <ChevronRight size={16} color={isDark ? "#94A3B8" : "#64748B"} />
           </TouchableOpacity>
+
+          <View
+            style={[
+              styles.settingDivider,
+              { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9" },
+            ]}
+          />
+
+          {/* Bảo mật tài khoản & Đổi mật khẩu (Matching 100% PWA /connect-app/me/security) */}
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => setSecurityModalVisible(true)}
+            activeOpacity={0.7}
+          >
+            <View style={styles.settingLeft}>
+              <ShieldCheck size={16} color={isDark ? "#D8B282" : "#8C653B"} style={{ marginRight: 12 }} />
+              <View>
+                <Text
+                  style={[
+                    styles.settingLabel,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  Bảo mật tài khoản & Đổi mật khẩu
+                </Text>
+                <Text
+                  style={[
+                    styles.settingSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Đổi mật khẩu, xác thực 2 lớp (2FA) & quản lý phiên đăng nhập
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={16} color={isDark ? "#94A3B8" : "#64748B"} />
+          </TouchableOpacity>
         </View>
 
         {/* 8. GIAO DIỆN (THEME SWITCHER) */}
@@ -1213,6 +1250,14 @@ export const ProfileScreen: React.FC = () => {
         onClose={() => setEditProfileModalVisible(false)}
         currentUser={currentUser}
         onProfileUpdated={(updated) => setActiveUser(updated)}
+      />
+      <AccountSecurityModal
+        visible={securityModalVisible}
+        onClose={() => setSecurityModalVisible(false)}
+      />
+      <NfcTagsModal
+        visible={nfcTagsModalVisible}
+        onClose={() => setNfcTagsModalVisible(false)}
       />
     </SafeAreaView>
   );

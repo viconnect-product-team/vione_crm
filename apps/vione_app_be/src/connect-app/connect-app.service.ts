@@ -815,18 +815,24 @@ export class ConnectAppService implements OnModuleInit {
     `.catch(() => []);
     const userEmail = userRows.length > 0 ? userRows[0].email : null;
 
+    const vioneUserRows = await this.prisma.$queryRaw<any[]>`
+      SELECT id, name, username, email, avatar_url, cover_url FROM public.vione_users WHERE id = ${userId}::uuid LIMIT 1
+    `.catch(() => []);
+    const vioneUser = vioneUserRows.length > 0 ? vioneUserRows[0] : null;
+
     if (!identity) {
-      if (profile || userEmail) {
+      if (profile || userEmail || vioneUser) {
         identity = {
           id: profile?.id || userId,
           owner_user_id: userId,
-          display_name: profile?.display_name || userEmail?.split('@')[0] || 'Hội viên ViOne',
-          headline: profile?.professional_title || null,
-          job_title: profile?.professional_title || null,
-          company_name: profile?.company_name || null,
+          display_name: profile?.display_name || vioneUser?.name || vioneUser?.username || userEmail?.split('@')[0] || 'Hội viên ViOne',
+          headline: profile?.professional_title || 'Doanh nhân ViOne',
+          job_title: profile?.professional_title || 'Lãnh đạo doanh nghiệp',
+          company_name: profile?.company_name || 'Hệ sinh thái ViOne',
           bio: profile?.bio || null,
-          avatar_url: profile?.avatar_url || null,
-          primary_email: userEmail || null,
+          avatar_url: profile?.avatar_url || vioneUser?.avatar_url || null,
+          cover_url: vioneUser?.cover_url || null,
+          primary_email: userEmail || vioneUser?.email || null,
           primary_phone: null,
           website: null,
           linkedin_url: null,
@@ -840,11 +846,14 @@ export class ConnectAppService implements OnModuleInit {
         };
       }
     } else {
-      if (!identity.avatar_url && profile?.avatar_url) {
-        identity.avatar_url = profile.avatar_url;
+      if (!identity.avatar_url && (profile?.avatar_url || vioneUser?.avatar_url)) {
+        identity.avatar_url = profile?.avatar_url || vioneUser?.avatar_url;
       }
-      if (!identity.display_name && profile?.display_name) {
-        identity.display_name = profile.display_name;
+      if (!identity.cover_url && vioneUser?.cover_url) {
+        identity.cover_url = vioneUser.cover_url;
+      }
+      if (!identity.display_name && (profile?.display_name || vioneUser?.name || vioneUser?.username)) {
+        identity.display_name = profile?.display_name || vioneUser?.name || vioneUser?.username;
       }
       if (!identity.job_title && profile?.professional_title) {
         identity.job_title = profile.professional_title;
@@ -855,8 +864,8 @@ export class ConnectAppService implements OnModuleInit {
       if (!identity.bio && profile?.bio) {
         identity.bio = profile.bio;
       }
-      if (!identity.primary_email && userEmail) {
-        identity.primary_email = userEmail;
+      if (!identity.primary_email && (userEmail || vioneUser?.email)) {
+        identity.primary_email = userEmail || vioneUser?.email;
       }
     }
 
@@ -960,6 +969,19 @@ export class ConnectAppService implements OnModuleInit {
       `;
     } catch (err) {
       console.error('[upsertMyIdentity] error inserting/updating business_identities:', err);
+    }
+
+    try {
+      await this.prisma.$executeRaw`
+        UPDATE public.vione_users SET
+          name = COALESCE(${displayName}, name),
+          avatar_url = COALESCE(${avatarUrl}, avatar_url),
+          cover_url = COALESCE(${coverUrl}, cover_url),
+          updated_at = ${now}
+        WHERE id = ${userId}::uuid
+      `;
+    } catch (err) {
+      console.warn('[upsertMyIdentity] vione_users update skipped or failed:', err);
     }
 
     try {
@@ -1232,7 +1254,7 @@ export class ConnectAppService implements OnModuleInit {
     }
     const [roles, userRow] = await Promise.all([
       this.prisma.user_roles.findMany({ where: { user_id: userId } }).catch(() => [] as any[]),
-      this.prisma.$queryRaw<any[]>`SELECT email, username, is_admin FROM public.users WHERE id = ${userId}::uuid LIMIT 1`.catch(() => []),
+      this.prisma.$queryRaw<any[]>`SELECT email, username, name FROM public.vione_users WHERE id = ${userId}::uuid LIMIT 1`.catch(() => []),
     ]);
     const isPlatformAdmin = 
       roles.some((r: any) => r.role === 'platform_admin' || r.role === 'admin') ||
@@ -1385,7 +1407,7 @@ export class ConnectAppService implements OnModuleInit {
           COALESCE(card.company_name, bi.company_name)::text as company_name,
           bi.headline::text as headline
         FROM public.members m
-        LEFT JOIN public.users u ON (m.user_id IS NOT NULL AND u.id = m.user_id)
+        LEFT JOIN public.vione_users u ON (m.user_id IS NOT NULL AND u.id = m.user_id)
         LEFT JOIN public.user_roles ur ON (m.user_id IS NOT NULL AND ur.user_id = m.user_id)
         LEFT JOIN public.memberships ms ON (ms.association_id = m.association_id AND m.user_id IS NOT NULL AND ms.user_id = m.user_id)
         LEFT JOIN public.member_business_cards card ON (card.member_id = m.id OR (m.user_id IS NOT NULL AND card.owner_user_id = m.user_id))
@@ -1398,23 +1420,23 @@ export class ConnectAppService implements OnModuleInit {
         SELECT
           ms.user_id::text as user_or_member_id,
           ms.id::text as member_ref,
-          COALESCE(bi.display_name, card.display_name, u.full_name, 'Hội viên ViOne')::text as display_name,
+          COALESCE(bi.display_name, card.display_name, u.name, 'Hội viên ViOne')::text as display_name,
           null::text as industry_label,
           null::text as region_label,
           ms.user_id::text as user_id,
           ms.created_at::timestamptz as joined_at,
           CASE 
-            WHEN ms.role IN ('admin', 'owner', 'president') THEN 'admin'
+            WHEN ms.role::text IN ('admin', 'owner', 'president') THEN 'admin'
             WHEN ur.role IN ('admin', 'platform_admin') THEN 'admin'
             WHEN u.email ILIKE '%admin%' OR u.username ILIKE '%admin%' THEN 'admin'
-            ELSE COALESCE(ms.role, 'member')
+            ELSE COALESCE(ms.role::text, 'member')
           END::text as role,
           COALESCE(bi.avatar_url, card.avatar_url, u.avatar_url)::text as avatar_url,
           COALESCE(bi.job_title, card.professional_title)::text as job_title,
           COALESCE(bi.company_name, card.company_name)::text as company_name,
           bi.headline::text as headline
         FROM public.memberships ms
-        LEFT JOIN public.users u ON u.id = ms.user_id
+        LEFT JOIN public.vione_users u ON u.id = ms.user_id
         LEFT JOIN public.user_roles ur ON ur.user_id = ms.user_id
         LEFT JOIN public.business_identities bi ON bi.owner_user_id = ms.user_id
         LEFT JOIN public.member_business_cards card ON card.owner_user_id = ms.user_id
@@ -2672,6 +2694,16 @@ export class ConnectAppService implements OnModuleInit {
 
       this.gateway.emitConnectionRequested(targetUserId, requester, reqId);
       this.gateway.emitNotification(targetUserId, notifPayload);
+
+      // Bidirectional Activity Log for CRM
+      try {
+        const actId = crypto.randomUUID();
+        const actCode = `ACT-${Date.now().toString().slice(-6)}`;
+        await this.prisma.$executeRaw`
+          INSERT INTO public.activity_log (id, code, "user", action, target, category, at, ip, created_at, updated_at)
+          VALUES (${actId}::uuid, ${actCode}, ${userId}, 'Gửi lời mời kết nối', ${`Gửi yêu cầu kết nối đối tác B2B (${targetUserId})`}, 'connection', now(), '127.0.0.1', now(), now())
+        `.catch(() => null);
+      } catch {}
     } catch (e) {
       console.warn('sendConnectionRequest notification broadcast failed:', e);
     }
@@ -4048,7 +4080,7 @@ export class ConnectAppService implements OnModuleInit {
         SELECT id, code, full_name, email, dues_status, membership_tier, renewal_date
         FROM public.members
         WHERE user_id = ${userId}::uuid
-           OR LOWER(email) IN (SELECT LOWER(email) FROM public.users WHERE id = ${userId}::uuid)
+           OR LOWER(email) IN (SELECT LOWER(email) FROM public.vione_users WHERE id = ${userId}::uuid)
       `.catch(() => []);
 
       const memberIds = members.map(m => m.id);
@@ -4420,7 +4452,7 @@ export class ConnectAppService implements OnModuleInit {
 
   async listMyMemberNotifications(userId: string) {
     const users = await this.prisma.$queryRaw<any[]>`
-      SELECT id, email, phone, created_at FROM public.users WHERE id = ${userId}::uuid LIMIT 1
+      SELECT id, email, created_at FROM public.vione_users WHERE id = ${userId}::uuid LIMIT 1
     `.catch(() => []);
     const userEmail = users[0]?.email || '';
     const userPhone = users[0]?.phone || '';
@@ -4954,10 +4986,13 @@ export class ConnectAppService implements OnModuleInit {
     `;
 
     const photos: any[] = [];
-    if (photoCount > 0) {
-      for (let i = 0; i < photoCount; i++) {
+    const directUrls: string[] = Array.isArray(input?.photoUrls) ? input.photoUrls : [];
+    const effectiveCount = Math.max(photoCount || 0, directUrls.length);
+
+    if (effectiveCount > 0) {
+      for (let i = 0; i < effectiveCount; i++) {
         const mediaId = crypto.randomUUID();
-        const storagePath = `${userId}/${momentId}/${mediaId}.jpg`;
+        const storagePath = directUrls[i] || `${userId}/${momentId}/${mediaId}.jpg`;
         await this.prisma.$executeRaw`
           INSERT INTO public.business_relationship_moment_media (
             id, moment_id, owner_user_id, storage_path, media_type, sort_order
@@ -5005,18 +5040,16 @@ export class ConnectAppService implements OnModuleInit {
     `.catch(() => []);
 
     const slotIds = new Set(slots.map((s) => s.id));
-    const keep = uploadedMediaIds.filter((id) => slotIds.has(id));
+    const keep = Array.isArray(uploadedMediaIds) ? uploadedMediaIds.filter((id) => slotIds.has(id)) : [];
 
-    if (keep.length > 0) {
-      await this.prisma.$executeRaw`
-        DELETE FROM public.business_relationship_moment_media
-        WHERE moment_id = ${momentId}::uuid AND owner_user_id = ${userId}::uuid AND NOT (id = ANY(${keep}::uuid[]))
-      `;
-    } else {
-      await this.prisma.$executeRaw`
-        DELETE FROM public.business_relationship_moment_media
-        WHERE moment_id = ${momentId}::uuid AND owner_user_id = ${userId}::uuid
-      `;
+    // Chỉ xóa các slot chưa được kích hoạt nếu client chủ động gửi danh sách uploadedMediaIds cụ thể
+    if (Array.isArray(uploadedMediaIds) && uploadedMediaIds.length > 0) {
+      if (keep.length > 0) {
+        await this.prisma.$executeRaw`
+          DELETE FROM public.business_relationship_moment_media
+          WHERE moment_id = ${momentId}::uuid AND owner_user_id = ${userId}::uuid AND NOT (id = ANY(${keep}::uuid[]))
+        `;
+      }
     }
 
     await this.prisma.$executeRaw`
@@ -7735,6 +7768,11 @@ export class ConnectAppService implements OnModuleInit {
 
     return assocs
       .filter(a => !joined.has(String(a.id)))
+      .filter(a => {
+        const name = String(a.name || '').toLowerCase();
+        const slug = String(a.slug || '').toLowerCase();
+        return !name.includes('1983') && !slug.includes('1983');
+      })
       .map(a => {
         const req = byAssoc.get(String(a.id));
         return {
@@ -7749,10 +7787,16 @@ export class ConnectAppService implements OnModuleInit {
   }
 
   async listAllCommunities() {
-    const assocs = await this.prisma.$queryRaw<any[]>`
+    const rawAssocs = await this.prisma.$queryRaw<any[]>`
       SELECT id, name, slug, logo_url, banner_url, tagline, about, created_at FROM public.associations
       ORDER BY created_at ASC
     `.catch(() => [] as any[]);
+
+    const assocs = rawAssocs.filter(a => {
+      const name = String(a.name || '').toLowerCase();
+      const slug = String(a.slug || '').toLowerCase();
+      return !name.includes('1983') && !slug.includes('1983');
+    });
 
     const memberships = await this.prisma.$queryRaw<any[]>`
       SELECT association_id, role FROM public.memberships
@@ -9102,84 +9146,131 @@ export class ConnectAppService implements OnModuleInit {
 
   async listCompanyEmployees(userId: string, communityId: string) {
     try {
-      // Ưu tiên tra cứu thành viên thực tế của cộng đồng/tổ chức từ database
+      // 1. Resolve communityId (can be slug like 'gia-dinh-vione' or UUID)
+      let targetAssocId = communityId;
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(communityId);
+      if (!isUuid) {
+        const assoc = await this.prisma.$queryRaw<any[]>`
+          SELECT id FROM public.associations WHERE slug = ${communityId} OR name ILIKE ${`%${communityId}%`} LIMIT 1
+        `.catch(() => [] as any[]);
+        if (assoc?.[0]?.id) {
+          targetAssocId = assoc[0].id;
+        } else {
+          targetAssocId = 'c1983000-0000-4000-8000-000000001983';
+        }
+      }
+
+      // 2. Query community members from memberships, members, user_profiles, vione_users, auth.users & member_business_cards
       const rows = await this.prisma.$queryRaw<any[]>`
         SELECT 
-          am.id,
-          am.user_id as "userId",
-          COALESCE(m.name, u.full_name, 'Thành viên ViOne') as "fullName",
-          COALESCE(u.email, m.contact, '') as email,
-          COALESCE(m.phone, u.phone, '') as phone,
-          COALESCE(am.role, 'member') as role,
-          COALESCE(m.title, 'Thành viên') as "roleTitle",
-          COALESCE(m.company, 'Gia Đình ViOne') as department,
-          COALESCE(u.avatar_url, m.avatar, '') as "avatarUrl",
-          'active' as status,
-          am.created_at as "joinedAt"
-        FROM public.association_members am
-        LEFT JOIN public.users u ON u.id = am.user_id
-        LEFT JOIN public.members m ON m.user_id = am.user_id
-        WHERE am.association_id::text = ${communityId}
-        ORDER BY am.created_at ASC
-        LIMIT 50
+          COALESCE(m.user_id::text, ms.user_id::text, m.id::text) as id,
+          COALESCE(m.user_id::text, ms.user_id::text, m.id::text) as "userId",
+          COALESCE(
+            NULLIF(card.display_name, ''),
+            NULLIF(up.display_name, ''),
+            NULLIF(vu.name, ''),
+            NULLIF(m.name, ''),
+            NULLIF(m.contact, ''),
+            NULLIF(SPLIT_PART(au.email, '@', 1), ''),
+            'Thành viên'
+          )::text as "fullName",
+          COALESCE(vu.email, au.email, m.email, '')::text as email,
+          COALESCE(card.work_phone, m.phone, '')::text as phone,
+          COALESCE(ms.role::text, m.type::text, 'member')::text as role,
+          COALESCE(
+            NULLIF(card.professional_title, ''),
+            NULLIF(up.professional_title, ''),
+            NULLIF(ms.executive_role, ''),
+            NULLIF(m.executive_role, ''),
+            NULLIF(m.level, ''),
+            'Thành viên'
+          )::text as "roleTitle",
+          COALESCE(
+            NULLIF(card.company_name, ''),
+            NULLIF(up.company_name, ''),
+            NULLIF(ms.department, ''),
+            NULLIF(m.department, ''),
+            'Gia Đình ViOne'
+          )::text as department,
+          COALESCE(card.avatar_url, up.avatar_url, vu.avatar_url, m.avatar, '')::text as "avatarUrl",
+          COALESCE(m.status, 'active')::text as status,
+          COALESCE(ms.created_at, m.joined_at, m.created_at) as "joinedAt"
+        FROM public.memberships ms
+        FULL OUTER JOIN public.members m ON (m.association_id = ms.association_id AND m.user_id = ms.user_id)
+        LEFT JOIN public.user_profiles up ON (up.user_id = COALESCE(ms.user_id, m.user_id))
+        LEFT JOIN public.vione_users vu ON (vu.id = COALESCE(ms.user_id, m.user_id))
+        LEFT JOIN auth.users au ON (au.id = COALESCE(ms.user_id, m.user_id))
+        LEFT JOIN public.member_business_cards card ON (card.member_id = m.id OR (COALESCE(ms.user_id, m.user_id) IS NOT NULL AND card.owner_user_id = COALESCE(ms.user_id, m.user_id)))
+        WHERE COALESCE(ms.association_id, m.association_id) = ${targetAssocId}::uuid
+        ORDER BY "fullName" ASC
       `.catch(() => [] as any[]);
 
-      if (rows && rows.length > 0) {
-        return {
-          ok: true,
-          employees: rows.map(r => ({
-            id: r.id,
-            userId: r.userId,
-            fullName: r.fullName,
-            email: r.email,
-            phone: r.phone,
-            role: r.role,
-            roleTitle: r.roleTitle,
-            department: r.department,
-            avatarUrl: r.avatarUrl,
-            status: r.status,
-            joinedAt: r.joinedAt,
-            activeTasksCount: 0,
-            customersCount: 0,
-          })),
-        };
+      let memberList = rows || [];
+
+      // Fallback: nếu chưa có ai thuộc hội nhóm này, lấy danh sách người dùng thực tế từ vione_users
+      if (memberList.length === 0) {
+        memberList = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            u.id::text,
+            u.id::text as "userId",
+            COALESCE(up.display_name, u.name, SPLIT_PART(u.email, '@', 1))::text as "fullName",
+            u.email::text,
+            ''::text as phone,
+            'member'::text as role,
+            COALESCE(up.professional_title, 'Lãnh đạo Doanh nghiệp')::text as "roleTitle",
+            COALESCE(up.company_name, 'ViOne Member')::text as department,
+            COALESCE(up.avatar_url, u.avatar_url, '')::text as "avatarUrl",
+            'active'::text as status,
+            u.created_at as "joinedAt"
+          FROM public.vione_users u
+          LEFT JOIN public.user_profiles up ON up.user_id = u.id
+          ORDER BY "fullName" ASC
+          LIMIT 50
+        `.catch(() => [] as any[]);
       }
 
-      // Tra cứu bảng company_employees tự tạo nếu có
-      const dbEmployees = await this.prisma.$queryRaw<any[]>`
-        SELECT 
-          id,
-          user_id as "userId",
-          full_name as "fullName",
-          email,
-          phone,
-          role,
-          role_title as "roleTitle",
-          department,
-          avatar_url as "avatarUrl",
-          status,
-          joined_at as "joinedAt",
-          active_tasks_count as "activeTasksCount",
-          customers_count as "customersCount"
-        FROM public.company_employees
-        WHERE community_id = ${communityId}
-        ORDER BY created_at ASC
+      // 3. Tính activeTasksCount cho từng nhân sự
+      const activeTaskCounts = await this.prisma.$queryRaw<any[]>`
+        SELECT assignee_id, COUNT(id)::int as count
+        FROM public.company_tasks
+        WHERE status IN ('assigned', 'in_progress')
+        GROUP BY assignee_id
       `.catch(() => [] as any[]);
-
-      if (dbEmployees && dbEmployees.length > 0) {
-        return {
-          ok: true,
-          employees: dbEmployees,
-        };
+      const taskCountMap = new Map<string, number>();
+      for (const t of activeTaskCounts) {
+        if (t.assignee_id) taskCountMap.set(t.assignee_id, t.count);
       }
+
+      const formatted = memberList.map((r: any) => ({
+        id: r.id,
+        userId: r.userId || r.id,
+        fullName: r.fullName || 'Thành viên',
+        email: r.email || '',
+        phone: r.phone || '',
+        role: r.role || 'member',
+        roleTitle: r.roleTitle || 'Thành viên',
+        department: r.department || 'Gia Đình ViOne',
+        avatarUrl: r.avatarUrl || '',
+        status: r.status || 'active',
+        joinedAt: r.joinedAt || new Date().toISOString(),
+        activeTasksCount: taskCountMap.get(r.id) || taskCountMap.get(r.userId) || 0,
+        customersCount: 0,
+      }));
+
+      // Cache memory fallback
+      this.companyEmployeesStore.set(communityId, formatted);
+
+      return {
+        ok: true,
+        employees: formatted,
+      };
     } catch (e) {
       console.warn('listCompanyEmployees DB fallback:', e);
+      return {
+        ok: true,
+        employees: this.companyEmployeesStore.get(communityId) || [],
+      };
     }
-
-    return {
-      ok: true,
-      employees: this.companyEmployeesStore.get(communityId) || [],
-    };
   }
 
   async addCompanyEmployee(userId: string, communityId: string, body: any) {
@@ -9229,7 +9320,13 @@ export class ConnectAppService implements OnModuleInit {
     };
   }
 
-  async listCompanyTasks(userId: string, communityId: string, statusFilter?: string) {
+  async listCompanyTasks(
+    userId: string,
+    communityId: string,
+    statusFilter?: string,
+    isMyTasks?: boolean,
+    assigneeIdFilter?: string,
+  ) {
     try {
       let query = `
         SELECT 
@@ -9251,13 +9348,49 @@ export class ConnectAppService implements OnModuleInit {
           customer_requirements as "customerRequirements",
           created_at as "createdAt"
         FROM public.company_tasks
-        WHERE community_id = $1
+        WHERE 1=1
       `;
-      const params: any[] = [communityId];
+      const params: any[] = [];
+
+      if (communityId && communityId !== 'all') {
+        params.push(communityId);
+        query += ` AND (community_id = $${params.length}`;
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(communityId);
+        if (!isUuid) {
+          query += ` OR community_id = 'c1983000-0000-4000-8000-000000001983')`;
+        } else {
+          query += `)`;
+        }
+      }
+
       if (statusFilter && statusFilter !== 'all') {
         params.push(statusFilter);
-        query += ` AND status = $2`;
+        query += ` AND status = $${params.length}`;
       }
+
+      if (isMyTasks && userId) {
+        params.push(userId);
+        query += ` AND (assignee_id = $${params.length}`;
+        try {
+          const u = await this.prisma.$queryRaw<any[]>`
+            SELECT COALESCE(up.display_name, vu.name, SPLIT_PART(au.email, '@', 1))::text as name
+            FROM public.vione_users vu
+            LEFT JOIN public.user_profiles up ON up.user_id = vu.id
+            LEFT JOIN auth.users au ON au.id = vu.id
+            WHERE vu.id = ${userId}::uuid OR au.id = ${userId}::uuid
+            LIMIT 1
+          `.catch(() => [] as any[]);
+          if (u?.[0]?.name) {
+            params.push(`%${u[0].name}%`);
+            query += ` OR assignee_name ILIKE $${params.length}`;
+          }
+        } catch {}
+        query += `)`;
+      } else if (assigneeIdFilter) {
+        params.push(assigneeIdFilter);
+        query += ` AND assignee_id = $${params.length}`;
+      }
+
       query += ` ORDER BY created_at DESC`;
 
       const tasks = await this.prisma.$queryRawUnsafe<any[]>(query, ...params).catch(() => [] as any[]);
@@ -9275,10 +9408,17 @@ export class ConnectAppService implements OnModuleInit {
     if (statusFilter && statusFilter !== 'all') {
       memoryTasks = memoryTasks.filter(t => t.status === statusFilter);
     }
+    if (isMyTasks && userId) {
+      memoryTasks = memoryTasks.filter(t => t.assigneeId === userId);
+    }
     return {
       ok: true,
       tasks: memoryTasks,
     };
+  }
+
+  async listAllUserCompanyTasks(userId: string, statusFilter?: string) {
+    return this.listCompanyTasks(userId, 'all', statusFilter, true);
   }
 
   async createCompanyTask(userId: string, communityId: string, body: any) {
@@ -9286,32 +9426,59 @@ export class ConnectAppService implements OnModuleInit {
       throw new BadRequestException('Tiêu đề công việc không được để trống');
     }
 
-    // Tra cứu tên người giao việc thực tế
-    let assignerName = 'Ban Lãnh Đạo';
+    // 1. Tra cứu thông tin người giao việc thực tế
+    let assignerName = 'Ban Giám Đốc';
     try {
       const u = await this.prisma.$queryRaw<any[]>`
-        SELECT full_name as "fullName", name, username FROM public.users WHERE id = ${userId}::uuid LIMIT 1
+        SELECT 
+          COALESCE(up.display_name, vu.name, SPLIT_PART(au.email, '@', 1), 'Ban Giám Đốc')::text as "fullName"
+        FROM public.vione_users vu
+        LEFT JOIN public.user_profiles up ON up.user_id = vu.id
+        LEFT JOIN auth.users au ON au.id = vu.id
+        WHERE vu.id = ${userId}::uuid OR au.id = ${userId}::uuid
+        LIMIT 1
       `.catch(() => [] as any[]);
-      if (u?.[0]?.fullName || u?.[0]?.name || u?.[0]?.username) {
-        assignerName = u[0].fullName || u[0].name || u[0].username;
+      if (u?.[0]?.fullName) {
+        assignerName = u[0].fullName;
       }
     } catch {}
 
+    // 2. Tra cứu thông tin người được giao việc nếu có assigneeId
+    let assigneeName = body.assigneeName || 'Thành viên';
+    let assigneeId = body.assigneeId || '';
+    if (assigneeId && !body.assigneeName) {
+      try {
+        const emp = await this.prisma.$queryRaw<any[]>`
+          SELECT 
+            COALESCE(up.display_name, vu.name, m.name, SPLIT_PART(au.email, '@', 1), 'Thành viên')::text as "fullName"
+          FROM public.vione_users vu
+          LEFT JOIN public.user_profiles up ON up.user_id = vu.id
+          LEFT JOIN auth.users au ON au.id = vu.id
+          LEFT JOIN public.members m ON m.user_id = vu.id OR m.id::text = ${assigneeId}
+          WHERE vu.id::text = ${assigneeId} OR au.id::text = ${assigneeId} OR m.id::text = ${assigneeId}
+          LIMIT 1
+        `.catch(() => [] as any[]);
+        if (emp?.[0]?.fullName) {
+          assigneeName = emp[0].fullName;
+        }
+      } catch {}
+    }
+
     const now = new Date();
-    const taskId = `task-${Date.now().toString(36)}`;
+    const taskId = `task-${Date.now().toString(36)}-${Math.floor(Math.random() * 1000)}`;
     const newTask = {
       id: taskId,
       communityId,
       title: body.title.trim(),
       description: body.description?.trim() || '',
-      assigneeId: body.assigneeId || 'emp-vione',
-      assigneeName: body.assigneeName || 'Thành viên được giao',
+      assigneeId: assigneeId || 'emp-vione',
+      assigneeName: assigneeName.trim() || 'Thành viên được giao',
       assignerName,
       priority: body.priority || 'high',
       status: 'assigned', // Mới giao - Chờ nhận việc
       acceptedAt: null,
       completedAt: null,
-      deadline: body.deadline || 'Trong 24h tới',
+      deadline: body.deadline?.trim() || 'Trong 24h tới',
       customerName: body.customerName?.trim() || '',
       customerPhone: body.customerPhone?.trim() || '',
       customerContact: body.customerContact?.trim() || '',
@@ -9319,6 +9486,7 @@ export class ConnectAppService implements OnModuleInit {
       createdAt: now.toISOString(),
     };
 
+    // 3. Lưu vào DB public.company_tasks
     try {
       await this.prisma.$executeRawUnsafe(`
         INSERT INTO public.company_tasks (
@@ -9335,24 +9503,59 @@ export class ConnectAppService implements OnModuleInit {
       console.warn('createCompanyTask DB insert fallback:', e);
     }
 
+    // 4. Lưu chuông thông báo cá nhân cho nhân viên được giao việc (business_notifications)
+    const isAssigneeUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newTask.assigneeId);
+    if (isAssigneeUuid) {
+      const notifId = crypto.randomUUID();
+      const dedupe = `task_assigned_${taskId}_${newTask.assigneeId}_${Date.now()}`;
+      await this.prisma.$executeRaw`
+        INSERT INTO public.business_notifications (
+          id, recipient_user_id, source_domain, source_record_id, dedupe_key, event_kind, notification_kind,
+          title_key, body_key, safe_display_data, priority, status, app_scope, target_app, created_at, updated_at
+        ) VALUES (
+          ${notifId}::uuid, ${newTask.assigneeId}::uuid, 'company_task', ${taskId}, ${dedupe}, 'task_assigned', 'company_task_assigned',
+          'Bạn có công việc mới được giao',
+          ${`${assignerName} đã giao cho bạn: "${newTask.title}". Hạn chót: ${newTask.deadline}.`},
+          ${JSON.stringify({ taskId, title: newTask.title, assignerName, deadline: newTask.deadline, priority: newTask.priority, communityId })}::jsonb,
+          'high', 'delivered', 'all', 'all', now(), now()
+        )
+      `.catch((err) => console.warn('Task business_notification insert error:', err));
+    }
+
+    // Lưu vào member_notifications
+    await this.prisma.$executeRaw`
+      INSERT INTO public.member_notifications (
+        id, recipient_id, type, title, body, read, created_at, ref_type, ref_id
+      ) VALUES (
+        gen_random_uuid(), ${newTask.assigneeId}, 'task',
+        'Công việc mới được giao',
+        ${`${assignerName} đã giao công việc: "${newTask.title}". Vui lòng nhận việc và cập nhật tiến độ.`},
+        false, now(), 'company_task', ${taskId}
+      )
+    `.catch(() => {});
+
+    // Đồng bộ vào memory store
     const tasks = this.companyTasksStore.get(communityId) || [];
     tasks.unshift(newTask);
     this.companyTasksStore.set(communityId, tasks);
 
+    // 5. Bắn socket realtime
     try {
       this.gateway.emitToAll('notification:new', {
         title: 'Công việc mới được giao',
         body: `Công việc: "${newTask.title}" đã được giao cho ${newTask.assigneeName}.`,
+        targetUserId: newTask.assigneeId,
         appScope: 'all',
         sentAt: now.toISOString(),
       });
       this.gateway.emitToAll('notification:count', {});
+      this.gateway.emitToAll('company_task:created', { communityId, task: newTask });
     } catch {}
 
     return {
       ok: true,
       task: newTask,
-      message: `Đã giao việc thành công cho ${newTask.assigneeName}!`,
+      message: `Đã giao việc thành công cho ${newTask.assigneeName}! Thông báo đã được gửi tới tài khoản.`,
     };
   }
 
@@ -9372,12 +9575,26 @@ export class ConnectAppService implements OnModuleInit {
     const taskIndex = tasks.findIndex(t => t.id === taskId);
     let taskTitle = 'Công việc';
     let assigneeName = 'Nhân sự';
+    let assignerName = 'Ban Giám Đốc';
     if (taskIndex !== -1) {
       tasks[taskIndex].status = 'in_progress';
       tasks[taskIndex].acceptedAt = now.toISOString();
       taskTitle = tasks[taskIndex].title;
       assigneeName = tasks[taskIndex].assigneeName;
+      assignerName = tasks[taskIndex].assignerName;
       this.companyTasksStore.set(communityId, tasks);
+    } else {
+      // Fetch from DB
+      try {
+        const dbTask = await this.prisma.$queryRaw<any[]>`
+          SELECT title, assignee_name, assigner_name FROM public.company_tasks WHERE id = ${taskId} LIMIT 1
+        `.catch(() => [] as any[]);
+        if (dbTask?.[0]) {
+          taskTitle = dbTask[0].title;
+          assigneeName = dbTask[0].assignee_name;
+          assignerName = dbTask[0].assigner_name;
+        }
+      } catch {}
     }
 
     try {
@@ -9388,6 +9605,7 @@ export class ConnectAppService implements OnModuleInit {
         sentAt: now.toISOString(),
       });
       this.gateway.emitToAll('notification:count', {});
+      this.gateway.emitToAll('company_task:updated', { communityId, taskId, status: 'in_progress' });
     } catch {}
 
     return {
@@ -9424,22 +9642,38 @@ export class ConnectAppService implements OnModuleInit {
     const tasks = this.companyTasksStore.get(communityId) || [];
     const taskIndex = tasks.findIndex(t => t.id === taskId);
     let updatedTask: any = null;
+    let taskTitle = 'Công việc';
+    let assigneeName = 'Nhân sự';
     if (taskIndex !== -1) {
       tasks[taskIndex].status = status;
       if (status === 'completed') {
         tasks[taskIndex].completedAt = now.toISOString();
       }
       updatedTask = tasks[taskIndex];
+      taskTitle = tasks[taskIndex].title;
+      assigneeName = tasks[taskIndex].assigneeName;
       this.companyTasksStore.set(communityId, tasks);
+    } else {
+      try {
+        const dbTask = await this.prisma.$queryRaw<any[]>`
+          SELECT * FROM public.company_tasks WHERE id = ${taskId} LIMIT 1
+        `.catch(() => [] as any[]);
+        if (dbTask?.[0]) {
+          updatedTask = dbTask[0];
+          taskTitle = dbTask[0].title;
+          assigneeName = dbTask[0].assignee_name;
+        }
+      } catch {}
     }
 
     try {
       this.gateway.emitToAll('notification:new', {
-        title: 'Cập nhật tiến độ công việc',
-        body: `Công việc đã cập nhật trạng thái: ${status === 'completed' ? 'Hoàn thành' : status}.`,
+        title: status === 'completed' ? 'Công việc đã hoàn thành' : 'Cập nhật tiến độ công việc',
+        body: `${assigneeName} đã cập nhật công việc "${taskTitle}": ${status === 'completed' ? 'Đã hoàn thành' : status}.`,
         appScope: 'all',
         sentAt: now.toISOString(),
       });
+      this.gateway.emitToAll('company_task:updated', { communityId, taskId, status });
     } catch {}
 
     return {
@@ -10580,11 +10814,11 @@ export class ConnectAppService implements OnModuleInit {
 
     const resolvedPeerName = isChannel
       ? (channelNames[peer] || `Kênh ${peerCode}`)
-      : (isSystem ? 'Ban Thư Ký CLB Doanh Nhân CEO 1983' : (peerMem?.name ?? peerCode.toUpperCase()));
+      : (isSystem ? 'Ban Thư Ký ViOne Connect' : (peerMem?.name ?? peerCode.toUpperCase()));
 
     return {
       peerName: resolvedPeerName,
-      avatarUrl: isSystem ? '/ceo1983-logo.png' : (peerMem?.avatar ?? null),
+      avatarUrl: isSystem ? '/vione-wordmark.png' : (peerMem?.avatar ?? null),
       isSystem: isSystem || isChannel,
       messages: msgs.map((m) => ({
         id: m.id,
@@ -10717,7 +10951,7 @@ export class ConnectAppService implements OnModuleInit {
     const userProfilesMap = new Map<string, { displayName: string; avatarUrl: string | null; headline: string | null; companyName: string | null; code?: string | null }>();
     if (counterpartUserIds.size > 0) {
       const idsArray = Array.from(counterpartUserIds);
-      const [identities, profiles, members] = await Promise.all([
+      const [identities, profiles, members, vUsers] = await Promise.all([
         this.prisma.$queryRaw<any[]>`
           SELECT owner_user_id, display_name, avatar_url, headline, job_title, company_name 
           FROM public.business_identities 
@@ -10733,6 +10967,11 @@ export class ConnectAppService implements OnModuleInit {
           FROM public.members 
           WHERE user_id = ANY(${idsArray}::uuid[])
         `.catch(() => []),
+        this.prisma.$queryRaw<any[]>`
+          SELECT id, name, username, avatar_url 
+          FROM public.vione_users 
+          WHERE id = ANY(${idsArray}::uuid[])
+        `.catch(() => []),
       ]);
 
       for (const id of idsArray) {
@@ -10740,12 +10979,13 @@ export class ConnectAppService implements OnModuleInit {
         const ident = (identities as any[]).find((i: any) => String(i.owner_user_id).toLowerCase() === idLower);
         const prof = (profiles as any[]).find((p: any) => String(p.user_id).toLowerCase() === idLower);
         const mem = (members as any[]).find((m: any) => String(m.user_id).toLowerCase() === idLower);
+        const vu = (vUsers as any[]).find((u: any) => String(u.id).toLowerCase() === idLower);
 
         userProfilesMap.set(idLower, {
-          displayName: ident?.display_name || prof?.display_name || mem?.name || 'Doanh nhân ViOne',
-          avatarUrl: ident?.avatar_url || prof?.avatar_url || mem?.avatar || null,
-          headline: ident?.headline || ident?.job_title || prof?.professional_title || mem?.position || null,
-          companyName: ident?.company_name || prof?.company_name || mem?.company || null,
+          displayName: ident?.display_name || prof?.display_name || mem?.name || vu?.name || vu?.username || 'Doanh nhân ViOne',
+          avatarUrl: ident?.avatar_url || prof?.avatar_url || mem?.avatar || vu?.avatar_url || null,
+          headline: ident?.headline || ident?.job_title || prof?.professional_title || mem?.position || 'Doanh nhân ViOne',
+          companyName: ident?.company_name || prof?.company_name || mem?.company || 'Hệ sinh thái ViOne',
           code: mem?.code || null,
         });
       }
@@ -10761,6 +11001,7 @@ export class ConnectAppService implements OnModuleInit {
       resultThreads.push({
         threadId: t.id,
         personId: `u:${counterpartId}`,
+        counterpartUserId: counterpartId,
         displayName: profile.displayName,
         avatarUrl: profile.avatarUrl,
         headline: profile.headline,
@@ -10858,6 +11099,7 @@ export class ConnectAppService implements OnModuleInit {
           resultThreads.push({
             threadId: ensuredThreadId,
             personId: peerUserId ? `u:${peerUserId}` : `code:${peerKey}`,
+            counterpartUserId: peerUserId || peerKey,
             displayName: isSystem
               ? 'Ban Hỗ Trợ Gia Đình ViOne'
               : (mem?.display_name || mem?.name || `Hội viên ${peerKey.toUpperCase()}`),
@@ -10904,6 +11146,7 @@ export class ConnectAppService implements OnModuleInit {
         resultThreads.push({
           threadId,
           personId: `u:${counterpartId}`,
+          counterpartUserId: counterpartId,
           displayName: profile.displayName,
           avatarUrl: profile.avatarUrl,
           headline: profile.headline,
@@ -11017,6 +11260,7 @@ export class ConnectAppService implements OnModuleInit {
       let cleanTarget = targetThreadId;
       if (cleanTarget.startsWith('u:')) cleanTarget = cleanTarget.substring(2);
       if (cleanTarget.startsWith('p:')) cleanTarget = cleanTarget.substring(2);
+      if (cleanTarget.startsWith('th-')) cleanTarget = cleanTarget.substring(3);
 
       // 2.1. Tra cứu trực tiếp trong direct_message_threads xem đã có cuộc trò chuyện nào giữa 2 người này chưa
       if (/^[0-9a-fA-F-]{36}$/.test(cleanTarget)) {
@@ -11032,6 +11276,18 @@ export class ConnectAppService implements OnModuleInit {
         if (directByUser.length > 0) {
           threadRows = directByUser;
           targetThreadId = directByUser[0].id;
+        } else {
+          // Tự động mở thread cho 2 người nếu đối phương là user UUID hợp lệ
+          const opened = await this.openMyDmThread(userId, cleanTarget).catch(() => null);
+          if (opened?.threadId) {
+            targetThreadId = opened.threadId;
+            threadRows = await this.prisma.$queryRaw<any[]>`
+              SELECT id, user1_id, user2_id, last_message_at, last_message_body
+              FROM public.direct_message_threads
+              WHERE id = ${opened.threadId}::uuid
+              LIMIT 1
+            `.catch(() => []);
+          }
         }
       }
 
@@ -11204,11 +11460,48 @@ export class ConnectAppService implements OnModuleInit {
   async sendMyDmMessage(userId: string, threadId: string, data: { body: string; clientToken?: string; replyTo?: any }) {
     if (!data?.body?.trim()) throw new BadRequestException('empty_message');
 
-    let threadRows = await this.prisma.$queryRaw<any[]>`
-      SELECT id, user1_id, user2_id FROM public.direct_message_threads
-      WHERE id = ${threadId}::uuid AND (user1_id = ${userId}::uuid OR user2_id = ${userId}::uuid)
-      LIMIT 1
-    `.catch(() => []);
+    let targetThreadId = String(threadId || '').trim();
+    try {
+      targetThreadId = decodeURIComponent(targetThreadId);
+    } catch {}
+
+    let threadRows: any[] = [];
+    if (/^[0-9a-fA-F-]{36}$/.test(targetThreadId)) {
+      threadRows = await this.prisma.$queryRaw<any[]>`
+        SELECT id, user1_id, user2_id FROM public.direct_message_threads
+        WHERE id = ${targetThreadId}::uuid AND (user1_id = ${userId}::uuid OR user2_id = ${userId}::uuid)
+        LIMIT 1
+      `.catch(() => []);
+    }
+
+    if (threadRows.length === 0) {
+      let cleanTarget = targetThreadId;
+      if (cleanTarget.startsWith('u:')) cleanTarget = cleanTarget.substring(2);
+      if (cleanTarget.startsWith('p:')) cleanTarget = cleanTarget.substring(2);
+      if (cleanTarget.startsWith('th-')) cleanTarget = cleanTarget.substring(3);
+
+      if (/^[0-9a-fA-F-]{36}$/.test(cleanTarget)) {
+        const existingByUser = await this.prisma.$queryRaw<any[]>`
+          SELECT id, user1_id, user2_id FROM public.direct_message_threads
+          WHERE (user1_id = ${cleanTarget}::uuid AND user2_id = ${userId}::uuid)
+             OR (user1_id = ${userId}::uuid AND user2_id = ${cleanTarget}::uuid)
+          LIMIT 1
+        `.catch(() => []);
+
+        if (existingByUser.length > 0) {
+          threadRows = existingByUser;
+        } else {
+          const opened = await this.openMyDmThread(userId, cleanTarget).catch(() => null);
+          if (opened?.threadId) {
+            threadRows = await this.prisma.$queryRaw<any[]>`
+              SELECT id, user1_id, user2_id FROM public.direct_message_threads
+              WHERE id = ${opened.threadId}::uuid
+              LIMIT 1
+            `.catch(() => []);
+          }
+        }
+      }
+    }
 
     if (threadRows.length === 0) {
       throw new NotFoundException('thread_not_found');
@@ -11330,6 +11623,16 @@ export class ConnectAppService implements OnModuleInit {
     } catch (notifErr) {
       console.warn('sendMyDmMessage notification error:', notifErr);
     }
+
+    // Bidirectional Activity Log for CRM
+    try {
+      const actId = crypto.randomUUID();
+      const actCode = `ACT-${Date.now().toString().slice(-6)}`;
+      await this.prisma.$executeRaw`
+        INSERT INTO public.activity_log (id, code, "user", action, target, category, at, ip, created_at, updated_at)
+        VALUES (${actId}::uuid, ${actCode}, ${userId}, 'Tin nhắn đa kênh', ${`Gửi tin nhắn: ${data.body.slice(0, 45)}`}, 'message', now(), '127.0.0.1', now(), now())
+      `.catch(() => null);
+    } catch {}
 
     return { ok: true, message: messageObj };
   }
@@ -13542,6 +13845,235 @@ export class ConnectAppService implements OnModuleInit {
       return [];
     }
   }
+
+  async recordLandingVisit(data: {
+    path?: string;
+    ip?: string;
+    userAgent?: string;
+    referer?: string;
+    sessionId?: string;
+  }) {
+    try {
+      const path = data.path || '/';
+      const ip = data.ip || '127.0.0.1';
+      const userAgent = data.userAgent || 'WebBrowser';
+      const referer = data.referer || 'direct';
+      const sessionId = data.sessionId || 'sess_' + Math.random().toString(36).slice(2, 10);
+
+      await this.prisma.$executeRawUnsafe(
+        `
+        INSERT INTO public.landing_page_visits (path, ip, user_agent, referer, session_id, visited_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
+      `,
+        path,
+        ip,
+        userAgent,
+        referer,
+        sessionId,
+      );
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  // ==========================================
+  // DYNAMIC AI ASSISTANT DISPATCH ACTIONS
+  // ==========================================
+
+  async aiDispatchSendMessage(
+    userId: string,
+    recipientQuery: string,
+    message: string,
+    voiceTranscript?: string,
+  ) {
+    const q = recipientQuery.trim().toLowerCase();
+    const myCode = await this.resolveMemberCodeForUser(userId);
+
+    // 1. Tìm thông tin người gửi (Lãnh đạo / CEO)
+    const senderRows = await this.prisma.$queryRaw<any[]>`
+      SELECT m.id, m.name, m.phone, m.company FROM public.members m
+      WHERE m.user_id = ${userId}::uuid OR m.id = ${userId}
+      LIMIT 1
+    `.catch(() => []);
+    const senderName = senderRows[0]?.name || 'Lãnh đạo ViOne';
+    const senderCompany = senderRows[0]?.company || 'Hệ sinh thái ViOne';
+
+    // 2. Tìm người nhận qua tên, số điện thoại, member code hoặc email
+    const recipientRows = await this.prisma.$queryRaw<any[]>`
+      SELECT m.id, m.name, m.code, m.phone, m.company, m.user_id 
+      FROM public.members m
+      WHERE LOWER(m.name) LIKE ${`%${q}%`}
+         OR LOWER(m.code) LIKE ${`%${q}%`}
+         OR m.phone LIKE ${`%${q}%`}
+         OR m.id = ${q}
+         OR m.user_id::text = ${q}
+      LIMIT 5
+    `.catch(() => []);
+
+    if (recipientRows.length === 0) {
+      return {
+        ok: false,
+        error: `Không tìm thấy tài khoản doanh nhân nào khớp với "${recipientQuery}". Vui lòng kiểm tra lại tên hoặc số điện thoại trong danh bạ.`,
+      };
+    }
+
+    const recipient = recipientRows[0];
+    const targetPeerCode = recipient.code?.toLowerCase() || recipient.user_id?.toString() || recipient.id;
+
+    // 3. Format nội dung tin nhắn có dấu ấn AI trợ lý
+    let formattedText = message;
+    if (voiceTranscript) {
+      formattedText = `${message}\n\n🎙️ [Bản ghi âm giọng nói AI]: "${voiceTranscript}"`;
+    }
+
+    // 4. Gửi tin nhắn qua hệ thống Direct Message
+    const sendResult = await this.sendMemberMessage(userId, targetPeerCode, formattedText);
+
+    // 5. Gửi thông báo đến người nhận
+    const notifTitle = `🤖 Trợ lý AI của ${senderName} đã gửi tin nhắn`;
+    const notifBody = `${senderName} (${senderCompany}): "${message.slice(0, 100)}..."`;
+    const notifId = require('crypto').randomUUID();
+
+    if (recipient.user_id) {
+      await this.prisma.$executeRawUnsafe(`
+        INSERT INTO public.business_notifications (
+          id, recipient_user_id, source_domain, source_record_id, event_kind, notification_kind,
+          title_key, body_key, safe_display_data, priority, status, dedupe_key, app_scope, target_app, created_at, updated_at
+        ) VALUES (
+          $1::uuid, $2::uuid, 'dm', $3, 'ai_message_sent', 'ai_message_sent',
+          $4, $5, $6::jsonb, 'high', 'delivered', $7, 'all', 'all', NOW(), NOW()
+        )
+      `, notifId, recipient.user_id, sendResult.message?.id || notifId, notifTitle, notifBody, JSON.stringify({
+        senderName,
+        senderCompany,
+        message,
+        voiceTranscript,
+        targetRoute: `/messages?peer=${myCode}`
+      }), `ai-msg-${recipient.user_id}-${Date.now()}`).catch(() => {});
+    }
+
+    return {
+      ok: true,
+      recipient: {
+        id: recipient.id,
+        name: recipient.name,
+        code: recipient.code,
+        phone: recipient.phone,
+        company: recipient.company,
+      },
+      message: sendResult.message,
+      formattedText,
+    };
+  }
+
+  async aiExpressOpportunityInterestWithVoice(
+    userId: string,
+    opportunityId: string,
+    customGreeting?: string,
+    voiceTranscript?: string,
+  ) {
+    // 1. Tìm thông tin cơ hội
+    const oppRows = await this.prisma.$queryRaw<any[]>`
+      SELECT o.id, o.title, o.poster_id, o.association_id, o.budget_max, o.industry
+      FROM public.opportunities o
+      WHERE o.id = ${opportunityId} OR LOWER(o.title) LIKE ${`%${opportunityId.toLowerCase()}%`}
+      LIMIT 1
+    `.catch(() => []);
+
+    if (oppRows.length === 0) {
+      return {
+        ok: false,
+        error: `Không tìm thấy cơ hội giao thương tương ứng trên hệ thống ViOne.`,
+      };
+    }
+
+    const opp = oppRows[0];
+    const realOppId = opp.id;
+    const oppTitle = opp.title || 'Cơ hội kết nối & giao thương';
+
+    // 2. Tìm thông tin người gửi (Lãnh đạo/CEO)
+    const senderRows = await this.prisma.$queryRaw<any[]>`
+      SELECT m.id, m.name, m.code, m.phone, m.company FROM public.members m
+      WHERE m.user_id = ${userId}::uuid OR m.id = ${userId}
+      LIMIT 1
+    `.catch(() => []);
+    const senderName = senderRows[0]?.name || 'Lãnh đạo ViOne';
+    const senderCompany = senderRows[0]?.company || 'Hệ sinh thái ViOne';
+    const senderPhone = senderRows[0]?.phone || '';
+    const myCode = senderRows[0]?.code || (await this.resolveMemberCodeForUser(userId));
+
+    // 3. Tìm thông tin chủ cơ hội (người đăng)
+    const posterId = opp.poster_id;
+    const posterRows = await this.prisma.$queryRaw<any[]>`
+      SELECT m.id, m.name, m.code, m.phone, m.company, m.user_id FROM public.members m
+      WHERE m.user_id::text = ${posterId}::text OR m.id = ${posterId}::text OR m.code = ${posterId}::text
+      LIMIT 1
+    `.catch(() => []);
+    const posterName = posterRows[0]?.name || 'Đối tác đăng cơ hội';
+    const posterPeerCode = posterRows[0]?.code?.toLowerCase() || posterRows[0]?.user_id?.toString() || posterId;
+
+    // 4. Lưu trạng thái quan tâm cơ hội
+    try {
+      await this.expressCommunityOpportunityInterest(userId, opp.association_id || '', realOppId, 'high');
+    } catch (e: any) {
+      console.warn('aiExpressOpportunityInterest warning:', e?.message);
+    }
+
+    // 5. Soạn nội dung thư chào và bản ghi âm giọng nói C-Level
+    const greetingAudioText = voiceTranscript || customGreeting || `Xin chào ${posterName}, em là AI trợ lý của Lãnh đạo ${senderName} (${senderCompany}). Em xin phép nhắn tin đến để bày tỏ sự quan tâm đặc biệt tới cơ hội "${oppTitle}" của anh chị, và mong muốn kết nối hai bên hợp tác chiến lược!`;
+
+    const fullMessage = [
+      `🤖 [TRỢ LÝ AI VIONE THAY MẶT LÃNH ĐẠO KẾT NỐI]`,
+      `Kính gửi Anh/Chị: ${posterName},`,
+      `Em là Trợ lý AI đại diện cho Lãnh đạo: ${senderName} - ${senderCompany}.`,
+      `Lãnh đạo của em sau khi theo dõi cơ hội: "${oppTitle}" đã đánh giá rất cao tiềm năng và mong muốn được kết nối trực tiếp với Anh/Chị để cùng triển khai hợp tác.`,
+      ``,
+      `🎙️ [Lời chào âm thanh từ Trợ lý AI]:`,
+      `"${greetingAudioText}"`,
+      ``,
+      `📞 Thông tin liên hệ nhanh: ${senderPhone || 'Qua tin nhắn ViOne'}`,
+      `👉 Anh/Chị có thể bấm trả lời ngay tại tin nhắn này để AI kết nối cuộc gặp 1-1 với Lãnh đạo của em ạ!`,
+    ].join('\n');
+
+    // 6. Gửi tin nhắn vào hòm thư / tin nhắn chờ của chủ cơ hội
+    await this.sendMemberMessage(userId, posterPeerCode, fullMessage);
+
+    // 7. Tạo thông báo ưu tiên cao cho người đăng
+    if (posterRows[0]?.user_id) {
+      const notifId = require('crypto').randomUUID();
+      await this.prisma.$executeRawUnsafe(`
+        INSERT INTO public.business_notifications (
+          id, recipient_user_id, source_domain, source_record_id, event_kind, notification_kind,
+          title_key, body_key, safe_display_data, priority, status, dedupe_key, app_scope, target_app, created_at, updated_at
+        ) VALUES (
+          $1::uuid, $2::uuid, 'opportunity', $3, 'ai_opportunity_interest', 'ai_opportunity_interest',
+          $4, $5, $6::jsonb, 'high', 'delivered', $7, 'all', 'all', NOW(), NOW()
+        )
+      `, notifId, posterRows[0].user_id, realOppId,
+         `🌟 Trợ lý AI của ${senderName} quan tâm cơ hội của bạn!`,
+         `Cơ hội "${oppTitle}": Trợ lý AI vừa gửi lời chào và bản ghi âm giọng nói vào tin nhắn chờ của bạn.`,
+         JSON.stringify({
+           senderName,
+           senderCompany,
+           opportunityId: realOppId,
+           opportunityTitle: oppTitle,
+           targetRoute: `/messages?peer=${myCode}`
+         }), `ai-opp-${realOppId}-${Date.now()}`
+      ).catch(() => {});
+    }
+
+    return {
+      ok: true,
+      opportunityId: realOppId,
+      opportunityTitle: oppTitle,
+      posterName,
+      senderName,
+      senderCompany,
+      greetingAudioText,
+      fullMessage,
+    };
+  }
 }
 
 // ==========================================
@@ -13957,4 +14489,6 @@ Tráº£ vá» DUY NHáº¤T JSON dáº¡ng: {"suggestions":[{"name":"...","re
     return { ok: false, error: "unavailable" as const };
   }
 }
+
+
 

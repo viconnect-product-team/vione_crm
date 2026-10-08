@@ -12,7 +12,8 @@ async function main() {
     WHERE table_schema = 'public'
     ORDER BY table_name
   `);
-  console.log("public tables:", tables.rows.map(r => r.table_name));
+  console.log("Total public tables:", tables.rows.length);
+  tables.rows.forEach(r => console.log(r.table_name));
 
   await client.end();
 }

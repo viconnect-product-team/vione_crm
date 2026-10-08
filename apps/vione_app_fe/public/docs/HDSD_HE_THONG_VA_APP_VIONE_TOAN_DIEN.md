@@ -1,10 +1,10 @@
-# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (39 CHUYÊN ĐỀ)
+# HƯỚNG DẪN SỬ DỤNG HỢP NHẤT HỆ THỐNG CRM & APP MOBILE VIONE (40 CHUYÊN ĐỀ)
 
-**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 07/10/2026 | **Phiên bản:** 6.0 Enterprise
+**Mã tài liệu:** HDSD-VIONE-MASTER-6.0 | **Ngày ban hành:** 08/10/2026 | **Phiên bản:** 6.0 Enterprise
 
 ---
 
-### DANH MỤC 39 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
+### DANH MỤC 40 CHUYÊN ĐỀ NGHIỆP VỤ (100% TEXT & WORKFLOW - ZERO 404 IMAGES)
 
 #### 01. [CRM · XÁC THỰC] Đăng Nhập Quản Trị Hệ Thống CRM ViOne Phong Cách Sáng Sang Trọng
 - **Mục tiêu:** Đăng nhập an toàn vào bảng điều hành số CRM ViOne qua tài khoản doanh nghiệp hoặc quản trị viên.
@@ -472,4 +472,16 @@
   * Bước 5: Bấm [Lưu thay đổi]: Dữ liệu đồng bộ tức thì lên hệ thống, cập nhật danh thiếp số 3D Titanium và phản ánh ngay vào thẻ hồ sơ hiển thị cho đối tác.
 - **Lưu ý:** KHÔNG RẬP KHUÔN: AI Copilot liên tục truy vấn dữ liệu thực tế từ tài khoản và hệ thống, cam kết phản hồi chính xác 100% mọi dữ liệu trong hệ sinh thái ViOne.
 - **Mẹo C-Level:** MẸO QUẢN TRỊ AI: Người dùng có thể tắt nút AI nổi ở trang chủ khi muốn màn hình thoáng hơn, và dễ dàng bật lại bất kỳ lúc nào tại mục Cài Đặt trên Tab Tôi.
+
+#### 40. [APP · 5 PHÂN HỆ NÂNG CẤP] Hoàn Thiện 5 Phân Hệ Trọng Yếu: AI Copilot Typewriter, Đăng Tin & Khoảnh Khắc, Hộp Thư, Thẻ Doanh Nhân & CRM Khách Hàng
+- **Mục tiêu:** Cung cấp trải nghiệm mượt mà, chính xác và chuyên nghiệp nhất trên toàn bộ hệ sinh thái ứng dụng ViOne.
+- **Đường dẫn:** `Trang Chủ / Mạng Lưới / Đăng Khoảnh Khắc / Hộp Thư / Khách Hàng CRM`
+- **Các bước:**
+  * Bước 1: Trợ lý AI ViOne Copilot: Khi hỏi về bạn bè kết nối ("tôi có bao nhiêu bạn bè"), AI truy vấn CSDL PostgreSQL thực tế, báo trung thực số 0 nếu chưa có kết nối, loại bỏ triệt để ảo giác 156 bạn bè; đồng thời chữ hiển thị mượt mà theo hiệu ứng máy đánh chữ Typewriter Streaming với con trỏ nhấp nháy.
+  * Bước 2: Đăng Tin & Khoảnh Khắc: Chủ đề/chuyên mục hoàn toàn không bắt buộc (chạm để chọn hoặc bỏ chọn qua nút "[Bỏ chọn chủ đề]"), ảnh mẫu được gỡ bỏ để người dùng đăng bài chữ thuần túy hoặc ảnh thực tế từ camera/thư viện mà không bị mất ảnh sau khi xuất bản.
+  * Bước 3: Hộp Thư Tin Nhắn: Danh sách hiển thị đầy đủ mọi tài khoản đã từng nhắn tin qua lại, hệ thống tự động bóc tách tiền tố "th-" và tự khởi tạo luồng chat với người dùng mới mà không phát sinh lỗi UUID.
+  * Bước 4: Thẻ Doanh Nhân Trang Chủ: Ảnh bìa và ảnh đại diện tự động đồng bộ từ dữ liệu danh tính người dùng; modal chỉnh sửa nhanh được tối ưu chỉ còn đúng 1 nút tải ảnh bìa và 1 nút tải avatar tinh gọn.
+  * Bước 5: Quản Trị Khách Hàng CRM: Tab Khách hàng trang bị 4 thẻ chỉ số Pipeline (Quy mô cơ hội, Đang đàm phán, Tỷ lệ chốt deal, Lịch chăm sóc tuần), kèm stepper tiến trình 4 giai đoạn, bộ chọn Deal Health và dòng thời gian ghi nhật ký chăm sóc đa kênh.
+- **Lưu ý:** DỮ LIỆU CHÍNH XÁC & MINH BẠCH: Toàn bộ thông tin hiển thị từ AI, danh bạ đến CRM đều được đối soát trực tiếp từ CSDL thực, đảm bảo sự trung thực tuyệt đối cho lãnh đạo.
+- **Mẹo C-Level:** MẸO SỬ DỤNG: Dùng nút chuyển giai đoạn 1-chạm trong chi tiết khách hàng CRM để cập nhật tức thì trạng thái đàm phán hợp đồng cho toàn bộ đội ngũ bán hàng.
 

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { fetchNestApi } from "@/lib/api-client";
+import { useAuth } from "@/context/AuthContext";
 
 interface TaskItem {
   id: string;
@@ -48,22 +49,42 @@ interface Props {
 }
 
 export function CompanyTaskManagement({ communityId, isDirector = true }: Props) {
+  const { user } = useAuth();
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<"all" | "assigned" | "in_progress" | "completed">("all");
+  const [filter, setFilter] = useState<"all" | "my" | "assigned" | "in_progress" | "completed">("all");
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [acceptingId, setAcceptingId] = useState<string | null>(null);
+
+  // Danh sách thành viên thực tế của cộng đồng
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [selectedAssigneeId, setSelectedAssigneeId] = useState<string>("");
 
   // Form giao việc mới
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [assigneeName, setAssigneeName] = useState("Nguyễn Thị Mai");
+  const [assigneeName, setAssigneeName] = useState("Thành viên");
   const [priority, setPriority] = useState<"urgent" | "high" | "medium">("high");
   const [deadline, setDeadline] = useState("Trong hôm nay");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerRequirements, setCustomerRequirements] = useState("");
   const [submittingTask, setSubmittingTask] = useState(false);
+
+  // Load danh sách nhân sự thực tế từ cộng đồng
+  const loadEmployees = async () => {
+    try {
+      const res = await fetchNestApi<any>(`/connect-app/community/${communityId}/employees`);
+      if (res?.employees && res.employees.length > 0) {
+        setEmployees(res.employees);
+        const first = res.employees[0];
+        setSelectedAssigneeId(first.id || first.userId);
+        setAssigneeName(first.fullName);
+      }
+    } catch (e) {
+      console.warn("Failed to load community employees:", e);
+    }
+  };
 
   // Load danh sách tasks
   const loadTasks = async () => {
@@ -140,6 +161,7 @@ export function CompanyTaskManagement({ communityId, isDirector = true }: Props)
 
   useEffect(() => {
     loadTasks();
+    loadEmployees();
   }, [communityId]);
 
   // Hành động Nhân viên Bấm: [⚡ TIẾN HÀNH NHẬN VIỆC]
@@ -206,6 +228,7 @@ export function CompanyTaskManagement({ communityId, isDirector = true }: Props)
         body: JSON.stringify({
           title: title.trim(),
           description: description.trim(),
+          assigneeId: selectedAssigneeId || "emp-vione",
           assigneeName,
           priority,
           deadline,
@@ -224,7 +247,7 @@ export function CompanyTaskManagement({ communityId, isDirector = true }: Props)
         communityId,
         title: title.trim(),
         description: description.trim(),
-        assigneeId: "emp-new",
+        assigneeId: selectedAssigneeId || "emp-new",
         assigneeName,
         assignerName: "Ban Giám Đốc",
         priority,
@@ -254,11 +277,18 @@ export function CompanyTaskManagement({ communityId, isDirector = true }: Props)
 
   // Thống kê nhanh
   const totalCount = tasks.length;
+  const isUserTask = (t: TaskItem) =>
+    t.assigneeId === user?.id ||
+    (user?.name && t.assigneeName?.toLowerCase().includes(user.name.toLowerCase())) ||
+    (user?.email && t.assigneeName?.toLowerCase().includes(user.email.split("@")[0].toLowerCase()));
+
+  const myCount = tasks.filter(isUserTask).length;
   const assignedCount = tasks.filter((t) => t.status === "assigned").length; // Chờ nhận việc
   const inProgressCount = tasks.filter((t) => t.status === "in_progress").length;
   const completedCount = tasks.filter((t) => t.status === "completed").length;
 
   const filteredTasks = tasks.filter((t) => {
+    if (filter === "my") return isUserTask(t);
     if (filter === "all") return true;
     return t.status === filter;
   });
@@ -317,6 +347,7 @@ export function CompanyTaskManagement({ communityId, isDirector = true }: Props)
       <div className="flex items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none]">
         {[
           { id: "all", label: `Tất cả (${totalCount})` },
+          { id: "my", label: `⭐ Việc của tôi (${myCount})` },
           { id: "assigned", label: `⚡ Chờ nhận việc (${assignedCount})` },
           { id: "in_progress", label: `Đang làm (${inProgressCount})` },
           { id: "completed", label: `Đã xong (${completedCount})` },
@@ -539,14 +570,24 @@ export function CompanyTaskManagement({ communityId, isDirector = true }: Props)
                   Chọn nhân sự phụ trách *
                 </label>
                 <select
-                  value={assigneeName}
-                  onChange={(e) => setAssigneeName(e.target.value)}
+                  value={selectedAssigneeId}
+                  onChange={(e) => {
+                    const chosenId = e.target.value;
+                    setSelectedAssigneeId(chosenId);
+                    const found = employees.find((emp) => (emp.id || emp.userId) === chosenId);
+                    if (found) setAssigneeName(found.fullName);
+                  }}
                   className="w-full rounded-xl border border-zinc-300 dark:border-white/10 bg-zinc-50 dark:bg-[#121824] p-2.5 text-xs text-zinc-950 dark:text-white outline-none focus:border-[#DFB76C]"
                 >
-                  <option value="Nguyễn Thị Mai">Nguyễn Thị Mai (Trưởng nhóm Kinh doanh B2B)</option>
-                  <option value="Trần Văn Long">Trần Văn Long (Chuyên viên Khách hàng VIP)</option>
-                  <option value="Lê Thu Hà">Lê Thu Hà (Chăm sóc Khách hàng & Hậu mãi)</option>
-                  <option value="Phạm Đức Anh">Phạm Đức Anh (Kỹ sư Triển khai Hệ thống)</option>
+                  {employees && employees.length > 0 ? (
+                    employees.map((emp) => (
+                      <option key={emp.id || emp.userId} value={emp.id || emp.userId}>
+                        {emp.fullName} ({emp.roleTitle || emp.role || "Thành viên"}) - {emp.department || "Cộng đồng"}
+                      </option>
+                    ))
+                  ) : (
+                    <option value="">Đang tải danh sách thành viên cộng đồng...</option>
+                  )}
                 </select>
               </div>
 

@@ -133,6 +133,15 @@ type StructuredAnswer = {
     description?: string;
     content?: string;
   };
+  excelReport?: {
+    id: string;
+    filename: string;
+    downloadUrl: string;
+    fileSize: string;
+    category: string;
+    rowCount: number;
+    title?: string;
+  };
   voiceText?: string;
 };
 
@@ -440,6 +449,7 @@ function AiAssistantPage() {
                 plan: nestRes.plan,
                 workflow: nestRes.workflow,
                 document: nestRes.document,
+                excelReport: nestRes.excelReport,
                 voiceText: nestRes.voiceText,
               });
               return;
@@ -1268,6 +1278,35 @@ function MessageBubble({
             <div className="whitespace-pre-wrap text-[15px] leading-relaxed text-foreground">
               {s?.answer ?? msg.content}
             </div>
+
+            {/* Excel Report Card */}
+            {s?.excelReport && (
+              <div className="mt-3 overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-amber-500/10 p-4 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-600/20 text-emerald-600 dark:text-emerald-400">
+                      <FileSpreadsheet className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-foreground">
+                        {s.excelReport.title || s.excelReport.filename}
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {s.excelReport.rowCount} bản ghi CSDL thực tế • Kích thước: {s.excelReport.fileSize} • Định dạng .xlsx
+                      </p>
+                    </div>
+                  </div>
+                  <a
+                    href={s.excelReport.downloadUrl}
+                    download={s.excelReport.filename}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-bold text-white shadow hover:brightness-110 transition cursor-pointer"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Tải Báo Cáo Excel</span>
+                  </a>
+                </div>
+              </div>
+            )}
 
             {s && (
               <div className="mt-3 space-y-3">

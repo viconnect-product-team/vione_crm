@@ -59,10 +59,9 @@ export function useMyCommunities(enabled = true) {
         }
       }
       return list.filter((c: any) => {
-        const id = String(c.communityId || "");
-        const name = String(c.name || "");
-        const slug = String(c.slug || "");
-        return id === "c1983000-0000-4000-8000-000000001983" || slug === "ceo1983" || name.includes("1983");
+        const name = String(c.name || "").toLowerCase();
+        const slug = String(c.slug || "").toLowerCase();
+        return !name.includes("1983") && !slug.includes("1983");
       });
     },
   });

@@ -19,6 +19,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   Lock,
   Mail,
+  MailCheck,
+  AlertCircle,
+  RotateCcw,
   Eye,
   EyeOff,
   ArrowRight,
@@ -73,7 +76,43 @@ function AppleIcon() {
 
 export const LoginScreen: React.FC = () => {
   const { login, register, quickDemoLogin, isLoading } = useAuth();
-  const [isRegister, setIsRegister] = useState(false);
+  const [authView, setAuthView] = useState<"login" | "register" | "forgot">("login");
+  const isRegister = authView === "register";
+
+  // Forgot password state
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotStatus, setForgotStatus] = useState<"idle" | "loading" | "sent" | "error">("idle");
+  const [forgotError, setForgotError] = useState<string | null>(null);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
+
+  React.useEffect(() => {
+    let timer: any;
+    if (cooldownSeconds > 0) {
+      timer = setInterval(() => {
+        setCooldownSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [cooldownSeconds]);
+
+  const handleForgotPasswordSubmit = async () => {
+    if (!forgotEmail.trim()) {
+      Alert.alert("Thông báo", "Vui lòng nhập Email hoặc Số điện thoại để khôi phục mật khẩu.");
+      return;
+    }
+    setForgotStatus("loading");
+    setForgotError(null);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setForgotStatus("sent");
+      setCooldownSeconds(60);
+    } catch (err: any) {
+      setForgotStatus("error");
+      setForgotError(err?.message || "Không thể gửi email đặt lại mật khẩu. Vui lòng thử lại sau.");
+    }
+  };
 
   // Login form state
   const [email, setEmail] = useState("");
@@ -195,7 +234,7 @@ export const LoginScreen: React.FC = () => {
               {isRegister ? (
                 <TouchableOpacity
                   style={styles.backBtnPill}
-                  onPress={() => setIsRegister(false)}
+                  onPress={() => setAuthView("login")}
                   activeOpacity={0.75}
                 >
                   <ChevronLeft size={16} color="#D8B282" />
@@ -377,12 +416,208 @@ export const LoginScreen: React.FC = () => {
                 {/* Switch back to Login */}
                 <TouchableOpacity
                   style={styles.switchAuthRow}
-                  onPress={() => setIsRegister(false)}
+                  onPress={() => setAuthView("login")}
                   activeOpacity={0.75}
                 >
                   <Text style={styles.switchAuthText}>Đã có tài khoản doanh nhân? </Text>
                   <Text style={styles.switchAuthLink}>Đăng nhập ngay</Text>
                 </TouchableOpacity>
+              </View>
+            ) : authView === "forgot" ? (
+              /* FORGOT PASSWORD FORM (Matching 100% PWA ConnectAppForgotPassword) */
+              <View style={styles.formContainer}>
+                {/* Back to Login Header Link */}
+                <TouchableOpacity
+                  style={{ flexDirection: "row", alignItems: "center", marginBottom: 18 }}
+                  onPress={() => setAuthView("login")}
+                  activeOpacity={0.7}
+                >
+                  <ChevronLeft size={18} color="#D8B282" style={{ marginRight: 4 }} />
+                  <Text style={{ fontSize: 14, color: "#D8B282", fontWeight: "600" }}>
+                    Quay lại đăng nhập
+                  </Text>
+                </TouchableOpacity>
+
+                {/* Status Icon Badge */}
+                <View style={{ alignItems: "center", marginBottom: 16 }}>
+                  <View
+                    style={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: 20,
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backgroundColor: "rgba(216, 178, 130, 0.12)",
+                      borderWidth: 1,
+                      borderColor: "rgba(216, 178, 130, 0.3)",
+                      marginBottom: 16,
+                    }}
+                  >
+                    {forgotStatus === "sent" ? (
+                      <MailCheck size={28} color="#D8B282" />
+                    ) : forgotStatus === "error" ? (
+                      <AlertCircle size={28} color="#EF4444" />
+                    ) : (
+                      <Mail size={28} color="#D8B282" />
+                    )}
+                  </View>
+
+                  <Text style={[styles.loginHeading, { textAlign: "center" }]}>
+                    {forgotStatus === "sent"
+                      ? "Kiểm tra hộp thư của bạn"
+                      : "Đặt lại mật khẩu"}
+                  </Text>
+                  <Text style={[styles.loginSubheading, { textAlign: "center", marginTop: 6 }]}>
+                    {forgotStatus === "sent"
+                      ? "Chúng tôi đã gửi hướng dẫn đặt lại mật khẩu đến email hoặc số điện thoại của bạn."
+                      : "Nhập email hoặc số điện thoại doanh nghiệp đã đăng ký để nhận liên kết khôi phục an toàn."}
+                  </Text>
+                </View>
+
+                {forgotStatus === "sent" ? (
+                  <View
+                    style={{
+                      borderRadius: 18,
+                      borderWidth: 1,
+                      borderColor: "rgba(255, 255, 255, 0.1)",
+                      backgroundColor: "rgba(255, 255, 255, 0.03)",
+                      padding: 16,
+                      marginTop: 8,
+                    }}
+                  >
+                    <Text style={{ fontSize: 14, fontWeight: "700", color: "#FFFFFF", marginBottom: 12 }}>
+                      Các bước tiếp theo:
+                    </Text>
+
+                    {[
+                      "Mở email từ hệ thống bảo mật ViOne ID.",
+                      "Nhấp vào liên kết xác thực đặt lại mật khẩu an toàn.",
+                      "Tạo mật khẩu mới và đăng nhập trở lại.",
+                    ].map((step, idx) => (
+                      <View key={step} style={{ flexDirection: "row", alignItems: "flex-start", marginBottom: 10 }}>
+                        <View
+                          style={{
+                            width: 22,
+                            height: 22,
+                            borderRadius: 11,
+                            backgroundColor: "rgba(216, 178, 130, 0.2)",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginRight: 10,
+                            marginTop: 1,
+                          }}
+                        >
+                          <Text style={{ fontSize: 11, fontWeight: "800", color: "#D8B282" }}>
+                            {idx + 1}
+                          </Text>
+                        </View>
+                        <Text style={{ flex: 1, fontSize: 13, color: "#94A3B8", lineHeight: 18 }}>
+                          {step}
+                        </Text>
+                      </View>
+                    ))}
+
+                    <Text style={{ fontSize: 12, color: "#64748B", marginTop: 6, fontStyle: "italic" }}>
+                      Không thấy email? Hãy kiểm tra thêm thư mục Spam hoặc Thư rác.
+                    </Text>
+
+                    {/* Resend button with cooldown */}
+                    <TouchableOpacity
+                      style={{
+                        marginTop: 16,
+                        height: 44,
+                        borderRadius: 14,
+                        borderWidth: 1,
+                        borderColor: "rgba(216, 178, 130, 0.3)",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: "rgba(216, 178, 130, 0.06)",
+                      }}
+                      onPress={cooldownSeconds > 0 ? undefined : handleForgotPasswordSubmit}
+                      disabled={cooldownSeconds > 0}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={{ fontSize: 13, fontWeight: "700", color: cooldownSeconds > 0 ? "#64748B" : "#D8B282" }}>
+                        {cooldownSeconds > 0
+                          ? `Gửi lại sau (${cooldownSeconds}s)`
+                          : "Gửi lại email xác thực"}
+                      </Text>
+                    </TouchableOpacity>
+
+                    {/* Back to login CTA */}
+                    <TouchableOpacity
+                      style={{
+                        marginTop: 10,
+                        height: 44,
+                        borderRadius: 14,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onPress={() => setAuthView("login")}
+                      activeOpacity={0.7}
+                    >
+                      <Text style={{ fontSize: 13, fontWeight: "600", color: "#94A3B8" }}>
+                        Quay về màn hình đăng nhập
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <>
+                    {/* Email / Phone input */}
+                    <View style={styles.fieldGroup}>
+                      <Text style={styles.fieldLabel}>Email hoặc Số điện thoại *</Text>
+                      <View style={styles.inputBox}>
+                        <Mail size={16} color="#D4C3A3" style={styles.inputLeftIcon} />
+                        <TextInput
+                          style={styles.textInput}
+                          placeholder="VD: ceo@vione.vn hoặc 0912 345 678"
+                          placeholderTextColor="rgba(212, 195, 163, 0.4)"
+                          value={forgotEmail}
+                          onChangeText={setForgotEmail}
+                          autoCapitalize="none"
+                          keyboardType="email-address"
+                        />
+                      </View>
+                    </View>
+
+                    {forgotError && (
+                      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 12 }}>
+                        <AlertCircle size={14} color="#EF4444" style={{ marginRight: 6 }} />
+                        <Text style={{ fontSize: 12, color: "#EF4444" }}>{forgotError}</Text>
+                      </View>
+                    )}
+
+                    <TouchableOpacity
+                      onPress={handleForgotPasswordSubmit}
+                      disabled={forgotStatus === "loading"}
+                      activeOpacity={0.88}
+                      style={[styles.submitBtnTouch, { marginTop: 12 }]}
+                    >
+                      <LinearGradient
+                        colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.submitBtnGradient}
+                      >
+                        <Text style={styles.submitBtnText}>
+                          {forgotStatus === "loading" ? "Đang gửi..." : "Gửi liên kết khôi phục"}
+                        </Text>
+                        {forgotStatus !== "loading" && (
+                          <ArrowRight size={17} color="#050C15" strokeWidth={2.4} style={styles.submitArrow} />
+                        )}
+                      </LinearGradient>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.switchAuthRow}
+                      onPress={() => setAuthView("login")}
+                      activeOpacity={0.75}
+                    >
+                      <Text style={styles.switchAuthText}>Nhớ lại mật khẩu? </Text>
+                      <Text style={styles.switchAuthLink}>Đăng nhập ngay</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
             ) : (
               /* LOGIN FORM */
@@ -475,12 +710,11 @@ export const LoginScreen: React.FC = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      onPress={() =>
-                        Alert.alert(
-                          "Quên mật khẩu",
-                          "Vui lòng liên hệ ban quản trị ViOne hoặc sử dụng tính năng đặt lại mật khẩu qua email."
-                        )
-                      }
+                      onPress={() => {
+                        setAuthView("forgot");
+                        setForgotStatus("idle");
+                        setForgotError(null);
+                      }}
                       activeOpacity={0.7}
                     >
                       <Text style={styles.forgotLabel}>Quên mật khẩu?</Text>
@@ -534,7 +768,7 @@ export const LoginScreen: React.FC = () => {
                 {/* Sign Up / Create Account Button */}
                 <TouchableOpacity
                   style={styles.signUpBtn}
-                  onPress={() => setIsRegister(true)}
+                  onPress={() => setAuthView("register")}
                   activeOpacity={0.85}
                 >
                   <Shield size={16} color="#E2D3B3" />

@@ -36,9 +36,23 @@ import { VIconMark } from "./VIconMark";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
+export interface MemberCardData {
+  id?: string;
+  name: string;
+  title?: string;
+  company?: string;
+  phone?: string;
+  email?: string;
+  code?: string;
+  website?: string;
+  avatarUrl?: string;
+  role?: string;
+}
+
 interface MemberCardBottomSheetProps {
   visible: boolean;
   onClose: () => void;
+  member?: MemberCardData | null;
   onOpenMyQr?: () => void;
   onOpenNfc?: () => void;
   onOpenProfile?: () => void;
@@ -47,6 +61,7 @@ interface MemberCardBottomSheetProps {
 export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
   visible,
   onClose,
+  member,
   onOpenMyQr,
   onOpenNfc,
   onOpenProfile,
@@ -54,13 +69,14 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
   const { user } = useAuth();
   const { isDark } = useTheme();
 
-  const displayName = user?.displayName || user?.name || "Doanh nhân ViOne";
-  const jobTitle = user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
-  const companyName = user?.company || "Tập đoàn Đầu tư & Công nghệ ViOne";
-  const phone = user?.phone || "0912 345 678";
-  const email = user?.email || "ceo@vione.vn";
-  const memberCode = user?.code || "VN-8888";
-  const website = user?.website || "https://vione.vn";
+  const displayName = member?.name || user?.displayName || user?.name || "Doanh nhân ViOne";
+  const jobTitle = member?.title || user?.title || "Chủ tịch HĐQT & Tổng Giám Đốc";
+  const companyName = member?.company || user?.company || "Tập đoàn Đầu tư & Công nghệ ViOne";
+  const phone = member?.phone || user?.phone || "0912 345 678";
+  const email = member?.email || user?.email || "ceo@vione.vn";
+  const memberCode = member?.code || user?.code || "VN-8888";
+  const website = member?.website || user?.website || "https://vione.vn";
+  const avatarUrl = member?.avatarUrl || user?.avatarUrl;
 
   const getInitial = (name: string) => {
     const parts = name.trim().split(/\s+/);
@@ -207,8 +223,8 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
 
                 {/* Avatar & Main Identity */}
                 <View style={styles.identityRow}>
-                  {user?.avatarUrl ? (
-                    <Image source={{ uri: user.avatarUrl }} style={styles.cardAvatar} />
+                  {avatarUrl ? (
+                    <Image source={{ uri: avatarUrl }} style={styles.cardAvatar} />
                   ) : (
                     <LinearGradient
                       colors={["#C29B69", "#8C653B"]}

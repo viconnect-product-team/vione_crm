@@ -112,8 +112,8 @@ export function AssociationAppSignIn({
         {/* Brand Header: Only Large Logo */}
         <div className="flex flex-col items-center justify-center text-center py-4 shrink-0">
           <img
-            src="/ceo1983-logo.png"
-            alt="CLB Doanh Nhân CEO 1983"
+            src="/vione-wordmark.png"
+            alt="ViOne Connect"
             className="h-20 sm:h-24 w-auto object-contain drop-shadow-[0_8px_25px_rgba(0,75,145,0.15)] transition-transform hover:scale-105 duration-300"
           />
         </div>

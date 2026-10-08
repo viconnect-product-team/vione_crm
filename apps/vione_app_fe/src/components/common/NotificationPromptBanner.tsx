@@ -77,7 +77,7 @@ export function NotificationPromptBanner() {
         <div className="pointer-events-none absolute -top-10 -right-10 h-28 w-28 rounded-full bg-amber-400/20 blur-2xl" />
 
         <div className="flex items-start gap-3 relative z-10">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 shadow-md">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#DFB76C] text-slate-950 shadow-md">
             <BellRing className="h-5 w-5 animate-bounce" />
           </div>
 
@@ -96,7 +96,7 @@ export function NotificationPromptBanner() {
               <button
                 type="button"
                 onClick={handleGrant}
-                className="flex-1 py-1.5 px-3 rounded-lg bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-extrabold text-[11.5px] shadow-sm hover:brightness-105 active:scale-95 transition cursor-pointer text-center"
+                className="flex-1 py-1.5 px-3 rounded-lg bg-[#DFB76C] hover:bg-[#d4a85a] border border-[#f0d499]/80 text-slate-950 font-extrabold text-[11.5px] shadow-sm active:scale-95 transition cursor-pointer text-center"
               >
                 Bật thông báo ngay
               </button>

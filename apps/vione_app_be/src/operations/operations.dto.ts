@@ -44,3 +44,23 @@ export class CreateApprovalDto {
   description?: string;
   invoiceNumber?: string;
 }
+
+export class CreateExecutiveTaskDto {
+  title!: string;
+  assignee?: string;
+  deadline?: string;
+  department?: string;
+  priority?: 'urgent' | 'high' | 'medium' | 'low';
+  description?: string;
+  remindMinutesBefore?: number;
+  timeSlot?: string;
+  category?: 'meeting' | 'task' | 'approval' | 'personal';
+  quadrant?: 'urgent_important' | 'important_not_urgent' | 'urgent_not_important' | 'neither';
+}
+
+export class OptimizeScheduleDto {
+  targetDate?: string;
+  relaxationMinutes?: number;
+  prioritizeHealth?: boolean;
+}
+

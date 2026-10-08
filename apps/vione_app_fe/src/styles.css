@@ -1623,14 +1623,14 @@ aside [role="menu"] button.logout-btn svg,
 
 /* Luxury gold text gradient matching Login "Chào mừng" title */
 @utility bc-gold-text {
-  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
+  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #DFB76C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 /* Luxury gold surface gradient matching Login "Chào mừng" palette */
 @utility bc-gold-gradient {
-  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
+  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #DFB76C 100%);
 }
 
 /* Universal ViOne gold gradient background class fix (strictly for non-clipped containers) */
@@ -2088,16 +2088,16 @@ textarea::placeholder {
 .btn-luxury-gold {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%);
-  color: #1b1206 !important;
+  background: #DFB76C;
+  color: #0b0f19 !important;
   font-weight: 700;
-  box-shadow: 0 2px 10px rgba(216, 178, 130, 0.3);
+  box-shadow: 0 2px 8px rgba(223, 183, 108, 0.3);
   transition: all 0.25s ease;
 }
 
 .btn-luxury-gold:hover {
-  background: linear-gradient(135deg, #faecda 0%, #e2be90 45%, #cea877 70%, #9c7348 100%);
-  box-shadow: 0 4px 14px rgba(216, 178, 130, 0.45);
+  background: #d4a85a;
+  box-shadow: 0 4px 12px rgba(223, 183, 108, 0.45);
   transform: translateY(-1px);
 }
 
@@ -2246,10 +2246,10 @@ textarea::placeholder {
 
 /* CEO1983 Light mode cards & gold gradients */
 .ceo1983-landing[data-theme="light"] .bc-cta-gold {
-  background: linear-gradient(135deg, #F6E1C3 0%, #D8B282 45%, #C29B69 70%, #8C653B 100%) !important;
+  background: #DFB76C !important;
   color: #0A0D14 !important;
   font-weight: 700 !important;
-  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.28) !important;
+  box-shadow: 0 4px 14px rgba(223, 183, 108, 0.35) !important;
 }
 
 .ceo1983-landing[data-theme="light"] .border-\[\#D8B282\]\/30,

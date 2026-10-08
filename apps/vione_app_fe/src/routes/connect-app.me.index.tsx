@@ -194,7 +194,7 @@ function ThemeSettingRow() {
             aria-pressed={active}
             className={`flex flex-col items-center gap-1.5 rounded-2xl border px-2 py-3 text-[12px] font-semibold transition text-center ${
               active
-                ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] border-transparent font-bold shadow-sm"
+                ? "bg-[#DFB76C] text-[#050c15] border-[#f0d499]/80 font-bold shadow-sm"
                 : "border-[var(--bc-mobile-border)] text-[var(--bc-mobile-muted)] hover:border-[#D8B282]/40"
             }`}
           >
@@ -799,7 +799,7 @@ function ConnectAppMePage() {
                     aria-pressed={lang === l.code}
                     className={`rounded-2xl border px-3 py-2.5 text-[13px] font-semibold transition text-left flex items-center justify-between gap-1.5 cursor-pointer ${
                       lang === l.code
-                        ? "bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] border-transparent font-bold shadow-xs"
+                        ? "bg-[#DFB76C] text-[#050c15] border-[#f0d499]/80 font-bold shadow-xs"
                         : "border-[var(--bc-mobile-border)] text-[var(--bc-mobile-muted)] hover:border-[#D8B282]/50 hover:text-white"
                     }`}
                   >

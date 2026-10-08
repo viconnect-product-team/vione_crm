@@ -22,6 +22,8 @@ import {
   UserRound,
   Users,
   Wallet,
+  Sparkles,
+  Mic,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ProposeOpportunityMeetingModal } from "./ProposeOpportunityMeetingModal";
@@ -1274,6 +1276,27 @@ export function CommunityOpportunityDetail({
                       pending={interest.isPending}
                       onSelect={onInterest}
                     />
+                    {/* Nút Nhờ AI gửi lời chào bằng giọng nói vào tin nhắn chờ */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.dispatchEvent(
+                          new CustomEvent("vione:share-opportunity-ai", {
+                            detail: {
+                              id: detail.opportunity.id,
+                              title: detail.opportunity.title,
+                              organization: detail.poster?.displayName || "Người đăng cơ hội",
+                              posterName: detail.poster?.displayName || "Người đăng cơ hội",
+                              communityId: communityId,
+                            },
+                          })
+                        );
+                      }}
+                      className="w-full flex items-center justify-center gap-2 py-3 px-4 mb-2.5 rounded-2xl font-extrabold text-[13.5px] bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 border border-[#f0d499]/80 shadow-md transition cursor-pointer"
+                    >
+                      <Mic className="w-4 h-4 text-slate-950" />
+                      <span>🤖 Nhờ AI Gửi Lời Chào Giọng Nói</span>
+                    </button>
                     {/* Nút Nhắn tin hẹn gặp trao đổi cơ hội */}
                     <button
                       type="button"
@@ -1303,6 +1326,27 @@ export function CommunityOpportunityDetail({
                   <p className="mb-2 text-[13px] text-[var(--bc-mobile-muted)]">
                     {t("bc.mobile.community.opportunities.level.choose")}
                   </p>
+                  {/* Nút Nhờ AI gửi lời chào bằng giọng nói vào tin nhắn chờ */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      window.dispatchEvent(
+                        new CustomEvent("vione:share-opportunity-ai", {
+                          detail: {
+                            id: detail.opportunity.id,
+                            title: detail.opportunity.title,
+                            organization: detail.poster?.displayName || "Người đăng cơ hội",
+                            posterName: detail.poster?.displayName || "Người đăng cơ hội",
+                            communityId: communityId,
+                          },
+                        })
+                      );
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 mb-2.5 rounded-2xl font-extrabold text-[13.5px] bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 border border-[#f0d499]/80 shadow-md transition cursor-pointer"
+                  >
+                    <Mic className="w-4 h-4 text-slate-950" />
+                    <span>🤖 Nhờ AI Gửi Lời Chào Giọng Nói Vào Tin Nhắn Chờ</span>
+                  </button>
                   <div className="flex gap-2">
                     <button
                       type="button"

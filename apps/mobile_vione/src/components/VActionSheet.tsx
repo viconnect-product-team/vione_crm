@@ -43,6 +43,9 @@ interface VActionSheetProps {
   onOpenAttendance?: () => void;
   onOpenWorkflow?: () => void;
   onOpenApprovals?: () => void;
+  onOpenAssignTask?: () => void;
+  onOpenStaffActivity?: () => void;
+  onOpenAiAssistant?: () => void;
 }
 
 export const VActionSheet: React.FC<VActionSheetProps> = ({
@@ -55,6 +58,9 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
   onOpenAttendance,
   onOpenWorkflow,
   onOpenApprovals,
+  onOpenAssignTask,
+  onOpenStaffActivity,
+  onOpenAiAssistant,
 }) => {
   const { user } = useAuth();
   const { isDark } = useTheme();
@@ -385,18 +391,60 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                   </TouchableOpacity>
                 </View>
 
-                {/* Group 2: VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP */}
+                {/* Group 2: ĐIỀU HÀNH CEO & QUẢN TRỊ NHÂN VIÊN */}
                 <View style={styles.opsGroup}>
-                  <Text style={[styles.opsGroupTitle, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-                    VẬN HÀNH & GIÁM SÁT DOANH NGHIỆP
+                  <Text style={[styles.opsGroupTitle, { color: isDark ? "#D8B282" : "#A3703C" }]}>
+                    BÀN LÀM VIỆC LÃNH ĐẠO (CEO EXECUTIVE SUITE)
                   </Text>
-                  <View style={styles.opsRow}>
+                  <View style={styles.opsGrid}>
                     <TouchableOpacity
                       style={[
-                        styles.opsColItem,
+                        styles.opsGridItem,
                         {
                           backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
-                          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
+                        },
+                      ]}
+                      onPress={() => {
+                        onClose();
+                        if (onOpenAssignTask) onOpenAssignTask();
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.22)" }]}>
+                        <NotebookPen size={18} color="#D8B282" />
+                      </View>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Giao việc nhân sự</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Phân công & nhắc nhở</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.opsGridItem,
+                        {
+                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                          borderColor: isDark ? "rgba(56, 189, 248, 0.3)" : "#E2E8F0",
+                        },
+                      ]}
+                      onPress={() => {
+                        onClose();
+                        if (onOpenStaffActivity) onOpenStaffActivity();
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(56, 189, 248, 0.18)" }]}>
+                        <Contact size={18} color="#38BDF8" />
+                      </View>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Tiến độ nhân viên</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Giám sát quá trình làm</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        styles.opsGridItem,
+                        {
+                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                          borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
                         },
                       ]}
                       onPress={() => {
@@ -408,50 +456,29 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.18)" }]}>
                         <MapPin size={18} color="#D8B282" />
                       </View>
-                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Chấm công</Text>
-                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>GPS & FaceID</Text>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Giờ giấc nhân sự</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Ai đi muộn tuần/tháng</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       style={[
-                        styles.opsColItem,
+                        styles.opsGridItem,
                         {
                           backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
-                          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
+                          borderColor: isDark ? "rgba(168, 85, 247, 0.3)" : "#E2E8F0",
                         },
                       ]}
                       onPress={() => {
                         onClose();
-                        if (onOpenWorkflow) onOpenWorkflow();
+                        if (onOpenAiAssistant) onOpenAiAssistant();
                       }}
                       activeOpacity={0.8}
                     >
-                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(56, 189, 248, 0.15)" }]}>
-                        <Layers size={18} color="#38BDF8" />
-                      </View>
-                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Quy trình</Text>
-                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>BPMN Kanban</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={[
-                        styles.opsColItem,
-                        {
-                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
-                          borderColor: isDark ? "rgba(255, 255, 255, 0.08)" : "#E2E8F0",
-                        },
-                      ]}
-                      onPress={() => {
-                        onClose();
-                        if (onOpenApprovals) onOpenApprovals();
-                      }}
-                      activeOpacity={0.8}
-                    >
-                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(168, 85, 247, 0.15)" }]}>
+                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(168, 85, 247, 0.18)" }]}>
                         <ShieldCheck size={18} color="#C084FC" />
                       </View>
-                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Phê duyệt</Text>
-                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>3 cấp chuẩn</Text>
+                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Thư ký AI điều hành</Text>
+                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Xếp lịch & đốc thúc</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -734,6 +761,20 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     letterSpacing: 1,
     marginBottom: 10,
+  },
+  opsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  opsGridItem: {
+    width: "48%",
+    backgroundColor: "#0E1522",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.08)",
+    padding: 14,
+    alignItems: "center",
   },
   opsRow: {
     flexDirection: "row",

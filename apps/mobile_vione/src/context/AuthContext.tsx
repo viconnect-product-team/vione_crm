@@ -75,16 +75,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.data?.access_token) {
         const receivedToken = res.data.access_token;
         const rawUser = res.data.user || {};
+        const avatar = rawUser.avatarUrl || rawUser.avatar_url || rawUser.avatar || rawUser.identity?.avatar_url || rawUser.identity?.avatarUrl || null;
+        const cover = rawUser.coverUrl || rawUser.cover_url || rawUser.cover || rawUser.identity?.cover_url || rawUser.identity?.coverUrl || null;
         const profile: UserProfile = {
           id: rawUser.id || "usr-" + Date.now(),
           email: rawUser.email || (identifier.includes("@") ? identifier : `${identifier}@vione.vn`),
-          displayName: rawUser.name || rawUser.displayName || (identifier.includes("@") ? identifier.split("@")[0] : `Doanh nhân ${identifier}`),
+          displayName: rawUser.name || rawUser.displayName || rawUser.identity?.display_name || (identifier.includes("@") ? identifier.split("@")[0] : `Doanh nhân ${identifier}`),
           name: rawUser.name || rawUser.displayName || (identifier.includes("@") ? identifier.split("@")[0] : `Doanh nhân ${identifier}`),
-          title: rawUser.title || "Doanh Nhân C-Level",
-          company: rawUser.company || "ViOne Business Network",
-          phone: rawUser.phone || (!identifier.includes("@") ? identifier : ""),
-          code: rawUser.code || "VN-" + Math.floor(1000 + Math.random() * 9000),
-          avatarUrl: rawUser.avatarUrl || null,
+          title: rawUser.title || rawUser.jobTitle || rawUser.identity?.headline || rawUser.identity?.job_title || "Doanh Nhân C-Level",
+          company: rawUser.company || rawUser.companyName || rawUser.identity?.company_name || "ViOne Business Network",
+          phone: rawUser.phone || rawUser.primaryPhone || rawUser.identity?.primary_phone || (!identifier.includes("@") ? identifier : ""),
+          code: rawUser.code || rawUser.memberCode || "VN-" + Math.floor(1000 + Math.random() * 9000),
+          avatarUrl: avatar,
+          coverUrl: cover,
           isVerified: true,
           shareUrl: `https://vione.vn/c/${rawUser.code || "VIONE"}`,
         };

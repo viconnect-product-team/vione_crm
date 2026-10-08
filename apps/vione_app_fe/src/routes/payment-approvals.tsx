@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Wallet,
   CheckCircle2,
@@ -16,10 +16,14 @@ import {
   Filter,
   ArrowRight,
   ExternalLink,
+  FileSpreadsheet,
+  Download,
+  RefreshCw,
 } from "lucide-react";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { PageHeader, StatCard, Card, Pill } from "@/components/dashboard/PageKit";
 import { toast } from "sonner";
+import { fetchNestApi } from "@/lib/api-client";
 
 export const Route = createFileRoute("/payment-approvals")({
   ssr: false,
@@ -90,6 +94,26 @@ function PaymentApprovalsPage() {
   const [payments, setPayments] = useState<PaymentRequest[]>(INITIAL_PAYMENTS);
   const [activeTab, setActiveTab] = useState<"all" | "pending_checker" | "pending_approver" | "approved_paid">("all");
   const [qrModalItem, setQrModalItem] = useState<PaymentRequest | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isExportingExcel, setIsExportingExcel] = useState(false);
+
+  const fetchApprovals = async () => {
+    try {
+      setIsLoading(true);
+      const res = await fetchNestApi<any>("/operations/finance/approvals");
+      if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+        setPayments(res.data);
+      }
+    } catch {
+      // Use fallback
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchApprovals();
+  }, []);
 
   const pendingApproverCount = payments.filter((p) => p.status === "pending_approver").length;
   const pendingCheckerCount = payments.filter((p) => p.status === "pending_checker").length;
@@ -102,37 +126,71 @@ function PaymentApprovalsPage() {
     return payments.filter((p) => p.status === activeTab);
   }, [payments, activeTab]);
 
-  const handleCheckerApprove = (id: string) => {
-    setPayments((prev) =>
-      prev.map((p) => {
-        if (p.id === id) {
-          const needsCEO = p.amountVnd > 20000000;
-          return {
-            ...p,
-            checker: { name: "Trần Thu Hà", role: "Kế Toán Trưởng", status: "approved", date: "Vừa xong" },
-            status: needsCEO ? "pending_approver" : "approved_paid",
-          };
-        }
-        return p;
-      })
-    );
-    toast.success("Kế toán trưởng (Checker) đã xác nhận chứng từ & hạn mức ngân sách.");
+  const handleCheckerApprove = async (id: string) => {
+    try {
+      await fetchNestApi(`/operations/finance/approvals/${id}/approve`, {
+        method: "PUT",
+        body: JSON.stringify({ role: "checker", signerName: "Trần Thu Hà" }),
+      });
+      setPayments((prev) =>
+        prev.map((p) => {
+          if (p.id === id) {
+            const needsCEO = p.amountVnd > 20000000;
+            return {
+              ...p,
+              checker: { name: "Trần Thu Hà", role: "Kế Toán Trưởng", status: "approved", date: "Vừa xong" },
+              status: needsCEO ? "pending_approver" : "approved_paid",
+            };
+          }
+          return p;
+        })
+      );
+      toast.success("Kế toán trưởng (Checker) đã xác nhận chứng từ & hạn mức ngân sách.");
+    } catch {
+      toast.error("Không thể ghi nhận duyệt chi trên hệ thống.");
+    }
   };
 
-  const handleCEOApprove = (id: string) => {
-    setPayments((prev) =>
-      prev.map((p) => {
-        if (p.id === id) {
-          return {
-            ...p,
-            approver: { name: "Nguyễn Minh Đăng", role: "Tổng Giám Đốc (CEO)", status: "approved", date: "Vừa xong" },
-            status: "approved_paid",
-          };
-        }
-        return p;
-      })
-    );
-    toast.success("Lãnh đạo đã ký điện tử duyệt chi thành công.");
+  const handleCEOApprove = async (id: string) => {
+    try {
+      await fetchNestApi(`/operations/finance/approvals/${id}/approve`, {
+        method: "PUT",
+        body: JSON.stringify({ role: "approver", signerName: "Nguyễn Minh Đăng" }),
+      });
+      setPayments((prev) =>
+        prev.map((p) => {
+          if (p.id === id) {
+            return {
+              ...p,
+              approver: { name: "Nguyễn Minh Đăng", role: "Tổng Giám Đốc (CEO)", status: "approved", date: "Vừa xong" },
+              status: "approved_paid",
+            };
+          }
+          return p;
+        })
+      );
+      toast.success("Lãnh đạo đã ký điện tử duyệt chi thành công.");
+    } catch {
+      toast.error("Không thể ghi nhận ký duyệt trên hệ thống.");
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      setIsExportingExcel(true);
+      const res = await fetchNestApi<any>("/ai/export-excel", {
+        method: "POST",
+        body: JSON.stringify({ reportType: "approvals" }),
+      });
+      if (res?.success && res?.downloadUrl) {
+        toast.success(`Đã xuất báo cáo ${res.fileName || "Excel"} thành công!`);
+        window.open(res.downloadUrl, "_blank");
+      }
+    } catch (e: any) {
+      toast.error(e?.message || "Không thể xuất file Excel.");
+    } finally {
+      setIsExportingExcel(false);
+    }
   };
 
   return (
@@ -143,6 +201,23 @@ function PaymentApprovalsPage() {
           subtitle="Quy trình 3 cấp (Người lập → Kế toán kiểm tra → Lãnh đạo phê duyệt), kiểm soát hạn mức chức danh và chuyển khoản mã QR ngân hàng nhanh chóng."
           actions={
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleExportExcel}
+                disabled={isExportingExcel}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold transition shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                <FileSpreadsheet className="size-4" />
+                <span>{isExportingExcel ? "Đang xuất..." : "Xuất Báo Cáo Excel (.xlsx)"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={fetchApprovals}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium hover:bg-slate-50 transition cursor-pointer"
+              >
+                <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+                <span>Đồng bộ</span>
+              </button>
               <span className="px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold font-mono">
                 CHUYỂN KHOẢN QR HOẠT ĐỘNG
               </span>

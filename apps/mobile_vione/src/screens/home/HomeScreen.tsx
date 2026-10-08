@@ -64,11 +64,14 @@ import { ScheduleMeetingModal } from "../../components/ScheduleMeetingModal";
 import { CardScanReviewModal } from "../../components/CardScanReviewModal";
 import { EventDetailModal } from "../../components/EventDetailModal";
 import { StaffDailyActivityModal } from "../../components/StaffDailyActivityModal";
+import { AssignTaskModal } from "../../components/AssignTaskModal";
 import { MemberCardBottomSheet } from "../../components/MemberCardBottomSheet";
 import { PostMomentModal } from "../../components/PostMomentModal";
 import { BusinessNotificationsModal } from "../../components/BusinessNotificationsModal";
 import { ViOneVoiceAssistantModal } from "../../components/ai/ViOneVoiceAssistantModal";
 import { OpportunityDetailModal, CommunityOpportunityItem } from "../../components/OpportunityDetailModal";
+import { TodayCustomizeSheet, TodayPreferences, DEFAULT_TODAY_PREFERENCES } from "../../components/TodayCustomizeSheet";
+import { ScheduleCalendarModal } from "../../components/ScheduleCalendarModal";
 import { meApi, eventsApi, meetingsApi, networkApi, opportunityApi } from "../../api";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -145,7 +148,7 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState<"today" | "all" | "upcoming" | "reminders" | "voice_moments">("today");
@@ -154,13 +157,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   const [hasLocationPermission, setHasLocationPermission] = useState<boolean>(true);
   const [requestingLocation, setRequestingLocation] = useState<boolean>(false);
 
+  // Today Briefing Preferences (Matching 100% PWA TodayCustomizeSheet)
+  const [todayPrefs, setTodayPrefs] = useState<TodayPreferences>(DEFAULT_TODAY_PREFERENCES);
+  const [todayCustomizeVisible, setTodayCustomizeVisible] = useState(false);
+
   // Modals state
+  const [calendarModalVisible, setCalendarModalVisible] = useState(false);
   const [myQrVisible, setMyQrVisible] = useState(false);
   const [scanQrVisible, setScanQrVisible] = useState(false);
   const [attendanceVisible, setAttendanceVisible] = useState(false);
   const [workflowVisible, setWorkflowVisible] = useState(false);
   const [approvalsVisible, setApprovalsVisible] = useState(false);
   const [staffDailyModalVisible, setStaffDailyModalVisible] = useState(false);
+  const [assignTaskModalVisible, setAssignTaskModalVisible] = useState(false);
   const [scheduleMeetingVisible, setScheduleMeetingVisible] = useState(false);
   const [selectedPartnerForMeeting, setSelectedPartnerForMeeting] = useState<{ name: string; company: string } | null>(null);
   const [cardScanReviewVisible, setCardScanReviewVisible] = useState(false);
@@ -208,6 +217,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
   // Voice moments audio player simulation
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
   const [voiceMomentsList, setVoiceMomentsList] = useState<VoiceMomentItem[]>([]);
+  const [selectedOpportunityForAi, setSelectedOpportunityForAi] = useState<any | null>(null);
 
   const togglePlayVoice = (id: string) => {
     if (playingVoiceId === id) {
@@ -238,7 +248,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
     const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
     try {
-      // 1. Unread notifications
+      // 1. Identity & profile cover/avatar from NestJS API
+      const identRes = await meApi.getIdentity();
+      if (identRes?.data?.identity) {
+        const iden = identRes.data.identity;
+        updateUser({
+          displayName: iden.displayName || user?.displayName,
+          name: iden.displayName || user?.name,
+          title: iden.jobTitle || iden.headline || user?.title,
+          company: iden.companyName || user?.company,
+          avatarUrl: iden.avatarUrl || user?.avatarUrl,
+          coverUrl: iden.coverUrl || user?.coverUrl,
+          phone: iden.primaryPhone || user?.phone,
+        });
+      }
+    } catch {}
+
+    try {
+      // 2. Unread notifications
       const notifRes = await meApi.getUnreadNotificationCount();
       if (notifRes?.data?.count !== undefined) {
         setUnreadNotificationsCount(notifRes.data.count);
@@ -584,7 +611,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             >
               <Text
                 style={{
-                  color: isDark ? "#D8B282" : "#8C653B",
+                  color: isDark ? "#D8B282" : "#B8860B",
                   fontSize: 12,
                   fontWeight: "700",
                 }}
@@ -601,7 +628,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             <Text
               style={[
                 styles.todaySectionTitle,
-                { color: isDark ? "#D8B282" : "#8C653B" },
+                { color: isDark ? "#D8B282" : "#B8860B" },
               ]}
             >
               {activeTab === "today"
@@ -612,22 +639,42 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                 ? "NHẮC LỊCH CUỘC GẶP & SỰ KIỆN"
                 : "LỊCH SỬ KHOẢNG KHẮC GHI ÂM"}
             </Text>
-            <TouchableOpacity
-              style={styles.viewCalendarBtn}
-              onPress={() => Alert.alert("Lịch", "Xem toàn bộ lịch hoạt động & sự kiện.")}
-              activeOpacity={0.7}
-            >
-              <SlidersHorizontal size={13} color={isDark ? "#D4C3A3" : "#64748B"} style={{ marginRight: 4 }} />
-              <Text
-                style={[
-                  styles.viewCalendarText,
-                  { color: isDark ? "#D8B282" : "#8C653B" },
-                ]}
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              {activeTab === "today" && (
+                <TouchableOpacity
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9",
+                    borderWidth: 1,
+                    borderColor: isDark ? "rgba(216, 178, 130, 0.25)" : "#E2E8F0",
+                  }}
+                  onPress={() => setTodayCustomizeVisible(true)}
+                  activeOpacity={0.7}
+                >
+                  <SlidersHorizontal size={14} color={isDark ? "#D8B282" : "#8C653B"} />
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                style={styles.viewCalendarBtn}
+                onPress={() => setCalendarModalVisible(true)}
+                activeOpacity={0.7}
               >
-                Xem lịch
-              </Text>
-              <ChevronRight size={13} color={isDark ? "#D8B282" : "#8C653B"} />
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.viewCalendarText,
+                    { color: isDark ? "#D8B282" : "#8C653B" },
+                  ]}
+                >
+                  Xem lịch
+                </Text>
+                <ChevronRight size={13} color={isDark ? "#D8B282" : "#8C653B"} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Ngày tiếng Việt động hoặc Tiêu đề Tab */}
@@ -952,7 +999,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                     <View style={styles.todaySubSectionHeader}>
                       <View style={styles.todaySubSectionTitleRow}>
                         <Briefcase size={14} color="#DFB76C" style={{ marginRight: 6 }} />
-                        <Text style={[styles.todaySubSectionTitle, { color: isDark ? "#DFB76C" : "#8C653B" }]}>
+                        <Text style={[styles.todaySubSectionTitle, { color: isDark ? "#DFB76C" : "#B8860B" }]}>
                           CƠ HỘI MỚI TỪ CỘNG ĐỒNG
                         </Text>
                       </View>
@@ -994,9 +1041,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                           </Text>
                         </View>
 
-                        <View style={styles.oppActionRow}>
+                        <View style={[styles.oppActionRow, { flexDirection: "row", gap: 8 }]}>
                           <TouchableOpacity
-                            style={styles.oppDetailBtn}
+                            style={[styles.oppDetailBtn, { flex: 1, backgroundColor: "#DFB76C" }]}
+                            onPress={() => {
+                              setSelectedOpportunityForAi({
+                                id: opp.id,
+                                title: opp.title,
+                                organization: opp.organization,
+                                dealValue: opp.dealValue,
+                              });
+                              setAiAssistantVisible(true);
+                            }}
+                            activeOpacity={0.85}
+                          >
+                            <Mic size={13} color="#050C15" style={{ marginRight: 4 }} />
+                            <Text style={styles.oppDetailBtnText}>Nhờ AI Gửi Voice</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={[styles.oppDetailBtn, { backgroundColor: isDark ? "#1E293B" : "#F1F5F9", borderWidth: 1, borderColor: isDark ? "#334155" : "#E2E8F0", paddingHorizontal: 12 }]}
                             onPress={() => {
                               navigation?.navigate("Community", {
                                 communityId: opp.communityId || "c-b2b-leaders",
@@ -1006,8 +1069,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                             }}
                             activeOpacity={0.85}
                           >
-                            <Text style={styles.oppDetailBtnText}>Xem chi tiết cơ hội</Text>
-                            <ArrowRight size={13} color="#050C15" style={{ marginLeft: 4 }} />
+                            <Text style={[styles.oppDetailBtnText, { color: isDark ? "#E2E8F0" : "#1E293B" }]}>Chi tiết</Text>
+                            <ArrowRight size={13} color={isDark ? "#E2E8F0" : "#1E293B"} style={{ marginLeft: 4 }} />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -1169,7 +1232,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                     key={opp.id}
                     style={[
                       styles.eventCard,
-                      { borderColor: "#8C653B", borderWidth: 1, backgroundColor: isDark ? "#181410" : "#FFFDF9" },
+                      { borderColor: "#DFB76C", borderWidth: 1, backgroundColor: isDark ? "#181410" : "#FFFDF9" },
                     ]}
                   >
                     <View style={styles.cardHeaderRow}>
@@ -1191,9 +1254,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                         Giá trị: <Text style={{ fontWeight: "800" }}>{opp.dealValue}</Text> · {opp.daysLeft}
                       </Text>
                     </View>
-                    <View style={{ marginTop: 10, borderTopWidth: 1, borderTopColor: "rgba(140, 101, 59, 0.2)", paddingTop: 8 }}>
+                    <View style={{ marginTop: 10, borderTopWidth: 1, borderTopColor: isDark ? "rgba(223, 183, 108, 0.2)" : "rgba(223, 183, 108, 0.4)", paddingTop: 8, flexDirection: "row", gap: 8 }}>
                       <TouchableOpacity
-                        style={[styles.meetPrimaryActionBtn, { backgroundColor: "#8C653B" }]}
+                        style={[styles.meetPrimaryActionBtn, { flex: 1, backgroundColor: "#DFB76C" }]}
+                        onPress={() => {
+                          setSelectedOpportunityForAi({
+                            id: opp.id,
+                            title: opp.title,
+                            organization: opp.organization,
+                            dealValue: opp.dealValue,
+                          });
+                          setAiAssistantVisible(true);
+                        }}
+                        activeOpacity={0.85}
+                      >
+                        <Mic size={13} color="#050C15" style={{ marginRight: 4 }} />
+                        <Text style={[styles.meetPrimaryActionText, { color: "#050C15", fontWeight: "700" }]}>
+                          Nhờ AI Gửi Voice
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.meetPrimaryActionBtn, { backgroundColor: isDark ? "#1E293B" : "#F1F5F9", paddingHorizontal: 14 }]}
                         onPress={() => {
                           navigation.navigate("Community" as any, {
                             communityId: "c-b2b-leaders",
@@ -1203,8 +1284,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                         }}
                         activeOpacity={0.85}
                       >
-                        <Text style={[styles.meetPrimaryActionText, { color: "#FFFFFF", fontWeight: "700" }]}>
-                          Xem chi tiết cơ hội
+                        <Text style={[styles.meetPrimaryActionText, { color: isDark ? "#E2E8F0" : "#1E293B", fontWeight: "700" }]}>
+                          Chi tiết
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -1649,7 +1730,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
               </Text>
               <Text style={styles.metricBadgeGreen}>93.3% có mặt</Text>
               <Text style={[styles.metricLabel, { color: isDark ? "#94A3B8" : "#64748B" }]}>
-                Chấm công GPS
+                Giờ giấc nhân sự
               </Text>
             </TouchableOpacity>
 
@@ -1717,7 +1798,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
             </View>
             <TouchableOpacity
               style={styles.opsBannerBtn}
-              onPress={() => setAttendanceVisible(true)}
+              onPress={() => setAiAssistantVisible(true)}
               activeOpacity={0.85}
             >
               <View
@@ -1736,7 +1817,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
                     { color: isDark ? "#D8B282" : "#8C653B" },
                   ]}
                 >
-                  Chấm công ngay
+                  Thư ký AI xếp lịch
                 </Text>
               </View>
             </TouchableOpacity>
@@ -1913,8 +1994,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
       <ScanQrModal visible={scanQrVisible} onClose={() => setScanQrVisible(false)} />
       <AttendanceModal visible={attendanceVisible} onClose={() => setAttendanceVisible(false)} />
       <WorkflowModal visible={workflowVisible} onClose={() => setWorkflowVisible(false)} />
-      <ApprovalsModal visible={approvalsVisible} onClose={() => setApprovalsVisible(false)} />
       <StaffDailyActivityModal visible={staffDailyModalVisible} onClose={() => setStaffDailyModalVisible(false)} />
+      <AssignTaskModal
+        visible={assignTaskModalVisible}
+        onClose={() => setAssignTaskModalVisible(false)}
+        communityId="c-vione-internal"
+      />
       <ScheduleMeetingModal
         visible={scheduleMeetingVisible}
         partnerName={selectedPartnerForMeeting?.name}
@@ -1952,7 +2037,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
       />
       <ViOneVoiceAssistantModal
         visible={aiAssistantVisible}
-        onClose={() => setAiAssistantVisible(false)}
+        initialOpportunity={selectedOpportunityForAi}
+        onClose={() => {
+          setAiAssistantVisible(false);
+          setSelectedOpportunityForAi(null);
+        }}
       />
       <OpportunityDetailModal
         visible={opportunityDetailModalVisible}
@@ -1997,6 +2086,41 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ navigation, onOpenV }) =
           </TouchableOpacity>
         </Animated.View>
       )}
+
+      {/* Modal Tuỳ chỉnh hiển thị thẻ Hôm Nay (Matching 100% PWA) */}
+      <TodayCustomizeSheet
+        visible={todayCustomizeVisible}
+        onClose={() => setTodayCustomizeVisible(false)}
+        prefs={todayPrefs}
+        onChange={setTodayPrefs}
+        onReset={() => setTodayPrefs(DEFAULT_TODAY_PREFERENCES)}
+      />
+
+      {/* Modal Lịch Hoạt Động & Cuộc Gặp (Matching 100% PWA /connect-app/calendar) */}
+      <ScheduleCalendarModal
+        visible={calendarModalVisible}
+        onClose={() => setCalendarModalVisible(false)}
+        onOpenScheduleMeeting={() => {
+          setSelectedPartnerForMeeting(null);
+          setScheduleMeetingVisible(true);
+        }}
+        onSelectEvent={(evt) => {
+          setSelectedEventForDetail({
+            id: evt.id,
+            title: evt.title,
+            name: evt.title,
+            time: evt.time,
+            date: evt.date,
+            location: evt.location,
+            venue: evt.location,
+            description: evt.notes,
+            status: evt.status,
+            type: evt.kind,
+            communityName: evt.company || "Cộng đồng Doanh nhân ViOne",
+          });
+          setEventDetailModalVisible(true);
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -3226,5 +3350,77 @@ const styles = StyleSheet.create({
     fontSize: 11.5,
     fontWeight: "700",
     color: "#DFB76C",
+  },
+  ceoSuiteCard: {
+    marginHorizontal: 16,
+    marginTop: 12,
+    marginBottom: 8,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  ceoSuiteHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+  ceoSuiteTitleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  ceoSuiteTitle: {
+    fontSize: 13,
+    fontWeight: "900",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+  ceoAiBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#D8B282",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    gap: 2,
+  },
+  ceoAiBadgeText: {
+    fontSize: 10.5,
+    fontWeight: "800",
+    color: "#050C15",
+  },
+  ceoSuiteDesc: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 12,
+  },
+  ceoSuiteGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  ceoSuiteBtn: {
+    width: "48.5%",
+    padding: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+  },
+  ceoSuiteIconBox: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 6,
+  },
+  ceoSuiteBtnTitle: {
+    fontSize: 12.5,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  ceoSuiteBtnSub: {
+    fontSize: 10.5,
+    lineHeight: 13,
   },
 });

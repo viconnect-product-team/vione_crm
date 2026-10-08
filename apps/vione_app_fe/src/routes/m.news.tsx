@@ -115,7 +115,7 @@ function NewsScreen() {
               <button
                 type="button"
                 onClick={() => setSelectedNews(null)}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-[#050c15] font-semibold text-xs hover:brightness-110 transition-all shadow-md cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] border border-[#f0d499]/80 text-[#050c15] font-bold text-xs transition-all shadow-md cursor-pointer"
               >
                 Đóng bài viết
               </button>

@@ -1117,5 +1117,255 @@ export class AdminService implements OnModuleInit {
     `;
     return { ok: true };
   }
+
+  // ── TRAFFIC ANALYTICS (REAL DATABASE STATS) ──────────────────────────
+  async getTrafficAnalytics() {
+    try {
+      const counts = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          COUNT(*) FILTER (WHERE visited_at >= CURRENT_DATE) as today_visits,
+          COUNT(DISTINCT ip) FILTER (WHERE visited_at >= CURRENT_DATE) as today_unique,
+          COUNT(*) FILTER (WHERE visited_at >= CURRENT_DATE - INTERVAL '1 day' AND visited_at < CURRENT_DATE) as yesterday_visits,
+          COUNT(*) FILTER (WHERE visited_at >= DATE_TRUNC('week', CURRENT_DATE)) as week_visits,
+          COUNT(*) FILTER (WHERE visited_at >= DATE_TRUNC('month', CURRENT_DATE)) as month_visits,
+          COUNT(*) as total_visits
+        FROM public.landing_page_visits;
+      `);
+
+      const dailyRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          TO_CHAR(visited_at, 'DD/MM') as day,
+          DATE(visited_at) as full_date,
+          COUNT(*) as visits,
+          COUNT(DISTINCT ip) as unique_visitors
+        FROM public.landing_page_visits
+        WHERE visited_at >= CURRENT_DATE - INTERVAL '6 days'
+        GROUP BY DATE(visited_at), TO_CHAR(visited_at, 'DD/MM')
+        ORDER BY full_date ASC;
+      `);
+
+      const weeklyRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          'Tuần ' || TO_CHAR(DATE_TRUNC('week', visited_at), 'W/MM') as week_label,
+          DATE_TRUNC('week', visited_at) as week_start,
+          COUNT(*) as visits,
+          COUNT(DISTINCT ip) as unique_visitors
+        FROM public.landing_page_visits
+        WHERE visited_at >= CURRENT_DATE - INTERVAL '28 days'
+        GROUP BY DATE_TRUNC('week', visited_at), 'Tuần ' || TO_CHAR(DATE_TRUNC('week', visited_at), 'W/MM')
+        ORDER BY week_start ASC;
+      `);
+
+      const monthlyRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          'Thg ' || TO_CHAR(DATE_TRUNC('month', visited_at), 'MM/YYYY') as month_label,
+          DATE_TRUNC('month', visited_at) as month_start,
+          COUNT(*) as visits,
+          COUNT(DISTINCT ip) as unique_visitors
+        FROM public.landing_page_visits
+        WHERE visited_at >= CURRENT_DATE - INTERVAL '180 days'
+        GROUP BY DATE_TRUNC('month', visited_at), 'Thg ' || TO_CHAR(DATE_TRUNC('month', visited_at), 'MM/YYYY')
+        ORDER BY month_start ASC;
+      `);
+
+      const topPaths = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT path, COUNT(*) as visits
+        FROM public.landing_page_visits
+        GROUP BY path
+        ORDER BY visits DESC
+        LIMIT 8;
+      `);
+
+      const summary = counts[0] || {};
+      return {
+        success: true,
+        summary: {
+          todayVisits: Number(summary.today_visits || 0),
+          todayUnique: Number(summary.today_unique || 0),
+          yesterdayVisits: Number(summary.yesterday_visits || 0),
+          weekVisits: Number(summary.week_visits || 0),
+          monthVisits: Number(summary.month_visits || 0),
+          totalVisits: Number(summary.total_visits || 0),
+        },
+        daily: dailyRows.map((r) => ({
+          day: r.day,
+          visits: Number(r.visits),
+          uniqueVisitors: Number(r.unique_visitors),
+        })),
+        weekly: weeklyRows.map((r) => ({
+          week: r.week_label,
+          visits: Number(r.visits),
+          uniqueVisitors: Number(r.unique_visitors),
+        })),
+        monthly: monthlyRows.map((r) => ({
+          month: r.month_label,
+          visits: Number(r.visits),
+          uniqueVisitors: Number(r.unique_visitors),
+        })),
+        topPaths: topPaths.map((r) => ({
+          path: r.path,
+          visits: Number(r.visits),
+        })),
+      };
+    } catch (err: any) {
+      console.error('[AdminService] getTrafficAnalytics error:', err);
+      return {
+        success: false,
+        summary: { todayVisits: 0, todayUnique: 0, yesterdayVisits: 0, weekVisits: 0, monthVisits: 0, totalVisits: 0 },
+        daily: [],
+        weekly: [],
+        monthly: [],
+        topPaths: [],
+      };
+    }
+  }
+
+  // ── FINANCIAL OVERVIEW (THU - CHI REAL DATABASE STATS) ────────────────
+  async getFinancialOverview() {
+    try {
+      const txSummary = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          COALESCE(SUM(amount) FILTER (WHERE type = 'income' AND status = 'completed'), 0) as total_income,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'expense' AND status = 'completed'), 0) as total_expense,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'income' AND status = 'completed' AND date >= DATE_TRUNC('month', CURRENT_DATE)), 0) as month_income,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'expense' AND status = 'completed' AND date >= DATE_TRUNC('month', CURRENT_DATE)), 0) as month_expense,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'income' AND status = 'completed' AND date >= DATE_TRUNC('week', CURRENT_DATE)), 0) as week_income,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'expense' AND status = 'completed' AND date >= DATE_TRUNC('week', CURRENT_DATE)), 0) as week_expense
+        FROM public.transactions;
+      `);
+
+      const weeklyBreakdown = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          'Tuần ' || TO_CHAR(DATE_TRUNC('week', date), 'W (DD/MM)') as week_label,
+          DATE_TRUNC('week', date) as week_start,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'income'), 0) as income,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'expense'), 0) as expense
+        FROM public.transactions
+        WHERE date >= CURRENT_DATE - INTERVAL '28 days'
+        GROUP BY DATE_TRUNC('week', date), 'Tuần ' || TO_CHAR(DATE_TRUNC('week', date), 'W (DD/MM)')
+        ORDER BY week_start ASC;
+      `);
+
+      const monthlyBreakdown = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          'Tháng ' || TO_CHAR(DATE_TRUNC('month', date), 'MM/YYYY') as month_label,
+          DATE_TRUNC('month', date) as month_start,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'income'), 0) as income,
+          COALESCE(SUM(amount) FILTER (WHERE type = 'expense'), 0) as expense
+        FROM public.transactions
+        WHERE date >= CURRENT_DATE - INTERVAL '180 days'
+        GROUP BY DATE_TRUNC('month', date), 'Tháng ' || TO_CHAR(DATE_TRUNC('month', date), 'MM/YYYY')
+        ORDER BY month_start ASC;
+      `);
+
+      const categoryRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT type, category, SUM(amount) as total, COUNT(*) as count
+        FROM public.transactions
+        WHERE status = 'completed'
+        GROUP BY type, category
+        ORDER BY total DESC;
+      `);
+
+      const invSummary = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT 
+          status, 
+          COUNT(*) as count, 
+          COALESCE(SUM(amount), 0) as total_amount
+        FROM public.invoices
+        GROUP BY status;
+      `);
+
+      const s = txSummary[0] || {};
+      const totalIncome = Number(s.total_income || 0);
+      const totalExpense = Number(s.total_expense || 0);
+      const monthIncome = Number(s.month_income || 0);
+      const monthExpense = Number(s.month_expense || 0);
+      const weekIncome = Number(s.week_income || 0);
+      const weekExpense = Number(s.week_expense || 0);
+
+      return {
+        success: true,
+        summary: {
+          totalIncome,
+          totalExpense,
+          netCashflow: totalIncome - totalExpense,
+          monthIncome,
+          monthExpense,
+          monthNet: monthIncome - monthExpense,
+          weekIncome,
+          weekExpense,
+          weekNet: weekIncome - weekExpense,
+        },
+        weeklyBreakdown: weeklyBreakdown.map((r) => ({
+          week: r.week_label,
+          income: Number(r.income),
+          expense: Number(r.expense),
+          net: Number(r.income) - Number(r.expense),
+        })),
+        monthlyBreakdown: monthlyBreakdown.map((r) => ({
+          month: r.month_label,
+          income: Number(r.income),
+          expense: Number(r.expense),
+          net: Number(r.income) - Number(r.expense),
+        })),
+        categories: {
+          income: categoryRows
+            .filter((r) => r.type === 'income')
+            .map((r) => ({ category: r.category, total: Number(r.total), count: Number(r.count) })),
+          expense: categoryRows
+            .filter((r) => r.type === 'expense')
+            .map((r) => ({ category: r.category, total: Number(r.total), count: Number(r.count) })),
+        },
+        invoices: invSummary.map((r) => ({
+          status: r.status,
+          count: Number(r.count),
+          totalAmount: Number(r.total_amount),
+        })),
+      };
+    } catch (err: any) {
+      console.error('[AdminService] getFinancialOverview error:', err);
+      return {
+        success: false,
+        summary: { totalIncome: 0, totalExpense: 0, netCashflow: 0, monthIncome: 0, monthExpense: 0, monthNet: 0, weekIncome: 0, weekExpense: 0, weekNet: 0 },
+        weeklyBreakdown: [],
+        monthlyBreakdown: [],
+        categories: { income: [], expense: [] },
+        invoices: [],
+      };
+    }
+  }
+
+  // ── RECORD LANDING PAGE VISIT ────────────────────────────────────────
+  async recordLandingVisit(data: {
+    path?: string;
+    ip?: string;
+    userAgent?: string;
+    referer?: string;
+    sessionId?: string;
+  }) {
+    try {
+      const path = data.path || '/';
+      const ip = data.ip || '127.0.0.1';
+      const userAgent = data.userAgent || 'WebBrowser';
+      const referer = data.referer || 'direct';
+      const sessionId = data.sessionId || 'sess_' + Math.random().toString(36).slice(2, 10);
+
+      await this.prisma.$executeRawUnsafe(
+        `
+        INSERT INTO public.landing_page_visits (path, ip, user_agent, referer, session_id, visited_at)
+        VALUES ($1, $2, $3, $4, $5, NOW())
+      `,
+        path,
+        ip,
+        userAgent,
+        referer,
+        sessionId,
+      );
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  }
 }
+
 

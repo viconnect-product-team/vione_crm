@@ -74,8 +74,8 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
 }) => {
   const { user } = useAuth();
   const [content, setContent] = useState("");
-  const [selectedTag, setSelectedTag] = useState(MOMENT_TAGS[0]);
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(SAMPLE_PHOTOS[0]);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [audience, setAudience] = useState<"public" | "community">("public");
   const [submitting, setSubmitting] = useState(false);
@@ -130,7 +130,7 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
       authorAvatar: user?.avatarUrl ?? undefined,
       content: content.trim(),
       imageUrl: selectedPhoto || undefined,
-      tag: selectedTag,
+      tag: selectedTag || "Khoảnh khắc",
       timeAgo: "Vừa xong",
       likesCount: 1,
       commentsCount: 0,
@@ -203,15 +203,22 @@ export const PostMomentModal: React.FC<PostMomentModalProps> = ({
               </TouchableOpacity>
             </View>
 
-            {/* Tag Selector */}
+            {/* Tag Selector (Optional) */}
             <View style={styles.tagSection}>
-              <Text style={styles.sectionLabel}>CHỦ ĐỀ KHOẢNH KHẮC</Text>
+              <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <Text style={styles.sectionLabel}>CHỦ ĐỀ KHOẢNH KHẮC (TÙY CHỌN)</Text>
+                {selectedTag && (
+                  <TouchableOpacity onPress={() => setSelectedTag(null)} activeOpacity={0.7}>
+                    <Text style={{ fontSize: 11, color: "#D8B282", fontWeight: "600" }}>Bỏ chọn chủ đề</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tagScroll}>
                 {MOMENT_TAGS.map((tag) => (
                   <TouchableOpacity
                     key={tag}
                     style={[styles.tagPill, selectedTag === tag && styles.tagPillActive]}
-                    onPress={() => setSelectedTag(tag)}
+                    onPress={() => setSelectedTag((prev) => (prev === tag ? null : tag))}
                     activeOpacity={0.8}
                   >
                     <Text style={[styles.tagPillText, selectedTag === tag && styles.tagPillTextActive]}>

@@ -61,5 +61,11 @@ export class PublicController {
   async searchRenewalAuditLog(@Request() req, @Body() body: any) {
     return this.connectAppService.searchRenewalAuditLog(req.user.id, body);
   }
+
+  /** Public landing visit tracker. No auth required. */
+  @Post('track-visit')
+  async trackVisit(@Body() body: any) {
+    return this.connectAppService.recordLandingVisit(body);
+  }
 }
 

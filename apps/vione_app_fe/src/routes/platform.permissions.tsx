@@ -256,6 +256,18 @@ function PlatformPermissionsPage() {
     });
   }, [members, q, filterRole, edits, savedEdits]);
 
+  const roleGroupsWithCount = useMemo(() => {
+    const counts: Record<string, number> = {};
+    (members || []).forEach((m: any) => {
+      const role = edits[m.id]?.role ?? savedEdits[m.id]?.role ?? m.executiveRole ?? m.role ?? "STAFF";
+      counts[role] = (counts[role] || 0) + 1;
+    });
+    return roleGroups.map((rg) => ({
+      ...rg,
+      memberCount: counts[rg.code] ?? rg.memberCount,
+    }));
+  }, [roleGroups, members, edits, savedEdits]);
+
   const accessors = useMemo(
     () => ({
       code: (m: any) => m.code,
@@ -624,7 +636,7 @@ function PlatformPermissionsPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {roleGroups.map((rg) => (
+            {roleGroupsWithCount.map((rg) => (
               <Card key={rg.id} className="p-5 border border-border flex flex-col justify-between">
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
