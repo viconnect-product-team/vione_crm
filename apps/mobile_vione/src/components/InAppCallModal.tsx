@@ -30,6 +30,7 @@ import {
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { Avatar } from "./common/Avatar";
 import { useTheme } from "../context/ThemeContext";
+import { resolveMediaUrl } from "../utils/media";
 
 interface InAppCallModalProps {
   visible: boolean;
@@ -256,7 +257,7 @@ export const InAppCallModal: React.FC<InAppCallModalProps> = ({
           <View style={styles.partnerVideoStage}>
             {partnerAvatar ? (
               <Image
-                source={{ uri: partnerAvatar }}
+                source={{ uri: resolveMediaUrl(partnerAvatar) || partnerAvatar }}
                 style={styles.partnerFullVideoImg}
                 resizeMode="cover"
               />

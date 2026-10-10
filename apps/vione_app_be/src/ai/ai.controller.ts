@@ -27,10 +27,11 @@ export class AiController {
   }
 
   /** POST /api/ai/chat — Endpoint AI đàm thoại & xử lý lệnh tự động hóa */
+  /** POST /api/ai/chat — Endpoint AI đàm thoại & xử lý lệnh tự động hóa */
   @Post('chat')
   @UseGuards(OptionalJwtAuthGuard)
-  async chat(@Request() req: any, @Body() body: { message: string; conversationId?: string; capability?: string }) {
-    const userId = req.user?.id || '00000000-0000-4000-8000-000000000002';
+  async chat(@Request() req: any, @Body() body: { message: string; conversationId?: string; capability?: string; currentUser?: any }) {
+    const userId = req.user?.id || body.currentUser?.id || '00000000-0000-4000-8000-000000000002';
     return this.aiService.chat(userId, body);
   }
 
@@ -41,7 +42,34 @@ export class AiController {
     return this.aiService.generateExcelReport(body.type || 'finance', { title: body.title });
   }
 
-  /** GET /api/ai/download-excel/:id — Tải file báo cáo Excel động */
+  /** POST /api/ai/export-word — Tạo file văn bản Word (.docx) chuẩn format */
+  @Post('export-word')
+  @UseGuards(OptionalJwtAuthGuard)
+  async exportWord(@Body() body: { type?: string; title?: string; partyA?: string; partyB?: string; value?: number; details?: string; duration?: string }) {
+    return this.aiService.generateWordDocument(body.type || 'contract_b2b', body);
+  }
+
+  /** POST /api/ai/export-pdf — Tạo file tài liệu PDF (.pdf) chuẩn format */
+  @Post('export-pdf')
+  @UseGuards(OptionalJwtAuthGuard)
+  async exportPdf(@Body() body: { type?: string; title?: string; details?: string; value?: number }) {
+    return this.aiService.generatePdfDocument(body.type || 'report', body);
+  }
+
+  /** GET /api/ai/download-file/:id — Tải tệp bất kỳ (Excel, Word, PDF) */
+  @Get('download-file/:id')
+  async downloadFile(@Param('id') id: string, @Res() res: any) {
+    const report = this.aiService.getGeneratedReport(id);
+    if (!report) {
+      return res.status(404).json({ ok: false, message: 'Tệp không tồn tại hoặc đã hết hạn.' });
+    }
+    res.setHeader('Content-Type', report.mimeType);
+    res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(report.filename)}"`);
+    res.setHeader('Content-Length', report.buffer.length);
+    return res.end(report.buffer);
+  }
+
+  /** GET /api/ai/download-excel/:id — Tải file báo cáo Excel động (backward compatibility) */
   @Get('download-excel/:id')
   async downloadExcel(@Param('id') id: string, @Res() res: any) {
     const report = this.aiService.getGeneratedReport(id);

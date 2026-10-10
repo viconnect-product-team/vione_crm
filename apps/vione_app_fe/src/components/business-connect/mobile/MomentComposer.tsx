@@ -40,7 +40,6 @@ import {
 
 import { useLang, useT, type TKey } from "@/lib/i18n";
 import { safeRandomUUID } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
 import {
   clearMomentDraft,
   deleteMomentDraft,

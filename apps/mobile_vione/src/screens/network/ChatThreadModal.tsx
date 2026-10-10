@@ -39,6 +39,7 @@ interface ChatThreadModalProps {
   thread: DmThreadSummary | null;
   onClose: () => void;
   onMessageSent?: (threadId: string, lastMessage: string) => void;
+  onOpenProfile?: (thread: DmThreadSummary) => void;
 }
 
 export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
@@ -46,6 +47,7 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
   thread,
   onClose,
   onMessageSent,
+  onOpenProfile,
 }) => {
   const { user } = useAuth();
   const { isDark } = useTheme();
@@ -237,7 +239,15 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
             <ArrowLeft size={22} color={isDark ? "#FFFFFF" : "#0F172A"} />
           </TouchableOpacity>
 
-          <View style={styles.headerInfo}>
+          <TouchableOpacity
+            style={styles.headerInfo}
+            onPress={() => {
+              if (onOpenProfile && thread) {
+                onOpenProfile(thread);
+              }
+            }}
+            activeOpacity={0.7}
+          >
             <Avatar
               url={thread.avatarUrl}
               name={thread.displayName}
@@ -270,7 +280,7 @@ export const ChatThreadModal: React.FC<ChatThreadModalProps> = ({
                 )}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.headerRightActions}>
             <TouchableOpacity

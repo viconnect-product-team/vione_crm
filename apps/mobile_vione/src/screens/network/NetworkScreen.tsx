@@ -57,6 +57,9 @@ import { PostMomentModal } from "../../components/PostMomentModal";
 import { MomentCommentModal } from "../../components/MomentCommentModal";
 import { BusinessNotificationsModal } from "../../components/BusinessNotificationsModal";
 import { ViOneVoiceAssistantModal } from "../../components/ai/ViOneVoiceAssistantModal";
+import { MemberCardBottomSheet, MemberCardData } from "../../components/MemberCardBottomSheet";
+import { resolveMediaUrl } from "../../utils/media";
+import { ContactsDiscoveryModal } from "../../components/ContactsDiscoveryModal";
 
 // Dữ liệu khoảnh khắc 24h doanh nhân
 const INITIAL_STORIES: StoryItemData[] = [
@@ -301,7 +304,7 @@ const INITIAL_THREADS: DmThreadSummary[] = [
 type NetworkTab = "network" | "customers" | "suggestions" | "messages" | "requests";
 type MessageCategory = "all" | "unread" | "groups" | "requests";
 
-export const NetworkScreen: React.FC = () => {
+export const NetworkScreen: React.FC<any> = ({ navigation }) => {
   const { user } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<NetworkTab>("network");
@@ -342,6 +345,29 @@ export const NetworkScreen: React.FC = () => {
   const [momentCommentVisible, setMomentCommentVisible] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [aiAssistantVisible, setAiAssistantVisible] = useState(false);
+
+  // Partner Profile Modal (Xem danh thiếp khi bấm vào avatar người chat)
+  const [partnerProfileModalVisible, setPartnerProfileModalVisible] = useState(false);
+  const [selectedMemberCard, setSelectedMemberCard] = useState<MemberCardData | null>(null);
+
+  // Danh bạ điện thoại tìm bạn bè (như Zalo)
+  const [contactsDiscoveryVisible, setContactsDiscoveryVisible] = useState(false);
+  const [contactsBannerDismissed, setContactsBannerDismissed] = useState(false);
+
+  const handleOpenPartnerProfile = (item: DmThreadSummary | ConnectionPerson) => {
+    const cardData: MemberCardData = {
+      id: (item as any).id || (item as any).counterpartUserId || (item as any).threadId,
+      name: (item as any).name || (item as any).displayName || "Doanh nhân đối tác",
+      title: (item as any).title || (item as any).headline || "Hội viên ViOne Connect",
+      company: (item as any).company || (item as any).companyName || "Đối tác kinh doanh",
+      phone: (item as any).phone || "0988 888 888",
+      email: (item as any).email || "contact@vione.vn",
+      avatarUrl: (item as any).avatarUrl,
+      website: "https://vione.vn",
+    };
+    setSelectedMemberCard(cardData);
+    setPartnerProfileModalVisible(true);
+  };
 
   // Greeting
   const getGreeting = () => {
@@ -420,7 +446,7 @@ export const NetworkScreen: React.FC = () => {
     return unreadThreads.reduce((sum, t) => sum + (t.unreadCount || 0), 0);
   }, [unreadThreads]);
 
-  // Lọc danh sách hội thoại theo category & search
+  // Lọc danh sách hội thoại theo category & search (Tin nhắn mới luôn nhảy lên đầu)
   const filteredThreads = useMemo(() => {
     let baseList = allThreads;
     if (activeMessageCategory === "unread") baseList = unreadThreads;
@@ -428,13 +454,20 @@ export const NetworkScreen: React.FC = () => {
     if (activeMessageCategory === "requests") baseList = pendingThreads;
 
     const q = messageSearchQuery.trim().toLowerCase();
-    if (!q) return baseList;
+    const list = !q
+      ? baseList
+      : baseList.filter((t) => {
+          const name = (t.displayName || "").toLowerCase();
+          const company = (t.companyName || "").toLowerCase();
+          const msg = (t.lastMessagePreview || "").toLowerCase();
+          return name.includes(q) || company.includes(q) || msg.includes(q);
+        });
 
-    return baseList.filter((t) => {
-      const name = (t.displayName || "").toLowerCase();
-      const company = (t.companyName || "").toLowerCase();
-      const msg = (t.lastMessagePreview || "").toLowerCase();
-      return name.includes(q) || company.includes(q) || msg.includes(q);
+    // Luôn ưu tiên đưa cuộc hội thoại có tin nhắn mới nhất lên đầu tiên
+    return [...list].sort((a, b) => {
+      const timeA = new Date(a.lastMessageAt || 0).getTime();
+      const timeB = new Date(b.lastMessageAt || 0).getTime();
+      return timeB - timeA;
     });
   }, [activeMessageCategory, allThreads, unreadThreads, groupThreads, pendingThreads, messageSearchQuery]);
 
@@ -463,8 +496,8 @@ export const NetworkScreen: React.FC = () => {
   };
 
   const handleMessageSent = (threadId: string, lastMessage: string) => {
-    setThreads((prev) =>
-      prev.map((t) =>
+    setThreads((prev) => {
+      const updated = prev.map((t) =>
         t.threadId === threadId
           ? {
               ...t,
@@ -474,8 +507,14 @@ export const NetworkScreen: React.FC = () => {
               unreadCount: 0,
             }
           : t
-      )
-    );
+      );
+      // Đẩy cuộc trò chuyện vừa gửi/nhận tin nhắn lên vị trí đầu tiên
+      return [...updated].sort((a, b) => {
+        const timeA = new Date(a.lastMessageAt || 0).getTime();
+        const timeB = new Date(b.lastMessageAt || 0).getTime();
+        return timeB - timeA;
+      });
+    });
   };
 
   const handleGroupCreated = (newGroup: DmThreadSummary) => {
@@ -818,7 +857,7 @@ export const NetworkScreen: React.FC = () => {
                     }}
                     activeOpacity={0.85}
                   >
-                    <Image source={{ uri: story.storyImage }} style={styles.storyCardBg} resizeMode="cover" />
+                    <Image source={{ uri: resolveMediaUrl(story.storyImage) || story.storyImage }} style={styles.storyCardBg} resizeMode="cover" />
                     <LinearGradient
                       colors={["rgba(10, 10, 11, 0.4)", "transparent", "rgba(10, 10, 11, 0.9)"]}
                       style={styles.storyCardGradient}
@@ -1521,6 +1560,84 @@ export const NetworkScreen: React.FC = () => {
         {/* ─── TAB 4: HỘP THƯ TIN NHẮN (MESSAGES) ─── */}
         {activeTab === "messages" && (
           <View style={styles.tabContent}>
+            {/* Banner Tìm bạn bè từ danh bạ điện thoại */}
+            {!contactsBannerDismissed && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  paddingHorizontal: 14,
+                  paddingVertical: 10,
+                  borderRadius: 16,
+                  marginBottom: 12,
+                  backgroundColor: isDark ? "rgba(216, 178, 130, 0.1)" : "#F6E1C3",
+                  borderWidth: 1,
+                  borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "rgba(216, 178, 130, 0.6)",
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1, marginRight: 8 }}>
+                  <View
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 10,
+                      backgroundColor: "#D8B282",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Users size={16} color="#050C15" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text
+                      style={{
+                        fontSize: 12.5,
+                        fontWeight: "800",
+                        color: isDark ? "#FFFFFF" : "#0F172A",
+                      }}
+                      numberOfLines={1}
+                    >
+                      Tìm bạn bè từ danh bạ điện thoại
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 11,
+                        color: isDark ? "#D8B282" : "#8C653B",
+                        marginTop: 1,
+                      }}
+                      numberOfLines={1}
+                    >
+                      Kết nối với bạn bè, đồng nghiệp đang dùng ViOne
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                  <TouchableOpacity
+                    onPress={() => setContactsDiscoveryVisible(true)}
+                    style={{
+                      paddingHorizontal: 12,
+                      paddingVertical: 5,
+                      borderRadius: 8,
+                      backgroundColor: "#D8B282",
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={{ fontSize: 11, fontWeight: "800", color: "#050C15" }}>
+                      Khám phá
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setContactsBannerDismissed(true)}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  >
+                    <X size={15} color={isDark ? "#94A3B8" : "#64748B"} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
             {/* Search & Create Group Header Row */}
             <View style={styles.inboxActionRow}>
               <View
@@ -1657,7 +1774,14 @@ export const NetworkScreen: React.FC = () => {
                       setChatModalVisible(true);
                     }}
                   >
-                    <View style={styles.threadAvatarWrap}>
+                    <TouchableOpacity
+                      style={styles.threadAvatarWrap}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        handleOpenPartnerProfile(item);
+                      }}
+                      activeOpacity={0.7}
+                    >
                       <Avatar
                         url={item.avatarUrl}
                         name={item.displayName}
@@ -1665,7 +1789,7 @@ export const NetworkScreen: React.FC = () => {
                         showGoldBorder={hasUnread}
                       />
                       {item.isOnline && <View style={styles.onlineDot} />}
-                    </View>
+                    </TouchableOpacity>
 
                     <View style={styles.threadBody}>
                       <View style={styles.threadHeaderRow}>
@@ -1829,6 +1953,7 @@ export const NetworkScreen: React.FC = () => {
       <ViOneVoiceAssistantModal
         visible={aiAssistantVisible}
         onClose={() => setAiAssistantVisible(false)}
+        onNavigateToTab={(tab) => navigation?.navigate(tab as any)}
       />
 
       {/* Global Modals */}
@@ -1837,6 +1962,18 @@ export const NetworkScreen: React.FC = () => {
         thread={selectedThread}
         onClose={() => setChatModalVisible(false)}
         onMessageSent={handleMessageSent}
+        onOpenProfile={handleOpenPartnerProfile}
+      />
+
+      <MemberCardBottomSheet
+        visible={partnerProfileModalVisible}
+        member={selectedMemberCard}
+        onClose={() => setPartnerProfileModalVisible(false)}
+      />
+
+      <ContactsDiscoveryModal
+        visible={contactsDiscoveryVisible}
+        onClose={() => setContactsDiscoveryVisible(false)}
       />
 
       <CreateGroupModal

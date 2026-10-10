@@ -167,14 +167,6 @@ export class UsersService {
       },
     });
 
-    // Sync to auth.users to satisfy foreign key constraints in related tables
-    await this.prisma.$executeRawUnsafe(
-      `INSERT INTO auth.users (id, email, role) VALUES ($1::uuid, $2, 'authenticated') ON CONFLICT (id) DO NOTHING`,
-      newUser.id,
-      newUser.email || newUser.username,
-    ).catch((err) => {
-      console.error('Failed to sync user to auth.users:', err);
-    });
 
     // Auto-link to approved member in public.members if matching phone or email
     const cleanPhone = (newUser.username || '').replace(/\D/g, '');
@@ -215,7 +207,7 @@ export class UsersService {
     }).catch(() => [] as any[]);
 
     const hasAdminRole = roles.some(
-      (r: any) => r.role === 'platform_admin' || r.role === 'tenant_admin',
+      (r: any) => r.role === 'quan_tri' || r.role === 'admin' || r.role === 'platform_admin' || r.role === 'tenant_admin',
     );
     if (hasAdminRole) return true;
 
@@ -225,8 +217,31 @@ export class UsersService {
     `.catch(() => [] as any[]);
 
     return memberships.some(
-      (m: any) => m.role === 'admin' || m.role === 'association_admin',
+      (m: any) => m.role === 'quan_tri' || m.role === 'admin' || m.role === 'association_admin',
     );
+  }
+
+  /**
+   * Phân quyền dữ liệu (Data Permission):
+   * Không cho tài khoản khác chỉnh sửa bản ghi của người khác tạo ra,
+   * TRỪ KHI có role quản trị (quan_tri) hoặc role admin mới được chỉnh sửa.
+   */
+  canEditRecord(user: { id?: string; roles?: string[]; role?: string }, recordCreatorId?: string): boolean {
+    if (!user) return false;
+    const userRoles = [
+      ...(user.roles || []),
+      ...(user.role ? [user.role] : []),
+    ].map((r) => String(r).toLowerCase());
+
+    const isHighestAdmin =
+      userRoles.includes('quan_tri') ||
+      userRoles.includes('admin') ||
+      userRoles.includes('platform_admin') ||
+      user.id === '00000000-0000-0000-0000-000000000000';
+
+    if (isHighestAdmin) return true;
+    if (!recordCreatorId || !user.id) return false;
+    return String(recordCreatorId) === String(user.id);
   }
 
   async getAccountDetails(userId: string) {
@@ -247,7 +262,8 @@ export class UsersService {
       `.catch(() => [] as any[]),
     ]);
 
-    const roleList = roles.map((r) => r.role);
+    // Chuẩn hoá roles: 'quan_tri' là to nhất, 'admin' là to nhì, không dùng 'platform_admin'
+    const roleList = roles.map((r) => (r.role === 'platform_admin' ? 'quan_tri' : r.role));
     const isAssocAdmin = (memberships ?? []).some(
       (m: any) => m.role === 'admin' || m.role === 'association_admin' || m.role === 'owner',
     );
@@ -256,10 +272,10 @@ export class UsersService {
     }
 
     if (
-      (userId === '00000000-0000-0000-0000-000000000000' || user.username === 'admin@connect.vn') &&
-      !roleList.includes('platform_admin')
+      (userId === '00000000-0000-0000-0000-000000000000' || user.username === 'admin@connect.vn')
     ) {
-      roleList.push('platform_admin');
+      if (!roleList.includes('quan_tri')) roleList.push('quan_tri');
+      if (!roleList.includes('admin')) roleList.push('admin');
     }
 
     return {
@@ -367,16 +383,6 @@ export class UsersService {
       },
     });
 
-    // Sync email to auth.users
-    if (data.email) {
-      await this.prisma
-        .$executeRawUnsafe(
-          `UPDATE auth.users SET email = $1 WHERE id = $2::uuid`,
-          data.email,
-          userId,
-        )
-        .catch(() => {});
-    }
 
     return this.getAccountDetails(userId);
   }
@@ -415,14 +421,6 @@ export class UsersService {
       },
     });
 
-    // Sync to auth.users encrypted_password if applicable
-    await this.prisma
-      .$executeRawUnsafe(
-        `UPDATE auth.users SET encrypted_password = $1 WHERE id = $2::uuid`,
-        hashedPassword,
-        userId,
-      )
-      .catch(() => {});
 
     // Đánh dấu onboarding_status = 'completed' để hoàn tất quy trình đổi mật khẩu bắt buộc
     await this.prisma.$executeRaw`
@@ -752,13 +750,6 @@ export class UsersService {
       },
     });
 
-    await this.prisma
-      .$executeRawUnsafe(
-        `UPDATE auth.users SET encrypted_password = $1 WHERE id = $2::uuid`,
-        hashedPassword,
-        id,
-      )
-      .catch(() => {});
 
     return {
       success: true,
@@ -834,9 +825,6 @@ export class UsersService {
       where: { id: targetId },
     }).catch(() => {});
 
-    await this.prisma
-      .$executeRawUnsafe(`DELETE FROM auth.users WHERE id = $1::uuid`, targetId)
-      .catch(() => {});
 
     return {
       success: true,

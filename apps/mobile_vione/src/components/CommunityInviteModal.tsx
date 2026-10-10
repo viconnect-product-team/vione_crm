@@ -15,6 +15,7 @@ import { X, QrCode, Copy, Share2, Users, ShieldCheck, Check, Sparkles, Building2
 import { LinearGradient } from "expo-linear-gradient";
 import * as Clipboard from "expo-clipboard";
 import { useTheme } from "../context/ThemeContext";
+import { resolveMediaUrl } from "../utils/media";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -124,7 +125,7 @@ export const CommunityInviteModal: React.FC<CommunityInviteModalProps> = ({
               ]}
             >
               {community.logoUrl ? (
-                <Image source={{ uri: community.logoUrl }} style={styles.communityLogo} />
+                <Image source={{ uri: resolveMediaUrl(community.logoUrl) || community.logoUrl }} style={styles.communityLogo} />
               ) : (
                 <View style={styles.logoFallback}>
                   <Building2 size={24} color="#DFB76C" />

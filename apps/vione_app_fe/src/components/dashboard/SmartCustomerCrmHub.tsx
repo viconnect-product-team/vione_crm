@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Sparkles,
   Flame,
@@ -30,6 +30,7 @@ import {
 import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
 import { downloadCsv } from "@/lib/csv";
+import { fetchNestApi } from "@/lib/api-client";
 
 export interface SmartCustomer {
   id: string;
@@ -43,7 +44,7 @@ export interface SmartCustomer {
   stage: "prospect" | "consulting" | "won" | "nurturing";
   stageLabel: string;
   leadScore: number;
-  dealValue: number; // VND
+  dealValue: number;
   needSummary: string;
   industry: string;
   lastContactAt: string;
@@ -53,117 +54,10 @@ export interface SmartCustomer {
   aiPitch: string;
 }
 
-const INITIAL_SMART_CUSTOMERS: SmartCustomer[] = [
-  {
-    id: "sc-1",
-    name: "Trần Anh Tuấn",
-    title: "Tổng Giám Đốc",
-    company: "Tập Đoàn Bất Động Sản An Phát",
-    phone: "0912 345 678",
-    email: "tuan.tran@anphatgroup.vn",
-    source: "nfc",
-    sourceLabel: "Chạm thẻ NFC ViOne",
-    stage: "consulting",
-    stageLabel: "Đang tư vấn 1-1",
-    leadScore: 96,
-    dealValue: 1200000000,
-    needSummary: "Cần tìm giải pháp ViOne ERP quản trị 5 tòa nhà văn phòng và thẻ cư dân số Titanium",
-    industry: "Bất động sản & Quản lý tòa nhà",
-    lastContactAt: "Hôm nay, 08:30",
-    cadenceStatus: "due_today",
-    cadenceNote: "Cần gửi bản demo tính năng tự động hóa và bảng báo giá giải pháp",
-    tags: ["VIP C-Level", "Đối tác chiến lược", "NFC Verified"],
-    aiPitch: "Tập đoàn An Phát đang mở rộng 3 dự án mới tại Hà Nội. Nên đề xuất gói giải pháp ViOne Enterprise tích hợp thẻ định danh cư dân NFC để tối ưu chi phí vận hành.",
-  },
-  {
-    id: "sc-2",
-    name: "Nguyễn Thị Mai Lan",
-    title: "Giám Đốc Chuỗi Cung Ứng",
-    company: "Công ty Cổ phần Thực phẩm Xanh EcoFood",
-    phone: "0983 888 999",
-    email: "lan.nguyen@ecofood.com.vn",
-    source: "ocr_card",
-    sourceLabel: "Quét danh thiếp AI OCR",
-    stage: "prospect",
-    stageLabel: "Tiềm năng mới",
-    leadScore: 89,
-    dealValue: 650000000,
-    needSummary: "Tìm đơn vị cung ứng bao bì Kraft sinh học phân hủy hoàn toàn 500,000 sản phẩm/tháng",
-    industry: "F&B & Nông sản sạch",
-    lastContactAt: "Hôm qua, 14:15",
-    cadenceStatus: "ok",
-    cadenceNote: "Đã gửi hồ sơ năng lực sơ bộ qua email",
-    tags: ["B2B Supply Chain", "Doanh nghiệp Xanh", "Hot Lead"],
-    aiPitch: "EcoFood vừa đạt chứng nhận ISO 22000 và đang tìm kiếm nhà cung cấp bao bì thân thiện môi trường. Nhắc lại cam kết chứng chỉ FSC và chiết khấu đơn hàng lớn.",
-  },
-  {
-    id: "sc-3",
-    name: "Lê Hoàng Long",
-    title: "Chủ tịch HĐQT",
-    company: "Tập Đoàn Cơ Điện & Năng Lượng Long Phát",
-    phone: "0903 111 222",
-    email: "long.le@longphat.com",
-    source: "b2b_network",
-    sourceLabel: "Kết nối Doanh nhân 1-1",
-    stage: "won",
-    stageLabel: "Đã ký hợp đồng",
-    leadScore: 98,
-    dealValue: 2400000000,
-    needSummary: "Triển khai giải pháp CRM Doanh nghiệp toàn diện cho 250 kỹ sư & kinh doanh",
-    industry: "Năng lượng & Cơ điện công nghiệp",
-    lastContactAt: "2 ngày trước",
-    cadenceStatus: "ok",
-    cadenceNote: "Lịch kickoff dự án vào Thứ Năm tuần tới",
-    tags: ["VIP Hạng Kim Cương", "Doanh thu > 500 tỷ", "Khách hàng thân thiết"],
-    aiPitch: "Tập đoàn Long Phát có chu kỳ bảo dưỡng quý IV rất bận rộn. Cần chuẩn bị lộ trình đào tạo nhân sự nhanh gọn trong 2 tuần.",
-  },
-  {
-    id: "sc-4",
-    name: "Phạm Hải Đăng",
-    title: "Giám Đốc Công Nghệ (CTO)",
-    company: "NextGen SaaS Solutions Vietnam",
-    phone: "0938 777 666",
-    email: "dang.pham@nextgensaas.io",
-    source: "website_lead",
-    sourceLabel: "Đăng ký từ Website ViOne",
-    stage: "prospect",
-    stageLabel: "Cần liên hệ lại",
-    leadScore: 84,
-    dealValue: 450000000,
-    needSummary: "Tìm kiếm đối tác công nghệ có doanh thu MRR từ 200 triệu để rót vốn vòng Seed/Pre-A",
-    industry: "Công nghệ thông tin & AI",
-    lastContactAt: "3 ngày trước",
-    cadenceStatus: "overdue",
-    cadenceNote: "⚠ Quá hạn 2 ngày chưa gọi điện tư vấn chi tiết",
-    tags: ["Tech Investor", "Seed Fund", "Cần gọi ngay"],
-    aiPitch: "NextGen đang có quỹ đầu tư mạo hiểm quan tâm đến mô hình AI Matching cho doanh nghiệp của ViOne. Hãy đặt lịch hẹn 1-1 với CEO ngay trong hôm nay.",
-  },
-  {
-    id: "sc-5",
-    name: "Vũ Đình Trọng",
-    title: "Phó Tổng Giám Đốc",
-    company: "Tổng Công Ty Xây Dựng & Hạ Tầng Miền Bắc",
-    phone: "0977 555 444",
-    email: "trong.vu@infrabac.vn",
-    source: "nfc",
-    sourceLabel: "Chạm thẻ NFC ViOne",
-    stage: "nurturing",
-    stageLabel: "Chăm sóc định kỳ",
-    leadScore: 78,
-    dealValue: 800000000,
-    needSummary: "Cần tìm tổng thầu xây dựng cụm nhà xưởng tiêu chuẩn LEED 15,000m² tại KCN Nam Tân Uyên",
-    industry: "Xây dựng công nghiệp & Hạ tầng",
-    lastContactAt: "5 ngày trước",
-    cadenceStatus: "due_today",
-    cadenceNote: "Nhắc lịch gửi thiệp mời tham gia Hội thảo Xúc tiến Thương mại ViOne",
-    tags: ["LEED Project", "C-Level Network", "Đối tác dự thầu"],
-    aiPitch: "Tổng thầu Hạ Tầng Miền Bắc chuẩn bị mở thầu gói EPC nhà xưởng. Gửi kèm hồ sơ năng lực liên danh của CLB Xúc tiến Thương mại ViOne.",
-  },
-];
-
 export function SmartCustomerCrmHub() {
   const t = useT();
-  const [customers, setCustomers] = useState<SmartCustomer[]>(INITIAL_SMART_CUSTOMERS);
+  const [customers, setCustomers] = useState<SmartCustomer[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedSource, setSelectedSource] = useState<string>("all");
   const [selectedStage, setSelectedStage] = useState<string>("all");
   const [selectedCadence, setSelectedCadence] = useState<string>("all");
@@ -180,6 +74,60 @@ export function SmartCustomerCrmHub() {
   const [newCustEmail, setNewCustEmail] = useState("");
   const [newCustNeed, setNewCustNeed] = useState("");
   const [newCustSource, setNewCustSource] = useState<"nfc" | "ocr_card" | "b2b_network" | "website_lead">("nfc");
+
+  const loadCustomers = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetchNestApi<any>("/connect-app/customers");
+      const list = Array.isArray(res) ? res : res?.customers || [];
+      const sourceLabelMap: Record<string, string> = {
+        nfc: "Chạm thẻ NFC ViOne",
+        ocr_card: "Quét danh thiếp AI OCR",
+        b2b_network: "Kết nối Doanh nhân 1-1",
+        website_lead: "Đăng ký từ Website ViOne",
+      };
+      const stageMap: Record<string, string> = {
+        prospect: "Tiềm năng mới",
+        consulting: "Đang tư vấn 1-1",
+        won: "Đã chốt hợp đồng",
+        nurturing: "Chăm sóc định kỳ",
+      };
+      const mapped: SmartCustomer[] = list.map((r: any) => {
+        const src = (r.source || "nfc") as SmartCustomer["source"];
+        const stg = (r.stage || "prospect") as SmartCustomer["stage"];
+        return {
+          id: String(r.id || `sc-${Date.now()}`),
+          name: r.name || r.fullName || "Khách hàng",
+          title: r.title || r.position || "Đại diện",
+          company: r.company || r.companyName || "Chưa cập nhật",
+          phone: r.phone || r.phoneNumber || "",
+          email: r.email || "",
+          source: src,
+          sourceLabel: r.sourceLabel || sourceLabelMap[src] || "Kết nối Doanh nghiệp",
+          stage: stg,
+          stageLabel: r.stageLabel || stageMap[stg] || "Tiềm năng mới",
+          leadScore: Number(r.leadScore ?? r.lead_score ?? 85),
+          dealValue: Number(r.dealValue ?? r.deal_value ?? 0),
+          needSummary: r.needSummary || r.notes || "Quan tâm đến giải pháp số và hệ sinh thái ViOne",
+          industry: r.industry || "Thương mại & Dịch vụ",
+          lastContactAt: r.lastContactAt || (r.updatedAt ? new Date(r.updatedAt).toLocaleDateString("vi-VN") : "Hôm nay"),
+          cadenceStatus: r.cadenceStatus || "ok",
+          cadenceNote: r.cadenceNote || "",
+          tags: Array.isArray(r.tags) ? r.tags : ["Khách hàng CRM"],
+          aiPitch: r.aiPitch || `Khách hàng ${r.name || ""} quan tâm đến hệ sinh thái ViOne.`,
+        };
+      });
+      setCustomers(mapped);
+    } catch {
+      setCustomers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCustomers();
+  }, []);
 
   // Filtered list
   const filteredCustomers = useMemo(() => {
@@ -244,48 +192,38 @@ export function SmartCustomerCrmHub() {
     toast.success("Đã xuất danh sách khách hàng thông minh ra file CSV");
   };
 
-  const handleAddCustomer = (e: React.FormEvent) => {
+  const handleAddCustomer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCustName.trim() || !newCustPhone.trim()) {
       toast.error("Vui lòng điền họ tên và số điện thoại khách hàng");
       return;
     }
-    const sourceLabelMap = {
-      nfc: "Chạm thẻ NFC ViOne",
-      ocr_card: "Quét danh thiếp AI OCR",
-      b2b_network: "Kết nối Doanh nhân 1-1",
-      website_lead: "Đăng ký từ Website ViOne",
-    };
-    const newCust: SmartCustomer = {
-      id: `sc-${Date.now()}`,
-      name: newCustName.trim(),
-      company: newCustCompany.trim() || "Doanh nghiệp ViOne",
-      title: newCustTitle.trim() || "Đại diện Doanh nghiệp",
-      phone: newCustPhone.trim(),
-      email: newCustEmail.trim() || "customer@connect.vn",
-      source: newCustSource,
-      sourceLabel: sourceLabelMap[newCustSource],
-      stage: "prospect",
-      stageLabel: "Tiềm năng mới",
-      leadScore: 85,
-      dealValue: 500000000,
-      needSummary: newCustNeed.trim() || "Quan tâm đến giải pháp số và hệ sinh thái ViOne",
-      industry: "Thương mại & Dịch vụ",
-      lastContactAt: "Vừa xong",
-      cadenceStatus: "ok",
-      cadenceNote: "Khách hàng vừa được thêm vào hệ thống",
-      tags: ["Khách hàng mới", "CRM Synced"],
-      aiPitch: `Khách hàng ${newCustName} từ ${newCustCompany || "doanh nghiệp đối tác"} vừa kết nối qua kênh ${sourceLabelMap[newCustSource]}. Hãy gọi điện giới thiệu và đặt lịch gặp gỡ 1-1.`,
-    };
-    setCustomers([newCust, ...customers]);
-    setNewCustomerModalOpen(false);
-    setNewCustName("");
-    setNewCustCompany("");
-    setNewCustTitle("");
-    setNewCustPhone("");
-    setNewCustEmail("");
-    setNewCustNeed("");
-    toast.success("Đã thêm khách hàng thành công vào hệ thống CRM");
+    try {
+      await fetchNestApi("/connect-app/customers", {
+        method: "POST",
+        body: JSON.stringify({
+          name: newCustName.trim(),
+          company: newCustCompany.trim() || "Doanh nghiệp ViOne",
+          title: newCustTitle.trim() || "Đại diện Doanh nghiệp",
+          phone: newCustPhone.trim(),
+          email: newCustEmail.trim() || "customer@connect.vn",
+          source: newCustSource,
+          needSummary: newCustNeed.trim() || "Quan tâm đến giải pháp số và hệ sinh thái ViOne",
+        }),
+      }).catch(() => null);
+
+      toast.success("Đã thêm khách hàng thành công vào hệ thống CRM");
+      setNewCustomerModalOpen(false);
+      setNewCustName("");
+      setNewCustCompany("");
+      setNewCustTitle("");
+      setNewCustPhone("");
+      setNewCustEmail("");
+      setNewCustNeed("");
+      await loadCustomers();
+    } catch {
+      toast.error("Không thể lưu khách hàng vào CSDL");
+    }
   };
 
   return (

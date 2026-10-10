@@ -1,6 +1,12 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Request, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ConnectAppService } from './connect-app.service';
+import {
+  CreateOpportunityDto,
+  UpdateOpportunityDto,
+  ExpressOpportunityInterestDto,
+  ExpressOpportunityInterestGlobalDto,
+} from './dto';
 
 @Controller('opportunities')
 @UseGuards(JwtAuthGuard)
@@ -23,7 +29,7 @@ export class OpportunityController {
   }
 
   @Post()
-  async create(@Request() req: any, @Body() body: any) {
+  async create(@Request() req: any, @Body() body: CreateOpportunityDto) {
     return this.connectAppService.createOpportunity(req.user.id, body);
   }
 
@@ -33,7 +39,7 @@ export class OpportunityController {
   }
 
   @Patch(':id')
-  async update(@Request() req: any, @Param('id') id: string, @Body() body: any) {
+  async update(@Request() req: any, @Param('id') id: string, @Body() body: UpdateOpportunityDto) {
     return this.connectAppService.updateOpportunity(req.user.id, id, body);
   }
 
@@ -51,7 +57,7 @@ export class OpportunityController {
   async expressInterestById(
     @Request() req: any,
     @Param('id') id: string,
-    @Body() body: { interestLevel?: 'high' | 'low'; message?: string },
+    @Body() body: ExpressOpportunityInterestDto,
   ) {
     return this.connectAppService.expressCommunityOpportunityInterest(
       req.user.id,
@@ -62,9 +68,10 @@ export class OpportunityController {
   }
 
   @Post('express-interest')
-  async expressInterest(@Request() req: any, @Body() body: { opportunityId: string; message?: string }) {
+  async expressInterest(@Request() req: any, @Body() body: ExpressOpportunityInterestGlobalDto) {
     return this.connectAppService.expressOpportunityInterest(req.user.id, body.opportunityId, body.message);
   }
+
 
   @Post(':id/view')
   async incrementView(@Param('id') id: string) {

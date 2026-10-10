@@ -37,6 +37,7 @@ import {
   Download,
   Eye,
   ArrowUpRight,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import { safeRandomUUID } from "@/lib/utils";
@@ -142,6 +143,15 @@ type StructuredAnswer = {
     rowCount: number;
     title?: string;
   };
+  generatedFiles?: Array<{
+    id: string;
+    filename: string;
+    downloadUrl: string;
+    fileSize: string;
+    fileType: "excel" | "word" | "pdf";
+    title?: string;
+    recordCount?: number;
+  }>;
   voiceText?: string;
 };
 
@@ -162,9 +172,28 @@ const GUARDRAILS = [
   "Kết quả AI cần được kiểm tra trước khi sử dụng chính thức.",
 ];
 
+export type AiChatSession = {
+  id: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messages: ChatMessage[];
+  capabilityId: CapabilityId;
+};
+
 function AiAssistantPage() {
-  const { status } = useAuth();
-  const { isAdmin, isModerator, isPlatformAdmin, loading: roleLoading } = useRole();
+  const { user, status } = useAuth();
+  const { isAdmin, isModerator, isQuanTri, currentUser, loading: roleLoading } = useRole();
+  const [sessions, setSessions] = useState<AiChatSession[]>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("vione_ai_chat_sessions");
+        if (saved) return JSON.parse(saved);
+      } catch {}
+    }
+    return [];
+  });
+  const [currentSessionId, setCurrentSessionId] = useState<string>(() => safeRandomUUID());
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -180,6 +209,46 @@ function AiAssistantPage() {
   const lastCapabilityRef = useRef<CapabilityId | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Lưu và đồng bộ phiên trò chuyện hiện tại vào localStorage
+  useEffect(() => {
+    if (messages.length === 0) return;
+    setSessions((prev) => {
+      const existingIdx = prev.findIndex((s) => s.id === currentSessionId);
+      const firstUserMsg = messages.find((m) => m.role === "user");
+      const title = firstUserMsg
+        ? firstUserMsg.content.slice(0, 36) + (firstUserMsg.content.length > 36 ? "..." : "")
+        : "Cuộc trò chuyện";
+
+      let updated: AiChatSession[];
+      if (existingIdx >= 0) {
+        updated = [...prev];
+        updated[existingIdx] = {
+          ...updated[existingIdx],
+          title: updated[existingIdx].title || title,
+          updatedAt: new Date().toISOString(),
+          messages,
+          capabilityId: activeCapability,
+        };
+      } else {
+        const newSession: AiChatSession = {
+          id: currentSessionId,
+          title,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          messages,
+          capabilityId: activeCapability,
+        };
+        updated = [newSession, ...prev];
+      }
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("vione_ai_chat_sessions", JSON.stringify(updated.slice(0, 30)));
+        } catch {}
+      }
+      return updated;
+    });
+  }, [messages, currentSessionId, activeCapability]);
 
   const rank = useMemo(() => userRoleRank({ isAdmin, isModerator }), [isAdmin, isModerator]);
   const enabledCapabilities = useMemo(
@@ -250,6 +319,8 @@ function AiAssistantPage() {
   }, []);
 
   const startNewTopic = useCallback(() => {
+    const newId = safeRandomUUID();
+    setCurrentSessionId(newId);
     const fresh = clearMemory();
     setMemory(fresh);
     setMessages([]);
@@ -258,8 +329,39 @@ function AiAssistantPage() {
     lastCapabilityRef.current = null;
     setInput("");
     inputRef.current?.focus();
-    toast.success("Đã bắt đầu chủ đề mới");
+    toast.success("Đã tạo cuộc trò chuyện mới");
   }, []);
+
+  const selectSession = useCallback((session: AiChatSession) => {
+    setCurrentSessionId(session.id);
+    setMessages(session.messages || []);
+    if (session.capabilityId) {
+      setActiveCapability(session.capabilityId);
+    }
+    toast.info(`Đã mở cuộc trò chuyện: "${session.title}"`);
+  }, []);
+
+  const deleteSession = useCallback((sessionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSessions((prev) => {
+      const next = prev.filter((s) => s.id !== sessionId);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("vione_ai_chat_sessions", JSON.stringify(next));
+        } catch {}
+      }
+      return next;
+    });
+    if (sessionId === currentSessionId) {
+      const newId = safeRandomUUID();
+      setCurrentSessionId(newId);
+      setMessages([]);
+      const fresh = clearMemory();
+      setMemory(fresh);
+      setUsingContext(false);
+    }
+    toast.success("Đã xóa cuộc trò chuyện khỏi lịch sử");
+  }, [currentSessionId]);
 
   // ---- Workflow orchestration (session-only, human-in-the-loop) ----
   const archiveRun = useCallback((run: WorkflowRun) => {
@@ -432,6 +534,26 @@ function AiAssistantPage() {
                 message: trimmed,
                 selectedContextSources: memory.selectedContextSources,
                 clientMemorySummary: memory.lastAssistantSummary?.slice(0, 500) ?? undefined,
+                currentUser: currentUser
+                  ? {
+                      id: currentUser.id,
+                      name: currentUser.name,
+                      email: currentUser.email,
+                      role: currentUser.role,
+                      roles: currentUser.roles,
+                      companyName: currentUser.companyName,
+                      executiveRole: currentUser.executiveRole,
+                      isQuanTri,
+                      isAdmin,
+                    }
+                  : {
+                      id: user?.id,
+                      name: user?.name,
+                      email: user?.email,
+                      role: user?.role,
+                      isQuanTri,
+                      isAdmin,
+                    },
               }),
             });
             if (nestRes && nestRes.ok && nestRes.answer) {
@@ -450,6 +572,7 @@ function AiAssistantPage() {
                 workflow: nestRes.workflow,
                 document: nestRes.document,
                 excelReport: nestRes.excelReport,
+                generatedFiles: nestRes.generatedFiles,
                 voiceText: nestRes.voiceText,
               });
               return;
@@ -649,19 +772,42 @@ function AiAssistantPage() {
 
   return (
     <AppShell>
-      <div className="mb-5 flex items-center gap-3">
-        <div
-          className="grid h-11 w-11 place-items-center rounded-2xl text-primary-foreground"
-          style={{ background: "var(--gradient-primary)" }}
-          aria-hidden="true"
-        >
-          <Sparkles className="h-5 w-5" />
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div
+            className="grid h-11 w-11 place-items-center rounded-2xl text-primary-foreground shrink-0"
+            style={{ background: "var(--gradient-primary)" }}
+            aria-hidden="true"
+          >
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-[22px] font-bold tracking-tight text-foreground">Trợ lý AI Copilot 5.0</h1>
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary border border-primary/20">
+                {isQuanTri
+                  ? "👑 Quản trị viên tối cao"
+                  : isAdmin
+                  ? "🛡️ Quản trị viên (Admin)"
+                  : `👤 ${currentUser?.executiveRole || currentUser?.role || "Hội viên"}`}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Đang làm việc: <strong className="text-foreground">{currentUser?.name || user?.name || "Tài khoản đăng nhập"}</strong>
+              {currentUser?.companyName ? ` (${currentUser.companyName})` : ""} · Trợ lý phản hồi đúng nghiệp vụ &amp; phân quyền
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-[24px] font-bold tracking-tight text-foreground">Trợ lý AI Copilot 5.0</h1>
-          <p className="text-sm text-muted-foreground">
-            Trung tâm điều phối thông minh cho Doanh nghiệp — Soạn thảo văn bản, tự động nhập liệu Excel, báo cáo realtime và hỗ trợ giọng nói 2 chiều.
-          </p>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={startNewTopic}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2.5 text-xs font-bold text-primary-foreground shadow hover:brightness-105 transition cursor-pointer active:scale-95"
+          >
+            <Plus className="h-4 w-4" />
+            <span>+ Cuộc chat mới</span>
+          </button>
         </div>
       </div>
 
@@ -746,6 +892,35 @@ function AiAssistantPage() {
                 )}
               </div>
             )}
+            {/* Quick document generation templates */}
+            <div className="mb-2.5 flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-semibold text-muted-foreground mr-1">Tạo file chuẩn:</span>
+              <button
+                type="button"
+                onClick={() => send("Tạo báo cáo Excel tổng hợp dữ liệu doanh nghiệp và khách hàng mới nhất")}
+                className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 transition cursor-pointer"
+              >
+                <FileSpreadsheet className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+                <span>Báo cáo Excel (.xlsx)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => send("Soạn thảo văn bản tờ trình kế hoạch hoạt động định dạng Word .docx")}
+                className="inline-flex items-center gap-1 rounded-lg border border-blue-500/30 bg-blue-50/70 dark:bg-blue-950/20 px-2.5 py-1 text-[11px] font-semibold text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition cursor-pointer"
+              >
+                <FileText className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                <span>Văn bản Word (.docx)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => send("Xuất tài liệu quy chế làm việc nội bộ định dạng PDF chuẩn format")}
+                className="inline-flex items-center gap-1 rounded-lg border border-rose-500/30 bg-rose-50/70 dark:bg-rose-950/20 px-2.5 py-1 text-[11px] font-semibold text-rose-700 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/40 transition cursor-pointer"
+              >
+                <FileText className="h-3 w-3 text-rose-600 dark:text-rose-400" />
+                <span>Tài liệu PDF (.pdf)</span>
+              </button>
+            </div>
+
             <div className="mb-2 flex items-center justify-between text-[11px] text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <Layers className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
@@ -831,6 +1006,63 @@ function AiAssistantPage() {
           className="space-y-4 lg:sticky lg:top-4 lg:self-start"
           aria-label="Bảng năng lực và dẫn chứng"
         >
+          {/* Lịch sử cuộc trò chuyện & Cuộc chat mới */}
+          <div className="rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="flex items-center gap-1.5 text-sm font-bold text-foreground">
+                <History className="h-4 w-4 text-primary" aria-hidden="true" />
+                Lịch sử cuộc chat ({sessions.length})
+              </h2>
+              <button
+                type="button"
+                onClick={startNewTopic}
+                className="inline-flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary hover:bg-primary/20 transition cursor-pointer"
+                title="Bắt đầu cuộc chat mới"
+              >
+                <Plus className="h-3.5 w-3.5" /> Chat mới
+              </button>
+            </div>
+
+            {sessions.length === 0 ? (
+              <p className="py-4 text-center text-xs text-muted-foreground">
+                Chưa có lịch sử trò chuyện. Bắt đầu chat để lưu lại tự động.
+              </p>
+            ) : (
+              <div className="space-y-1.5 max-h-[260px] overflow-y-auto pr-1">
+                {sessions.map((s) => {
+                  const isCurrent = s.id === currentSessionId;
+                  return (
+                    <div
+                      key={s.id}
+                      onClick={() => selectSession(s)}
+                      className={`group flex items-center justify-between rounded-xl px-3 py-2 text-xs transition cursor-pointer ${
+                        isCurrent
+                          ? "bg-primary/15 text-primary font-bold border border-primary/30"
+                          : "bg-muted/40 text-foreground hover:bg-muted font-medium"
+                      }`}
+                    >
+                      <div className="min-w-0 flex-1 truncate pr-2">
+                        <div className="truncate">{s.title || "Cuộc trò chuyện"}</div>
+                        <div className="text-[10px] text-muted-foreground font-normal">
+                          {new Date(s.updatedAt || s.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })} •{" "}
+                          {new Date(s.updatedAt || s.createdAt).toLocaleDateString("vi-VN")}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => deleteSession(s.id, e)}
+                        className="rounded-lg p-1 text-muted-foreground/60 opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive transition cursor-pointer"
+                        title="Xóa cuộc chat"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Workflow context — active run */}
           {activeRun && (
             <WorkflowRunner
@@ -1305,6 +1537,72 @@ function MessageBubble({
                     <span>Tải Báo Cáo Excel</span>
                   </a>
                 </div>
+              </div>
+            )}
+
+            {/* Multi-Format Generated Files Cards (Excel, Word .docx, PDF) */}
+            {s?.generatedFiles && s.generatedFiles.length > 0 && (
+              <div className="mt-3 space-y-2.5">
+                {s.generatedFiles.map((f, idx) => {
+                  const isExcel = f.fileType === "excel" || f.filename.endsWith(".xlsx");
+                  const isWord = f.fileType === "word" || f.filename.endsWith(".docx");
+
+                  return (
+                    <div
+                      key={f.id || idx}
+                      className={`overflow-hidden rounded-2xl border p-4 shadow-sm transition-all ${
+                        isExcel
+                          ? "border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-amber-500/10"
+                          : isWord
+                          ? "border-blue-500/30 bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-cyan-500/10"
+                          : "border-rose-500/30 bg-gradient-to-r from-rose-500/10 via-red-500/5 to-amber-500/10"
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${
+                              isExcel
+                                ? "bg-emerald-600/20 text-emerald-600 dark:text-emerald-400"
+                                : isWord
+                                ? "bg-blue-600/20 text-blue-600 dark:text-blue-400"
+                                : "bg-rose-600/20 text-rose-600 dark:text-rose-400"
+                            }`}
+                          >
+                            {isExcel ? (
+                              <FileSpreadsheet className="h-5 w-5" />
+                            ) : (
+                              <FileText className="h-5 w-5" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-foreground">
+                              {f.title || f.filename}
+                            </h4>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              Định dạng chuẩn {isExcel ? "Excel (.xlsx)" : isWord ? "Word (.docx)" : "PDF (.pdf)"} • Kích thước: {f.fileSize}
+                              {f.recordCount ? ` • ${f.recordCount} bản ghi thực tế` : ""}
+                            </p>
+                          </div>
+                        </div>
+                        <a
+                          href={f.downloadUrl}
+                          download={f.filename}
+                          className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold text-white shadow hover:brightness-110 transition cursor-pointer ${
+                            isExcel
+                              ? "bg-gradient-to-r from-emerald-600 to-teal-600"
+                              : isWord
+                              ? "bg-gradient-to-r from-blue-600 to-indigo-600"
+                              : "bg-gradient-to-r from-rose-600 to-red-600"
+                          }`}
+                        >
+                          <Download className="h-4 w-4" />
+                          <span>Tải Tệp {isExcel ? "Excel" : isWord ? "Word" : "PDF"}</span>
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
 

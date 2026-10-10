@@ -14,7 +14,6 @@ import {
   Activity,
   Boxes,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useT } from "@/lib/i18n";
 import { useServerData } from "@/hooks/use-server-data";

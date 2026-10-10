@@ -21,6 +21,10 @@
       + **Bản PWA APK Siêu Tốc (~3.18 MB)**: Đóng gói qua Capacitor Android trong `apps/vione_app_fe` (`npx cap sync android` -> `gradlew.bat assembleRelease`), xuất bản tại `release_apk/ViOne-PWA-latest.apk` và `apps/vione_app_fe/public/ViOne-PWA-latest.apk`.
       + **Bản Native Standalone APK (~81.59 MB)**: Đóng gói qua React Native Standalone Gradle trong `apps/mobile_vione` (`powershell -File ./build-apk.ps1 -Release`), xuất bản tại `release_apk/ViOne-Connect-latest.apk` và `apps/vione_app_fe/public/ViOne-Connect-latest.apk`.
     * **Expo SDK 52 Dependency Discipline**: Khi cài đặt hoặc cập nhật thư viện cho `apps/mobile_vione`, BẮT BUỘC dùng `npx expo install <package>` hoặc kiểm tra bằng `npx expo install --check`. Tuyệt đối không cài phiên bản Canary/Future (như SDK 57) để tránh gây lỗi thiếu plugin Gradle `expo-module-gradle-plugin` và lỗi `SoftwareComponent container release`.
+    * **Mobile Media URL Resolution & Full Identity Sync Discipline (`resolveMediaUrl` & `refreshProfile`)**:
+      + **Media URL Resolution Bắt Buộc**: Thẻ `<Image source={{ uri }}>` của React Native không thể tải đường dẫn tương đối (`/api/upload/...`) và bị chặn bởi HTTP cleartext policy của Android. Toàn bộ hình ảnh (avatar, ảnh bìa, logo, ảnh bài viết, ảnh khoảnh khắc) trên Mobile Native BẮT BUỘC phải đi qua `resolveMediaUrl(url)` trong `apps/mobile_vione/src/utils/media.ts` để chuyển thành HTTPS tuyệt đối `https://14.225.217.232:5445/...`.
+      + **Đồng Bộ Hồ Sơ Thời Gian Thực (`refreshProfile`)**: `AuthContext.tsx` cung cấp hàm `refreshProfile()` tự động truy vấn `/connect-app/me/identity`, cập nhật state người dùng và lưu vào `AsyncStorage`. Chạy tự động khi khởi động app, khi người dùng chỉnh sửa hồ sơ (`EditProfileModal`), và khi kéo làm mới (Pull-to-Refresh) trên `ProfileScreen.tsx`.
+      + **Full Parity 100% Tab "Tôi" (`ProfileScreen.tsx`)**: Đảm bảo khớp trọn vẹn Web PWA gồm: Card Danh tính số với avatar chuẩn hóa, Lĩnh vực kinh doanh & sản phẩm, Khách hàng & Dấu ấn, Bộ chuyển đổi 8 ngôn ngữ (`VI`, `EN`, `KM`, `MY`, `LO`, `JA`, `KO`, `ZH`), Bật/tắt Quả cầu AI ViOne nổi (`Switch`), Thông báo hệ thống & Cuộc gọi (badge + test alert), và Theme Switcher (Dark/Light).
   - `apps/mobile_ceo1983/`: CEO 1983 Association Native Wrapper (Android APK & iOS IPA/TestFlight).
 - **Environment**: Node.js >= 22 (Node 22 is required for native globalThis.WebSocket support on both local and server runtime environments).
 
@@ -88,6 +92,27 @@
 - **ViOne Auth Return Routing Rule**: Toàn bộ liên kết quay lại/đã có tài khoản tại trang Đăng ký (`ConnectAppSignUp.tsx`), chuyển hướng sau đăng ký thành công (`register.tsx`), và trang Quên mật khẩu (`ConnectAppForgotPassword.tsx`) BẮT BUỘC điều hướng quay về trang Đăng nhập ViOne (`/vione/login`), TUYỆT ĐỐI KHÔNG quay về `/auth` (được bảo lưu riêng cho quản trị CRM).
 - **Network Screen Header Avatar & Spacing Rule**: Header của màn hình Network (`NetworkHome.tsx`) BẮT BUỘC hiển thị Avatar tròn mạ vàng của người dùng đăng nhập hiện tại bên cạnh nút Quét card (`UserPlus`), bấm vào mở `PersonalProfileBottomSheet`. Khối banner "ViOne AI Copilot Matcher" bắt buộc có khoảng đệm `mt-5 mb-5` tạo khoảng thở tinh tế với ô tìm kiếm. Thẻ "Tạo tin 24h" trong Stories strip (`NetworkStoriesStrip.tsx`) bắt buộc lấy ảnh đại diện thật và tên thật của người dùng, triệt tiêu hoàn toàn vòng tròn cam chữ "T".
 - **Strict Ban on Yellow-Orange Gradient Buttons & Absolute Dual-Theme Parity**: Nghiêm cấm tuyệt đối sử dụng các dải màu gradient vàng cam chói mắt (`#E8C98E`, `#D4AF37`, `#B38A4B` hoặc `#F6E1C3`->`#8C653B`) trên toàn bộ các nút hành động (Bật vị trí, Chấm công ngay, QR của tôi, Chạm NFC, Đăng bài, Submit form). BẮT BUỘC sử dụng màu Vàng Đồng Champagne Gold thượng lưu `#DFB76C` / `#D4AF37` đơn sắc cao cấp. Mặc định toàn hệ thống là Theme Sáng (Light Mode), triệt tiêu 100% các khối màu đen hardcoded khi ở theme sáng, không hover đổi màu tab đang chọn ở thanh điều hướng đáy.
+
+- **Dashboard Records Sorting & Ellipsis Tooltip Rule**: Mọi danh sách bản ghi và dashboard BẮT BUỘC luôn sắp xếp bản ghi mới nhất lên đầu danh sách (`createdAt DESC` / `created_at DESC`). BẮT BUỘC sử dụng component `DashboardCellTooltip` (`src/components/dashboard/DashboardCellTooltip.tsx`) cho mọi ô hiển thị dữ liệu dài: tự động cắt bằng `...` (ellipsis) và hiển thị tooltip nổi phong cách Obsidian Gold khi hover chuột.
+
+- **Strict Role Hierarchy & Data Ownership Rule (Chỉ Quản Trị & Admin To Nhất - Bỏ Platform Admin)**:
+  * Hệ thống chỉ có 2 role to nhất: **Role Quản trị (`quan_tri`)** (to nhất) và **Role Admin (`admin`)** (to nhì). TUYỆT ĐỐI BỎ HOÀN TOÀN ROLE "PLATFORM ADMIN".
+  * **Data Ownership**: Không cho bất kỳ tài khoản nào chỉnh sửa bản ghi do tài khoản khác tạo ra, TRỪ KHI tài khoản đó có role Quản trị hoặc Admin (`canEditRecord(user, recordCreatorId)`).
+  * **Phân quyền Realtime UI**: Khi quyền của tài khoản bị thay đổi (sự kiện `role-changed`, `auth-changed`, `storage`), giao diện BẮT BUỘC tự động ẩn ngay lập tức các nút bấm, tabs, tính năng mà tài khoản đó không đủ thẩm quyền mà không cần người dùng reload lại trang.
+
+- **Task Segregation Rule (Tách Biệt Tuyệt Đối Giao Việc & Nhận Việc)**:
+  * Chức năng **Giao việc**: CHỈ hiển thị ở giao diện đối với Role Quản trị, Role Admin và tài khoản là người thiết lập công ty tại cộng đồng (`isAssigner`). Tuyệt đối ẩn tab Giao việc và nút Giao việc mới đối với các tài khoản role nhỏ (nhân viên, thành viên thường).
+  * Chức năng **Nhận việc**: Tài khoản role nhỏ chỉ nhìn thấy tab "⚡ Nhận việc (Việc của tôi)" để tiếp nhận công việc, cập nhật tiến độ % và báo cáo hoàn thành.
+  * Chỉnh sửa công việc: Chỉ tài khoản tạo task hoặc Quản trị / Admin mới được mở modal chỉnh sửa công việc.
+
+- **Enterprise AI Multi-format Document Generation & Role Context Rule**:
+  * Trợ lý AI Copilot BẮT BUỘC lưu trữ lịch sử cuộc trò chuyện (`sessions`) và cung cấp nút "+ Cuộc chat mới".
+  * AI Copilot BẮT BUỘC nhận diện chính xác tài khoản đang đăng nhập (`currentUser`: ID, họ tên, email, vai trò, công ty, phòng ban, role Quản trị / Admin) để xưng hô chuẩn mực và tư vấn đúng thẩm quyền nghiệp vụ theo role (không tư vấn vượt quyền).
+  * AI Copilot có khả năng tự động tạo đa dạng định dạng tệp:
+    - File Word (`.docx`) chuẩn Microsoft Office Open XML (hợp đồng, biên bản, tờ trình).
+    - File PDF (`.pdf`) chuẩn PDF-1.4 xem và in ấn văn bản hành chính.
+    - File Excel (`.xlsx`) đa dạng: phân công giao việc, cơ hội B2B, danh mục sản phẩm, sổ trình ký, giao dịch tài chính, lưu lượng web (chuẩn bảng màu Navy & Gold sang trọng, format tiền tệ và auto-width).
+  * Giao diện chat BẮT BUỘC hiển thị Download Cards cho phép người dùng bấm tải trực tiếp các tệp tin này về máy qua API RESTful.
 
 - **Facebook-Style Smart Comment System & Multi-Source Today Tab Standard (PWA & Native App Parity)**:
   * **Hệ Thống Bình Luận Thông Minh Chuẩn Facebook**: Cả Web PWA (`MomentCommentInput.tsx`, `MomentCommentSheet.tsx`) và Native App (`MomentCommentModal.tsx`) BẮT BUỘC đạt chuẩn tương tác Facebook 100%: Avatar thực tế của người dùng; Khung banner "Đang trả lời @[Tên tác giả]..." kèm nút X hủy; Input pill tích hợp nút Smile (😊) mở khay 10 icon biểu cảm (👍, ❤️, 👏, 🎉, 💡, 🔥, 😂, 🙏, 🚀, 🤝), nút Camera (📷) đính kèm ảnh có xem trước thumbnail và nút gỡ ảnh, phím tắt @ Tag tên; Nút Gửi màu vàng Champagne Gold `#DFB76C`; Mỗi comment hiển thị dòng action: Thời gian · Thích (toggle tim/count) · Phản hồi (focus trả lời) và phân cấp thụt lề câu trả lời dạng thread cong Facebook.
@@ -1311,4 +1336,51 @@ The project is deployed to a remote server (`14.225.217.232`) with 2 primary pro
        * Bắt buộc override `BridgeWebViewClient.onReceivedSslError -> handler.proceed()` trong `MainActivity.java` của Capacitor Android để bỏ qua lỗi chứng chỉ SSL untrusted trên IP staging server.
        * Bắt buộc cấu hình `network_security_config.xml` cho phép base-config cleartext và certificate trust, kèm `android:usesCleartextTraffic="true"` trong `AndroidManifest.xml`.
 
+217. **Quy Chuẩn Siêu Trợ Lý Điều Khiển Bằng Giọng Nói C-Level (Executive Voice Command Suite) & Đồng Bộ Toàn Diện Web PWA & Native App**:
+     - **1) Holographic Voice Wave Visualizer & Breathing Aura Champagne Gold**:
+       * Cả Web PWA (`ViOneVoiceAssistant.tsx`) và Mobile Native (`ViOneVoiceAssistantModal.tsx`) BẮT BUỘC trang bị dải sóng Holographic 16-Bar Voice Wave Spectrum chuyển động động theo nhịp tần số 44.1kHz khi AI đang nghe hoặc phản hồi, kết hợp vòng hào quang thở Breathing Aura Champagne Gold `#DFB76C`.
+     - **2) Executive Voice Command Palette (5 Phân Hệ Điều Khiển)**:
+       * Hệ thống lệnh giọng nói phân loại thành 5 tabs: 👑 Điều hành CEO, 🩺 Lịch & Sức khỏe, 🧭 Điều khiển App, 🤝 Thương mại B2B, và Tất cả.
+       * Bổ sung Interactive Quick Speech Chips cho phép lãnh đạo chạm nhanh vào các gợi ý lệnh thường dùng để thực thi tức thời mà không cần gõ phím.
+     - **3) Voice Navigation Dispatcher Tự Động Điều Hướng Phân Hệ Ứng Dụng**:
+       * Tự động phân tích câu lệnh giọng nói và kích hoạt các hành động chuyên sâu: Mở mã QR cá nhân (`openMyQr`), kích hoạt máy quét QR (`openScanQr`), mở giao việc nhân sự (`openAssignTask`), mở giám sát tiến độ & giờ giấc (`openStaffActivity`), mở chấm công (`openAttendance`), điều hướng các Tab chính (`Home`, `Network`, `Community`, `Me`).
+     - **4) Parity Tuyệt Đối Giữa Web PWA & Native Mobile App**:
+       * Toàn bộ các callback điều khiển của Voice Assistant phải được tích hợp đồng bộ qua navigationRef toàn cục và event dispatcher trên cả React Native Standalone APK (`mobile_vione`) và Capacitor PWA APK (`vione_app_fe`).
+
+218. **Quy Chuẩn ViOne Đa Nền Tảng: Phân Quyền Doanh Nghiệp, Trợ Lý AI Tối Giản 100% Voice Control, Luồng Tiến Độ & Import Excel, Đề Xuất Danh Bạ Zalo & Trọn Bộ Docs**:
+     - **1) Điều Kiện Hiển Thị Chấm Công & Ký Duyệt (Company Staff Status Rule)**:
+       * Chỉ tài khoản có cộng đồng doanh nghiệp và có nhân sự trực thuộc (`GET /connect-app/community/company-staff-status` -> `hasCompanyWithStaff === true`) mới hiển thị các thẻ "Chấm công" và "Ký duyệt chi".
+       * Nếu tài khoản chưa có công ty có nhân sự (`hasCompanyWithStaff === false`), tự động ẩn 2 tính năng trên và chỉ hiển thị duy nhất 1 thẻ lớn "Công việc & Tiến độ" (Workflow).
+     - **2) Quy Chuẩn Tin Nhắn Mới Nhất Lên Đầu & Avatar Điều Hướng Profile**:
+       * Danh sách hội thoại nhắn tin (Inbox/Network) BẮT BUỘC sắp xếp theo `lastMessageAt` giảm dần (tin nhắn mới nhất luôn đưa lên vị trí đầu tiên).
+       * Chạm vào Avatar người đang nhắn tin (ở danh sách tin nhắn hoặc thanh tiêu đề chi tiết đoạn chat) BẮT BUỘC mở Sheet danh thiếp cá nhân (`PersonalProfileBottomSheet` trên Web PWA, `MemberCardBottomSheet` trên Mobile Native).
+     - **3) Trợ Lý AI Tối Giản Executive & 100% Voice Command Automation**:
+       * Giao diện AI phải tối giản, lược bỏ các nút danh mục rườm rà.
+       * Lưu lịch sử hội thoại đa phiên (`localStorage` trên Web PWA, `AsyncStorage` key `@vione_ai_sessions_v2` trên Mobile Native), nút tạo chat mới (+), nút xóa lịch sử.
+       * Hỗ trợ nhận diện giọng nói tiếng Việt chuẩn xác 100%, tự động nhận lệnh và kích hoạt trực tiếp các thao tác trong app: Chấm công, Duyệt chi, Giao việc, Tiến độ, Quét mã QR, Mã cá nhân, Lịch hôm nay.
+     - **4) Chuẩn Hóa Luồng Giao Việc, Báo Cáo Tiến Độ & Import Excel**:
+       * Thêm thanh tiến độ % (0-100%), ghi chú tiến độ, nút "Nhận việc" cho nhân sự khi việc ở trạng thái `assigned` kèm thông báo realtime.
+       * Thêm modal "Cập nhật tiến độ" cho phép chọn % và gửi ghi chú báo cáo lên quản lý/sếp.
+       * Tích hợp modal "Nhập từ Excel" cho phép nạp danh sách công việc hàng loạt theo cơ cấu phòng ban chuẩn doanh nghiệp (Kinh doanh, Kỹ thuật, Marketing, Kế toán, Nhân sự).
+       * CẤM TUYỆT ĐỐI dùng icon/logo cứng từ bên ngoài. Sử dụng đúng 3 tone màu chuẩn ViOne: Champagne Gold `#DFB76C`, Obsidian Navy `#0B0F17`/`#121A26`, White/Slate.
+     - **5) Mặc Định Trang Chủ "Tất Cả" & Đề Xuất Danh Bạ Số Điện Thoại Kiểu Zalo**:
+       * Tab danh mục trên trang chủ mặc định luôn mở và hiển thị đầu tiên là "Tất cả" (All).
+       * Tích hợp banner và modal `ContactsDiscoveryModal` đề xuất kết bạn với những người trong danh bạ điện thoại đang sử dụng ViOne.
+     - **6) Quy Chuẩn Đóng Gói Trọn Bộ Tài Liệu Kỹ Thuật Độc Lập Cho Cả 3 Phân Hệ**:
+       * Thư mục `apps/vione_app_be/docs_rules/`: `SKILL.md`, `TECHSPEC.md`, `CURSORULE.md`, `MEMORY.md`, `MO_TA_LUONG_XU_LY_CHUC_NANG_CODE.md`.
+       * Thư mục `apps/vione_app_fe/docs_rules/`: `SKILL.md`, `TECHSPEC.md`, `CURSORULE.md`, `MEMORY.md`, `MO_TA_LUONG_XU_LY_CHUC_NANG_CODE.md`, `QUY_CHUAN_UI_UX.md`.
+       * Thư mục `apps/mobile_vione/docs_rules/`: `SKILL.md`, `TECHSPEC.md`, `CURSORULE.md`, `MEMORY.md`, `MO_TA_LUONG_XU_LY_CHUC_NANG_CODE.md`, `QUY_CHUAN_UI_UX.md`.
+
+219. **Quy Chuẩn Nghiêm Cấm Mock Data / Hardcode Dữ Liệu Tĩnh Trên Frontend & Bắt Buộc Chuẩn Hóa CSDL Thực Tế PostgreSQL Kèm EmptyState Sạch Sẽ (STRICT DATABASE-DRIVEN ARCHITECTURE & CLEAN EMPTY STATE DISCIPLINE)**:
+     - **1) Tuyệt Đối Nghiêm Cấm Mock Data / Fallback Giả Lập Trên Frontend**:
+       * NGHIÊM CẤM việc tạo mới hoặc duy trì các biến/mảng dữ liệu giả lập (`INITIAL_*`, `MOCK_*`, `fallbackList`, `dummyFallback`, v.v.) trong các components/routes Frontend (`apps/vione_app_fe` và `apps/mobile_vione`).
+       * NGHIÊM CẤM sử dụng các hàm giả lập chỉ số như `Math.max(dbValue, 33)`, `Math.max(..., 475000000)` để phóng đại hoặc làm đẹp KPI khi CSDL chưa có dữ liệu. Mọi chỉ số KPI, dashboard phải phản ánh 100% dữ liệu thực từ PostgreSQL. CSDL có gì hiển thị nấy, nếu chưa có thì hiển thị 0 hoặc trạng thái rỗng.
+     - **2) Luồng Kết Nối RESTful API Backend Bắt Buộc**:
+       * Toàn bộ dữ liệu hiển thị (Công việc / Workflow Tasks, Khách hàng Smart CRM, Trình ký phê duyệt chi, Chấm công / Đơn nghỉ phép, Cơ hội kinh doanh, Sự kiện, Đặt phòng họp, v.v.) BẮT BUỘC phải được nạp trực tiếp thông qua các RESTful API endpoints của NestJS backend (`/operations/workflow/tasks`, `/connect-app/customers`, `/operations/finance/approvals`, `/operations/attendance/leaves`, `/admin/traffic-analytics`, `/meetings`, `/events`).
+       * Các thao tác thêm, sửa, xóa (POST, PUT, PATCH, DELETE) phải ghi nhận trực tiếp vào CSDL PostgreSQL qua API, không được chỉ thao tác cục bộ trên state mảng bộ nhớ.
+     - **3) Trạng Thái Trống Chuẩn Mực (Clean EmptyState UI/UX)**:
+       * Khi CSDL chưa có dữ liệu hoặc danh sách trả về rỗng (`length === 0`), BẮT BUỘC hiển thị component `EmptyState` sạch sẽ, tinh tế chuẩn phong cách ViOne Luxury (icon minh họa Lucide, tiêu đề thông báo rõ ràng, phụ đề hướng dẫn nhẹ nhàng, và nút kêu gọi hành động [Tạo mới] nếu người dùng có quyền).
+       * Khối `catch` khi gọi API thất bại phải gán `setState([])` và hiển thị thông báo lỗi thân thiện thay vì fallback về danh sách giả.
+     - **4) Bắt Buộc Kiểm Tra Type Safety 0 Lỗi Trước Khi Bàn Giao**:
+       * Bất kỳ thay đổi loại bỏ mock data nào đều phải được kiểm tra qua `npx tsc --noEmit` trên cả Frontend và Backend, cam kết 0 errors (Exit code 0).
 

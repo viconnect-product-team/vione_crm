@@ -44,12 +44,14 @@ import { monthLabel } from "./CommunityEvents";
 import { daysLeftLabel, opportunityCategoryLabel } from "./CommunityOpportunities";
 import { CompanyTaskManagement } from "./CompanyTaskManagement";
 import { CompanySupervisionView } from "./CompanySupervisionView";
+import { useRole } from "@/hooks/use-role";
 
 type CommunityTab = "tasks" | "supervision" | "all" | "opportunities" | "news" | "events" | "members";
 
 export function CommunityDetail({ communityId }: { communityId: string }) {
   const t = useT();
   const fmt = useFmt();
+  const { canAssignTask } = useRole();
   const {
     detail,
     unavailable,
@@ -304,42 +306,50 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
             </section>
 
             {/* Modern Streamlined Navigation Tabs: Phân định rạch ròi 2 kiểu cộng đồng */}
-            <div className="mt-6 flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-[var(--bc-mobile-border)] [scrollbar-width:none]">
-              {(isCompany
-                ? [
-                    { id: "tasks", label: "⚡ Giao việc & Nhận việc" },
-                    { id: "supervision", label: "👁️ Giám sát CRM & Nhân sự" },
-                    { id: "news", label: "Bài viết nội bộ" },
-                    { id: "events", label: `Lịch họp & Sự kiện (${detail.upcomingEvents.length || 0})` },
-                    { id: "members", label: "Hội viên" },
-                  ]
-                : [
-                    {
-                      id: "opportunities",
-                      label: `⭐ Cơ hội B2B (${detail.openOpportunityCount || activity.preview?.openOpportunities?.length || 0})`,
-                    },
-                    { id: "news", label: "Bài viết & Tin tức" },
-                    { id: "events", label: `Sự kiện B2B (${detail.upcomingEvents.length || 0})` },
-                    { id: "members", label: "Danh bạ đối tác" },
-                  ]
-              ).map((tab) => {
-                const isSelected = activeTab === tab.id || (activeTab === "all" && tab.id === (isCompany ? "tasks" : "opportunities"));
-                return (
-                  <button
-                    key={tab.id}
-                    type="button"
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`whitespace-nowrap px-3.5 py-2 text-[12.5px] font-bold rounded-t-xl transition-all border-b-2 cursor-pointer ${
-                      isSelected
-                        ? "border-[#DFB76C] text-[#DFB76C] bg-[#DFB76C]/10"
-                        : "border-transparent text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)]"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-            </div>
+            {(() => {
+              const userCanAssign = canAssignTask(detail.community.createdById, detail.community.viewerRole === "admin");
+              return (
+                <div className="mt-6 flex items-center gap-1.5 overflow-x-auto pb-1 border-b border-[var(--bc-mobile-border)] [scrollbar-width:none]">
+                  {(isCompany
+                    ? [
+                        {
+                          id: "tasks",
+                          label: userCanAssign ? "📋 Giao việc & Điều hành" : "⚡ Nhận việc (Việc của tôi)",
+                        },
+                        { id: "supervision", label: "👁️ Giám sát CRM & Nhân sự" },
+                        { id: "news", label: "Bài viết nội bộ" },
+                        { id: "events", label: `Lịch họp & Sự kiện (${detail.upcomingEvents.length || 0})` },
+                        { id: "members", label: "Hội viên" },
+                      ]
+                    : [
+                        {
+                          id: "opportunities",
+                          label: `⭐ Cơ hội B2B (${detail.openOpportunityCount || activity.preview?.openOpportunities?.length || 0})`,
+                        },
+                        { id: "news", label: "Bài viết & Tin tức" },
+                        { id: "events", label: `Sự kiện B2B (${detail.upcomingEvents.length || 0})` },
+                        { id: "members", label: "Danh bạ đối tác" },
+                      ]
+                  ).map((tab) => {
+                    const isSelected = activeTab === tab.id || (activeTab === "all" && tab.id === (isCompany ? "tasks" : "opportunities"));
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => setActiveTab(tab.id as any)}
+                        className={`whitespace-nowrap px-3.5 py-2 text-[12.5px] font-bold rounded-t-xl transition-all border-b-2 cursor-pointer ${
+                          isSelected
+                            ? "border-[#DFB76C] text-[#DFB76C] bg-[#DFB76C]/10"
+                            : "border-transparent text-[var(--bc-mobile-muted)] hover:text-[var(--bc-mobile-text)]"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
             {/* Tab Contents: Tinh gọn & Đầy đủ thông tin */}
             {activeTab === "tasks" || (isCompany && activeTab === "all") ? (
@@ -347,6 +357,7 @@ export function CommunityDetail({ communityId }: { communityId: string }) {
                 <CompanyTaskManagement
                   communityId={communityId}
                   isDirector={detail.community.viewerRole === "admin"}
+                  communityCreatorId={detail.community.createdById}
                 />
               </div>
             ) : activeTab === "supervision" ? (

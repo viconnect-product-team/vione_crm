@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiRequest, setAuthToken, STORAGE_KEYS } from "../api/client";
+import { resolveMediaUrl } from "../utils/media";
 import { UserProfile } from "../types";
 
 interface AuthContextType {
@@ -12,6 +13,7 @@ interface AuthContextType {
   register: (data: { email: string; password: string; name: string; company?: string; phone?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   updateUser: (data: Partial<UserProfile>) => void;
+  refreshProfile: () => Promise<UserProfile | null>;
   quickDemoLogin: (role?: "admin" | "executive") => Promise<void>;
 }
 
@@ -40,6 +42,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setTokenState] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const refreshProfile = useCallback(async (): Promise<UserProfile | null> => {
+    try {
+      const res = await apiRequest<{ identity?: any; profile?: any; user?: any }>("/connect-app/me/identity");
+      const id = res.data?.identity || res.data?.profile;
+      if (id) {
+        const rawAvatar = id.avatarUrl || id.avatar_url || id.avatar || null;
+        const rawCover = id.coverUrl || id.cover_url || id.cover || null;
+        const updated: Partial<UserProfile> = {
+          displayName: id.displayName || id.display_name || id.name,
+          name: id.displayName || id.display_name || id.name,
+          title: id.jobTitle || id.headline || id.job_title || id.title,
+          company: id.companyName || id.company_name || id.company,
+          bio: id.bio,
+          avatarUrl: resolveMediaUrl(rawAvatar) || rawAvatar,
+          coverUrl: resolveMediaUrl(rawCover) || rawCover,
+          phone: id.primaryPhone || id.primary_phone || id.phone,
+          email: id.primaryEmail || id.primary_email || id.email,
+          website: id.website,
+          address: id.address,
+          city: id.city,
+        };
+
+        setUser((prev) => {
+          if (!prev) return null;
+          const next = { ...prev, ...updated };
+          AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(next)).catch(() => {});
+          return next;
+        });
+        return { ...(user || ({} as UserProfile)), ...updated } as UserProfile;
+      }
+    } catch (e) {
+      console.warn("Lỗi đồng bộ hồ sơ máy chủ:", e);
+    }
+    return null;
+  }, [user]);
+
   // Khôi phục phiên làm việc khi mở ứng dụng
   useEffect(() => {
     const restoreSession = async () => {
@@ -49,9 +87,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         if (savedToken && savedUserStr) {
           const parsedUser = JSON.parse(savedUserStr);
+          if (parsedUser.avatarUrl) {
+            parsedUser.avatarUrl = resolveMediaUrl(parsedUser.avatarUrl) || parsedUser.avatarUrl;
+          }
+          if (parsedUser.coverUrl) {
+            parsedUser.coverUrl = resolveMediaUrl(parsedUser.coverUrl) || parsedUser.coverUrl;
+          }
           setAuthToken(savedToken);
           setTokenState(savedToken);
           setUser(parsedUser);
+
+          // Tự động đồng bộ hồ sơ realtime từ máy chủ sau khi khôi phục
+          setTimeout(() => {
+            refreshProfile().catch(() => {});
+          }, 300);
         }
       } catch (e) {
         console.warn("Lỗi khôi phục phiên đăng nhập:", e);
@@ -61,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     restoreSession();
-  }, []);
+  }, [refreshProfile]);
 
   const login = useCallback(async (emailOrPhone: string, pass: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
@@ -75,8 +124,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.data?.access_token) {
         const receivedToken = res.data.access_token;
         const rawUser = res.data.user || {};
-        const avatar = rawUser.avatarUrl || rawUser.avatar_url || rawUser.avatar || rawUser.identity?.avatar_url || rawUser.identity?.avatarUrl || null;
-        const cover = rawUser.coverUrl || rawUser.cover_url || rawUser.cover || rawUser.identity?.cover_url || rawUser.identity?.coverUrl || null;
+        const rawAvatar = rawUser.avatarUrl || rawUser.avatar_url || rawUser.avatar || rawUser.identity?.avatar_url || rawUser.identity?.avatarUrl || null;
+        const rawCover = rawUser.coverUrl || rawUser.cover_url || rawUser.cover || rawUser.identity?.cover_url || rawUser.identity?.coverUrl || null;
+        const avatar = resolveMediaUrl(rawAvatar) || rawAvatar;
+        const cover = resolveMediaUrl(rawCover) || rawCover;
         const profile: UserProfile = {
           id: rawUser.id || "usr-" + Date.now(),
           email: rawUser.email || (identifier.includes("@") ? identifier : `${identifier}@vione.vn`),
@@ -98,6 +149,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, receivedToken);
         await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(profile));
+
+        // Tự động kéo identity mới nhất từ máy chủ
+        setTimeout(() => {
+          refreshProfile().catch(() => {});
+        }, 100);
 
         return { success: true };
       }
@@ -127,7 +183,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [refreshProfile]);
 
   const quickDemoLogin = useCallback(async (role: "admin" | "executive" = "executive") => {
     setIsLoading(true);
@@ -161,7 +217,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUser = useCallback((data: Partial<UserProfile>) => {
     setUser((prev) => {
       if (!prev) return null;
-      const updated = { ...prev, ...data };
+      const sanitized = { ...data };
+      if (sanitized.avatarUrl) {
+        sanitized.avatarUrl = resolveMediaUrl(sanitized.avatarUrl) || sanitized.avatarUrl;
+      }
+      if (sanitized.coverUrl) {
+        sanitized.coverUrl = resolveMediaUrl(sanitized.coverUrl) || sanitized.coverUrl;
+      }
+      const updated = { ...prev, ...sanitized };
       AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updated)).catch(console.warn);
       return updated;
     });
@@ -287,6 +350,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         register,
         logout,
         updateUser,
+        refreshProfile,
         quickDemoLogin,
       }}
     >

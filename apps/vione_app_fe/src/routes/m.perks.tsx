@@ -1,5 +1,6 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Route as AssocPerksRoute } from "./association.perks";
 
 export const Route = createFileRoute("/m/perks")({
-  component: () => <Outlet />,
+  component: AssocPerksRoute.options.component as any,
 });

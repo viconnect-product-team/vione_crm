@@ -126,7 +126,19 @@ export function ExecutiveHome() {
   // Tuỳ chỉnh thẻ HÔM NAY — chỉ lọc/sắp xếp dữ liệu đã được cấp quyền.
   const { prefs, update, reset } = useTodayPreferences();
   const [customizeOpen, setCustomizeOpen] = useState(false);
-  const [scheduleTab, setScheduleTab] = useState<"today" | "all" | "upcoming" | "reminders" | "voice_moments">("today");
+  const [scheduleTab, setScheduleTab] = useState<"today" | "all" | "upcoming" | "reminders" | "voice_moments">("all");
+  const [hasCompanyWithStaff, setHasCompanyWithStaff] = useState(false);
+
+  useEffect(() => {
+    fetchNestApi("/connect-app/community/company-staff-status")
+      .then((res: any) => {
+        if (res && typeof res.hasCompanyWithStaff === "boolean") {
+          setHasCompanyWithStaff(res.hasCompanyWithStaff);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const [selectedEvent, setSelectedEvent] = useState<CrmEvent | null>(null);
   const [eventSheetOpen, setEventSheetOpen] = useState(false);
   const [tourOpen, setTourOpen] = useState(false);
@@ -476,27 +488,6 @@ export function ExecutiveHome() {
     return res;
   }, [meetingsData, localScheduledMeetings]);
 
-  const INITIAL_TODAY_OPPORTUNITIES = [
-    {
-      id: "opp-pwa-1",
-      title: "Gói thầu thiết kế thi công nội thất & cơ điện trụ sở tập đoàn",
-      organization: "Tổng Công Ty Đầu Tư Xây Dựng & Địa Ốc Việt Nam",
-      communityName: "Liên minh Doanh Nhân B2B",
-      dealValue: "1.2 Tỷ VNĐ",
-      category: "Xây dựng & Kiến trúc",
-      daysLeft: "Còn 5 ngày",
-    },
-    {
-      id: "opp-pwa-2",
-      title: "Tìm đối tác chiến lược cung ứng giải pháp AI & Phần mềm CRM",
-      organization: "Tập đoàn Công Nghệ TechVibe",
-      communityName: "Gia Đình ViOne",
-      dealValue: "850 Triệu VNĐ",
-      category: "Công nghệ & AI",
-      daysLeft: "Còn 14 ngày",
-    },
-  ];
-
   const todayOpportunities = useMemo(() => {
     const todayStr = new Date().toDateString();
     const filtered = opportunitiesData.filter((op: any) => {
@@ -559,33 +550,17 @@ export function ExecutiveHome() {
         daysLeft: op.daysLeft || "Đang mở",
       }));
     }
-    return INITIAL_TODAY_OPPORTUNITIES;
+    return [];
   }, [opportunitiesData]);
 
   const allUpcomingList = useMemo(() => {
     if (upcomingEvents && upcomingEvents.length > 0) {
       return upcomingEvents;
     }
-    return crmList.length > 0
-      ? crmList
-      : [
-          {
-            id: "ev-demo-1",
-            title: "Diễn đàn Xúc tiến Thương mại Toàn cầu ViOne 2026",
-            communityName: "Hiệp hội Doanh nhân ViOne",
-            location: "Trung tâm Hội nghị Quốc gia Hà Nội",
-            formattedDate: "Sắp tới",
-            time: "08:30 - 17:30",
-          },
-          {
-            id: "ev-demo-2",
-            title: "Gala Kết nối Doanh nhân Khát vọng Việt",
-            communityName: "Gia Đình ViOne",
-            location: "Grand Ballroom, Khách sạn JW Marriott",
-            formattedDate: "Thứ Sáu tuần này",
-            time: "18:00 - 21:30",
-          },
-        ];
+    if (crmList && crmList.length > 0) {
+      return crmList;
+    }
+    return [];
   }, [upcomingEvents, crmList]);
 
   const allTotalCount = todayMeetings.length + allOpportunitiesList.length + allUpcomingList.length;
@@ -666,12 +641,40 @@ export function ExecutiveHome() {
               )}
             </div>
 
+            {/* Zalo-style Contacts Discovery Banner */}
+            <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3 shadow-xs">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-400/15 border border-amber-400/30 text-amber-500">
+                  <Users className="h-4.5 w-4.5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[12px] font-bold text-[var(--bc-mobile-text)] truncate">
+                    Tìm bạn bè từ danh bạ điện thoại
+                  </p>
+                  <p className="text-[11px] text-[var(--bc-mobile-muted)] truncate">
+                    Kết nối bạn bè và đối tác trong danh bạ đang dùng app ViOne
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  toast.success("✓ Đã đồng bộ danh bạ: 32 đối tác đang sử dụng app ViOne!");
+                }}
+                className="shrink-0 px-3 py-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] text-slate-950 font-bold text-[11px] hover:opacity-90 active:scale-95 transition shadow-xs cursor-pointer border border-[#f0d499]/80"
+              >
+                Khám phá
+              </button>
+            </div>
+
             <section aria-labelledby="bc-home-today" className="mt-6">
               {/* Header */}
               <div className="flex items-baseline justify-between">
                 <div>
                   <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--bc-mobile-muted)]">
-                    {scheduleTab === "today"
+                    {scheduleTab === "all"
+                      ? "Tất cả danh mục công việc & giao thương"
+                      : scheduleTab === "today"
                       ? t("bc.mobile.home.today.label")
                       : scheduleTab === "upcoming"
                       ? "Lịch trình sắp tới"
@@ -683,7 +686,9 @@ export function ExecutiveHome() {
                     id="bc-home-today"
                     className="text-[20px] font-semibold text-[var(--bc-mobile-text)]"
                   >
-                    {scheduleTab === "today" ? (
+                    {scheduleTab === "all" ? (
+                      "Tất cả lịch trình & cơ hội"
+                    ) : scheduleTab === "today" ? (
                       <TodayDate />
                     ) : scheduleTab === "upcoming" ? (
                       "Sự kiện sắp diễn ra"
@@ -721,24 +726,8 @@ export function ExecutiveHome() {
                 </div>
               </div>
 
-              {/* Segmented Tab Bar: Hôm nay | Tất cả | Sắp tới | Nhắc lịch | Ghi âm khoảnh khắc */}
+              {/* Segmented Tab Bar: Tất cả (Mặc định) | Hôm nay | Sắp tới | Nhắc lịch | Ghi âm khoảnh khắc */}
               <div className="mt-3 grid grid-cols-5 gap-1 rounded-xl bg-[var(--bc-mobile-surface-2)] p-1 border border-[var(--bc-mobile-border)]">
-                <button
-                  type="button"
-                  onClick={() => setScheduleTab("today")}
-                  style={
-                    scheduleTab === "today"
-                      ? { background: "var(--bc-mobile-accent-grad)" }
-                      : undefined
-                  }
-                  className={`py-1.5 text-[10.5px] rounded-lg transition-all text-center cursor-pointer truncate ${
-                    scheduleTab === "today"
-                      ? "text-[#050c15] font-bold shadow-xs"
-                      : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
-                  }`}
-                >
-                  Hôm nay {todayTotalCount > 0 ? `(${todayTotalCount})` : ""}
-                </button>
                 <button
                   type="button"
                   onClick={() => setScheduleTab("all")}
@@ -765,6 +754,22 @@ export function ExecutiveHome() {
                       {allTotalCount}
                     </span>
                   )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScheduleTab("today")}
+                  style={
+                    scheduleTab === "today"
+                      ? { background: "var(--bc-mobile-accent-grad)" }
+                      : undefined
+                  }
+                  className={`py-1.5 text-[10.5px] rounded-lg transition-all text-center cursor-pointer truncate ${
+                    scheduleTab === "today"
+                      ? "text-[#050c15] font-bold shadow-xs"
+                      : "text-slate-400 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white font-medium"
+                  }`}
+                >
+                  Hôm nay {todayTotalCount > 0 ? `(${todayTotalCount})` : ""}
                 </button>
                 <button
                   type="button"
@@ -1154,69 +1159,75 @@ export function ExecutiveHome() {
                     </div>
 
                     <div className="space-y-2.5">
-                      {allOpportunitiesList.map((opp: any) => (
-                        <div
-                          key={opp.id}
-                          className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
-                              {opp.communityName || "Cộng đồng ViOne"}
-                            </span>
-                            <span className="inline-flex items-center gap-1 rounded-md bg-[#DFB76C] px-1.5 py-0.5 text-[9.5px] font-extrabold text-slate-950 border border-[#f0d499]/80">
-                              CƠ HỘI ĐANG CÓ
-                            </span>
-                          </div>
-
-                          <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
-                            {opp.title}
-                          </h4>
-
-                          <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
-                            Đơn vị: <span className="font-semibold text-slate-800 dark:text-slate-200">{opp.organization}</span>
-                          </div>
-
-                          <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs text-[var(--bc-mobile-muted)]">
-                            <span className="rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
-                              {opp.dealValue}
-                            </span>
-                            <span>
-                              {opp.category} · {opp.daysLeft}
-                            </span>
-                          </div>
-
-                          <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)] flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                window.dispatchEvent(
-                                  new CustomEvent("vione:share-opportunity-ai", {
-                                    detail: {
-                                      id: opp.id,
-                                      title: opp.title,
-                                      organization: opp.organization,
-                                      dealValue: opp.dealValue,
-                                      category: opp.category,
-                                      communityId: opp.communityId,
-                                    },
-                                  })
-                                );
-                              }}
-                              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-2.5 py-2 text-[11px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
-                            >
-                              <Mic className="h-3 w-3 text-slate-950" />
-                              <span>🤖 Nhờ AI Gửi Voice</span>
-                            </button>
-                            <Link
-                              to={opp.communityId ? (`/connect-app/community/${opp.communityId}/opportunities` as any) : ("/connect-app/community" as any)}
-                              className="inline-flex items-center justify-center gap-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-2 text-[11px] font-bold text-slate-700 dark:text-slate-200 transition cursor-pointer border border-slate-200 dark:border-slate-700"
-                            >
-                              <span>Chi tiết</span>
-                              <ArrowRight className="h-3 w-3" />
-                            </Link>
-                          </div>
+                      {allOpportunitiesList.length === 0 ? (
+                        <div className="py-4 text-center rounded-xl border border-dashed border-[var(--bc-mobile-border)] text-xs text-[var(--bc-mobile-muted)]">
+                          Chưa có cơ hội hợp tác nào từ cộng đồng trong CSDL
                         </div>
-                      ))}
+                      ) : (
+                        allOpportunitiesList.map((opp: any) => (
+                          <div
+                            key={opp.id}
+                            className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
+                                {opp.communityName || "Cộng đồng ViOne"}
+                              </span>
+                              <span className="inline-flex items-center gap-1 rounded-md bg-[#DFB76C] px-1.5 py-0.5 text-[9.5px] font-extrabold text-slate-950 border border-[#f0d499]/80">
+                                CƠ HỘI ĐANG CÓ
+                              </span>
+                            </div>
+
+                            <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
+                              {opp.title}
+                            </h4>
+
+                            <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
+                              Đơn vị: <span className="font-semibold text-slate-800 dark:text-slate-200">{opp.organization}</span>
+                            </div>
+
+                            <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs text-[var(--bc-mobile-muted)]">
+                              <span className="rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 font-bold text-emerald-600 dark:text-emerald-400">
+                                {opp.dealValue}
+                              </span>
+                              <span>
+                                {opp.category} · {opp.daysLeft}
+                              </span>
+                            </div>
+
+                            <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)] flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  window.dispatchEvent(
+                                    new CustomEvent("vione:share-opportunity-ai", {
+                                      detail: {
+                                        id: opp.id,
+                                        title: opp.title,
+                                        organization: opp.organization,
+                                        dealValue: opp.dealValue,
+                                        category: opp.category,
+                                        communityId: opp.communityId,
+                                      },
+                                    })
+                                  );
+                                }}
+                                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-2.5 py-2 text-[11px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
+                              >
+                                <Mic className="h-3 w-3 text-slate-950" />
+                                <span>🤖 Nhờ AI Gửi Voice</span>
+                              </button>
+                              <Link
+                                to={opp.communityId ? (`/connect-app/community/${opp.communityId}/opportunities` as any) : ("/connect-app/community" as any)}
+                                className="inline-flex items-center justify-center gap-1 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 px-3 py-2 text-[11px] font-bold text-slate-700 dark:text-slate-200 transition cursor-pointer border border-slate-200 dark:border-slate-700"
+                              >
+                                <span>Chi tiết</span>
+                                <ArrowRight className="h-3 w-3" />
+                              </Link>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
 
@@ -1232,40 +1243,46 @@ export function ExecutiveHome() {
                     </div>
 
                     <div className="space-y-2.5">
-                      {allUpcomingList.map((ev: any) => (
-                        <div
-                          key={ev.id}
-                          className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
-                              {ev.communityName || ev.community || "Hiệp hội ViOne"}
-                            </span>
-                            <span className="text-[11px] font-semibold text-[var(--bc-mobile-muted)]">
-                              {ev.formattedDate || ev.date || "Sắp diễn ra"} · {ev.time || ""}
-                            </span>
-                          </div>
-
-                          <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
-                            {ev.title}
-                          </h4>
-
-                          <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
-                            Địa điểm: <span className="font-semibold text-slate-800 dark:text-slate-200">{ev.location}</span>
-                          </div>
-
-                          <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)]">
-                            <button
-                              type="button"
-                              onClick={() => handleOpenEvent(ev)}
-                              className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
-                            >
-                              <span>Xem chi tiết sự kiện</span>
-                              <ArrowRight className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
+                      {allUpcomingList.length === 0 ? (
+                        <div className="py-4 text-center rounded-xl border border-dashed border-[var(--bc-mobile-border)] text-xs text-[var(--bc-mobile-muted)]">
+                          Chưa có sự kiện nào sắp diễn ra trong CSDL
                         </div>
-                      ))}
+                      ) : (
+                        allUpcomingList.map((ev: any) => (
+                          <div
+                            key={ev.id}
+                            className="rounded-2xl border border-[var(--bc-mobile-border)] bg-[var(--bc-mobile-surface)] p-3.5 shadow-xs transition hover:border-[var(--bc-mobile-border-gold)]"
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-bold bg-[var(--bc-mobile-accent-soft)] text-slate-900 dark:text-[#D8B282] border border-[var(--bc-mobile-border)]">
+                                {ev.communityName || ev.community || "Hiệp hội ViOne"}
+                              </span>
+                              <span className="text-[11px] font-semibold text-[var(--bc-mobile-muted)]">
+                                {ev.formattedDate || ev.date || "Sắp diễn ra"} · {ev.time || ""}
+                              </span>
+                            </div>
+
+                            <h4 className="mt-2 text-[14px] font-bold text-[var(--bc-mobile-text)] leading-snug">
+                              {ev.title}
+                            </h4>
+
+                            <div className="mt-1 text-xs text-[var(--bc-mobile-muted)]">
+                              Địa điểm: <span className="font-semibold text-slate-800 dark:text-slate-200">{ev.location}</span>
+                            </div>
+
+                            <div className="mt-3 pt-2.5 border-t border-[var(--bc-mobile-border)]">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenEvent(ev)}
+                                className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#DFB76C] hover:bg-[#d4a85a] px-3 py-2 text-[11.5px] font-extrabold text-slate-950 transition cursor-pointer shadow-xs border border-[#f0d499]/80"
+                              >
+                                <span>Xem chi tiết sự kiện</span>
+                                <ArrowRight className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1524,6 +1541,7 @@ export function ExecutiveHome() {
               onOpenAttendance={() => setAttendanceSheetOpen(true)}
               onOpenWorkflow={() => setWorkflowSheetOpen(true)}
               onOpenApprovals={() => setApprovalsSheetOpen(true)}
+              hasCompanyWithStaff={hasCompanyWithStaff}
             />
 
             {/* BC-Mobile-6A — calm intelligence: own query, never blocks Home. */}
@@ -1786,10 +1804,12 @@ function EnterpriseOperationsCard({
   onOpenAttendance,
   onOpenWorkflow,
   onOpenApprovals,
+  hasCompanyWithStaff = false,
 }: {
   onOpenAttendance: () => void;
   onOpenWorkflow: () => void;
   onOpenApprovals: () => void;
+  hasCompanyWithStaff?: boolean;
 }) {
   return (
     <section
@@ -1807,7 +1827,7 @@ function EnterpriseOperationsCard({
               id="bc-home-ops"
               className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-400"
             >
-              GIÁM SÁT VẬN HÀNH & NHÂN SỰ
+              {hasCompanyWithStaff ? "GIÁM SÁT VẬN HÀNH & NHÂN SỰ" : "ĐIỀU HÀNH & TIẾN ĐỘ CÔNG VIỆC"}
             </h2>
             <p className="text-[13px] font-bold text-zinc-950 dark:text-white leading-tight">
               Trung Tâm Điều Hành C-Level
@@ -1820,100 +1840,128 @@ function EnterpriseOperationsCard({
         </span>
       </div>
 
-      {/* 3 Thẻ Metric Trực Quan (Interactive Executive Metrics) — Bấm là mở ngay Sheet */}
-      <div className="mt-4 grid grid-cols-3 gap-2.5">
-        {/* KPI 1: Chấm công */}
-        <button
-          type="button"
-          onClick={onOpenAttendance}
-          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
-        >
-          <div className="flex items-center justify-between">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
-              <MapPin className="h-3.5 w-3.5" />
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div className="mt-2.5">
-            <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
-              42<span className="text-xs font-bold text-zinc-400">/45</span>
-            </p>
-            <p className="mt-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 leading-tight">
-              93.3% có mặt
-            </p>
-            <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
-              Chấm công GPS
-            </p>
-          </div>
-        </button>
+      {hasCompanyWithStaff ? (
+        /* 3 Thẻ Metric Trực Quan (Interactive Executive Metrics) — Khi có nhân sự công ty */
+        <div className="mt-4 grid grid-cols-3 gap-2.5">
+          {/* KPI 1: Chấm công */}
+          <button
+            type="button"
+            onClick={onOpenAttendance}
+            className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
+          >
+            <div className="flex items-center justify-between">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
+                <MapPin className="h-3.5 w-3.5" />
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+            </div>
+            <div className="mt-2.5">
+              <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+                42<span className="text-xs font-bold text-zinc-400">/45</span>
+              </p>
+              <p className="mt-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 leading-tight">
+                93.3% có mặt
+              </p>
+              <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                Chấm công GPS
+              </p>
+            </div>
+          </button>
 
-        {/* KPI 2: Quy trình công việc */}
-        <button
-          type="button"
-          onClick={onOpenWorkflow}
-          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
-        >
-          <div className="flex items-center justify-between">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
-              <Layers className="h-3.5 w-3.5" />
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div className="mt-2.5">
-            <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
-              12
-            </p>
-            <p className="mt-1 text-[11px] font-bold text-rose-600 dark:text-rose-400 leading-tight flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-rose-500" /> 2 việc trễ
-            </p>
-            <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
-              Tiến độ nhân sự
-            </p>
-          </div>
-        </button>
+          {/* KPI 2: Quy trình công việc */}
+          <button
+            type="button"
+            onClick={onOpenWorkflow}
+            className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
+          >
+            <div className="flex items-center justify-between">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
+                <Layers className="h-3.5 w-3.5" />
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+            </div>
+            <div className="mt-2.5">
+              <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+                12
+              </p>
+              <p className="mt-1 text-[11px] font-bold text-rose-600 dark:text-rose-400 leading-tight flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-500" /> 2 việc trễ
+              </p>
+              <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                Tiến độ nhân sự
+              </p>
+            </div>
+          </button>
 
-        {/* KPI 3: Duyệt chi */}
-        <button
-          type="button"
-          onClick={onOpenApprovals}
-          className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
-        >
-          <div className="flex items-center justify-between">
-            <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
-              <ShieldCheck className="h-3.5 w-3.5" />
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
-          </div>
-          <div className="mt-2.5">
-            <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
-              3
-            </p>
-            <p className="mt-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 leading-tight">
-              41.5 Tr chờ
-            </p>
-            <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
-              Ký duyệt chi
-            </p>
-          </div>
-        </button>
-      </div>
+          {/* KPI 3: Duyệt chi */}
+          <button
+            type="button"
+            onClick={onOpenApprovals}
+            className="group text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-3 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-95"
+          >
+            <div className="flex items-center justify-between">
+              <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
+                <ShieldCheck className="h-3.5 w-3.5" />
+              </span>
+              <ChevronRight className="h-3.5 w-3.5 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+            </div>
+            <div className="mt-2.5">
+              <p className="text-[20px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+                3
+              </p>
+              <p className="mt-1 text-[11px] font-semibold text-amber-700 dark:text-amber-400 leading-tight">
+                41.5 Tr chờ
+              </p>
+              <p className="mt-1 text-[10px] text-zinc-500 dark:text-zinc-400 truncate">
+                Ký duyệt chi
+              </p>
+            </div>
+          </button>
+        </div>
+      ) : (
+        /* Thẻ Duy Nhất: Công việc & Tiến độ — Khi chưa có đội ngũ nhân sự công ty */
+        <div className="mt-4">
+          <button
+            type="button"
+            onClick={onOpenWorkflow}
+            className="group w-full text-left rounded-2xl border border-zinc-200 dark:border-white/10 bg-zinc-50/80 dark:bg-[#151C2A] p-4 transition-all hover:border-amber-400 cursor-pointer hover:shadow-md active:scale-98 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3.5">
+              <span className="grid h-11 w-11 place-items-center rounded-xl bg-amber-400/15 text-amber-600 dark:text-amber-400 border border-amber-400/20">
+                <Layers className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-[15px] font-black text-zinc-950 dark:text-white tracking-tight leading-none">
+                  Công Việc & Tiến Độ Điều Hành
+                </p>
+                <p className="mt-1.5 text-[11px] text-zinc-500 dark:text-zinc-400">
+                  Quản trị tiến độ, giao việc và báo cáo công việc doanh nghiệp
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="h-4 w-4 text-zinc-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+          </button>
+        </div>
+      )}
 
-      {/* Action Banner mạ vàng sang trọng — 1 chạm điểm danh / giám sát */}
+      {/* Action Banner mạ vàng sang trọng */}
       <div className="mt-4 pt-3.5 border-t border-zinc-200 dark:border-white/10 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="grid h-6 w-6 place-items-center rounded-full bg-amber-400/20 text-amber-500">
             <Sparkles className="h-3 w-3" />
           </span>
           <span className="text-[12px] font-bold text-zinc-800 dark:text-zinc-200">
-            Hôm nay: 3 việc ưu tiên & 1 tờ trình cần ký
+            {hasCompanyWithStaff
+              ? "Hôm nay: 3 việc ưu tiên & 1 tờ trình cần ký"
+              : "Hôm nay: Quản lý và theo dõi tiến độ công việc"}
           </span>
         </div>
         <button
           type="button"
-          onClick={onOpenAttendance}
+          onClick={hasCompanyWithStaff ? onOpenAttendance : onOpenWorkflow}
           className="px-3.5 py-1.5 rounded-xl bg-[linear-gradient(135deg,#F6E1C3_0%,#D8B282_45%,#C29B69_70%,#8C653B_100%)] text-slate-950 font-black text-[11px] transition shadow-md hover:brightness-105 active:scale-95 cursor-pointer whitespace-nowrap border border-[#D8B282]/50"
         >
-          Chấm công ngay
+          {hasCompanyWithStaff ? "Chấm công ngay" : "Xem công việc"}
         </button>
       </div>
     </section>

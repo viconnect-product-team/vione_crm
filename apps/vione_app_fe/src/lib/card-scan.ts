@@ -67,23 +67,31 @@ function channelName(slug: string): string {
  * Returns an unsubscribe function.
  */
 export function subscribeScanEvents(slug: string, onEvent: (e: ScanEvent) => void): () => void {
-  const channel = supabase
-    .channel(channelName(slug), { config: { broadcast: { self: false } } })
-    .on("broadcast", { event: "scan" }, (msg) => {
-      const p = (msg?.payload ?? {}) as Partial<ScanEvent>;
-      if (typeof p.token === "string" && typeof p.at === "number") {
-        onEvent({
-          ok: !!p.ok,
-          token: p.token,
-          reason: p.reason,
-          at: p.at,
-        });
+  try {
+    const channel = supabase
+      .channel(channelName(slug), { config: { broadcast: { self: false } } })
+      .on("broadcast", { event: "scan" }, (msg) => {
+        const p = (msg?.payload ?? {}) as Partial<ScanEvent>;
+        if (typeof p.token === "string" && typeof p.at === "number") {
+          onEvent({
+            ok: !!p.ok,
+            token: p.token,
+            reason: p.reason,
+            at: p.at,
+          });
+        }
+      })
+      .subscribe();
+    return () => {
+      try {
+        void supabase.removeChannel(channel);
+      } catch {
+        // Safe fallback
       }
-    })
-    .subscribe();
-  return () => {
-    void supabase.removeChannel(channel);
-  };
+    };
+  } catch {
+    return () => {};
+  }
 }
 
 /**
@@ -91,17 +99,25 @@ export function subscribeScanEvents(slug: string, onEvent: (e: ScanEvent) => voi
  * channel. Fire-and-forget — the public page never awaits a response.
  */
 export async function broadcastScanEvent(slug: string, ev: ScanEvent): Promise<void> {
-  const channel = supabase.channel(channelName(slug));
-  await new Promise<void>((resolve) => {
-    channel.subscribe((status) => {
-      if (status === "SUBSCRIBED") resolve();
-    });
-    // Safety timeout — never block UI on broadcast handshake.
-    setTimeout(resolve, 800);
-  });
   try {
-    await channel.send({ type: "broadcast", event: "scan", payload: ev });
-  } finally {
-    setTimeout(() => void supabase.removeChannel(channel), 100);
+    const channel = supabase.channel(channelName(slug));
+    await new Promise<void>((resolve) => {
+      channel.subscribe((status) => {
+        if (status === "SUBSCRIBED") resolve();
+      });
+      // Safety timeout — never block UI on broadcast handshake.
+      setTimeout(resolve, 800);
+    });
+    try {
+      await channel.send({ type: "broadcast", event: "scan", payload: ev });
+    } finally {
+      setTimeout(() => {
+        try {
+          void supabase.removeChannel(channel);
+        } catch {}
+      }, 100);
+    }
+  } catch {
+    // Safe fallback when standalone
   }
 }

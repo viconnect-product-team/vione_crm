@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Kanban,
   Calendar,
@@ -23,6 +23,7 @@ import {
 import { AppShell } from "@/components/dashboard/AppShell";
 import { PageHeader, StatCard, Card, Pill } from "@/components/dashboard/PageKit";
 import { toast } from "sonner";
+import { fetchNestApi } from "@/lib/api-client";
 
 export const Route = createFileRoute("/workflow")({
   ssr: false,
@@ -55,136 +56,8 @@ export interface TaskItem {
   dependsOn?: string; // id of preceding task
 }
 
-const INITIAL_TASKS: TaskItem[] = [
-  {
-    id: "task-01",
-    code: "TSK-2026-081",
-    title: "Phê duyệt tài liệu kiến trúc kỹ thuật ViOne Platform 5.0",
-    project: "Dự Án ViOne 5.0 Enterprise",
-    department: "Ban Công Nghệ",
-    assignee: {
-      id: "u-01",
-      name: "Nguyễn Minh Đăng",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
-      role: "CEO / Architect",
-    },
-    deadline: "2026-10-02 18:00",
-    isOverdue: false,
-    priority: "urgent",
-    status: "in_progress",
-    checklist: [
-      { id: "c1", text: "Kiểm tra 80 Quy tắc nghiệp vụ BRD", done: true },
-      { id: "c2", text: "Thẩm định kiến trúc Multi-Tenancy", done: true },
-      { id: "c3", text: "Ký biên bản thẩm định giải pháp", done: false },
-    ],
-    timesheetHours: 14.5,
-    budgetVnd: 50000000,
-    spentVnd: 28000000,
-  },
-  {
-    id: "task-02",
-    code: "TSK-2026-082",
-    title: "Tích hợp cổng Napas VietQR 24/7 gạch nợ tức thời 1 giây",
-    project: "Phân Hệ Tài Chính Số",
-    department: "Kỹ Thuật",
-    assignee: {
-      id: "u-02",
-      name: "Trần Thu Hà",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop",
-      role: "CFO / Tech Lead",
-    },
-    deadline: "2026-10-01 12:00",
-    isOverdue: true, // Overdue warning BR-WRK-02
-    priority: "urgent",
-    status: "in_progress",
-    checklist: [
-      { id: "c4", text: "Kết nối API Napas QR động", done: true },
-      { id: "c5", text: "Xử lý Webhook gạch nợ tự động trong 1s", done: true },
-      { id: "c6", text: "Kiểm thử tải 10,000 giao dịch đồng thời", done: false },
-    ],
-    timesheetHours: 22.0,
-    budgetVnd: 35000000,
-    spentVnd: 31000000,
-  },
-  {
-    id: "task-03",
-    code: "TSK-2026-083",
-    title: "Chấm công GPS 50m & Nhận diện FaceID chống giả mạo",
-    project: "Phân Hệ HRM Di Động",
-    department: "Nhân Sự",
-    assignee: {
-      id: "u-03",
-      name: "Vũ Mai Anh",
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop",
-      role: "HR Manager",
-    },
-    deadline: "2026-10-03 17:00",
-    isOverdue: false,
-    priority: "high",
-    status: "review",
-    checklist: [
-      { id: "c7", text: "Kiểm tra bán kính định vị 50m chi nhánh", done: true },
-      { id: "c8", text: "Đạt độ khớp khuôn mặt AI >= 92%", done: true },
-      { id: "c9", text: "Thử nghiệm trên cả iOS và Android", done: true },
-    ],
-    timesheetHours: 18.0,
-    budgetVnd: 20000000,
-    spentVnd: 16500000,
-  },
-  {
-    id: "task-04",
-    code: "TSK-2026-084",
-    title: "Sản xuất và nạp chip Thẻ Titanium NFC mạ vàng đợt 1",
-    project: "Hệ Sinh Thái Danh Thiếp Số",
-    department: "Vận Hành",
-    assignee: {
-      id: "u-04",
-      name: "Đặng Nam",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-      role: "Operations Lead",
-    },
-    deadline: "2026-10-04 15:00",
-    isOverdue: false,
-    priority: "normal",
-    status: "todo",
-    checklist: [
-      { id: "c10", text: "Kiểm tra chất lượng phôi Titanium mạ vàng", done: false },
-      { id: "c11", text: "Nạp token bảo mật mã hóa AES-256", done: false },
-      { id: "c12", text: "Đóng gói hộp nhung dập logo ViOne", done: false },
-    ],
-    timesheetHours: 4.0,
-    budgetVnd: 45000000,
-    spentVnd: 12000000,
-  },
-  {
-    id: "task-05",
-    code: "TSK-2026-085",
-    title: "Phễu phân bổ Lead Round-Robin 60s cho Sales Director",
-    project: "CRM Doanh Nghiệp 360",
-    department: "Kinh Doanh",
-    assignee: {
-      id: "u-05",
-      name: "Lê Quốc Dũng",
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-      role: "Sales Director",
-    },
-    deadline: "2026-09-30 18:00",
-    isOverdue: false,
-    priority: "high",
-    status: "done",
-    checklist: [
-      { id: "c13", text: "Bắt buộc MST chống trùng lặp Lead", done: true },
-      { id: "c14", text: "Phân bổ vòng tròn Round-Robin dưới 60s", done: true },
-      { id: "c15", text: "Khóa chiết khấu > 15% phải qua CEO", done: true },
-    ],
-    timesheetHours: 25.0,
-    budgetVnd: 15000000,
-    spentVnd: 14200000,
-  },
-];
-
 function WorkflowPage() {
-  const [tasks, setTasks] = useState<TaskItem[]>(INITIAL_TASKS);
+  const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDept, setSelectedDept] = useState("all");
   const [viewMode, setViewMode] = useState<"kanban" | "gantt">("kanban");
@@ -199,6 +72,48 @@ function WorkflowPage() {
   const [newDeadline, setNewDeadline] = useState("2026-10-05 18:00");
   const [newPriority, setNewPriority] = useState<TaskPriority>("normal");
   const [newBudget, setNewBudget] = useState("20000000");
+
+  const loadTasks = async () => {
+    try {
+      const res = await fetchNestApi<any>("/operations/workflow/tasks");
+      const list = Array.isArray(res) ? res : res?.tasks || res?.data || [];
+      const mapped: TaskItem[] = list.map((t: any, idx: number) => ({
+        id: String(t.id || `task-${idx}`),
+        code: t.code || `TSK-${new Date().getFullYear()}-${100 + idx}`,
+        title: t.title || "Công việc vận hành",
+        project: t.project || "Quy trình chung",
+        department: t.department || "Vận hành chung",
+        assignee: typeof t.assignee === "object" && t.assignee !== null
+          ? {
+              id: t.assignee.id || "u-auto",
+              name: t.assignee.name || "Nhân viên",
+              avatar: t.assignee.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+              role: t.assignee.role || "Chuyên viên",
+            }
+          : {
+              id: "u-auto",
+              name: String(t.assignee || "Nhân viên"),
+              avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+              role: "Chuyên viên",
+            },
+        deadline: t.deadline || new Date().toISOString().split("T")[0],
+        isOverdue: Boolean(t.isOverdue),
+        priority: (t.priority || "normal") as TaskPriority,
+        status: (t.status || "todo") as TaskStatus,
+        checklist: Array.isArray(t.checklist) ? t.checklist : [],
+        timesheetHours: Number(t.timesheetHours || 0),
+        budgetVnd: Number(t.budgetVnd || 0),
+        spentVnd: Number(t.spentVnd || 0),
+      }));
+      setTasks(mapped);
+    } catch {
+      setTasks([]);
+    }
+  };
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((t) => {
@@ -233,7 +148,7 @@ function WorkflowPage() {
   const doneTasks = sortTasks(filteredTasks.filter((t) => t.status === "done"));
 
   // Chuyển trạng thái công việc (Kèm quy tắc BR-WRK-03 & BR-WRK-04 & BR-WRK-15)
-  const moveTask = (taskId: string, newStatus: TaskStatus) => {
+  const moveTask = async (taskId: string, newStatus: TaskStatus) => {
     const current = tasks.find((t) => t.id === taskId);
     if (!current) return;
 
@@ -266,45 +181,46 @@ function WorkflowPage() {
         return t;
       })
     );
+
+    try {
+      await fetchNestApi(`/operations/workflow/tasks/${taskId}`, {
+        method: "PUT",
+        body: JSON.stringify({ status: newStatus }),
+      }).catch(() => null);
+    } catch {
+      // ignore
+    }
+
     toast.success(`Đã cập nhật trạng thái: ${newStatus.toUpperCase()}`);
   };
 
-  const handleCreateTask = (e: React.FormEvent) => {
+  const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTitle.trim()) {
       toast.error("Vui lòng nhập tiêu đề công việc.");
       return;
     }
 
-    const newTask: TaskItem = {
-      id: `task-${Date.now()}`,
-      code: `TSK-2026-${Math.floor(100 + Math.random() * 900)}`,
-      title: newTitle.trim(),
-      project: newProject,
-      department: newDept,
-      assignee: {
-        id: `u-${Date.now()}`,
-        name: newAssigneeName,
-        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
-        role: "Thành viên dự án",
-      },
-      deadline: newDeadline,
-      isOverdue: false,
-      priority: newPriority,
-      status: "todo",
-      checklist: [
-        { id: "c-new-1", text: "Khảo sát và lập kế hoạch", done: false },
-        { id: "c-new-2", text: "Thực thi và báo cáo kết quả", done: false },
-      ],
-      timesheetHours: 0,
-      budgetVnd: Number(newBudget) || 20000000,
-      spentVnd: 0,
-    };
+    try {
+      await fetchNestApi("/operations/workflow/tasks", {
+        method: "POST",
+        body: JSON.stringify({
+          title: newTitle.trim(),
+          description: newProject,
+          assignee: newAssigneeName,
+          department: newDept,
+          deadline: newDeadline,
+          priority: newPriority,
+        }),
+      }).catch(() => null);
 
-    setTasks((prev) => [newTask, ...prev]);
-    toast.success("Đã khởi tạo công việc mới vào quy trình");
-    setCreateModalOpen(false);
-    setNewTitle("");
+      toast.success("Đã khởi tạo công việc mới vào quy trình");
+      setCreateModalOpen(false);
+      setNewTitle("");
+      await loadTasks();
+    } catch {
+      toast.error("Không thể tạo công việc mới");
+    }
   };
 
   const toggleChecklist = (taskId: string, checkId: string) => {

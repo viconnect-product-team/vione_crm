@@ -15,10 +15,8 @@ vione_app/
 │   ├── vione_app_be/       # Backend API (NestJS + Prisma Client)
 │   └── mobile/             # Mobile Wrapper (Capacitor Native Project)
 ├── packages/
-│   └── db/                 # Shared Database Package (Prisma Schema & Client)
-├── supabase/
-│   ├── config.toml         # Cấu hình Supabase local/staging
-│   └── migrations/         # 170+ tệp SQL Migrations cơ sở dữ liệu
+│   ├── db/                 # Shared Database Package (Prisma Schema & Client)
+│   └── shared/             # Shared Types, Enums, DTOs & Constants (@vibe/shared)
 ├── package.json            # Cấu hình workspace gốc & scripts
 └── turbo.json              # Định nghĩa các task dependencies cho Turborepo
 ```
@@ -59,7 +57,7 @@ vione_app/
 ### C. Database Layer & Shared Package
 *   **ORM:** **Prisma ORM** (`@prisma/client` và CLI `prisma`).
 *   **Provider:** PostgreSQL (`postgresql`).
-*   **Độ tương thích PgBouncer:** Bắt buộc sử dụng tham số `?pgbouncer=true` (hoặc `&pgbouncer=true`) trong chuỗi kết nối `DATABASE_URL` khi sử dụng connection pooler cổng `6432` của Supabase để tránh lỗi Prisma `P1013`.
+*   **Quản lý Schema & Migrations:** Được quản lý tập trung và type-safe qua `packages/db/prisma/schema.prisma`.
 
 ---
 
@@ -67,7 +65,7 @@ vione_app/
 
 ### Local Database (Docker Compose)
 Dự án cung cấp cấu hình chạy PostgreSQL cục bộ thông qua Docker Compose:
-*   **File cấu hình:** [docker-compose.local.yml](file:///d:/download/VICONNECT/VIONE_PROJECT/vione_app/docker-compose.local.yml)
+*   **File cấu hình:** [docker-compose.local.yml](file:///d:/download/VICONNECT/CEO_VIONE_PROJECT/vione_project/docker-compose.local.yml)
 *   **Image:** `postgres:15`
 *   **Cổng kết nối:** `5433:5432` (tránh xung đột với cổng Postgres mặc định 5432 trên máy host).
 *   **Thông tin đăng nhập mặc định:**
@@ -79,13 +77,14 @@ Dự án cung cấp cấu hình chạy PostgreSQL cục bộ thông qua Docker C
     *   URL kết nối: `postgresql://root:rootpassword@localhost:5433/vibe_db`
 
 ### Remote / Staging / Production Database
-*   **Nền tảng:** Sử dụng **Supabase PostgreSQL**.
-*   **Quản lý Migrations:** Sử dụng **Supabase CLI**.
-    *   Các tệp migrations dạng SQL nằm ở thư mục [supabase/migrations](file:///d:/download/VICONNECT/VIONE_PROJECT/vione_app/supabase/migrations).
-    *   Các migrations được áp dụng theo thứ tự timestamp của tên tệp.
+*   **Nền tảng:** Sử dụng **PostgreSQL** thuần (Standalone PostgreSQL / Docker / Managed PostgreSQL).
+*   **Quản lý Migrations:** Sử dụng **Prisma ORM** (`packages/db/prisma/schema.prisma`).
+    *   Không phụ thuộc vào Supabase CLI hay Supabase Cloud.
+    *   Toàn bộ bảng, chỉ mục và kiểu dữ liệu được định nghĩa trực tiếp trong Prisma schema.
 *   **Quy tắc thiết kế bảng (Invariants):**
     *   Sử dụng định dạng **String (UUID)** cho các khóa chính thay vì BigInt để đồng bộ tốt hơn.
-    *   Tất cả các bảng public đều được bảo vệ bởi Row Level Security (RLS). Không cho phép chính sách mặc định mở rộng `USING (true)` cho role anonymous.
+    *   Tất cả các bảng người dùng liên kết trực tiếp với bảng `public.vione_users`.
+    *   Xác thực và ủy quyền được xử lý tập trung tại tầng Backend NestJS thông qua JWT & Guards (không phụ thuộc Postgres RLS).
 
 ---
 
@@ -116,33 +115,25 @@ Dự án cung cấp cấu hình chạy PostgreSQL cục bộ thông qua Docker C
         JWT_SECRET="sinh_mot_jwt_key_ngau_nhien_o_day"
         # Bổ sung các cấu hình SMTP, Storage nếu cần
         ```
-    *   **Frontend:** Copy file mẫu `.env.example` thành `.env` trong [apps/vione_app_fe](file:///d:/download/VICONNECT/VIONE_PROJECT/vione_app/apps/vione_app_fe):
+    *   **Frontend:** Copy file mẫu `.env.example` thành `.env` trong [apps/vione_app_fe](file:///d:/download/VICONNECT/CEO_VIONE_PROJECT/vione_project/apps/vione_app_fe):
         ```env
-        VITE_SUPABASE_URL="https://your-supabase-ref.supabase.co"
-        VITE_SUPABASE_PUBLISHABLE_KEY="your-publishable-key"
+        VITE_API_URL="http://localhost:3000"
         ```
 
-3.  **Khởi động Cơ sở dữ liệu local (nếu không dùng DB Supabase cloud):**
+3.  **Khởi động Cơ sở dữ liệu PostgreSQL local (Docker Compose):**
     ```bash
     docker compose -f docker-compose.local.yml up -d
     ```
 
 4.  **Sinh mã Prisma Client:**
     ```bash
-    # Chạy trực tiếp qua npm workspace
     npm run generate --workspace=@vibe/db
     ```
 
-5.  **Áp dụng Migrations lên Database:**
-    *   Nếu dùng Supabase DB:
-        ```bash
-        npx supabase db push
-        ```
-    *   Nếu dùng Local DB chạy Docker:
-        ```bash
-        cd packages/db
-        npx prisma db push
-        ```
+5.  **Áp dụng Schema / Migrations lên Database:**
+    ```bash
+    npx prisma db push --schema=packages/db/prisma/schema.prisma
+    ```
 
 6.  **Khởi động máy chủ dev (Cả Frontend + Backend):**
     Tại thư mục gốc, khởi động môi trường dev đồng thời qua Turborepo:

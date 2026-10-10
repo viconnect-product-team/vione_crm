@@ -12,7 +12,7 @@
 import { useEffect, useState } from "react";
 import { BookmarkCheck, BookmarkPlus, Loader2, LogIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
+import { getAuthToken } from "@/lib/api-client";
 import { BusinessCardSDK } from "@/lib/business-card";
 import { useT } from "@/lib/i18n";
 
@@ -34,10 +34,9 @@ export function SaveCardButton({
   useEffect(() => {
     let active = true;
     (async () => {
-      const { data } = await supabase.auth.getUser();
-      const uid = data.user?.id ?? null;
+      const token = getAuthToken();
       if (!active) return;
-      if (!uid) {
+      if (!token) {
         setAuth("anon");
         return;
       }

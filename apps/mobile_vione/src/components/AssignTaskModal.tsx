@@ -46,6 +46,7 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
   const [employees, setEmployees] = useState<any[]>([]);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [priority, setPriority] = useState<"urgent" | "high" | "medium">("high");
+  const [department, setDepartment] = useState("Vận Hành");
   const [deadline, setDeadline] = useState("Hôm nay, 17:30");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -87,10 +88,12 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
       const payload = {
         title: title.trim(),
         description: description.trim(),
+        department: department.trim(),
         assigneeId: selectedAssigneeId || undefined,
         assigneeName: assigneeName.trim() || "Nhân sự",
         priority,
         deadline: deadline.trim() || "Trong hôm nay",
+        progress: 0,
         customerName: customerName.trim() || null,
         customerPhone: customerPhone.trim() || null,
         customerRequirements: customerRequirements.trim() || null,
@@ -103,11 +106,13 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
         communityId,
         title: title.trim(),
         description: description.trim(),
+        department: department.trim(),
         assigneeId: selectedAssigneeId || "emp-new",
         assigneeName: assigneeName.trim() || "Nhân sự",
         assignerName: "Ban Giám Đốc",
         priority,
         status: "assigned",
+        progress: 0,
         acceptedAt: null,
         completedAt: null,
         deadline: deadline.trim() || "Trong hôm nay",
@@ -200,6 +205,38 @@ export const AssignTaskModal: React.FC<AssignTaskModalProps> = ({
                 </TouchableOpacity>
               ))}
             </View>
+
+            {/* Chọn Phòng Ban */}
+            <Text style={styles.inputLabel}>Phòng ban phụ trách</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 14 }}>
+              {[
+                "Vận Hành",
+                "Kế Toán - Tài Chính",
+                "Kinh Doanh B2B",
+                "Hành Chính Nhân Sự",
+                "Công Nghệ & CNTT",
+                "Marketing",
+              ].map((dept) => (
+                <TouchableOpacity
+                  key={dept}
+                  onPress={() => setDepartment(dept)}
+                  style={[
+                    styles.priorityBtn,
+                    { marginRight: 8, paddingHorizontal: 12 },
+                    department === dept && { borderColor: "#DFB76C", backgroundColor: "rgba(223, 183, 108, 0.15)" },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.priorityBtnText,
+                      department === dept && { color: "#DFB76C", fontWeight: "700" },
+                    ]}
+                  >
+                    {dept}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
 
             {/* Chọn Nhân viên thực hiện */}
             <View style={styles.sectionHeaderRow}>

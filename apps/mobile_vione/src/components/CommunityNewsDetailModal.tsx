@@ -14,6 +14,7 @@ import {
 import { X, Star, MessageSquare, Share2, Tag, Calendar, User, Building2 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "../context/ThemeContext";
+import { resolveMediaUrl } from "../utils/media";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -96,7 +97,7 @@ export const CommunityNewsDetailModal: React.FC<CommunityNewsDetailModalProps> =
             {/* Cover Banner if exists */}
             {news.imageUrl && (
               <View style={styles.coverWrap}>
-                <Image source={{ uri: news.imageUrl }} style={styles.coverImg} resizeMode="cover" />
+                <Image source={{ uri: resolveMediaUrl(news.imageUrl) || news.imageUrl }} style={styles.coverImg} resizeMode="cover" />
                 <LinearGradient
                   colors={["transparent", isDark ? "rgba(11, 15, 23, 0.9)" : "rgba(255, 255, 255, 0.8)"]}
                   style={styles.coverGradient}
@@ -117,7 +118,7 @@ export const CommunityNewsDetailModal: React.FC<CommunityNewsDetailModalProps> =
               ]}
             >
               {news.authorAvatar ? (
-                <Image source={{ uri: news.authorAvatar }} style={styles.authorAvatar} />
+                <Image source={{ uri: resolveMediaUrl(news.authorAvatar) || news.authorAvatar }} style={styles.authorAvatar} />
               ) : (
                 <View style={styles.authorAvatarFallback}>
                   <Text style={styles.authorInitial}>

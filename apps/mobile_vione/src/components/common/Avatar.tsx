@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet, ViewStyle } from "react-native";
 import { Colors } from "../../theme/colors";
+import { resolveMediaUrl } from "../../utils/media";
 
 interface AvatarProps {
   url?: string | null;
@@ -17,6 +18,7 @@ export const Avatar: React.FC<AvatarProps> = ({
   showGoldBorder = true,
   style,
 }) => {
+  const [imgError, setImgError] = useState(false);
   const initials = name
     .split(" ")
     .map((w) => w[0])
@@ -25,7 +27,8 @@ export const Avatar: React.FC<AvatarProps> = ({
     .join("")
     .toUpperCase() || "VO";
 
-  const hasImage = !!url && (url.startsWith("http") || url.startsWith("data:"));
+  const resolvedUrl = resolveMediaUrl(url);
+  const hasImage = !imgError && !!resolvedUrl;
 
   return (
     <View
@@ -43,9 +46,10 @@ export const Avatar: React.FC<AvatarProps> = ({
     >
       {hasImage ? (
         <Image
-          source={{ uri: url! }}
+          source={{ uri: resolvedUrl! }}
           style={{ width: size, height: size, borderRadius: size / 2 }}
           resizeMode="cover"
+          onError={() => setImgError(true)}
         />
       ) : (
         <View

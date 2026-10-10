@@ -35,6 +35,7 @@ import {
 } from "lucide-react-native";
 import { operationsApi } from "../api/services";
 import { useTheme } from "../context/ThemeContext";
+import { resolveMediaUrl } from "../utils/media";
 
 interface StaffMember {
   id: string;
@@ -278,7 +279,7 @@ export const StaffDailyActivityModal: React.FC<StaffDailyActivityModalProps> = (
                   {/* Top Staff Info */}
                   <View style={styles.staffHeader}>
                     <Image
-                      source={{ uri: staff.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" }}
+                      source={{ uri: resolveMediaUrl(staff.avatar) || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" }}
                       style={styles.staffAvatar}
                     />
                     <View style={{ flex: 1, marginLeft: 12 }}>

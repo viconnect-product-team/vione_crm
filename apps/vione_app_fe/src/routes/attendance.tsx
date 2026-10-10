@@ -17,6 +17,7 @@ import {
   ChevronRight,
   ShieldCheck,
   Award,
+  CheckCircle2,
 } from "lucide-react";
 import { AppShell } from "@/components/dashboard/AppShell";
 import { PageHeader, StatCard, Card, Pill } from "@/components/dashboard/PageKit";
@@ -85,32 +86,9 @@ export interface LeaveRequest {
   appliedBeforeHours: number;
 }
 
-const INITIAL_REQUESTS: LeaveRequest[] = [
-  {
-    id: "req-01",
-    employeeName: "Đặng Nam",
-    department: "Vận Hành Hệ Thống",
-    type: "Làm thêm giờ OT",
-    dates: "Hôm nay (18:00 - 21:00, 3 tiếng)",
-    reason: "Triển khai nạp chip Thẻ Titanium NFC đợt 1 cho sự kiện C-Level",
-    status: "pending",
-    appliedBeforeHours: 12,
-  },
-  {
-    id: "req-02",
-    employeeName: "Hoàng Gia Bảo",
-    department: "Phòng Kinh Doanh",
-    type: "Nghỉ phép năm",
-    dates: "Tuần này (2 ngày)",
-    reason: "Việc gia đình, đã bàn giao phễu lead cho Sales Director",
-    status: "approved",
-    appliedBeforeHours: 72,
-  },
-];
-
 function AttendancePage() {
   const [data, setData] = useState<CompanyAttendanceSummary | null>(null);
-  const [requests, setRequests] = useState<LeaveRequest[]>(INITIAL_REQUESTS);
+  const [requests, setRequests] = useState<LeaveRequest[]>([]);
   const [tab, setTab] = useState<"today" | "late_stats" | "requests">("today");
   const [latePeriod, setLatePeriod] = useState<"week" | "month">("week");
   const [search, setSearch] = useState("");
@@ -124,8 +102,25 @@ function AttendancePage() {
       if (res?.data) {
         setData(res.data);
       }
+      try {
+        const leavesRes = await fetchNestApi<any>("/operations/attendance/leaves");
+        const list = Array.isArray(leavesRes) ? leavesRes : leavesRes?.data || [];
+        const mappedLeaves: LeaveRequest[] = list.map((l: any, idx: number) => ({
+          id: String(l.id || `leave-${idx}`),
+          employeeName: l.employeeName || l.userName || "Nhân viên",
+          department: l.department || "Vận hành",
+          type: (l.type || "Nghỉ phép năm") as LeaveRequest["type"],
+          dates: l.dates || l.date || "Trong tuần",
+          reason: l.reason || "Nghỉ việc cá nhân",
+          status: (l.status || "pending") as LeaveRequest["status"],
+          appliedBeforeHours: Number(l.appliedBeforeHours || 24),
+        }));
+        setRequests(mappedLeaves);
+      } catch {
+        setRequests([]);
+      }
     } catch {
-      // Giữ trạng thái hiện tại hoặc fallback
+      // Giữ trạng thái hiện tại
     } finally {
       setIsLoading(false);
     }
@@ -525,59 +520,71 @@ function AttendancePage() {
         {/* TAB 3: LEAVE & OT APPROVALS */}
         {tab === "requests" && (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {requests.map((req) => (
-                <div
-                  key={req.id}
-                  className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4"
-                >
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-[#D8B282]/20 text-[#D8B282]">
-                        {req.type}
-                      </span>
-                      <span className={`text-[11px] font-bold ${
-                        req.status === "approved"
-                          ? "text-emerald-500"
-                          : req.status === "rejected"
-                          ? "text-red-500"
-                          : "text-amber-500"
-                      }`}>
-                        {req.status === "approved" ? "ĐÃ DUYỆT" : req.status === "rejected" ? "TỪ CHỐI" : "CHỜ DUYỆT"}
-                      </span>
-                    </div>
+            {requests.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <CheckCircle2 className="size-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  Chưa có đơn nghỉ phép hoặc làm thêm giờ nào trong CSDL
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  Đơn đề xuất điện tử gửi từ ứng dụng sẽ tự động xuất hiện tại đây để cấp quản lý phê duyệt 1 chạm.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {requests.map((req) => (
+                  <div
+                    key={req.id}
+                    className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between space-y-4"
+                  >
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-[#D8B282]/20 text-[#D8B282]">
+                          {req.type}
+                        </span>
+                        <span className={`text-[11px] font-bold ${
+                          req.status === "approved"
+                            ? "text-emerald-500"
+                            : req.status === "rejected"
+                            ? "text-red-500"
+                            : "text-amber-500"
+                        }`}>
+                          {req.status === "approved" ? "ĐÃ DUYỆT" : req.status === "rejected" ? "TỪ CHỐI" : "CHỜ DUYỆT"}
+                        </span>
+                      </div>
 
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">{req.employeeName}</h4>
-                    <div className="text-xs text-slate-500">{req.department}</div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white">{req.employeeName}</h4>
+                      <div className="text-xs text-slate-500">{req.department}</div>
 
-                    <div className="mt-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs space-y-1">
-                      <div><strong className="text-slate-400">Thời gian:</strong> {req.dates}</div>
-                      <div><strong className="text-slate-400">Lý do:</strong> {req.reason}</div>
-                      <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
-                        Nộp trước: {req.appliedBeforeHours} giờ
+                      <div className="mt-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-xs space-y-1">
+                        <div><strong className="text-slate-400">Thời gian:</strong> {req.dates}</div>
+                        <div><strong className="text-slate-400">Lý do:</strong> {req.reason}</div>
+                        <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
+                          Nộp trước: {req.appliedBeforeHours} giờ
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {req.status === "pending" && (
-                    <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                      <button
-                        onClick={() => handleApprove(req.id)}
-                        className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
-                      >
-                        Duyệt Đơn 1-Chạm
-                      </button>
-                      <button
-                        onClick={() => handleReject(req.id)}
-                        className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer"
-                      >
-                        Từ Chối
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+                    {req.status === "pending" && (
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <button
+                          onClick={() => handleApprove(req.id)}
+                          className="flex-1 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
+                        >
+                          Duyệt Đơn 1-Chạm
+                        </button>
+                        <button
+                          onClick={() => handleReject(req.id)}
+                          className="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 font-bold text-xs transition-all cursor-pointer"
+                        >
+                          Từ Chối
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

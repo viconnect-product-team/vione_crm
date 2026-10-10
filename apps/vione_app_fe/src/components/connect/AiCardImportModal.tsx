@@ -65,7 +65,6 @@ import {
   type HistoryExportRow,
 } from "@/lib/card-ai-history-export";
 import { getTemplate } from "@/lib/card-templates";
-import { supabase } from "@/integrations/supabase/client";
 import { GlobalCardPreview, type PreviewState } from "./GlobalCardPreview";
 import { CardTemplateGallery } from "./CardTemplateGallery";
 import { ImageCropperDialog } from "./ImageCropperDialog";
@@ -282,25 +281,26 @@ export function AiCardImportModal({
     actorRef.current = actor;
   }, [actor]);
   useEffect(() => {
-    let cancelled = false;
-    supabase.auth
-      .getUser()
-      .then(({ data }) => {
-        if (cancelled) return;
-        const u = data?.user ?? null;
-        if (!u) return;
-        const meta = (u.user_metadata ?? {}) as Record<string, unknown>;
-        const label =
-          (typeof meta.full_name === "string" && meta.full_name) ||
-          (typeof meta.name === "string" && meta.name) ||
-          u.email ||
-          u.id;
-        setActor({ id: u.id, label: String(label) });
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
+    try {
+      const raw =
+        typeof window !== "undefined"
+          ? localStorage.getItem("vibe_user") || localStorage.getItem("user")
+          : null;
+      if (raw) {
+        const u = JSON.parse(raw);
+        if (u) {
+          const meta = (u.user_metadata ?? {}) as Record<string, unknown>;
+          const label =
+            u.full_name ||
+            u.name ||
+            (typeof meta.full_name === "string" && meta.full_name) ||
+            (typeof meta.name === "string" && meta.name) ||
+            u.email ||
+            u.id;
+          setActor({ id: u.id ?? null, label: String(label ?? "") });
+        }
+      }
+    } catch {}
   }, []);
 
   const reset = useCallback(() => {

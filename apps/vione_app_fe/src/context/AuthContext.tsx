@@ -101,11 +101,7 @@ function clearSessionCookies() {
 }
 
 const API_BASE =
-  typeof window !== 'undefined' &&
-  (window.location.protocol === 'https:' ||
-    window.location.port === '5443' ||
-    window.location.port === '5444' ||
-    window.location.port === '5445')
+  typeof window !== 'undefined'
     ? ''
     : ((import.meta.env.VITE_API_URL as string | undefined) ?? '');
 

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Request, UseGuards, Param, Query, Delete, Patch, BadRequestException } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ConnectAppService } from './connect-app.service';
+import { SendConnectionRequestDto, UpdateConnectionDto, ResolveCounterpartsDto } from './dto';
 
 @Controller(['network', 'connect-app/network'])
 @UseGuards(JwtAuthGuard)
@@ -32,8 +33,8 @@ export class NetworkController {
   }
 
   @Post('connections/resolve')
-  async resolvePublicCounterparts(@Body('userIds') userIds: string[]) {
-    return this.connectAppService.resolvePublicCounterparts(userIds);
+  async resolvePublicCounterparts(@Body() dto: ResolveCounterpartsDto) {
+    return this.connectAppService.resolvePublicCounterparts(dto.userIds || []);
   }
 
   @Get('saved-cards')
@@ -86,15 +87,15 @@ export class NetworkController {
   }
 
   @Post('requests')
-  async sendConnectionRequest(@Request() req, @Body() body: any) {
-    return this.connectAppService.sendConnectionRequest(req.user.id, body);
+  async sendConnectionRequest(@Request() req, @Body() dto: SendConnectionRequestDto) {
+    return this.connectAppService.sendConnectionRequest(req.user.id, dto);
   }
 
   @Patch('connections/:id')
-  async updateConnection(@Request() req, @Param('id') id: string, @Body() body: { status: string }) {
-    if (body.status === 'accepted') {
+  async updateConnection(@Request() req, @Param('id') id: string, @Body() dto: UpdateConnectionDto) {
+    if (dto.status === 'accepted') {
       return this.connectAppService.acceptConnection(req.user.id, { connectionId: id });
-    } else if (body.status === 'declined') {
+    } else if (dto.status === 'declined') {
       return this.connectAppService.declineConnection(req.user.id, { connectionId: id });
     }
     throw new BadRequestException('invalid_status');

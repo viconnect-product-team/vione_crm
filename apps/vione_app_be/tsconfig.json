@@ -18,7 +18,9 @@
     "baseUrl": "./",
     "rootDir": "src",
     "paths": {
-      "@vibe/db": ["../../packages/db/index.d.ts"]
+      "@vibe/db": ["../../packages/db/index.d.ts"],
+      "@vibe/shared": ["../../packages/shared/dist/index.d.ts"],
+      "@vibe/shared/*": ["../../packages/shared/dist/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

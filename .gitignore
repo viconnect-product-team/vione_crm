@@ -60,3 +60,22 @@ release_apk/
 *.apk
 *.aab
 *.ipa
+vione.apk
+
+# Scratch, Temporary & Debug Dumps
+scratch/
+**/scratch/**
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.tsbuildinfo
+accounts_dump.json
+inspect_*.js
+vione_test_and_fix_notes.md
+
+# Test Screenshots in Scripts
+scripts/*.png
+scripts/*.jpg
+scripts/*.jpeg

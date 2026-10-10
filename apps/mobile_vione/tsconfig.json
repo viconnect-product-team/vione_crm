@@ -1,16 +1,25 @@
 {
-  "extends": "../../node_modules/expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "lib": ["DOM", "ESNext"],
+    "moduleResolution": "node",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@vibe/shared": ["../../packages/shared/dist/index.d.ts"],
+      "@vibe/shared/*": ["../../packages/shared/dist/*"]
     },
     "typeRoots": [
       "./node_modules/@types",
       "../../node_modules/@types"
-    ],
-    "skipLibCheck": true
+    ]
   },
   "include": [
     "**/*.ts",

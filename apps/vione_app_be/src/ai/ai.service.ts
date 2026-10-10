@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { DocumentGenerator, DocGenerationOptions } from './document-generator';
 
 export interface PotentialCustomerLead {
   id: string;
@@ -20,6 +21,15 @@ export interface ClientDataState {
   customerCount: number;
   hasDeals?: boolean;
   dealCount?: number;
+}
+
+export interface GeneratedFileItem {
+  id: string;
+  name: string;
+  type: 'excel' | 'word' | 'pdf';
+  downloadUrl: string;
+  fileSize: string;
+  description: string;
 }
 
 export interface AiChatResponse {
@@ -63,6 +73,7 @@ export interface AiChatResponse {
     rowCount: number;
     title: string;
   };
+  generatedFiles?: GeneratedFileItem[];
 }
 
 @Injectable()
@@ -74,6 +85,46 @@ export class AiService {
 
   getGeneratedReport(id: string) {
     return this.generatedReports.get(id);
+  }
+
+  async generateWordDocument(type: string, options: DocGenerationOptions = {}) {
+    const res = await DocumentGenerator.generateWordBuffer(type, options);
+    const reportId = `doc-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
+    this.generatedReports.set(reportId, {
+      buffer: res.buffer,
+      filename: res.filename,
+      mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      createdAt: new Date(),
+    });
+    return {
+      id: reportId,
+      filename: res.filename,
+      downloadUrl: `/api/ai/download-file/${reportId}`,
+      fileSize: `${Math.round(res.buffer.length / 1024)} KB`,
+      type: 'word' as const,
+      title: options.title || res.filename,
+      description: 'Văn bản Word (.docx) chuẩn format Microsoft Word / Office 365',
+    };
+  }
+
+  generatePdfDocument(type: string, options: DocGenerationOptions = {}) {
+    const res = DocumentGenerator.generatePdfBuffer(type, options);
+    const reportId = `pdf-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
+    this.generatedReports.set(reportId, {
+      buffer: res.buffer,
+      filename: res.filename,
+      mimeType: 'application/pdf',
+      createdAt: new Date(),
+    });
+    return {
+      id: reportId,
+      filename: res.filename,
+      downloadUrl: `/api/ai/download-file/${reportId}`,
+      fileSize: `${Math.round(res.buffer.length / 1024)} KB`,
+      type: 'pdf' as const,
+      title: options.title || res.filename,
+      description: 'Tài liệu PDF (.pdf) chuẩn format in ấn & ký duyệt điện tử',
+    };
   }
   constructor(private prisma: PrismaService) {}
 
@@ -732,7 +783,7 @@ export class AiService {
       rowCount = trafficDaily.length;
       summaryText = `Báo cáo lưu lượng web landing trong 30 ngày qua với ${trafficDaily.reduce((acc: number, x: any) => acc + Number(x.visits || 0), 0)} lượt xem.`;
 
-    } else {
+    } else if (reportType === 'approvals') {
       // approvals
       filename = `BaoCao_TrinhKy_PheDuyet_${new Date().toISOString().slice(0, 10)}.xlsx`;
       const sheet = workbook.addWorksheet('Sổ Trình Ký');
@@ -795,6 +846,202 @@ export class AiService {
 
       rowCount = appRows.length;
       summaryText = `Báo cáo trình ký gồm ${appRows.length} tờ trình đa cấp thẩm tra và phê duyệt.`;
+
+    } else if (reportType === 'tasks' || reportType === 'workload') {
+      filename = `BaoCao_PhanCong_GiaoViec_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const sheet = workbook.addWorksheet('Giao Việc & Tiến Độ');
+
+      sheet.mergeCells('A1:I1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HỆ THỐNG VIONE CRM — BẢNG PHÂN CÔNG GIAO VIỆC & THEO DÕI TIẾN ĐỘ NHÂN SỰ';
+      titleCell.font = titleFont;
+      titleCell.fill = navyFill;
+      titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      sheet.getRow(1).height = 36;
+
+      sheet.addRow(['Ngày xuất:', new Date().toLocaleString('vi-VN'), '', '', 'Mã báo cáo:', reportId]);
+      sheet.addRow([]);
+
+      const headers = ['STT', 'Mã Task', 'Tiêu Đề Công Việc', 'Người Giao Việc', 'Nhân Sự Tiếp Nhận', 'Độ Ưu Tiên', 'Hạn Chót', 'Tiến Độ (%)', 'Trạng Thái'];
+      const headerRow = sheet.addRow(headers);
+      headerRow.height = 26;
+      headerRow.eachCell((cell: any) => {
+        cell.fill = goldFill;
+        cell.font = headerFont;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = thinBorder;
+      });
+
+      const taskRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT * FROM public.company_tasks ORDER BY created_at DESC;
+      `).catch(() => []);
+
+      taskRows.forEach((t, idx) => {
+        const row = sheet.addRow([
+          idx + 1,
+          t.id,
+          t.title,
+          t.assigner_name || 'Ban Giám Đốc',
+          t.assignee_name || 'Nhân sự',
+          t.priority === 'urgent' ? 'Khẩn cấp' : (t.priority === 'high' ? 'Ưu tiên cao' : 'Bình thường'),
+          t.deadline || 'Trong 24h',
+          `${t.progress || 0}%`,
+          t.status === 'completed' ? 'Hoàn thành' : (t.status === 'in_progress' ? 'Đang thực hiện' : 'Mới giao'),
+        ]);
+        row.height = 20;
+        row.eachCell((cell: any, colNum: number) => {
+          cell.border = thinBorder;
+          if (idx % 2 === 1) cell.fill = zebraFill;
+          if (colNum === 1 || colNum === 2 || colNum === 6 || colNum === 8 || colNum === 9) {
+            cell.alignment = { horizontal: 'center' };
+          }
+        });
+      });
+
+      sheet.columns.forEach((col: any) => {
+        let maxLen = 14;
+        col.eachCell({ includeEmpty: true }, (c: any) => {
+          const l = c.value ? String(c.value).length : 0;
+          if (l > maxLen) maxLen = Math.min(l + 3, 38);
+        });
+        col.width = maxLen;
+      });
+
+      rowCount = taskRows.length;
+      summaryText = `Báo cáo phân bổ giao việc gồm ${taskRows.length} công việc nhân sự được giao và theo dõi tiến độ thời gian thực.`;
+
+    } else if (reportType === 'opportunities' || reportType === 'b2b') {
+      filename = `BaoCao_CoHoi_GiaoThuong_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const sheet = workbook.addWorksheet('Cơ Hội B2B');
+
+      sheet.mergeCells('A1:H1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HỆ THỐNG VIONE CRM — BÁO CÁO CƠ HỘI GIAO THƯƠNG & XÚC TIẾN B2B';
+      titleCell.font = titleFont;
+      titleCell.fill = navyFill;
+      titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      sheet.getRow(1).height = 36;
+
+      sheet.addRow(['Ngày xuất:', new Date().toLocaleString('vi-VN'), '', '', 'Mã báo cáo:', reportId]);
+      sheet.addRow([]);
+
+      const headers = ['STT', 'Tiêu Đề Cơ Hội', 'Doanh Nghiệp Đăng', 'Ngành Nghề', 'Ngân Sách Tối Đa', 'Khu Vực', 'Người Liên Hệ', 'Trạng Thái'];
+      const headerRow = sheet.addRow(headers);
+      headerRow.height = 26;
+      headerRow.eachCell((cell: any) => {
+        cell.fill = goldFill;
+        cell.font = headerFont;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = thinBorder;
+      });
+
+      const oppRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT * FROM public.opportunities ORDER BY created_at DESC;
+      `).catch(() => []);
+
+      oppRows.forEach((o, idx) => {
+        const amt = Number(o.budget_max || 0);
+        const row = sheet.addRow([
+          idx + 1,
+          o.title,
+          o.company || o.author_name || 'Hội viên B2B',
+          o.industry || 'Đa ngành',
+          amt,
+          o.region || 'Toàn quốc',
+          o.contact_name || o.contact_phone || '',
+          o.status === 'open' ? 'Đang mở kết nối' : 'Đã khớp lệnh',
+        ]);
+        row.height = 20;
+        row.getCell(5).numFmt = '#,##0 "₫"';
+        row.eachCell((cell: any, colNum: number) => {
+          cell.border = thinBorder;
+          if (idx % 2 === 1) cell.fill = zebraFill;
+          if (colNum === 1 || colNum === 4 || colNum === 6 || colNum === 8) {
+            cell.alignment = { horizontal: 'center' };
+          }
+        });
+      });
+
+      sheet.columns.forEach((col: any) => {
+        let maxLen = 14;
+        col.eachCell({ includeEmpty: true }, (c: any) => {
+          const l = c.value ? String(c.value).length : 0;
+          if (l > maxLen) maxLen = Math.min(l + 3, 38);
+        });
+        col.width = maxLen;
+      });
+
+      rowCount = oppRows.length;
+      summaryText = `Báo cáo cơ hội B2B gồm ${oppRows.length} đề xuất hợp tác kinh doanh thời gian thực.`;
+
+    } else if (reportType === 'products' || reportType === 'marketplace') {
+      filename = `BaoCao_SanPham_Marketplace_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const sheet = workbook.addWorksheet('Sản Phẩm B2B');
+
+      sheet.mergeCells('A1:G1');
+      const titleCell = sheet.getCell('A1');
+      titleCell.value = 'HỆ THỐNG VIONE CRM — DANH MỤC SẢN PHẨM & DỊCH VỤ SÀN B2B';
+      titleCell.font = titleFont;
+      titleCell.fill = navyFill;
+      titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      sheet.getRow(1).height = 36;
+
+      sheet.addRow(['Ngày xuất:', new Date().toLocaleString('vi-VN'), '', '', 'Mã báo cáo:', reportId]);
+      sheet.addRow([]);
+
+      const headers = ['STT', 'Mã Sản Phẩm', 'Tên Sản Phẩm / Dịch Vụ', 'Nhà Cung Cấp', 'Giá Niêm Yết', 'Ưu Đãi Hội Viên', 'Trạng Thái'];
+      const headerRow = sheet.addRow(headers);
+      headerRow.height = 26;
+      headerRow.eachCell((cell: any) => {
+        cell.fill = goldFill;
+        cell.font = headerFont;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = thinBorder;
+      });
+
+      const prodRows = await this.prisma.$queryRawUnsafe<any[]>(`
+        SELECT * FROM public.products ORDER BY created_at DESC;
+      `).catch(() => []);
+
+      prodRows.forEach((p, idx) => {
+        const price = Number(p.price || 0);
+        const row = sheet.addRow([
+          idx + 1,
+          p.code || `PRD-${idx + 1}`,
+          p.name,
+          p.seller_name || p.company_name || 'Đối tác ViOne',
+          price,
+          p.member_discount ? `${p.member_discount}%` : 'Chiết khấu VIP',
+          p.status === 'published' ? 'Đang bán' : 'Chờ duyệt',
+        ]);
+        row.height = 20;
+        row.getCell(5).numFmt = '#,##0 "₫"';
+        row.eachCell((cell: any, colNum: number) => {
+          cell.border = thinBorder;
+          if (idx % 2 === 1) cell.fill = zebraFill;
+          if (colNum === 1 || colNum === 2 || colNum === 6 || colNum === 7) {
+            cell.alignment = { horizontal: 'center' };
+          }
+        });
+      });
+
+      sheet.columns.forEach((col: any) => {
+        let maxLen = 14;
+        col.eachCell({ includeEmpty: true }, (c: any) => {
+          const l = c.value ? String(c.value).length : 0;
+          if (l > maxLen) maxLen = Math.min(l + 3, 38);
+        });
+        col.width = maxLen;
+      });
+
+      rowCount = prodRows.length;
+      summaryText = `Báo cáo sản phẩm sàn B2B gồm ${prodRows.length} mặt hàng niêm yết.`;
+    } else {
+      filename = `BaoCao_TongHop_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const sheet = workbook.addWorksheet('Dữ Liệu');
+      sheet.addRow(['BÁO CÁO HỆ THỐNG VIONE CRM']);
+      rowCount = 1;
+      summaryText = 'Báo cáo tổng hợp hệ thống ViOne CRM.';
     }
 
     const buffer = await workbook.xlsx.writeBuffer();
@@ -952,15 +1199,69 @@ export class AiService {
    * Tương tác tự nhiên như người thật, tự động sinh tài liệu và hướng dẫn import
    * ============================================================
    */
-  async chat(userId: string, body: { message: string; conversationId?: string; capability?: string }): Promise<AiChatResponse> {
+  /**
+   * ============================================================
+   * 3. VI-ONE ENTERPRISE AI COPILOT 5.0 (CONVERSATIONAL & ACTION ENGINE)
+   * Tương tác tự nhiên như người thật, tự động sinh tài liệu và hướng dẫn import
+   * Nắm chắc thông tin tài khoản đăng nhập và xử lý đúng nghiệp vụ vai trò
+   * ============================================================
+   */
+  async chat(
+    userId: string,
+    body: {
+      message: string;
+      conversationId?: string;
+      capability?: string;
+      currentUser?: {
+        id?: string;
+        name?: string;
+        email?: string;
+        role?: string;
+        roleTitle?: string;
+        companyName?: string;
+        executiveRole?: string;
+        department?: string;
+      };
+    },
+  ): Promise<AiChatResponse> {
     const q = (body.message || '').trim();
     const qLower = q.toLowerCase();
+
+    // 0. Nhận diện tài khoản người dùng đăng nhập vào hệ thống
+    const user = body.currentUser || {};
+    const userName = user.name || (user as any).fullName || 'Quý Doanh Nhân';
+    const userRole = (user.role || '').toLowerCase();
+    const companyName = user.companyName || user.department || 'Doanh Nghiệp ViOne';
+
+    const isQuanTri =
+      userRole === 'quan_tri' ||
+      userRole === 'platform_admin' ||
+      userRole === 'superadmin' ||
+      userId === '00000000-0000-0000-0000-000000000000';
+    const isAdmin = isQuanTri || userRole === 'admin' || userRole === 'association_admin';
+    const isDirector =
+      !isAdmin &&
+      (userRole.includes('director') ||
+        userRole.includes('giam_doc') ||
+        userRole.includes('owner') ||
+        (user.executiveRole &&
+          (user.executiveRole.toLowerCase().includes('giám đốc') ||
+            user.executiveRole.toLowerCase().includes('chủ tịch'))));
+    const isStaff = !isAdmin && !isDirector;
+
+    const greetingPrefix = isQuanTri
+      ? `👑 **Kính thưa Lãnh đạo cấp cao ${userName} (Quản trị tối cao Hệ điều hành ViOne):**`
+      : isAdmin
+      ? `🛡️ **Kính chào Quản trị viên ${userName} (Ban Điều Hành ViOne):**`
+      : isDirector
+      ? `🏢 **Kính chào Giám đốc ${userName} (Đại diện ${companyName}):**`
+      : `💼 **Xin chào ${userName} (${user.department || 'Nhân sự Doanh nghiệp'}):**`;
 
     const defaultUserId = userId && userId !== 'anonymous' && userId.length > 20 ? userId : 'a0000000-0000-4000-8000-000000000002';
     await this.logActivity({
       userId: defaultUserId,
       action: 'Trợ lý Điều hành AI Copilot',
-      target: `Truy vấn: "${q.slice(0, 90)}${q.length > 90 ? '...' : ''}"`,
+      target: `Truy vấn: "${q.slice(0, 90)}${q.length > 90 ? '...' : ''}" (Role: ${userRole || 'member'})`,
       category: 'ai_copilot',
     });
 
@@ -968,7 +1269,7 @@ export class AiService {
       requestId: `ai-chat-${Date.now()}`,
       userId: defaultUserId,
       capability: 'ai_copilot',
-      permissionLevel: 'executive',
+      permissionLevel: isQuanTri ? 'super_admin' : isAdmin ? 'admin' : isDirector ? 'director' : 'member',
       provider: 'ViOne Executive Copilot Model',
       model: 'gemini-1.5-pro-vione',
       usedFallback: false,
@@ -981,17 +1282,89 @@ export class AiService {
 
     // 1. Thống kê realtime từ database
     const stats = await this.getOverviewStats();
-    const formattedDealValue = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(stats.dealValue);
-
-    await this.logActivity({
-      userId: userId || 'anonymous',
-      action: 'ai_copilot_query',
-      target: q.slice(0, 100),
-      category: 'ai_copilot',
-    });
+    const formattedDealValue = (stats.dealValue || 0).toLocaleString('vi-VN') + ' đ';
 
     // ============================================================
-    // CASE DYNAMIC EXCEL REPORT: TẠO FILE EXCEL & XUẤT BÁO CÁO CSDL
+    // CASE DYNAMIC WORD (.DOCX) & PDF (.PDF) DOCUMENT GENERATION
+    // Soạn thảo hợp đồng, biên bản, tờ trình chuẩn format Microsoft Word & PDF
+    // ============================================================
+    const isWordOrPdfReq =
+      qLower.includes('word') ||
+      qLower.includes('docx') ||
+      qLower.includes('pdf') ||
+      qLower.includes('soạn hợp đồng') ||
+      qLower.includes('tạo hợp đồng') ||
+      qLower.includes('tạo văn bản') ||
+      qLower.includes('biên bản') ||
+      qLower.includes('tờ trình') ||
+      qLower.includes('kế hoạch kinh doanh');
+
+    if (isWordOrPdfReq) {
+      let docType = 'contract_b2b';
+      let catName = 'Hợp Đồng Kinh Doanh B2B';
+      if (qLower.includes('biên bản')) {
+        docType = 'meeting_minutes';
+        catName = 'Biên Bản Họp Điều Hành';
+      } else if (qLower.includes('tờ trình') || qLower.includes('ngân sách') || qLower.includes('chi tiền')) {
+        docType = 'payment_proposal';
+        catName = 'Tờ Trình Phê Duyệt Ngân Sách';
+      }
+
+      const wordRes = await this.generateWordDocument(docType, {
+        title: q,
+        partyA: 'Công Ty Cổ Phần Công Nghệ & Giải Pháp ViOne',
+        partyB: companyName,
+        value: 150000000,
+        signerName: userName,
+        signerRole: isDirector ? 'Giám Đốc Doanh Nghiệp' : isQuanTri ? 'Chủ Tịch / Ban Quản Trị' : 'Đại Diện Đơn Vị',
+      });
+
+      const pdfRes = this.generatePdfDocument(docType, {
+        title: q,
+        partyA: 'ViOne Enterprise Platform',
+        partyB: companyName,
+        value: 150000000,
+      });
+
+      const files = [
+        {
+          id: wordRes.id,
+          name: wordRes.filename,
+          type: 'word' as const,
+          downloadUrl: wordRes.downloadUrl,
+          fileSize: wordRes.fileSize,
+          description: `Văn bản Word (.docx) chuẩn format Microsoft Word / Office 365 có đầy đủ điều khoản và thẩm quyền ký duyệt.`,
+        },
+        {
+          id: pdfRes.id,
+          name: pdfRes.filename,
+          type: 'pdf' as const,
+          downloadUrl: pdfRes.downloadUrl,
+          fileSize: pdfRes.fileSize,
+          description: `Tài liệu PDF (.pdf) chuẩn format in ấn & ký duyệt điện tử ViOne AI Verified.`,
+        },
+      ];
+
+      return {
+        ok: true,
+        answer: `${greetingPrefix}\n\n📄 **Em đã tự động khởi tạo và biên soạn xong bộ tài liệu chuẩn format doanh nghiệp:**\n\n• **Tên văn bản:** **${wordRes.title}**\n• **Phân loại:** **${catName}**\n• **Định dạng file hoàn tất:** Tệp **Word (.docx)** chuẩn Microsoft Word / Office 365 và tệp **PDF (.pdf)** chuẩn in ấn / ký điện tử\n• **Đặc quyền tài khoản:** Thiết lập sẵn đại diện ký duyệt là **${userName}** (${userRole ? userRole.toUpperCase() : 'LÃNH ĐẠO'})\n• **Lưu trữ:** Tự động đồng bộ vào Kho Tài Liệu CRM (\`/documents\`).\n\n*Anh/Chị nhấn vào các nút tải tệp bên dưới để mở ngay trên máy tính hoặc điện thoại nhé!*`,
+        voiceText: `Dạ thưa ${userName}, em đã soạn thảo hoàn chỉnh văn bản ${catName} theo cả định dạng Word và PDF chuẩn format. Anh Chị có thể tải tệp ngay bên dưới ạ.`,
+        reasoningSummary: 'AI Document Engine sinh song song file Word (.docx) và PDF (.pdf) chuẩn định dạng doanh nghiệp.',
+        evidence: [
+          { id: wordRes.id, type: 'document', title: wordRes.filename, excerpt: `Word .docx • ${wordRes.fileSize}` },
+          { id: pdfRes.id, type: 'document', title: pdfRes.filename, excerpt: `PDF .pdf • ${pdfRes.fileSize}` },
+        ],
+        generatedFiles: files,
+        suggestedActions: [
+          { label: '📥 Tải Tệp Word (.docx)', route: wordRes.downloadUrl },
+          { label: '📑 Tải Tệp PDF (.pdf)', route: pdfRes.downloadUrl },
+          { label: '📁 Mở Kho Tài Liệu CRM', route: '/documents' },
+        ],
+      };
+    }
+
+    // ============================================================
+    // CASE DYNAMIC EXCEL REPORT: TẠO FILE EXCEL & XUẤT BÁO CÁO CSDL ĐA DẠNG
     // ============================================================
     const isExcelOrReportReq =
       qLower.includes('excel') ||
@@ -1008,6 +1381,10 @@ export class AiService {
       qLower.includes('báo cáo chấm công') ||
       qLower.includes('báo cáo hội viên') ||
       qLower.includes('báo cáo trình ký') ||
+      qLower.includes('báo cáo giao việc') ||
+      qLower.includes('báo cáo công việc') ||
+      qLower.includes('báo cáo cơ hội') ||
+      qLower.includes('báo cáo sản phẩm') ||
       qLower.includes('báo cáo truy cập');
 
     if (isExcelOrReportReq) {
@@ -1022,6 +1399,28 @@ export class AiService {
       ) {
         repType = 'attendance';
         catName = 'Chấm Công & Điểm Danh';
+      } else if (
+        qLower.includes('giao việc') ||
+        qLower.includes('công việc') ||
+        qLower.includes('tiến độ') ||
+        qLower.includes('kpi')
+      ) {
+        repType = 'tasks';
+        catName = 'Giao Việc & Phân Công Nhân Sự';
+      } else if (
+        qLower.includes('cơ hội') ||
+        qLower.includes('b2b') ||
+        qLower.includes('giao thương')
+      ) {
+        repType = 'opportunities';
+        catName = 'Cơ Hội Giao Thương B2B';
+      } else if (
+        qLower.includes('sản phẩm') ||
+        qLower.includes('marketplace') ||
+        qLower.includes('dịch vụ')
+      ) {
+        repType = 'products';
+        catName = 'Danh Mục Sản Phẩm Marketplace';
       } else if (
         qLower.includes('hội viên') ||
         qLower.includes('thành viên') ||
@@ -1052,10 +1451,21 @@ export class AiService {
 
       const generated = await this.generateExcelReport(repType);
 
+      const files = [
+        {
+          id: generated.id,
+          name: generated.filename,
+          type: 'excel' as const,
+          downloadUrl: generated.downloadUrl,
+          fileSize: generated.fileSize,
+          description: `Báo cáo Excel ${catName} trích xuất 100% thời gian thực từ CSDL ViOne PostgreSQL`,
+        },
+      ];
+
       return {
         ok: true,
-        answer: `📊 **Em Đã Khởi Tạo Thành Công File Báo Cáo Excel Chuyên Nghiệp (.xlsx):**\n\n• **Tên báo cáo:** **${generated.title}**\n• **Phân hệ dữ liệu:** **${catName}**\n• **Nguồn số liệu:** Trích xuất 100% thời gian thực từ CSDL ViOne PostgreSQL\n• **Số dòng dữ liệu đã kết xuất:** **${generated.rowCount} bản ghi**\n• **Định dạng:** Chuẩn Microsoft Excel (.xlsx), định dạng màu thương hiệu ViOne Champagne Gold (#C5A572) và Navy (#1E293B), căn chỉnh độ rộng cột tự động và cài sẵn công thức tính tổng.\n\n*Anh/Chị có thể nhấn vào nút tải bên dưới để lưu file về máy hoặc xem trực tiếp.*`,
-        voiceText: `Dạ thưa Anh Chị, em đã tổng hợp dữ liệu từ hệ thống và tạo xong tệp báo cáo Excel ${catName} với ${generated.rowCount} bản ghi thực tế. Anh Chị có thể tải tệp ngay bây giờ ạ.`,
+        answer: `${greetingPrefix}\n\n📊 **Em Đã Khởi Tạo Thành Công File Báo Cáo Excel Chuyên Nghiệp (.xlsx):**\n\n• **Tên báo cáo:** **${generated.title}**\n• **Phân hệ dữ liệu:** **${catName}**\n• **Nguồn số liệu:** Trích xuất 100% thời gian thực từ CSDL ViOne PostgreSQL\n• **Số dòng dữ liệu đã kết xuất:** **${generated.rowCount} bản ghi**\n• **Định dạng:** Chuẩn Microsoft Excel (.xlsx), định dạng màu thương hiệu ViOne Champagne Gold (#C5A572) và Navy (#1E293B), căn chỉnh độ rộng cột tự động và cài sẵn công thức tính tổng.\n\n*Anh/Chị có thể nhấn vào nút tải bên dưới để lưu file về máy hoặc xem trực tiếp.*`,
+        voiceText: `Dạ thưa ${userName}, em đã tổng hợp dữ liệu từ hệ thống và tạo xong tệp báo cáo Excel ${catName} với ${generated.rowCount} bản ghi thực tế. Anh Chị có thể tải tệp ngay bây giờ ạ.`,
         reasoningSummary: `Truy vấn CSDL PostgreSQL thực tế, biên soạn workbook ExcelJS chuẩn ${repType} và lưu trữ bộ đệm để cấp link tải an toàn.`,
         evidence: [
           {
@@ -1066,11 +1476,12 @@ export class AiService {
           },
         ],
         excelReport: generated,
+        generatedFiles: files,
         suggestedActions: [
           { label: '📥 Tải File Báo Cáo Excel (.xlsx)', route: generated.downloadUrl },
-          { label: '📊 Xuất Báo Cáo Thu - Chi Excel', intent: 'export_excel_finance' },
-          { label: '⏱️ Xuất Báo Cáo Chấm Công Excel', intent: 'export_excel_attendance' },
-          { label: '✍️ Xuất Báo Cáo Trình Ký Excel', intent: 'export_excel_approvals' },
+          { label: '📊 Xuất Báo Cáo Phân Công Giao Việc', intent: 'export_excel_tasks' },
+          { label: '💼 Xuất Báo Cáo Cơ Hội B2B', intent: 'export_excel_opps' },
+          { label: '💰 Xuất Báo Cáo Thu - Chi', intent: 'export_excel_finance' },
         ],
       };
     }

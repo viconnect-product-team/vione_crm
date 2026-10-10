@@ -56,6 +56,7 @@ import {
   type ZaloTransactionData,
 } from "@/components/business-connect/mobile/ZaloTransactionCard";
 import { OpportunityMeetingProposalCard } from "@/components/business-connect/mobile/inbox/OpportunityMeetingProposalCard";
+import { PersonalProfileBottomSheet } from "@/components/common/PersonalProfileBottomSheet";
 
 export const Route = createFileRoute("/connect-app/inbox/$threadId")({
   head: () => ({
@@ -337,6 +338,7 @@ function ThreadPage() {
     isOpen: false,
     type: "audio",
   });
+  const [profileSheetOpen, setProfileSheetOpen] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -630,7 +632,11 @@ function ThreadPage() {
           </button>
 
           {thread ? (
-            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            <div
+              onClick={() => setProfileSheetOpen(true)}
+              className="flex items-center gap-2.5 min-w-0 flex-1 cursor-pointer hover:opacity-85 active:scale-98 transition-all"
+              title="Bấm để xem hồ sơ cá nhân"
+            >
               <div className="relative shrink-0">
                 {thread.avatarUrl && !avatarError ? (
                   <img
@@ -1459,6 +1465,20 @@ function ThreadPage() {
           </>
         )}
       </div>
+
+      {/* Sheet xem hồ sơ cá nhân khi bấm vào avatar hoặc tên đối tác */}
+      <PersonalProfileBottomSheet
+        open={profileSheetOpen}
+        onClose={() => setProfileSheetOpen(false)}
+        profile={{
+          displayName: thread?.displayName || "Đối tác ViOne",
+          avatarUrl: thread?.avatarUrl || null,
+          jobTitle: (thread as any)?.isGroup ? "Nhóm làm việc" : "Hội viên kết nối",
+          companyName: (thread as any)?.isGroup ? "Cộng đồng ViOne" : "Doanh nghiệp ViOne",
+          phone: null,
+          email: null,
+        }}
+      />
     </div>
   );
 }

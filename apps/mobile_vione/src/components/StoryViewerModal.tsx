@@ -12,6 +12,7 @@ import {
 import { X, Heart, Eye, MapPin, Building2, Briefcase, Share2 } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Avatar } from "./common/Avatar";
+import { resolveMediaUrl } from "../utils/media";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -70,7 +71,7 @@ export const StoryViewerModal: React.FC<StoryViewerModalProps> = ({
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.container}>
         {/* Story Background Image */}
-        <Image source={{ uri: story.storyImage }} style={styles.bgImage} resizeMode="cover" />
+        <Image source={{ uri: resolveMediaUrl(story.storyImage) || story.storyImage }} style={styles.bgImage} resizeMode="cover" />
 
         <LinearGradient
           colors={["rgba(10, 10, 11, 0.75)", "transparent", "rgba(10, 10, 11, 0.92)"]}

@@ -1,5 +1,6 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Route as AssocRenewRoute } from "./association.renew";
 
 export const Route = createFileRoute("/m/renew")({
-  component: () => <Outlet />,
+  component: AssocRenewRoute.options.component as any,
 });

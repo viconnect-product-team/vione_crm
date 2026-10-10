@@ -1008,7 +1008,8 @@ function AccountManagementPage() {
                     className="h-10 rounded-xl border border-border bg-background px-3 text-xs font-medium text-foreground outline-none focus:border-ring"
                   >
                     <option value="all">Tất cả vai trò</option>
-                    <option value="platform_admin">Platform Admin</option>
+                    <option value="quan_tri">Quản trị (Cao nhất)</option>
+                    <option value="admin">Admin</option>
                     <option value="tenant_admin">Tenant Admin</option>
                     <option value="staff">Staff</option>
                     <option value="viewer">Viewer</option>
@@ -1097,14 +1098,20 @@ function AccountManagementPage() {
                                 <span
                                   key={r}
                                   className={`rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                                    r === "platform_admin"
+                                    r === "quan_tri" || r === "platform_admin"
                                       ? "bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"
+                                      : r === "admin"
+                                      ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20"
                                       : r === "tenant_admin"
                                       ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20"
                                       : "bg-secondary text-muted-foreground"
                                   }`}
                                 >
-                                  {r.replace("_", " ")}
+                                  {r === "quan_tri" || r === "platform_admin"
+                                    ? "Quản trị"
+                                    : r === "admin"
+                                    ? "Admin"
+                                    : r.replace("_", " ")}
                                 </span>
                               ))}
                             </div>
@@ -1347,9 +1354,10 @@ function AccountManagementPage() {
                     onChange={(e) => setCreateRole(e.target.value)}
                     className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-ring"
                   >
-                    <option value="staff">Staff (Nhân viên)</option>
+                    <option value="quan_tri">Quản trị (Cao nhất)</option>
+                    <option value="admin">Admin</option>
                     <option value="tenant_admin">Tenant Admin (Quản trị hiệp hội)</option>
-                    <option value="platform_admin">Platform Admin (Toàn hệ thống)</option>
+                    <option value="staff">Staff (Nhân viên)</option>
                     <option value="viewer">Viewer (Chỉ xem)</option>
                   </select>
                 </div>
@@ -1433,9 +1441,10 @@ function AccountManagementPage() {
                     onChange={(e) => setEditRole(e.target.value)}
                     className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-ring"
                   >
-                    <option value="staff">Staff (Nhân viên)</option>
+                    <option value="quan_tri">Quản trị (Cao nhất)</option>
+                    <option value="admin">Admin</option>
                     <option value="tenant_admin">Tenant Admin (Quản trị hiệp hội)</option>
-                    <option value="platform_admin">Platform Admin (Toàn hệ thống)</option>
+                    <option value="staff">Staff (Nhân viên)</option>
                     <option value="viewer">Viewer (Chỉ xem)</option>
                   </select>
                 </div>

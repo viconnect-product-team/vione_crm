@@ -28,6 +28,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { Avatar } from "./common/Avatar";
+import { resolveMediaUrl } from "../utils/media";
 import { momentApi } from "../api/services";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -331,7 +332,7 @@ export const MomentCommentModal: React.FC<MomentCommentModalProps> = ({
 
                       {cm.photoUrl && (
                         <View style={styles.attachedPhotoWrap}>
-                          <Image source={{ uri: cm.photoUrl }} style={styles.attachedPhotoImg} resizeMode="cover" />
+                          <Image source={{ uri: resolveMediaUrl(cm.photoUrl) || cm.photoUrl }} style={styles.attachedPhotoImg} resizeMode="cover" />
                         </View>
                       )}
                     </View>

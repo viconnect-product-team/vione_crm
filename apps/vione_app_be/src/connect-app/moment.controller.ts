@@ -1,6 +1,13 @@
 import { Controller, Post, Body, Request, UseGuards, Get, Patch, Delete, Param, Query } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ConnectAppService } from './connect-app.service';
+import {
+  NotifyMomentTagsDto,
+  CreateMomentCommentDto,
+  PrepareMomentDto,
+  FinalizeMomentDto,
+  UpdateMomentDto,
+} from './dto';
 
 @Controller(['moments', 'connect-app/moments', 'connect-app/moment'])
 @UseGuards(JwtAuthGuard)
@@ -14,7 +21,7 @@ export class MomentController {
   }
 
   @Post('notify-tags')
-  async notifyMomentTags(@Request() req, @Body() body: { momentId: string; taggedUserIds: string[]; content?: string }) {
+  async notifyMomentTags(@Request() req, @Body() body: NotifyMomentTagsDto) {
     return this.connectAppService.notifyMomentTags(req.user.id, body);
   }
 
@@ -49,7 +56,7 @@ export class MomentController {
   async createMomentComment(
     @Request() req,
     @Param('id') id: string,
-    @Body() body: { parentId?: string | null; content: string; mentions?: any[] },
+    @Body() body: CreateMomentCommentDto,
   ) {
     return this.connectAppService.createMomentComment(req.user.id, id, body);
   }
@@ -73,21 +80,22 @@ export class MomentController {
   }
 
   @Post()
-  async prepareMoment(@Request() req, @Body() data: any) {
+  async prepareMoment(@Request() req, @Body() data: PrepareMomentDto) {
     return this.connectAppService.prepareMoment(req.user.id, data);
   }
 
   @Post(':id/finalize')
-  async finalizeMoment(@Request() req, @Param('id') id: string, @Body() data: any) {
+  async finalizeMoment(@Request() req, @Param('id') id: string, @Body() data: FinalizeMomentDto) {
     const input = { ...data, momentId: id };
     return this.connectAppService.finalizeMoment(req.user.id, input);
   }
 
   @Patch(':id')
-  async updateMoment(@Request() req, @Param('id') id: string, @Body() data: any) {
+  async updateMoment(@Request() req, @Param('id') id: string, @Body() data: UpdateMomentDto) {
     const input = { ...data, momentId: id };
     return this.connectAppService.updateMoment(req.user.id, input);
   }
+
 
   @Delete(':id')
   async deleteMoment(@Request() req, @Param('id') id: string) {

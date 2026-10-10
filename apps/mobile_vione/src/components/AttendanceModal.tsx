@@ -24,6 +24,7 @@ import {
 } from "lucide-react-native";
 import { useTheme } from "../context/ThemeContext";
 import { operationsApi } from "../api/services";
+import { resolveMediaUrl } from "../utils/media";
 
 interface AttendanceModalProps {
   visible: boolean;
@@ -283,7 +284,7 @@ export const AttendanceModal: React.FC<AttendanceModalProps> = ({ visible, onClo
                             <Image
                               source={{
                                 uri:
-                                  item.avatar ||
+                                  resolveMediaUrl(item.avatar) ||
                                   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
                               }}
                               style={styles.staffAvatar}
@@ -386,7 +387,7 @@ export const AttendanceModal: React.FC<AttendanceModalProps> = ({ visible, onClo
                             <Image
                               source={{
                                 uri:
-                                  item.avatar ||
+                                  resolveMediaUrl(item.avatar) ||
                                   "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
                               }}
                               style={styles.rankingAvatar}

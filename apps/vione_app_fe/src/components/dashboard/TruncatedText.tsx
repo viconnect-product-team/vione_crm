@@ -51,3 +51,5 @@ export function TruncatedText({
     </TooltipPrimitive.Provider>
   );
 }
+
+export { DashboardCellTooltip } from "./DashboardCellTooltip";

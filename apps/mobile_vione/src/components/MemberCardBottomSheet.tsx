@@ -33,6 +33,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { VIconMark } from "./VIconMark";
+import { resolveMediaUrl } from "../utils/media";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -76,7 +77,7 @@ export const MemberCardBottomSheet: React.FC<MemberCardBottomSheetProps> = ({
   const email = member?.email || user?.email || "ceo@vione.vn";
   const memberCode = member?.code || user?.code || "VN-8888";
   const website = member?.website || user?.website || "https://vione.vn";
-  const avatarUrl = member?.avatarUrl || user?.avatarUrl;
+  const avatarUrl = resolveMediaUrl(member?.avatarUrl || user?.avatarUrl);
 
   const getInitial = (name: string) => {
     const parts = name.trim().split(/\s+/);

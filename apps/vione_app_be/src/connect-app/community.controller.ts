@@ -42,6 +42,12 @@ export class CommunityController {
     return this.connectAppService.getMyCommunities(req.user.id);
   }
 
+  @Get('company-staff-status')
+  @UseGuards(JwtAuthGuard)
+  async checkCompanyStaffStatus(@Request() req) {
+    return this.connectAppService.checkCompanyStaffStatus(req.user.id);
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard)
   async createCommunity(
@@ -542,6 +548,17 @@ export class CommunityController {
     return this.connectAppService.createCompanyTask(req.user.id, cleanCommunityId(communityId), body);
   }
 
+  @Patch(':communityId/tasks/:taskId')
+  @UseGuards(JwtAuthGuard)
+  async updateCompanyTask(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Param('taskId') taskId: string,
+    @Body() body: any,
+  ) {
+    return this.connectAppService.updateCompanyTask(req.user.id, cleanCommunityId(communityId), taskId, body);
+  }
+
   @Post(':communityId/tasks/:taskId/accept')
   @UseGuards(JwtAuthGuard)
   async acceptCompanyTask(
@@ -561,6 +578,38 @@ export class CommunityController {
     @Body('status') status: 'assigned' | 'in_progress' | 'completed' | 'cancelled',
   ) {
     return this.connectAppService.updateCompanyTaskStatus(req.user.id, cleanCommunityId(communityId), taskId, status);
+  }
+
+  @Patch(':communityId/tasks/:taskId/progress')
+  @UseGuards(JwtAuthGuard)
+  async updateCompanyTaskProgress(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Param('taskId') taskId: string,
+    @Body() body: { progress: number; note?: string; status?: string },
+  ) {
+    return this.connectAppService.updateCompanyTaskProgress(
+      req.user.id,
+      cleanCommunityId(communityId),
+      taskId,
+      body.progress,
+      body.note,
+      body.status,
+    );
+  }
+
+  @Post(':communityId/tasks/import-excel')
+  @UseGuards(JwtAuthGuard)
+  async importCompanyTasksFromExcel(
+    @Request() req,
+    @Param('communityId') communityId: string,
+    @Body() body: { tasks: any[] },
+  ) {
+    return this.connectAppService.importCompanyTasksFromExcel(
+      req.user.id,
+      cleanCommunityId(communityId),
+      body?.tasks || [],
+    );
   }
 
   @Get(':communityId/supervision')

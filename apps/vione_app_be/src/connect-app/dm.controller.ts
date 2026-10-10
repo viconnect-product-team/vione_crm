@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Delete, Body, Request, UseGuards, Param, Query, BadRequestException } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ConnectAppService } from './connect-app.service';
+import { SendDmMessageDto, ReactDmMessageDto } from './dto';
 
 @Controller(['dm', 'connect-app/dm'])
 @UseGuards(JwtAuthGuard)
@@ -60,9 +61,9 @@ export class DmController {
   async sendMyDmMessage(
     @Request() req,
     @Param('threadId') threadId: string,
-    @Body() data: { body: string; clientToken: string },
+    @Body() dto: SendDmMessageDto,
   ) {
-    return this.connectAppService.sendMyDmMessage(req.user.id, threadId, data);
+    return this.connectAppService.sendMyDmMessage(req.user.id, threadId, dto);
   }
 
   @Post('threads/:threadId/read')
@@ -79,9 +80,8 @@ export class DmController {
   async reactToDmMessage(
     @Request() req,
     @Param('messageId') messageId: string,
-    @Body('emoji') emoji: string,
+    @Body() dto: ReactDmMessageDto,
   ) {
-    if (!emoji) throw new BadRequestException('emoji_required');
-    return this.connectAppService.reactToDmMessage(req.user.id, messageId, emoji);
+    return this.connectAppService.reactToDmMessage(req.user.id, messageId, dto.emoji);
   }
 }

@@ -434,7 +434,7 @@ function EventPosterCard({
   );
 }
 
-// COMPONENT 5 SỰ KIỆN CHẠY TỪ PHẢI SANG TRÁI VỚI HIỆU ỨNG COVERFLOW NỔI TO Ở GIỮA
+// COMPONENT SỰ KIỆN NỔI BẬT VỚI HIỆU ỨNG COVERFLOW NỔI TO Ở GIỮA
 function UpcomingEventsCoverflow({
   events,
   onSelectEvent,
@@ -443,68 +443,7 @@ function UpcomingEventsCoverflow({
   onSelectEvent: (e: MyEvent) => void;
 }) {
   const fiveEvents = useMemo(() => {
-    const list: MyEvent[] = [...events];
-    if (list.length < 5) {
-      const fallbackList: MyEvent[] = [
-        {
-          id: "ev-1",
-          title: "Đại hội Hội viên CLB ViOne Connect & Tuyên dương Doanh nghiệp 2026",
-          date: "2026-09-27",
-          time: "07:30 - 13:00",
-          place: "Trung tâm Hội nghị Quốc gia, Hà Nội",
-          day: 27,
-          month: 9,
-          image: defaultEventImages[0],
-        } as any,
-        {
-          id: "ev-2",
-          title: "Gala Dinner Thượng Đỉnh: Xúc tiến đầu tư & Hợp tác chiến lược",
-          date: "2026-10-15",
-          time: "18:00 - 21:30",
-          place: "Khách sạn JW Marriott, Hà Nội",
-          day: 15,
-          month: 10,
-          image: defaultEventImages[1],
-        } as any,
-        {
-          id: "ev-3",
-          title: "Workshop Chuyên đề: Tiếp Nối Cơ Nghiệp Gia Đình Đa Thế Hệ",
-          date: "2026-10-28",
-          time: "08:00 - 11:30",
-          place: "Tòa nhà CEO Tower, Hà Nội",
-          day: 28,
-          month: 10,
-          image: defaultEventImages[2],
-        } as any,
-        {
-          id: "ev-4",
-          title: "Diễn đàn Kinh tế & Chuyển đổi số Doanh nghiệp 2026",
-          date: "2026-11-12",
-          time: "08:30 - 12:00",
-          place: "Khách sạn Lotte, Hà Nội",
-          day: 12,
-          month: 11,
-          image: defaultEventImages[3],
-        } as any,
-        {
-          id: "ev-5",
-          title: "Tọa đàm Giao thương B2B & Kết nối Chuỗi Cung ứng Toàn Cầu",
-          date: "2026-11-25",
-          time: "14:00 - 17:30",
-          place: "Vinpearl Landmark 81",
-          day: 25,
-          month: 11,
-          image: defaultEventImages[4],
-        } as any,
-      ];
-      for (const fb of fallbackList) {
-        if (list.length >= 5) break;
-        if (!list.some((x) => x.id === fb.id)) {
-          list.push(fb);
-        }
-      }
-    }
-    return list.slice(0, 5);
+    return (events || []).slice(0, 5);
   }, [events]);
 
   const [activeIdx, setActiveIdx] = useState(0);
@@ -512,12 +451,14 @@ function UpcomingEventsCoverflow({
 
   // Tự động chạy tuần hoàn từ phải sang trái (activeIdx tăng dần)
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || fiveEvents.length <= 1) return;
     const timer = setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % fiveEvents.length);
     }, 3500);
     return () => clearInterval(timer);
   }, [isPaused, fiveEvents.length]);
+
+  if (fiveEvents.length === 0) return null;
 
   return (
     <div
@@ -910,29 +851,31 @@ function EventsScreen() {
         back
       />
 
-      {/* 2. Section: Sự kiện sắp tới - 5 sự kiện chạy từ phải sang trái, ảnh giữa nổi to hơn, chỉ có ảnh, viền bottom mỏng ở giữa */}
-      <div className="px-4 pt-2">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#003B95]"></span>
-            </span>
-            <span className="text-[13px] font-black uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-1.5">
-              <Sparkles className="h-4 w-4 text-amber-500" />
-              Sự kiện sắp tới
+      {/* 2. Section: Sự kiện sắp tới - Các sự kiện chạy từ phải sang trái */}
+      {events.length > 0 && (
+        <div className="px-4 pt-2">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#003B95]"></span>
+              </span>
+              <span className="text-[13px] font-black uppercase tracking-wider text-slate-800 dark:text-white flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                Sự kiện sắp tới
+              </span>
+            </div>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#003B95] dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
+              {Math.min(events.length, 5)} sự kiện tiêu điểm
             </span>
           </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-[#003B95] dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
-            5 sự kiện tiêu điểm
-          </span>
-        </div>
 
-        <UpcomingEventsCoverflow
-          events={events}
-          onSelectEvent={handleSelectEvent}
-        />
-      </div>
+          <UpcomingEventsCoverflow
+            events={events}
+            onSelectEvent={handleSelectEvent}
+          />
+        </div>
+      )}
 
       {/* Vé Sự Kiện Của Tôi */}
       <div className="px-4 pt-1">

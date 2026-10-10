@@ -53,14 +53,23 @@ Phạm vi dự án bao gồm hai trụ cột công nghệ hợp nhất:
 ### PHẦN 2: MÔ TẢ TỔNG QUAN HỆ THỐNG (OVERALL DESCRIPTION)
 
 #### 2.1 Danh Sách & Quyền Hạn Toàn Bộ User Roles
-Hệ thống xác định 7 nhóm vai trò chuẩn mực:
-1. **System Administrator (Super Admin):** Quản trị toàn bộ nền tảng, quản lý danh sách tenant, cấu hình ma trận phân quyền hệ thống, xem nhật ký kiểm toán toàn diện.
-2. **Tổng Giám Đốc / Chủ Tịch (CEO):** Xem toàn bộ bảng điều hành số C-Level, phê duyệt tài chính cấp cao nhất (Cấp 3), ra quyết định giao việc, kích hoạt biểu quyết số.
-3. **Giám Đốc Vận Hành (COO):** Giám sát khối lượng công việc và nhiệt tải nhân sự (Workload Heatmap), thiết lập quy trình tự động, quản lý chấm công nhân sự.
-4. **Giám Đốc Tài Chính / Kế Toán Trưởng (CFO / Chief Accountant):** Kiểm soát sổ quỹ thu chi, dòng tiền, phê duyệt tài chính Cấp 2 và Cấp 3, cấu hình cổng VietQR đối soát tự động.
-5. **Giám Đốc Kinh Doanh / Trưởng Phòng Sales (Sales Manager):** Quản lý toàn bộ phễu bán hàng Kanban Deals, quản trị hồ sơ khách hàng 360 độ, phân bổ khách hàng cho sales.
-6. **Nhân Viên Chuyên Môn / Kinh Doanh (Staff / Sales Executive):** Chăm sóc khách hàng được phân bổ, cập nhật giai đoạn deal, đề xuất phiếu chi (Cấp 1), chấm công di động.
-7. **Hội Viên Doanh Nhân / Đối Tác (Partner / Member):** Sử dụng App ViOne Connect, sở hữu danh thiếp số NFC, đăng tin nhu cầu mua bán, tham gia sự kiện và kết nối 1-on-1.
+Hệ thống chuẩn hóa cấp bậc quyền lực và phân quyền dữ liệu chặt chẽ theo các quy tắc tối thượng:
+1. **Role Quản Trị (`quan_tri`) — Cấp Bậc Cao Nhất Toàn Hệ Thống:** Có thẩm quyền cao nhất, toàn quyền quản trị nền tảng, thiết lập phân quyền, xem và **chỉnh sửa mọi bản ghi do bất kỳ tài khoản nào tạo ra**.
+2. **Role Admin (`admin`) — Cấp Bậc Thứ Hai Toàn Hệ Thống:** Có thẩm quyền điều hành hệ thống, được phép phân công giao việc, xem và **chỉnh sửa bản ghi do các tài khoản khác tạo ra**.
+*(Lưu ý kiến trúc đặc biệt: Tuyệt đối không tồn tại role "Platform Admin"; toàn bộ hệ thống chỉ duy nhất 2 role Quản trị và Admin là to nhất).*
+3. **Tổng Giám Đốc / Chủ Tịch (CEO):** Xem toàn bộ bảng điều hành số C-Level, phê duyệt tài chính cấp cao nhất (Cấp 3), ra quyết định giao việc, kích hoạt biểu quyết số.
+4. **Giám Đốc Vận Hành (COO):** Giám sát khối lượng công việc và nhiệt tải nhân sự (Workload Heatmap), thiết lập quy trình tự động, quản lý chấm công nhân sự.
+5. **Giám Đốc Tài Chính / Kế Toán Trưởng (CFO / Chief Accountant):** Kiểm soát sổ quỹ thu chi, dòng tiền, phê duyệt tài chính Cấp 2 và Cấp 3, cấu hình cổng VietQR đối soát tự động.
+6. **Giám Đốc Kinh Doanh / Trưởng Phòng Sales (Sales Manager):** Quản lý toàn bộ phễu bán hàng Kanban Deals, quản trị hồ sơ khách hàng 360 độ, phân bổ khách hàng cho sales.
+7. **Nhân Viên Chuyên Môn / Thành Viên Thường (Staff / Member):** Chăm sóc khách hàng được phân bổ, tiếp nhận công việc được giao, báo cáo tiến độ, cập nhật phiếu chi.
+8. **Hội Viên Doanh Nhân / Đối Tác (Partner / Member):** Sử dụng App ViOne Connect, sở hữu danh thiếp số NFC, đăng tin nhu cầu mua bán, tham gia sự kiện và kết nối 1-on-1.
+
+**Quy Tắc Phân Quyền Dữ Liệu & Giao Diện Bắt Buộc (Strict Access Control & Data Ownership Rules):**
+- **Quy tắc Phân quyền Dữ liệu (Data Ownership):** Nghiêm cấm bất kỳ tài khoản nào chỉnh sửa bản ghi do tài khoản khác tạo ra (`canEditRecord(user, recordCreatorId)`), **TRỪ KHI** tài khoản đó mang role **Quản trị (`quan_tri`)** hoặc **Admin (`admin`)**. Mọi hành vi vi phạm ở backend sẽ trả về lỗi HTTP 403 Forbidden.
+- **Quy tắc Phân quyền Realtime UI:** Khi quyền hạn tài khoản bị thay đổi, giao diện người dùng phải lập tức ẩn đi các nút bấm, tabs, tính năng vượt quyền mà không cần người dùng tải lại trang.
+- **Quy tắc Phân lập Giao việc & Nhận việc:**
+  + **Chức năng Giao việc:** CHỈ hiển thị ở giao diện đối với Role Quản trị, Role Admin và tài khoản là người thiết lập công ty tại cộng đồng (`isAssigner`). Tuyệt đối ẩn tab Giao việc và nút Giao việc mới đối với các tài khoản role nhỏ (nhân viên, thành viên thường).
+  + **Chức năng Nhận việc:** Các tài khoản role nhỏ chỉ nhìn thấy tab "⚡ Nhận việc (Việc của tôi)" để tiếp nhận công việc, cập nhật tiến độ % và báo cáo hoàn thành.
 
 #### 2.2 Ánh Xạ 5 Hành Trình Người Dùng Toàn Diện (User Journeys)
 1. **Hành trình Quản trị & Điều hành Doanh nghiệp (CEO/COO):** Đăng nhập Web CRM -> Xem KPI Dashboard -> Kiểm tra cảnh báo tải việc nhân sự -> Duyệt phiếu chi ngân sách Cấp 3 -> Kích hoạt cuộc họp biểu quyết số.
@@ -127,6 +136,25 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Output:** Mảng dữ liệu 12 tháng { month, revenue, expense, net_cashflow }.
 - **Luồng Ngoại Lệ (Exception Handling):** Lỗi kết nối CSDL tài chính: Trả về dữ liệu cache gần nhất kèm cảnh báo.
 - **RESTful API Endpoint:** `GET /api/dashboard/cashflow-chart`
+
+##### FR-02.03 - Quy Chuẩn Sắp Xếp Dữ Liệu Bảng & Danh Sách (Newest Records First)
+- **Actor:** Toàn bộ người dùng hệ thống
+- **Input:** Tham số truy vấn danh sách, phân trang, bộ lọc.
+- **Logic Xử Lý:**
+  1. Tất cả API tải danh sách và bảng biểu trên Dashboard (công việc, hoạt động, hội viên, giao dịch, cơ hội, sản phẩm) bắt buộc áp dụng mệnh đề sắp xếp giảm dần theo thời gian tạo: `ORDER BY created_at DESC` (CSDL PostgreSQL) và `.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())` (Client-side).
+  2. Đảm bảo bản ghi mới tạo luôn lập tức hiển thị ở vị trí đầu tiên của bảng danh sách.
+- **Output:** Danh sách bản ghi luôn ưu tiên bản ghi mới nhất lên đầu danh sách.
+- **RESTful API Standard:** Tuân thủ RESTful query parameter: `?sort=createdAt&order=desc`.
+
+##### FR-02.04 - Component Cắt Chuỗi & Tooltip Nổi Cao Cấp (DashboardCellTooltip)
+- **Actor:** Toàn bộ người dùng hệ thống
+- **Input:** Chuỗi văn bản hiển thị trong ô bảng dữ liệu (tiêu đề công việc, mô tả, nội dung trình ký, ghi chú).
+- **Logic Xử Lý:**
+  1. Sử dụng component chuẩn hóa `DashboardCellTooltip` (`src/components/dashboard/DashboardCellTooltip.tsx`).
+  2. Nếu độ dài nội dung vượt quá giới hạn hiển thị của ô hoặc cấu hình `maxChars`, hệ thống tự động cắt chuỗi và thêm dấu chấm lửng `...` (ellipsis) kết hợp lớp CSS `truncate`.
+  3. Khi người dùng rê chuột (hover) vào ô, kích hoạt Tooltip nổi phong cách Dark Obsidian & Champagne Gold mạ vàng hiển thị đầy đủ 100% nội dung gốc với hiệu ứng chuyển động mượt mà.
+- **Output:** Giao diện bảng biểu gọn gàng, không bị vỡ layout dòng và hỗ trợ đọc nội dung chi tiết qua tooltip nổi.
+
 
 
 #### MODULE 03: QUẢN TRỊ KHÁCH HÀNG B2B & LEAD 360° (SMART CRM)
@@ -412,20 +440,19 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **RESTful API Endpoint:** `POST /api/connect-app/dm/messages, WebSocket event: message:send`
 
 
-#### MODULE 16: TRÍ TUỆ NHÂN TẠO VIONE AI COPILOT 5.0
-*Mục tiêu Epic:* 6 Năng lực AI chuyên biệt: Đàm thoại điều hành, OCR danh thiếp, nhập liệu Excel, soạn hợp đồng, gợi ý đối tác và giám sát tải
+#### MODULE 16: TRÍ TUỆ NHÂN TẠO VIONE AI COPILOT 6.0
+*Mục tiêu Epic:* Năng lực AI chuyên sâu: Đàm thoại điều hành đa ngữ cảnh theo role đăng nhập, quản lý lịch sử chat sessions, tạo tệp Word/PDF/Excel đa dạng, OCR danh thiếp, nhập liệu và gợi ý đối tác
 
-##### FR-16.01 - Trợ Lý AI Copilot Đàm Thoại Điều Hành & Báo Cáo Doanh Nghiệp
-- **Actor:** CEO, Ban Lãnh Đạo C-Level
-- **Input:** Câu lệnh giọng nói hoặc văn bản tự nhiên (Ví dụ: "Tóm tắt doanh thu tháng này và công nợ khách hàng lớn nhất").
+##### FR-16.01 - Trợ Lý AI Copilot Đàm Thoại Điều Hành Theo Role & Lịch Sử Phiên Chat
+- **Actor:** Ban Quản Trị (`quan_tri`), Admin (`admin`), CEO/Giám Đốc, Kế toán, Nhân sự, Hội viên
+- **Input:** Phiên làm việc (Session ID), câu truy vấn tự nhiên, thông tin người dùng đăng nhập hiện tại `currentUser` (`id`, `name`, `email`, `role`, `companyName`, `executiveRole`, `isQuanTri`, `isAdmin`).
 - **Logic Xử Lý:**
-  1. Tiếp nhận câu hỏi và chuyển văn bản qua bộ xử lý ngôn ngữ tự nhiên NLP.
-  2. Xác thực quyền dữ liệu của người hỏi (chỉ truy vấn dữ liệu trong phạm vi tenant được phép).
-  3. Tự động sinh câu lệnh truy vấn CSDL an toàn (Text-to-SQL an toàn) để trích xuất số liệu thực tế.
-  4. Tổng hợp thông tin và định dạng câu trả lời súc tích theo văn phong C-Level.
-  5. Ghi nhật ký vào bảng ai_audit_logs.
-- **Output:** Bản tóm tắt số liệu điều hành kèm biểu đồ và gợi ý hành động tiếp theo.
-- **Luồng Ngoại Lệ (Exception Handling):** Câu hỏi yêu cầu dữ liệu vượt quá quyền hạn: Trả lời "Bạn không có quyền truy cập dữ liệu tài chính này".
+  1. Quản lý lịch sử hội thoại: Hỗ trợ tạo mới cuộc trò chuyện (`+ Cuộc chat mới`), lưu vết các phiên hội thoại (`sessions`) trong bộ nhớ cục bộ, cho phép chuyển đổi qua lại giữa các phiên thảo luận.
+  2. Định danh tài khoản đăng nhập: AI nhận diện tức thời người dùng đang đăng nhập: xưng hô đúng danh xưng chuẩn mực (Ví dụ: "Kính chào Chủ Tịch / Ban Quản Trị [Tên]", "Kính chào Giám Đốc [Tên]").
+  3. Tư vấn đúng thẩm quyền nghiệp vụ: Căn cứ vào role (Quản trị, Admin, Giám đốc, Nhân sự) để cung cấp số liệu và kiến nghị chính xác theo đúng quyền hạn, không vượt cấp hay lộ thông tin nhạy cảm.
+  4. Trích xuất số liệu thời gian thực từ CSDL PostgreSQL (doanh thu, KPI, công việc, cơ hội, thành viên).
+  5. Đính kèm các thẻ dẫn chứng (Evidence Cards) và nút hành động nhanh (Suggested Actions) 1-chạm.
+- **Output:** Câu trả lời Markdown chuẩn phong cách điều hành C-Level, danh sách thẻ dẫn chứng, nút hành động trực tiếp.
 - **RESTful API Endpoint:** `POST /api/ai/chat`
 
 ##### FR-16.02 - Quét & Nhận Diện Danh Thiếp OCR AI Tự Động Nhập CRM
@@ -439,6 +466,22 @@ Hệ thống xác định 7 nhóm vai trò chuẩn mực:
 - **Output:** Hồ sơ khách hàng mới được tạo tự động chỉ sau 2 giây quét ảnh.
 - **Luồng Ngoại Lệ (Exception Handling):** Ảnh quá mờ không đọc được chữ: Báo lỗi "Ảnh mờ, vui lòng chụp lại danh thiếp".
 - **RESTful API Endpoint:** `POST /api/ai/ocr-business-card`
+
+##### FR-16.03 - Khởi Tạo & Xuất Đa Dạng Tệp Tin Văn Bản Word (.docx), PDF (.pdf) & Báo Cáo Excel (.xlsx)
+- **Actor:** Toàn bộ người dùng theo phân quyền
+- **Input:** Yêu cầu văn bản từ AI Chat hoặc nút thao tác nhanh (Hợp đồng B2B, Biên bản họp điều hành, Tờ trình phê duyệt ngân sách, Báo cáo giao việc, Cơ hội B2B, Danh mục sản phẩm, Sổ trình ký, Giao dịch tài chính, Lưu lượng web).
+- **Logic Xử Lý:**
+  1. **Sinh File Microsoft Word (`.docx`):** Sử dụng `DocumentGenerator` đóng gói cấu trúc Office Open XML (`[Content_Types].xml`, `word/document.xml`, `word/styles.xml`, font Times New Roman / Calibri, quốc hiệu, tiêu đề in hoa căn giữa, bảng biểu viền thanh lịch, chữ ký đại diện hai bên).
+  2. **Sinh File Adobe PDF (`.pdf`):** Đóng gói cấu trúc PDF-1.4 chuẩn quốc tế (Catalog, Pages, Page, Font Helvetica, Content Stream vector với khung viền, tiêu đề, nội dung và phần ký tên).
+  3. **Sinh Báo Cáo Excel (`.xlsx`):** Khởi tạo workbook ExcelJS đa dạng bảng tính (Giao việc nhân sự, Cơ hội B2B, Sản phẩm Marketplace, Trình ký ngân sách, Giao dịch tài chính) với nhận diện mạ vàng Champagne Gold & Navy sang trọng, định dạng số tiền VND, tự động căn chỉnh độ rộng cột và tính tổng lũy kế.
+  4. Trả về `generatedFiles` trong phản hồi AI Chat kèm ID tệp và hiển thị Download Cards cho phép người dùng click tải ngay lập tức.
+- **Output:** Tệp tin nhị phân chuẩn format, tải về máy tức thì.
+- **RESTful API Endpoints:** 
+  - `POST /api/ai/export-word`
+  - `POST /api/ai/export-pdf`
+  - `POST /api/ai/export-excel`
+  - `GET /api/ai/download-file/:id`
+  - `GET /api/ai/download-excel/:id`
 
 
 #### MODULE 17: KHO TÀI LIỆU SỐ DOANH NGHIỆP & VĂN BẢN MẪU

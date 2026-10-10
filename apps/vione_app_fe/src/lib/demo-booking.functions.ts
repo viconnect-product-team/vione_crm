@@ -36,10 +36,10 @@ export const getDemoAvailability = createServerFn({ method: "GET" })
       .lte("preferred_date", data.to)
       .not("preferred_slot", "is", null);
     if (error) throw new Error(error.message);
-    const taken = (rows ?? [])
-      .filter((r) => r.preferred_date && r.preferred_slot)
+    const taken: string[] = ((rows as any[]) ?? [])
+      .filter((r: any) => r.preferred_date && r.preferred_slot)
       .map((r: any) => `${r.preferred_date}|${String(r.preferred_slot).slice(0, 5)}`);
-    return { taken: Array.from(new Set(taken)) };
+    return { taken: Array.from(new Set(taken)) as string[] };
   });
 
 export const bookDemoSlot = createServerFn({ method: "POST" })

@@ -101,44 +101,7 @@ export const REDIS_SPECIFICATION = {
   ],
 };
 
-const INITIAL_PIPELINE_LOGS: PipelineEventLog[] = [
-  {
-    id: "LOG-991",
-    timestamp: "10:20:15",
-    direction: "mobile_to_crm",
-    channel: "kafka_topic",
-    topicOrKey: "vione.event.registration_submitted",
-    payloadSnippet: "{ regId: 'REG-8819', eventId: 'evt-2026', member: 'Phạm Quang Huy', table: 'VIP-02' }",
-    status: "processed",
-  },
-  {
-    id: "LOG-992",
-    timestamp: "10:20:18",
-    direction: "crm_to_mobile",
-    channel: "redis_pubsub",
-    topicOrKey: "vione:crm:to:mobile",
-    payloadSnippet: "{ action: 'MEETING_APPROVED', bookingId: 'BK-1983-01', room: 'Sapphire VIP' }",
-    status: "delivered",
-  },
-  {
-    id: "LOG-993",
-    timestamp: "10:21:02",
-    direction: "mobile_to_crm",
-    channel: "redis_cache",
-    topicOrKey: "vione:lock:room:booking:room_sapphire:20260915_1430",
-    payloadSnippet: "Acquired distributed lock (token: 9a2b8e), TTL: 30s",
-    status: "processed",
-  },
-  {
-    id: "LOG-994",
-    timestamp: "10:21:44",
-    direction: "crm_to_mobile",
-    channel: "kafka_topic",
-    topicOrKey: "vione.notification.dispatch_queue",
-    payloadSnippet: "{ template: 'EVENT_TICKET_CONFIRMATION', target: 'huy.pham@ceo1983.com', qr: 'TKT-8839-GL' }",
-    status: "delivered",
-  },
-];
+const INITIAL_PIPELINE_LOGS: PipelineEventLog[] = [];
 
 export const DataPipelineService = {
   getMetrics(): PipelineMetric[] {

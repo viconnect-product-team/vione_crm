@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  createNavigationContainerRef,
+} from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
+
+export const navigationRef = createNavigationContainerRef<any>();
 
 // Screens
 import { LoginScreen } from "../screens/auth/LoginScreen";
@@ -90,7 +96,7 @@ export const AppNavigator: React.FC = () => {
   }
 
   return (
-    <NavigationContainer theme={DarkTheme}>
+    <NavigationContainer ref={navigationRef} theme={DarkTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!isAuthenticated ? (
           <Stack.Screen name="Login" component={LoginScreen} />
@@ -138,6 +144,18 @@ export const AppNavigator: React.FC = () => {
       <ViOneVoiceAssistantModal
         visible={aiAssistantVisible}
         onClose={() => setAiAssistantVisible(false)}
+        onNavigateToTab={(tab) => {
+          if (navigationRef.isReady()) {
+            navigationRef.navigate(tab);
+          }
+        }}
+        onOpenMyQr={() => setMyQrVisible(true)}
+        onOpenScanQr={() => setScanQrVisible(true)}
+        onOpenAssignTask={() => setAssignTaskVisible(true)}
+        onOpenStaffActivity={() => setStaffActivityVisible(true)}
+        onOpenAttendance={() => setAttendanceVisible(true)}
+        onOpenWorkflow={() => setWorkflowVisible(true)}
+        onOpenApprovals={() => setApprovalsVisible(true)}
       />
 
       {/* Bilateral QR Handshake Incoming Connection Modal */}

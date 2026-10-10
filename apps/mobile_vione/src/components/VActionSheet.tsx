@@ -30,6 +30,7 @@ import { Colors } from "../theme/colors";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { VIconMark } from "./VIconMark";
+import { resolveMediaUrl } from "../utils/media";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -46,6 +47,7 @@ interface VActionSheetProps {
   onOpenAssignTask?: () => void;
   onOpenStaffActivity?: () => void;
   onOpenAiAssistant?: () => void;
+  hasCompanyWithStaff?: boolean;
 }
 
 export const VActionSheet: React.FC<VActionSheetProps> = ({
@@ -61,6 +63,7 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
   onOpenAssignTask,
   onOpenStaffActivity,
   onOpenAiAssistant,
+  hasCompanyWithStaff = false,
 }) => {
   const { user } = useAuth();
   const { isDark } = useTheme();
@@ -120,8 +123,8 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                     <View style={styles.identityCardBody}>
                       <View style={styles.identityTopRow}>
                         {/* Avatar */}
-                        {user?.avatarUrl ? (
-                          <Image source={{ uri: user.avatarUrl }} style={styles.avatarImg} />
+                        {resolveMediaUrl(user?.avatarUrl) ? (
+                          <Image source={{ uri: resolveMediaUrl(user?.avatarUrl)! }} style={styles.avatarImg} />
                         ) : (
                           <LinearGradient
                             colors={["#F6E1C3", "#D8B282", "#C29B69", "#8C653B"]}
@@ -439,26 +442,28 @@ export const VActionSheet: React.FC<VActionSheetProps> = ({
                       <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Giám sát quá trình làm</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={[
-                        styles.opsGridItem,
-                        {
-                          backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
-                          borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
-                        },
-                      ]}
-                      onPress={() => {
-                        onClose();
-                        if (onOpenAttendance) onOpenAttendance();
-                      }}
-                      activeOpacity={0.8}
-                    >
-                      <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.18)" }]}>
-                        <MapPin size={18} color="#D8B282" />
-                      </View>
-                      <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Giờ giấc nhân sự</Text>
-                      <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Ai đi muộn tuần/tháng</Text>
-                    </TouchableOpacity>
+                    {hasCompanyWithStaff && (
+                      <TouchableOpacity
+                        style={[
+                          styles.opsGridItem,
+                          {
+                            backgroundColor: isDark ? "#0E1522" : "#F8FAFC",
+                            borderColor: isDark ? "rgba(216, 178, 130, 0.3)" : "#E2E8F0",
+                          },
+                        ]}
+                        onPress={() => {
+                          onClose();
+                          if (onOpenAttendance) onOpenAttendance();
+                        }}
+                        activeOpacity={0.8}
+                      >
+                        <View style={[styles.opsIconWrap, { backgroundColor: "rgba(216, 178, 130, 0.18)" }]}>
+                          <MapPin size={18} color="#D8B282" />
+                        </View>
+                        <Text style={[styles.opsColTitle, { color: isDark ? "#FFFFFF" : "#0F172A" }]}>Giờ giấc nhân sự</Text>
+                        <Text style={[styles.opsColSub, { color: isDark ? "#94A3B8" : "#64748B" }]}>Ai đi muộn tuần/tháng</Text>
+                      </TouchableOpacity>
+                    )}
 
                     <TouchableOpacity
                       style={[

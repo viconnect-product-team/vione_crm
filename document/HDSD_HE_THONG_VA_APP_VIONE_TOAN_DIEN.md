@@ -26,7 +26,7 @@
   * Bước 2: Chọn bộ lọc thời gian (Hôm nay, Tuần này, Tháng này, Năm nay) ở góc phải trên để xem biến động số liệu tương ứng.
   * Bước 3: Theo dõi biểu đồ cột và biểu đồ đường thể hiện Dòng tiền thu - chi lũy kế và Doanh số bán hàng thực tế qua 12 tháng.
   * Bước 4: Kiểm tra khối Cảnh báo Vận hành: Danh sách nhiệm vụ quá hạn, hợp đồng sắp đến ngày gia hạn và đề xuất chi chờ duyệt.
-- **Lưu ý:** QUY TẮC ĐIỀU HÀNH: Mọi chỉ số KPI trên Dashboard được cập nhật trực tiếp từ CSDL PostgreSQL theo thời gian thực, không có độ trễ.
+- **Lưu ý:** QUY TẮC ĐIỀU HÀNH & SẮP XẾP DỮ LIỆU: Mọi chỉ số KPI trên Dashboard được cập nhật trực tiếp từ CSDL PostgreSQL theo thời gian thực. Toàn bộ danh sách bản ghi (nhiệm vụ, hoạt động, cơ hội, sản phẩm) bắt buộc luôn đưa bản ghi mới nhất lên đầu bảng (`createdAt DESC`). Đối với các ô dữ liệu có văn bản dài, hệ thống tự động gắn component `DashboardCellTooltip`: tự động rút gọn với dấu ba chấm `...` (ellipsis) và hiển thị Tooltip nổi phong cách Obsidian Gold khi rê chuột vào để bảo toàn độ thẩm mỹ và không gây vỡ dòng giao diện.
 - **Mẹo C-Level:** MẸO LÃNH ĐẠO: Nhấp đúp vào bất kỳ thẻ KPI nào để chuyển thẳng đến danh sách chi tiết của phân hệ tương ứng.
 
 #### 03. [CRM · KHÁCH HÀNG] Trung Tâm Quản Trị Khách Hàng B2B & Hồ Sơ 360° (Smart CRM)
@@ -74,17 +74,21 @@
 - **Lưu ý:** QUY ĐỊNH BẢO MẬT: Khi nhân sự nghỉ việc, Quản trị viên chỉ cần bấm nút "Khóa Thẻ" để thu hồi quyền truy cập danh thiếp của nhân sự đó tức thì.
 - **Mẹo C-Level:** MẸO QUẢNG BÁ: Thẻ NFC chạm được trên mọi dòng điện thoại iPhone và Android đời mới mà không cần cài đặt bất kỳ ứng dụng nào.
 
-#### 07. [CRM · VẬN HÀNH] Quản Trị Quy Trình Công Việc & Giao Việc Tự Động (Workflows)
-- **Mục tiêu:** Số hóa 100% các luồng giao việc nội bộ, triệt tiêu tình trạng trễ hạn và đùn đẩy trách nhiệm.
-- **Đường dẫn:** `Sidebar -> Vận Hành & Quy Trình -> Quy Trình Công Việc (/workflow)`
+#### 07. [CRM · VẬN HÀNH] Quản Trị Quy Trình Công Việc: Phân Lập Tuyệt Đối Giao Việc & Nhận Việc
+- **Mục tiêu:** Phân tách rõ ràng giữa thẩm quyền điều hành giao việc và quyền hạn thực thi nhận việc, bảo đảm an ninh vai trò.
+- **Đường dẫn:** `Sidebar -> Vận Hành & Quy Trình -> Quản Lý Công Việc (/workflow hoặc /connect-app/community/:id/tasks)`
 - **Các bước:**
-  * Bước 1: Bấm nút "+ Giao Nhiệm Vụ Mới" ở góc phải trên.
-  * Bước 2: Điền thông tin công việc: Tiêu đề nhiệm vụ, Nội dung chi tiết, Phòng ban thực hiện, Người nhận việc chính, Người phối hợp.
-  * Bước 3: Thiết lập Thời hạn hoàn thành (Deadline) và Mức độ ưu tiên (Khẩn cấp, Cao, Trung bình).
-  * Bước 4: Bấm "Giao Việc": Hệ thống tự động gửi thông báo qua chuông web, email và mobile push notification đến nhân sự nhận việc.
-  * Bước 5: Theo dõi tiến độ công việc trên bảng Kanban quy trình từ [Chờ làm] -> [Đang làm] -> [Chờ duyệt] -> [Hoàn thành].
-- **Lưu ý:** LƯU Ý TIẾN ĐỘ: Nhiệm vụ sau khi được nhân viên báo hoàn thành phải được Trưởng bộ phận bấm "Nghiệm Thu" thì mới được tính vào KPI tháng.
-- **Mẹo C-Level:** MẸO QUẢN TRỊ: Đính kèm tài liệu mẫu hoặc quy trình chuẩn vào mô tả nhiệm vụ để nhân viên mới dễ dàng thực hiện đúng chuẩn.
+  * Bước 1: **Phân lập Thẩm quyền Giao Việc:**
+    - Chức năng Giao việc (`+ Giao Nhiệm Vụ Mới` / Tab "📋 Giao việc & Điều hành") CHỈ HIỂN THỊ với các tài khoản có **Role Quản trị (`quan_tri`)**, **Role Admin (`admin`)**, hoặc tài khoản là người thiết lập công ty tại cộng đồng (`isAssigner`).
+    - Các tài khoản thuộc role nhỏ (nhân sự, thành viên thông thường) bị ẨN HOÀN TOÀN nút giao việc và tab giao việc trên giao diện.
+  * Bước 2: **Chức năng Nhận Việc (Việc của tôi):**
+    - Các tài khoản nhân sự role nhỏ chỉ nhìn thấy tab "⚡ Nhận việc (Việc của tôi)".
+    - Tiếp nhận công việc được giao, bấm nút nhận việc để chuyển trạng thái sang `in_progress`, cập nhật tiến độ phần trăm (0 - 100%) và gửi báo cáo kết quả hoàn thành.
+  * Bước 3: **Chỉnh sửa Công việc (Data Permission):**
+    - Chỉ tài khoản trực tiếp tạo ra công việc hoặc tài khoản có role Quản trị / Admin mới có quyền mở modal chỉnh sửa nội dung công việc.
+    - Tài khoản không có thẩm quyền sẽ bị ẩn nút Sửa công việc và bị chặn HTTP 403 Forbidden nếu cố tình thao tác.
+- **Lưu ý:** BẢO MẬT PHÂN QUYỀN REALTIME: Ngay khi quyền của tài khoản bị thay đổi, giao diện sẽ lập tức ẩn đi các nút bấm giao việc hoặc quyền sửa task mà không cần tải lại trang.
+- **Mẹo C-Level:** MẸO QUẢN TRỊ: Ban Lãnh Đạo luôn theo dõi danh sách công việc được tự động sắp xếp mới nhất lên đầu (`createdAt DESC`) để nắm bắt tiến độ kịp thời.
 
 #### 08. [CRM · NHÂN SỰ] Giám Sát Tải Trọng & Khối Lượng Nhân Sự (Workload Heatmap)
 - **Mục tiêu:** Cân bằng tải công việc giữa các phòng ban, ngăn ngừa tình trạng quá tải hoặc nhàn rỗi trong bộ máy.
@@ -200,16 +204,21 @@
 - **Lưu ý:** CẢNH BÁO HẾT HẠN: Hệ thống tự động gửi email và thông báo cho Trưởng phòng kinh doanh trước 30 ngày đối với các hợp đồng sắp hết hiệu lực.
 - **Mẹo C-Level:** MẸO PHÁP CHẾ: Mọi lịch sử xem, tải xuống và chỉnh sửa hợp đồng đều được lưu vết kiểm toán bất biến.
 
-#### 18. [CRM · PHÂN QUYỀN] Ma Trận Phân Quyền 7 Nhóm Quyền x 6 Thao Tác (RBAC Matrix)
-- **Mục tiêu:** Bảo vệ dữ liệu bí mật kinh doanh, phân định quyền hạn minh bạch và chặt chẽ.
-- **Đường dẫn:** `Sidebar -> Quản Trị Nền Tảng -> Ma Trận Phân Quyền (/platform/permissions)`
+#### 18. [CRM · PHÂN QUYỀN] Phân Quyền Vai Trò & Bảo Vệ Sở Hữu Dữ Liệu (Strict Data Permission)
+- **Mục tiêu:** Chuẩn hóa cấp bậc thẩm quyền: Role Quản trị (to nhất) và Role Admin (to nhì), bảo vệ dữ liệu cá nhân hóa và tự động ẩn giao diện realtime.
+- **Đường dẫn:** `Sidebar -> Quản Trị Nền Tảng -> Thiết Lập Quyền (/platform/permissions hoặc /account-settings)`
 - **Các bước:**
-  * Bước 1: Quan sát bảng ma trận phân quyền lưới trực quan gồm 9 Module nghiệp vụ theo hàng dọc và 7 Nhóm vai trò theo hàng ngang (CEO, COO, CFO, Sales Manager, Admin, Staff, Partner).
-  * Bước 2: Trong mỗi ô giao nhau, có 6 thao tác cụ thể: [Xem] [Tạo] [Sửa] [Xóa] [Duyệt] [Xuất].
-  * Bước 3: Nhấp chuột vào các ô checkbox để bật hoặc tắt từng quyền hạn cụ thể cho từng vai trò.
-  * Bước 4: Bấm nút "Lưu Ma Trận Quyền": Cấu hình mới sẽ có hiệu lực ngay lập tức trên toàn hệ thống mà không cần người dùng đăng xuất.
-- **Lưu ý:** NGUYÊN TẮC AN TOÀN: Tuyệt đối không cấp quyền [Xóa] và [Duyệt] cho nhóm vai trò Nhân viên chuyên môn (Staff).
-- **Mẹo C-Level:** MẸO PHÂN QUYỀN: Có thể gán nhiều vai trò khác nhau cho cùng một người dùng nếu nhân sự đó kiêm nhiệm nhiều vị trí.
+  * Bước 1: Hệ thống xác lập 2 cấp bậc tối cao:
+    - **Role Quản Trị (`quan_tri`):** Quyền lực cao nhất hệ thống, toàn quyền xem và sửa mọi bản ghi do bất kỳ tài khoản nào tạo ra.
+    - **Role Admin (`admin`):** Quyền lực thứ hai hệ thống, được quyền sửa bản ghi do tài khoản khác tạo ra để phục vụ điều phối và hỗ trợ kỹ thuật.
+    - *(Lưu ý: Tuyệt đối không tồn tại role Platform Admin).*
+  * Bước 2: **Quy tắc Bảo Vệ Sở Hữu Dữ Liệu (Data Ownership):**
+    - Nghiêm cấm bất kỳ tài khoản nào chỉnh sửa bản ghi do tài khoản khác tạo ra, TRỪ KHI tài khoản đó có role Quản trị hoặc Admin.
+    - Các tài khoản role nhỏ chỉ được phép xem và chỉnh sửa dữ liệu do chính mình tạo ra (`record.creatorId === currentUser.id`).
+  * Bước 3: **Cơ chế Phản Ứng Tức Thì Trên Giao Diện (Realtime Role Revocation):**
+    - Khi quyền tài khoản bị hạ bậc hoặc thu hồi, ứng dụng tự động lắng nghe sự kiện và ẩn ngay lập tức các nút bấm, tabs, phân hệ vượt quyền trên màn hình mà không cần F5 tải lại trang.
+- **Lưu ý:** NGUYÊN TẮC AN TOÀN TUYỆT ĐỐI: Backend NestJS luôn kiểm tra song song quyền tại tầng Service (`canEditRecord`), ngăn chặn triệt để mọi hành vi bypass qua REST API trực tiếp.
+- **Mẹo C-Level:** MẸO PHÂN QUYỀN: Sử dụng tài khoản Role Quản trị để quản lý cấp phát quyền tập trung, phân định rõ ràng giữa người giao việc và người thực thi.
 
 #### 19. [CRM · TRÍ TUỆ NHÂN TẠO] Nhật Ký Kiểm Toán & 6 Năng Lực AI Copilot 5.0 (AI Audit)
 - **Mục tiêu:** Minh bạch hóa các hoạt động của trí tuệ nhân tạo, tối ưu hóa chi phí vận hành AI.

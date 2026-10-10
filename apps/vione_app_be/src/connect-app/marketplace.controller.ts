@@ -13,6 +13,11 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ConnectAppService } from './connect-app.service';
+import {
+  CreateMarketplaceProductDto,
+  UpdateMarketplaceProductDto,
+  RequestProductQuoteDto,
+} from './dto';
 
 @Controller('marketplace')
 @UseGuards(JwtAuthGuard)
@@ -30,7 +35,7 @@ export class MarketplaceController {
   }
 
   @Post('products')
-  async createProduct(@Request() req: any, @Body() body: any) {
+  async createProduct(@Request() req: any, @Body() body: CreateMarketplaceProductDto) {
     return this.connectAppService.createMarketplaceProduct(req.user.id, body);
   }
 
@@ -38,7 +43,7 @@ export class MarketplaceController {
   async updateProduct(
     @Request() req: any,
     @Param('id') id: string,
-    @Body() body: any,
+    @Body() body: UpdateMarketplaceProductDto,
   ) {
     return this.connectAppService.updateMarketplaceProduct(req.user.id, id, body);
   }
@@ -59,14 +64,15 @@ export class MarketplaceController {
   }
 
   @Post('quotes')
-  async requestQuote(@Request() req: any, @Body() body: any) {
+  async requestQuote(@Request() req: any, @Body() body: RequestProductQuoteDto) {
     return this.connectAppService.requestProductQuote(req.user.id, body);
   }
 
   @Post('products/quote')
-  async requestProductQuoteAlias(@Request() req: any, @Body() body: any) {
+  async requestProductQuoteAlias(@Request() req: any, @Body() body: RequestProductQuoteDto) {
     return this.connectAppService.requestProductQuote(req.user.id, body);
   }
+
 
   @Patch('quotes/:id/status')
   async updateQuoteStatus(

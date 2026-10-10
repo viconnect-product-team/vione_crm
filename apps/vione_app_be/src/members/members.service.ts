@@ -395,10 +395,7 @@ export class MembersService {
     const profile = userProfiles[0] || null;
 
     if (rows.length === 0) {
-      const users = await this.prisma.$queryRaw<any[]>`
-        SELECT email FROM auth.users WHERE id = ${userId}::uuid LIMIT 1
-      `.catch(() => []);
-      const candidateEmail = users[0]?.email || user?.email;
+      const candidateEmail = user?.email;
       if (candidateEmail) {
         rows = await this.prisma.$queryRaw<any[]>`
           SELECT * FROM public.members WHERE LOWER(email) = LOWER(${candidateEmail}) LIMIT 1
@@ -1468,7 +1465,7 @@ export class MembersService {
     let m = memRows[0];
     if (!m) {
       const users = await this.prisma.$queryRaw<any[]>`
-        SELECT email FROM auth.users WHERE id = ${userId}::uuid LIMIT 1
+        SELECT email FROM public.vione_users WHERE id = ${userId}::uuid LIMIT 1
       `.catch(() => []);
       if (users.length > 0 && users[0].email) {
         const byEmail = await this.prisma.$queryRaw<any[]>`

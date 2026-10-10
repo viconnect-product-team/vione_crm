@@ -147,8 +147,8 @@ function DemoPage() {
     let cancelled = false;
     setLoadingSlots(true);
     getDemoAvailability({ data: { from: rangeFrom, to: rangeTo } })
-      .then((res) => {
-        if (!cancelled) setTaken(new Set(res.taken));
+      .then((res: any) => {
+        if (!cancelled) setTaken(new Set(res?.taken ?? []));
       })
       .catch((err) => console.error("[demo-availability] failed", err))
       .finally(() => {

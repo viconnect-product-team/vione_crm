@@ -22,6 +22,7 @@ import {
   ShieldCheck,
 } from "lucide-react-native";
 import { useTheme } from "../../context/ThemeContext";
+import { resolveMediaUrl } from "../../utils/media";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -118,7 +119,7 @@ export const IncomingQrConnectionModal: React.FC<IncomingQrConnectionModalProps>
             >
               {requester.avatarUrl ? (
                 <Image
-                  source={{ uri: requester.avatarUrl }}
+                  source={{ uri: resolveMediaUrl(requester.avatarUrl) || requester.avatarUrl }}
                   style={styles.avatarImg}
                   resizeMode="cover"
                 />

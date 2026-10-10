@@ -46,52 +46,8 @@ export interface PaymentRequest {
   qrPayload?: string;
 }
 
-const INITIAL_PAYMENTS: PaymentRequest[] = [
-  {
-    id: "pay-01",
-    code: "CHI-2026-104",
-    title: "Thanh toán hạ tầng Cloud Multi-Tenancy AWS & Cloudflare",
-    amountVnd: 28500000, // > 20 triệu -> Bắt buộc Tổng Giám Đốc ký duyệt BR-FIN-02
-    department: "Ban Công Nghệ",
-    maker: { name: "Đặng Nam", role: "Chuyên Viên Vận Hành", date: "02/10/2026 09:30" },
-    checker: { name: "Trần Thu Hà", role: "Kế Toán Trưởng", status: "approved", date: "02/10/2026 10:15" },
-    approver: { name: "Nguyễn Minh Đăng", role: "Tổng Giám Đốc (CEO)", status: "pending" },
-    status: "pending_approver",
-    invoiceNumber: "HD-2026-INV-9941",
-    budgetRemainingPercent: 68,
-    vietQrGenerated: true,
-  },
-  {
-    id: "pay-02",
-    code: "CHI-2026-105",
-    title: "Sản xuất gia công 100 phôi Thẻ Titanium NFC mạ vàng",
-    amountVnd: 18000000, // 5tr - 20tr -> Kế toán trưởng duyệt BR-FIN-02
-    department: "Vận Hành",
-    maker: { name: "Đặng Nam", role: "Operations Lead", date: "02/10/2026 10:00" },
-    checker: { name: "Trần Thu Hà", role: "Kế Toán Trưởng", status: "pending" },
-    status: "pending_checker",
-    invoiceNumber: "HD-2026-NFC-0211",
-    budgetRemainingPercent: 82,
-    vietQrGenerated: true,
-  },
-  {
-    id: "pay-03",
-    code: "CHI-2026-106",
-    title: "Chi phí tiếp khách đối tác cấp cao B2B tại Sofitel Legend",
-    amountVnd: 4200000, // < 5 triệu -> Trưởng phòng duyệt chi BR-FIN-02
-    department: "Phòng Kinh Doanh",
-    maker: { name: "Lê Quốc Dũng", role: "Sales Director", date: "01/10/2026 17:00" },
-    checker: { name: "Trần Thu Hà", role: "Kế Toán Trưởng", status: "approved", date: "01/10/2026 17:30" },
-    approver: { name: "Nguyễn Minh Đăng", role: "CEO", status: "approved", date: "01/10/2026 18:00" },
-    status: "approved_paid", // Đã thanh toán gạch nợ VietQR 1s BR-FIN-03
-    invoiceNumber: "HD-2026-MET-4412",
-    budgetRemainingPercent: 91,
-    vietQrGenerated: true,
-  },
-];
-
 function PaymentApprovalsPage() {
-  const [payments, setPayments] = useState<PaymentRequest[]>(INITIAL_PAYMENTS);
+  const [payments, setPayments] = useState<PaymentRequest[]>([]);
   const [activeTab, setActiveTab] = useState<"all" | "pending_checker" | "pending_approver" | "approved_paid">("all");
   const [qrModalItem, setQrModalItem] = useState<PaymentRequest | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -101,11 +57,15 @@ function PaymentApprovalsPage() {
     try {
       setIsLoading(true);
       const res = await fetchNestApi<any>("/operations/finance/approvals");
-      if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+      if (res?.data && Array.isArray(res.data)) {
         setPayments(res.data);
+      } else if (Array.isArray(res)) {
+        setPayments(res);
+      } else {
+        setPayments([]);
       }
     } catch {
-      // Use fallback
+      setPayments([]);
     } finally {
       setIsLoading(false);
     }
@@ -309,7 +269,18 @@ function PaymentApprovalsPage() {
 
         {/* List of Requests */}
         <div className="space-y-4">
-          {filtered.map((item) => (
+          {filtered.length === 0 ? (
+            <div className="p-12 text-center rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <CheckCircle2 className="size-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                Không có phiếu duyệt chi nào trong cơ sở dữ liệu
+              </p>
+              <p className="text-xs text-slate-400 mt-1">
+                Các phiếu đề xuất chi tiền mới sẽ tự động hiển thị tại đây theo quy trình 3 cấp.
+              </p>
+            </div>
+          ) : (
+            filtered.map((item) => (
             <div
               key={item.id}
               className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6"
@@ -416,7 +387,7 @@ function PaymentApprovalsPage() {
                 )}
               </div>
             </div>
-          ))}
+          )))}
         </div>
 
         {/* Modal VietQR Napas 24/7 gạch nợ tự động trong 1 giây */}

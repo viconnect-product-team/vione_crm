@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Request, UseGuards, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Request, UseGuards, Param } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ConnectAppService } from './connect-app.service';
+import {
+  CreateCustomerDto,
+  UpdateCustomerDto,
+  CreateCustomerLogDto,
+  CreateCustomerTagDto,
+  RenameCustomerTagDto,
+  CreateCustomerNeedDto,
+  UpdateCustomerNeedDto,
+} from './dto';
 
 @Controller(['customers', 'connect-app/customer', 'connect-app/customers'])
 @UseGuards(JwtAuthGuard)
@@ -14,17 +23,17 @@ export class CustomerController {
   }
 
   @Post('tags')
-  async createBcCustomerTag(@Request() req, @Body('name') name: string) {
-    return this.connectAppService.createBcCustomerTag(req.user.id, name);
+  async createBcCustomerTag(@Request() req, @Body() dto: CreateCustomerTagDto) {
+    return this.connectAppService.createBcCustomerTag(req.user.id, dto.name);
   }
 
   @Patch('tags/:tagId')
   async renameBcCustomerTag(
     @Request() req,
     @Param('tagId') tagId: string,
-    @Body('name') name: string,
+    @Body() dto: RenameCustomerTagDto,
   ) {
-    return this.connectAppService.renameBcCustomerTag(req.user.id, tagId, name);
+    return this.connectAppService.renameBcCustomerTag(req.user.id, tagId, dto.name);
   }
 
   @Delete('tags/:tagId')
@@ -37,9 +46,9 @@ export class CustomerController {
   async updateBcCustomerNeed(
     @Request() req,
     @Param('needId') needId: string,
-    @Body() data: any,
+    @Body() dto: UpdateCustomerNeedDto,
   ) {
-    return this.connectAppService.updateBcCustomerNeed(req.user.id, { ...data, needId });
+    return this.connectAppService.updateBcCustomerNeed(req.user.id, { ...dto, needId });
   }
 
   @Delete('needs/:needId')
@@ -54,8 +63,8 @@ export class CustomerController {
   }
 
   @Post()
-  async createBcCustomer(@Request() req, @Body() data: any) {
-    return this.connectAppService.createBcCustomer(req.user.id, data);
+  async createBcCustomer(@Request() req, @Body() dto: CreateCustomerDto) {
+    return this.connectAppService.createBcCustomer(req.user.id, dto);
   }
 
   // --- Sub-resources on :customerId ---
@@ -68,9 +77,9 @@ export class CustomerController {
   async addBcCustomerLog(
     @Request() req,
     @Param('customerId') customerId: string,
-    @Body() data: any,
+    @Body() dto: CreateCustomerLogDto,
   ) {
-    return this.connectAppService.addBcCustomerLog(req.user.id, { ...data, customerId });
+    return this.connectAppService.addBcCustomerLog(req.user.id, { ...dto, customerId });
   }
 
   @Put(':customerId/tags')
@@ -79,7 +88,7 @@ export class CustomerController {
     @Param('customerId') customerId: string,
     @Body('names') names: string[],
   ) {
-    return this.connectAppService.setBcCustomerTags(req.user.id, customerId, names);
+    return this.connectAppService.setBcCustomerTags(req.user.id, customerId, names || []);
   }
 
   @Get(':customerId/needs')
@@ -91,9 +100,9 @@ export class CustomerController {
   async addBcCustomerNeed(
     @Request() req,
     @Param('customerId') customerId: string,
-    @Body() data: any,
+    @Body() dto: CreateCustomerNeedDto,
   ) {
-    return this.connectAppService.addBcCustomerNeed(req.user.id, { ...data, customerId });
+    return this.connectAppService.addBcCustomerNeed(req.user.id, { ...dto, customerId });
   }
 
   // --- AI Tag Suggestions ---
@@ -135,9 +144,9 @@ export class CustomerController {
   async updateBcCustomer(
     @Request() req,
     @Param('customerId') customerId: string,
-    @Body() data: any,
+    @Body() dto: UpdateCustomerDto,
   ) {
-    return this.connectAppService.updateBcCustomer(req.user.id, { ...data, customerId });
+    return this.connectAppService.updateBcCustomer(req.user.id, { ...dto, customerId });
   }
 
   @Delete(':customerId')

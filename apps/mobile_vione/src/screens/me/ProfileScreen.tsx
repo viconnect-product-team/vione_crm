@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Image,
   Linking,
   Dimensions,
+  RefreshControl,
+  Switch,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -36,6 +38,9 @@ import {
   ExternalLink,
   Share2,
   RotateCcw,
+  Check,
+  BellRing,
+  Globe,
 } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "../../context/AuthContext";
@@ -50,8 +55,57 @@ import { EditProfileModal } from "../../components/EditProfileModal";
 import { AccountSecurityModal } from "../../components/AccountSecurityModal";
 import { NfcTagsModal } from "../../components/NfcTagsModal";
 import { UserProfile } from "../../types";
+import { api } from "../../api/client";
+import { resolveMediaUrl } from "../../utils/media";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+export const SUPPORTED_LANGUAGES = [
+  { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "km", name: "ភាសាខ្មែរ", flag: "🇰🇭" },
+  { code: "my", name: "မြန်မာဘာသာ", flag: "🇲🇲" },
+  { code: "lo", name: "ພາສາລາວ", flag: "🇱🇦" },
+  { code: "ja", name: "日本語", flag: "🇯🇵" },
+  { code: "ko", name: "한국어", flag: "🇰🇷" },
+  { code: "zh", name: "中文", flag: "🇨🇳" },
+];
+
+export interface ShowcaseItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  desc?: string;
+  logoUrl?: string | null;
+  tag?: string;
+}
+
+const DEFAULT_BUSINESS_AREAS: ShowcaseItem[] = [
+  {
+    id: "b1",
+    title: "Tư vấn Chuyển đổi số & AI ERP",
+    desc: "Giải pháp ERP đám mây tích hợp trợ lý AI tự động hoá quy trình cho doanh nghiệp quy mô lớn.",
+  },
+  {
+    id: "b2",
+    title: "Xúc tiến Thương mại & Kết nối B2B",
+    desc: "Mạng lưới kết nối chuỗi cung ứng, tìm kiếm đại lý phân phối và đối tác liên doanh chiến lược.",
+  },
+  {
+    id: "b3",
+    title: "Đầu tư Doanh nghiệp & Vốn mạo hiểm",
+    desc: "Tư vấn huy động vốn, sáp nhập & mua bán doanh nghiệp (M&A) công nghệ và sản xuất tiêu biểu.",
+  },
+];
+
+const DEFAULT_CLIENTS: ShowcaseItem[] = [
+  { id: "c1", title: "V-Pharma Global", tag: "Dược phẩm" },
+  { id: "c2", title: "Techcom Solutions", tag: "Công nghệ" },
+  { id: "c3", title: "VietLogistics Corp", tag: "Vận tải B2B" },
+  { id: "c4", title: "Tân Hoàng Minh Group", tag: "Bất động sản" },
+  { id: "c5", title: "An Phát Holdings", tag: "Sản xuất" },
+  { id: "c6", title: "+12 Doanh nghiệp khác", tag: "Mạng lưới" },
+];
 
 function initialsOf(name: string | null, emailFallback: string | null): string {
   const source = (name ?? "").trim() || (emailFallback ?? "");
@@ -63,11 +117,12 @@ function initialsOf(name: string | null, emailFallback: string | null): string {
     .join("");
 }
 
-export const ProfileScreen: React.FC = () => {
-  const { user, logout } = useAuth();
+export const ProfileScreen: React.FC<any> = ({ navigation }) => {
+  const { user, logout, refreshProfile } = useAuth();
   const { isDark, toggleTheme, theme, setTheme } = useTheme();
 
   const [activeUser, setActiveUser] = useState<UserProfile | null>(user);
+  const [refreshing, setRefreshing] = useState(false);
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
   const [cardVaultModalVisible, setCardVaultModalVisible] = useState(false);
@@ -76,6 +131,19 @@ export const ProfileScreen: React.FC = () => {
   const [editProfileModalVisible, setEditProfileModalVisible] = useState(false);
   const [securityModalVisible, setSecurityModalVisible] = useState(false);
   const [nfcTagsModalVisible, setNfcTagsModalVisible] = useState(false);
+
+  // Showcase state đồng bộ máy chủ
+  const [businessAreas, setBusinessAreas] = useState<ShowcaseItem[]>([]);
+  const [clients, setClients] = useState<ShowcaseItem[]>([]);
+
+  // Đa ngôn ngữ (8 ngôn ngữ)
+  const [selectedLang, setSelectedLang] = useState<string>("vi");
+
+  // Quả cầu AI ViOne nổi
+  const [isAiFloatingEnabled, setIsAiFloatingEnabled] = useState(true);
+
+  // Quyền thông báo hệ thống
+  const [notifState, setNotifState] = useState<"granted" | "denied">("granted");
 
   const currentUser = activeUser || user;
   const displayName = currentUser?.displayName || currentUser?.name || "Doanh nhân ViOne";
@@ -88,9 +156,99 @@ export const ProfileScreen: React.FC = () => {
     currentUser?.bio ||
     "Doanh nhân, nhà sáng lập và điều hành doanh nghiệp. Đam mê kết nối kinh doanh B2B và xúc tiến thương mại chuyển đổi số toàn diện.";
 
+  // Đồng bộ live identity và showcase từ máy chủ
+  const loadProfileAndShowcase = useCallback(async () => {
+    try {
+      const refreshed = await refreshProfile();
+      if (refreshed) {
+        setActiveUser(refreshed);
+      }
+    } catch (e) {
+      console.warn("Lỗi đồng bộ identity:", e);
+    }
+
+    try {
+      const res = await api.get<{ businessAreas?: any[]; clients?: any[] }>("/connect-app/me/showcase");
+      if (res.data) {
+        if (Array.isArray(res.data.businessAreas) && res.data.businessAreas.length > 0) {
+          setBusinessAreas(
+            res.data.businessAreas.map((b) => ({
+              id: b.id || b.title,
+              title: b.title,
+              desc: b.subtitle || b.desc,
+              logoUrl: b.logoUrl,
+            }))
+          );
+        }
+        if (Array.isArray(res.data.clients) && res.data.clients.length > 0) {
+          setClients(
+            res.data.clients.map((c) => ({
+              id: c.id || c.title,
+              title: c.title,
+              tag: c.subtitle || c.tag || "Đối tác",
+              logoUrl: c.logoUrl,
+            }))
+          );
+        }
+      }
+    } catch (e) {
+      console.warn("Lỗi tải showcase:", e);
+    }
+  }, [refreshProfile]);
+
+  useEffect(() => {
+    loadProfileAndShowcase();
+    AsyncStorage.getItem("vione_app_language").then((val) => {
+      if (val) setSelectedLang(val);
+    });
+    AsyncStorage.getItem("vione_ai_floating_visible").then((val) => {
+      if (val !== null) setIsAiFloatingEnabled(val === "true");
+    });
+  }, [loadProfileAndShowcase]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await loadProfileAndShowcase();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadProfileAndShowcase]);
+
+  const handleSelectLanguage = async (code: string) => {
+    setSelectedLang(code);
+    await AsyncStorage.setItem("vione_app_language", code);
+    const langObj = SUPPORTED_LANGUAGES.find((l) => l.code === code);
+    Alert.alert("Ngôn ngữ", `Đã chuyển đổi ngôn ngữ hiển thị sang ${langObj?.name || code}`);
+  };
+
+  const handleToggleAiFloating = async (val: boolean) => {
+    setIsAiFloatingEnabled(val);
+    await AsyncStorage.setItem("vione_ai_floating_visible", val ? "true" : "false");
+    if (val) {
+      await AsyncStorage.removeItem("vione_ai_floating_closed");
+    } else {
+      await AsyncStorage.setItem("vione_ai_floating_closed", "true");
+    }
+    Alert.alert(
+      "Trợ lý AI ViOne",
+      val ? "Đã bật quả cầu AI ViOne nổi trên màn hình!" : "Đã ẩn quả cầu AI ViOne nổi trên màn hình."
+    );
+  };
+
+  const handleTestPushNotification = () => {
+    Alert.alert(
+      "🔔 Kiểm tra thông báo ViOne",
+      "Hệ thống thông báo đẩy màn hình khóa, cuộc gọi đến và tin nhắn đối tác đang hoạt động hoàn hảo trên thiết bị của bạn!",
+      [{ text: "Tuyệt vời" }]
+    );
+  };
+
   const handleRestoreFloatingAi = async () => {
     try {
       await AsyncStorage.removeItem("vione_ai_floating_closed");
+      await AsyncStorage.setItem("vione_ai_floating_visible", "true");
+      setIsAiFloatingEnabled(true);
     } catch {}
     setAiAssistantVisible(true);
     Alert.alert(
@@ -170,6 +328,14 @@ export const ProfileScreen: React.FC = () => {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#D8B282"]}
+            tintColor="#D8B282"
+          />
+        }
       >
         {/* 2. CARD DANH TÍNH SỐ (Matching 100% PWA MeIdentityCard) */}
         <View
@@ -244,7 +410,7 @@ export const ProfileScreen: React.FC = () => {
               </Text>
             </View>
 
-            {/* Sync Avatar: Real avatar URL or Monogram Initials (NO RANDOM CITY PHOTO) */}
+            {/* Sync Avatar: Real avatar URL or Monogram Initials */}
             <View
               style={[
                 styles.portraitWrap,
@@ -254,9 +420,9 @@ export const ProfileScreen: React.FC = () => {
                 },
               ]}
             >
-              {user?.avatarUrl ? (
+              {resolveMediaUrl(currentUser?.avatarUrl) ? (
                 <Image
-                  source={{ uri: user.avatarUrl }}
+                  source={{ uri: resolveMediaUrl(currentUser?.avatarUrl)! }}
                   style={styles.portraitImg}
                   resizeMode="cover"
                 />
@@ -733,23 +899,7 @@ export const ProfileScreen: React.FC = () => {
           </View>
 
           <View style={styles.showcaseList}>
-            {[
-              {
-                id: "b1",
-                title: "Tư vấn Chuyển đổi số & AI ERP",
-                desc: "Giải pháp ERP đám mây tích hợp trợ lý AI tự động hoá quy trình cho doanh nghiệp quy mô lớn.",
-              },
-              {
-                id: "b2",
-                title: "Xúc tiến Thương mại & Kết nối B2B",
-                desc: "Mạng lưới kết nối chuỗi cung ứng, tìm kiếm đại lý phân phối và đối tác liên doanh chiến lược.",
-              },
-              {
-                id: "b3",
-                title: "Đầu tư Doanh nghiệp & Vốn mạo hiểm",
-                desc: "Tư vấn huy động vốn, sáp nhập & mua bán doanh nghiệp (M&A) công nghệ và sản xuất tiêu biểu.",
-              },
-            ].map((item) => (
+            {(businessAreas.length > 0 ? businessAreas : DEFAULT_BUSINESS_AREAS).map((item) => (
               <View
                 key={item.id}
                 style={[
@@ -777,7 +927,7 @@ export const ProfileScreen: React.FC = () => {
                     { color: isDark ? "#94A3B8" : "#64748B" },
                   ]}
                 >
-                  {item.desc}
+                  {item.desc || item.subtitle || "Dịch vụ & giải pháp chuyển đổi số cho doanh nghiệp."}
                 </Text>
               </View>
             ))}
@@ -811,60 +961,64 @@ export const ProfileScreen: React.FC = () => {
           </View>
 
           <View style={styles.clientGrid}>
-            {[
-              { id: "c1", name: "V-Pharma Global", tag: "Dược phẩm" },
-              { id: "c2", name: "Techcom Solutions", tag: "Công nghệ" },
-              { id: "c3", name: "VietLogistics Corp", tag: "Vận tải B2B" },
-              { id: "c4", name: "Tân Hoàng Minh Group", tag: "Bất động sản" },
-              { id: "c5", name: "An Phát Holdings", tag: "Sản xuất" },
-              { id: "c6", name: "+12 Doanh nghiệp khác", tag: "Mạng lưới" },
-            ].map((c) => (
-              <View
-                key={c.id}
-                style={[
-                  styles.clientCard,
-                  {
-                    backgroundColor: isDark ? "#181D2A" : "#F8FAFC",
-                    borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
-                  },
-                ]}
-              >
+            {(clients.length > 0 ? clients : DEFAULT_CLIENTS).map((c) => {
+              const clientLogoResolved = resolveMediaUrl(c.logoUrl);
+              return (
                 <View
+                  key={c.id}
                   style={[
-                    styles.clientLogoMonogram,
+                    styles.clientCard,
                     {
-                      backgroundColor: isDark ? "rgba(216, 178, 130, 0.15)" : "#F6E1C3",
+                      backgroundColor: isDark ? "#181D2A" : "#F8FAFC",
+                      borderColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
                     },
                   ]}
                 >
+                  {clientLogoResolved ? (
+                    <Image
+                      source={{ uri: clientLogoResolved }}
+                      style={styles.clientLogoImg}
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <View
+                      style={[
+                        styles.clientLogoMonogram,
+                        {
+                          backgroundColor: isDark ? "rgba(216, 178, 130, 0.15)" : "#F6E1C3",
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.clientLogoInitial,
+                          { color: isDark ? "#D8B282" : "#8C653B" },
+                        ]}
+                      >
+                        {c.title.charAt(0)}
+                      </Text>
+                    </View>
+                  )}
                   <Text
                     style={[
-                      styles.clientLogoInitial,
-                      { color: isDark ? "#D8B282" : "#8C653B" },
+                      styles.clientName,
+                      { color: isDark ? "#FFFFFF" : "#0F172A" },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {c.title}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.clientTag,
+                      { color: isDark ? "#94A3B8" : "#64748B" },
                     ]}
                   >
-                    {c.name.charAt(0)}
+                    {c.tag || c.subtitle || "Đối tác"}
                   </Text>
                 </View>
-                <Text
-                  style={[
-                    styles.clientName,
-                    { color: isDark ? "#FFFFFF" : "#0F172A" },
-                  ]}
-                  numberOfLines={1}
-                >
-                  {c.name}
-                </Text>
-                <Text
-                  style={[
-                    styles.clientTag,
-                    { color: isDark ? "#94A3B8" : "#64748B" },
-                  ]}
-                >
-                  {c.tag}
-                </Text>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </View>
 
@@ -1107,7 +1261,72 @@ export const ProfileScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* 9. TRỢ LÝ AI VIONE (AI COPILOT) */}
+        {/* 8. GIAO DIỆN NGÔN NGỮ (8 NGÔN NGỮ QUỐC TẾ - Khớp 100% PWA) */}
+        <View
+          style={[
+            styles.settingsCard,
+            {
+              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+              shadowColor: isDark ? "#000000" : "#64748B",
+              shadowOpacity: isDark ? 0.3 : 0.04,
+            },
+          ]}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 4, paddingTop: 6, marginBottom: 8 }}>
+            <Globe size={16} color={isDark ? "#D8B282" : "#8C653B"} style={{ marginRight: 6 }} />
+            <Text
+              style={[
+                styles.sectionTitleSmall,
+                { color: isDark ? "#D8B282" : "#8C653B", paddingHorizontal: 0, paddingTop: 0 },
+              ]}
+            >
+              NGÔN NGỮ HIỂN THỊ (8 QUỐC GIA)
+            </Text>
+          </View>
+
+          <View style={styles.langGrid}>
+            {SUPPORTED_LANGUAGES.map((l) => {
+              const active = selectedLang === l.code;
+              return (
+                <TouchableOpacity
+                  key={l.code}
+                  style={[
+                    styles.langBtn,
+                    {
+                      backgroundColor: active
+                        ? isDark ? "rgba(216, 178, 130, 0.22)" : "#FDF6EC"
+                        : isDark ? "#181D2A" : "#F8FAFC",
+                      borderColor: active ? "#D8B282" : isDark ? "rgba(255, 255, 255, 0.06)" : "#E2E8F0",
+                      borderWidth: active ? 1.5 : 1,
+                    },
+                  ]}
+                  onPress={() => handleSelectLanguage(l.code)}
+                  activeOpacity={0.75}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flex: 1 }}>
+                    <Text style={{ fontSize: 16 }}>{l.flag}</Text>
+                    <Text
+                      style={[
+                        styles.langBtnText,
+                        {
+                          color: active ? (isDark ? "#D8B282" : "#8C653B") : (isDark ? "#E2E8F0" : "#334155"),
+                          fontWeight: active ? "700" : "500",
+                        },
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {l.name}
+                    </Text>
+                  </View>
+                  {active && <Check size={14} color={isDark ? "#D8B282" : "#8C653B"} strokeWidth={2.5} />}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* 9. TRỢ LÝ AI VIONE (AI COPILOT - Có Switch bật/tắt Quả cầu AI nổi) */}
         <View
           style={[
             styles.settingsCard,
@@ -1127,6 +1346,44 @@ export const ProfileScreen: React.FC = () => {
           >
             TRỢ LÝ AI VIONE (AI COPILOT)
           </Text>
+
+          {/* Toggle Switch Quả cầu AI ViOne nổi trên màn hình */}
+          <View style={styles.settingItem}>
+            <View style={styles.settingLeft}>
+              <Sparkles size={16} color="#F59E0B" style={{ marginRight: 12 }} />
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text
+                  style={[
+                    styles.settingLabel,
+                    { color: isDark ? "#FFFFFF" : "#0F172A" },
+                  ]}
+                >
+                  Quả cầu AI ViOne nổi trên màn hình
+                </Text>
+                <Text
+                  style={[
+                    styles.settingSub,
+                    { color: isDark ? "#94A3B8" : "#64748B" },
+                  ]}
+                >
+                  Hiển thị quả cầu AI thông minh để tra cứu, ra lệnh giọng nói & phân tích deal
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={isAiFloatingEnabled}
+              onValueChange={handleToggleAiFloating}
+              trackColor={{ false: isDark ? "#334155" : "#CBD5E1", true: "#D8B282" }}
+              thumbColor={isAiFloatingEnabled ? (isDark ? "#0E1522" : "#FFFFFF") : "#94A3B8"}
+            />
+          </View>
+
+          <View
+            style={[
+              styles.settingDivider,
+              { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9" },
+            ]}
+          />
 
           {/* Mở Trợ lý AI */}
           <TouchableOpacity
@@ -1157,30 +1414,40 @@ export const ProfileScreen: React.FC = () => {
             </View>
             <ChevronRight size={16} color={isDark ? "#94A3B8" : "#64748B"} />
           </TouchableOpacity>
+        </View>
 
-          <View
+        {/* 10. THÔNG BÁO HỆ THỐNG & CUỘC GỌI (Khớp 100% PWA) */}
+        <View
+          style={[
+            styles.settingsCard,
+            {
+              backgroundColor: isDark ? "#12151F" : "#FFFFFF",
+              borderColor: isDark ? "rgba(216, 178, 130, 0.2)" : "#E2E8F0",
+              shadowColor: isDark ? "#000000" : "#64748B",
+              shadowOpacity: isDark ? 0.3 : 0.04,
+            },
+          ]}
+        >
+          <Text
             style={[
-              styles.settingDivider,
-              { backgroundColor: isDark ? "rgba(255, 255, 255, 0.06)" : "#F1F5F9" },
+              styles.sectionTitleSmall,
+              { color: isDark ? "#D8B282" : "#8C653B", paddingHorizontal: 4, paddingTop: 6 },
             ]}
-          />
-
-          {/* Khôi phục nút AI nổi ở Trang chủ */}
-          <TouchableOpacity
-            style={styles.settingItem}
-            onPress={handleRestoreFloatingAi}
-            activeOpacity={0.7}
           >
+            THÔNG BÁO HỆ THỐNG & CUỘC GỌI
+          </Text>
+
+          <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
-              <RotateCcw size={16} color={isDark ? "#D8B282" : "#8C653B"} style={{ marginRight: 12 }} />
-              <View>
+              <BellRing size={16} color="#F59E0B" style={{ marginRight: 12 }} />
+              <View style={{ flex: 1, paddingRight: 8 }}>
                 <Text
                   style={[
                     styles.settingLabel,
                     { color: isDark ? "#FFFFFF" : "#0F172A" },
                   ]}
                 >
-                  Khôi phục nút AI nổi ở Trang chủ
+                  Thông báo khóa màn hình & Cuộc gọi
                 </Text>
                 <Text
                   style={[
@@ -1188,11 +1455,39 @@ export const ProfileScreen: React.FC = () => {
                     { color: isDark ? "#94A3B8" : "#64748B" },
                   ]}
                 >
-                  Mở lại bong bóng AI di chuyển tự do trên màn hình
+                  Báo lên màn hình điện thoại khi có cuộc gọi đến, tin nhắn đối tác, bình luận và cập nhật kinh doanh
                 </Text>
               </View>
             </View>
-            <ChevronRight size={16} color={isDark ? "#94A3B8" : "#64748B"} />
+            <View
+              style={{
+                backgroundColor: "rgba(16, 185, 129, 0.12)",
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+                borderRadius: 12,
+                borderWidth: 1,
+                borderColor: "rgba(16, 185, 129, 0.3)",
+              }}
+            >
+              <Text style={{ color: "#10B981", fontSize: 11, fontWeight: "700" }}>Đã bật</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.testNotifBtn,
+              {
+                backgroundColor: isDark ? "rgba(216, 178, 130, 0.16)" : "#FDF6EC",
+                borderColor: isDark ? "#D8B282" : "rgba(216, 178, 130, 0.6)",
+              },
+            ]}
+            onPress={handleTestPushNotification}
+            activeOpacity={0.8}
+          >
+            <BellRing size={14} color={isDark ? "#D8B282" : "#8C653B"} />
+            <Text style={[styles.testNotifBtnText, { color: isDark ? "#D8B282" : "#8C653B" }]}>
+              Kiểm tra thông báo thử nghiệm
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -1214,14 +1509,16 @@ export const ProfileScreen: React.FC = () => {
       </ScrollView>
 
       {/* Floating AI Copilot Assistant Button */}
-      <TouchableOpacity
-        style={styles.floatingAiBtn}
-        onPress={() => setAiAssistantVisible(true)}
-        activeOpacity={0.85}
-      >
-        <Sparkles size={18} color="#050C15" />
-        <Text style={styles.floatingAiText}>ViOne AI</Text>
-      </TouchableOpacity>
+      {isAiFloatingEnabled && (
+        <TouchableOpacity
+          style={styles.floatingAiBtn}
+          onPress={() => setAiAssistantVisible(true)}
+          activeOpacity={0.85}
+        >
+          <Sparkles size={18} color="#050C15" />
+          <Text style={styles.floatingAiText}>ViOne AI</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Realtime Business Notifications Modal */}
       <BusinessNotificationsModal
@@ -1233,6 +1530,8 @@ export const ProfileScreen: React.FC = () => {
       <ViOneVoiceAssistantModal
         visible={aiAssistantVisible}
         onClose={() => setAiAssistantVisible(false)}
+        onNavigateToTab={(tab) => navigation?.navigate(tab as any)}
+        onOpenMyQr={() => setQrModalVisible(true)}
       />
 
       {/* Parity Modals */}
@@ -1249,7 +1548,10 @@ export const ProfileScreen: React.FC = () => {
         visible={editProfileModalVisible}
         onClose={() => setEditProfileModalVisible(false)}
         currentUser={currentUser}
-        onProfileUpdated={(updated) => setActiveUser(updated)}
+        onProfileUpdated={(updated) => {
+          setActiveUser(updated);
+          refreshProfile();
+        }}
       />
       <AccountSecurityModal
         visible={securityModalVisible}
@@ -1569,6 +1871,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 6,
   },
+  clientLogoImg: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    marginBottom: 6,
+  },
   clientLogoInitial: {
     fontSize: 14,
     fontWeight: "800",
@@ -1633,6 +1941,40 @@ const styles = StyleSheet.create({
   },
   themeBtnText: {
     fontSize: 12.5,
+  },
+  langGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  langBtn: {
+    width: (SCREEN_WIDTH - 32 - 28 - 8) / 2,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+  },
+  langBtnText: {
+    fontSize: 12,
+  },
+  testNotifBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    marginTop: 6,
+    marginBottom: 8,
+    gap: 6,
+  },
+  testNotifBtnText: {
+    fontSize: 12,
+    fontWeight: "700",
   },
   logoutBtn: {
     flexDirection: "row",

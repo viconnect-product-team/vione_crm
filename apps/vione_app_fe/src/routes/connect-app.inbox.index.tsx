@@ -11,6 +11,7 @@ import { MobileSearchBar } from "@/components/business-connect/mobile/MobileSear
 import { useDmThreads } from "@/hooks/use-bc-dm";
 import type { BcDmThreadSummary } from "@/lib/business-connect/mobile/dm.types";
 import { ViOneCreateGroupModal } from "@/components/business-connect/mobile/ViOneCreateGroupModal";
+import { PersonalProfileBottomSheet } from "@/components/common/PersonalProfileBottomSheet";
 
 export const Route = createFileRoute("/connect-app/inbox/")({
   head: () => ({
@@ -135,6 +136,7 @@ function InboxPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<InboxFilter>("all");
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
+  const [selectedProfileThread, setSelectedProfileThread] = useState<BcDmThreadSummary | null>(null);
 
   // Nhóm cục bộ đã tạo
   const [localGroups, setLocalGroups] = useState<BcDmThreadSummary[]>(() => {
@@ -165,7 +167,13 @@ function InboxPage() {
   const isError = query.isError || (result != null && typeof result === "object" && "ok" in result && !result.ok);
 
   const threads = useMemo(() => {
-    return [...localGroups, ...rawRemoteThreads];
+    const list = [...localGroups, ...rawRemoteThreads];
+    // Đảm bảo tin nhắn mới nhất luôn nổi lên đầu tiên
+    return list.sort((a, b) => {
+      const timeA = a.lastMessageAt ? new Date(a.lastMessageAt).getTime() : 0;
+      const timeB = b.lastMessageAt ? new Date(b.lastMessageAt).getTime() : 0;
+      return timeB - timeA;
+    });
   }, [localGroups, rawRemoteThreads]);
 
   // Phân loại danh mục chuẩn Messenger:
@@ -391,7 +399,17 @@ function InboxPage() {
                   params={{ threadId: thread.threadId }}
                   className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-[var(--bc-mobile-border)] bg-white dark:bg-[var(--bc-mobile-surface)] p-3 active:opacity-80 shadow-xs hover:border-[var(--bc-mobile-border-gold)]/50 transition-colors"
                 >
-                  <Avatar thread={thread} />
+                  <div
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedProfileThread(thread);
+                    }}
+                    className="cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+                    title="Bấm để xem hồ sơ đối tác"
+                  >
+                    <Avatar thread={thread} />
+                  </div>
                   <span className="min-w-0 flex-1">
                     <span className="flex items-baseline justify-between gap-2">
                       <span className="truncate text-[14px] font-bold text-slate-900 dark:text-[var(--bc-mobile-text)]">
@@ -429,6 +447,20 @@ function InboxPage() {
       <ViOneCreateGroupModal
         open={isCreateGroupOpen}
         onClose={() => setIsCreateGroupOpen(false)}
+      />
+
+      {/* Sheet xem hồ sơ cá nhân khi bấm vào avatar */}
+      <PersonalProfileBottomSheet
+        open={Boolean(selectedProfileThread)}
+        onClose={() => setSelectedProfileThread(null)}
+        profile={{
+          displayName: selectedProfileThread?.displayName || "Thành viên ViOne",
+          avatarUrl: selectedProfileThread?.avatarUrl || null,
+          jobTitle: (selectedProfileThread as any)?.isGroup ? "Nhóm làm việc" : "Hội viên kết nối",
+          companyName: (selectedProfileThread as any)?.isGroup ? "Cộng đồng ViOne" : "Doanh nghiệp ViOne",
+          phone: null,
+          email: null,
+        }}
       />
     </MobilePage>
   );

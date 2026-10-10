@@ -15,6 +15,8 @@ export interface UserProfile {
   shareUrl?: string | null;
   industry?: string | null;
   website?: string | null;
+  address?: string | null;
+  city?: string | null;
   isVerified?: boolean;
 }
 

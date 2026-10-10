@@ -8,7 +8,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useT, type TKey } from "@/lib/i18n";
-import { supabase } from "@/integrations/supabase/client";
 import {
   MOMENT_IMAGE_ACCEPT,
   processMomentImage,
